@@ -26,25 +26,37 @@ El ledger registra qué evidencia/decisión ha sido certificada y de qué depend
 | CERT-MK0-013 | MK0 research gate | CERTIFIED | CERT-MK0-001..012 | any dependency above |
 | CERT-MK1-READY-001 | MK1 replay-build readiness | CERTIFIED | MK0 + DoR | any architecture-changing dependency |
 | CERT-MK1-DF-SPEC-001 | MK1 Data Foundry architecture/contracts/policies/core foundation | CERTIFIED | Foundry docs/config/schema/code + CI run 34741450390 | taxonomy, source-registry semantics, mapping, admission/rights, split/manifest semantics or foundation tests |
-| EMP-DATASET-001 | Exact admitted MK1 corpus identity/counts/durations/groups | OPEN | acquired sources + Foundry execution | n/a until produced |
-| EMP-DATA-QUALITY-001 | Corpus duplicate/quality/diversity evidence | OPEN | hashes/probes/group/dedup reports | n/a until produced |
-| CERT-MK1-DF-CORPUS-001 | Named Foundry corpus/profile manifest | OPEN | DF-G0..DF-G8 + EMP-DATASET-001 + EMP-DATA-QUALITY-001 | any source/asset/policy/mapping/split change |
-| CERT-DOC-001 | Global Markdown documentation depth/coverage at prior corpus | INVALIDATED | prior 175-file audit | invalidated when Data Foundry Markdown changed corpus |
-| CERT-DOC-002 | Global Markdown documentation depth/coverage including MK1 Data Foundry | CERTIFIED | DOCUMENTATION-STANDARD + COVERAGE + prior audit + Foundry re-audit | audited `.md` corpus materially changes without re-audit |
+| CERT-MK1-DF-TOOLCHAIN-001 | Acquisition→intake→probe/admission→review→dedup/split→freeze→benchmark-handoff toolchain | CERTIFIED | code baseline `2c4d4c2...` + CI run 34742947903 + 42-test synthetic E2E suite | Foundry execution semantics/config/schema/probe/dedup/handoff/CI coverage |
+| EMP-DATASET-001 | Exact admitted MK1 corpus identity/counts/durations/groups | OPEN | acquired sources + certified Foundry execution | n/a until produced |
+| EMP-DATA-QUALITY-001 | Corpus duplicate/quality/diversity evidence | OPEN | real hashes/probes/group/dedup reports | n/a until produced |
+| CERT-MK1-DF-CORPUS-001 | Named Foundry corpus/profile manifest | OPEN | DF-G0..DF-G8 on real media + EMP-DATASET-001 + EMP-DATA-QUALITY-001 | any source/asset/policy/mapping/split change |
+| CERT-DOC-001 | Global Markdown documentation depth/coverage — historical first audit | INVALIDATED | original audited corpus | superseded when corpus changed |
+| CERT-DOC-002 | Documentation depth/coverage including initial MK1 Data Foundry | INVALIDATED | 189-file Foundry audit corpus | superseded by completed toolchain docs/certification |
+| CERT-DOC-003 | Documentation depth/coverage including complete MK1 Data Foundry toolchain | CERTIFIED | DOCUMENTATION-STANDARD + COVERAGE + Foundry toolchain audit | audited 197-file `.md` corpus materially changes without re-audit |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | brand/model/audio/RTSP/codec/network/access | closes only with field evidence |
-| EMP-MODEL-001 | Model winner | OPEN | MK1 benchmark results on certified Foundry corpus | n/a |
-| EMP-DIST-001 | Distance/SNR envelope | OPEN | field tests | n/a |
-| EMP-SLO-001 | Final SLOs | OPEN | MK1 runtime/quality evidence | n/a |
+| EMP-MODEL-001 | Model winner | OPEN | A/B/C benchmark results on certified Foundry corpus | n/a |
+| EMP-THRESH-001 | Per-class model/EventEngine thresholds | OPEN | validation + streaming replay evidence | n/a |
+| EMP-DIST-001 | Distance/SNR envelope | OPEN | authorized field tests | n/a |
+| EMP-CAP-001 | Multi-source capacity envelope | OPEN | load/soak on target hardware | n/a |
+| EMP-SLO-001 | Final MK1/MK2 SLO evidence | OPEN | runtime/quality/field evidence | n/a |
 
-## Foundry certificate scope
+## Foundry certification scope
 
-`CERT-MK1-DF-SPEC-001` certifies that ECHO now has a versioned, testable foundation for source registry, semantic mapping, rights/admission, provenance/hash, grouping/splitting, exact duplicate controls, manifest identity, dataset metadata adapters and related schemas/CLI. GitHub Actions run `34741450390` passed on Python 3.10, 3.11 and 3.12; the 3.11 job ran 23 unit tests successfully.
+`CERT-MK1-DF-SPEC-001` certifies the versioned architecture/contracts/policy foundation.
 
-It does **not** certify final source acquisition, exact corpus counts, audio decoding/resampling, near-duplicate fingerprints, model quality or field performance. Those are intentionally represented by open empirical/corpus nodes rather than inferred from documentation.
+`CERT-MK1-DF-TOOLCHAIN-001` certifies the executable engineering chain through DF-G8: acquisition registry/checksum verification, source adapters/intake, technical media probing, SHA-256, rights admission, semantic mapping/manual review, group and duplicate/label-conflict guards, deterministic split policy, freeze reports/manifests and benchmark-facing frozen-bundle validation. GitHub Actions run `34742947903` passed on Python 3.10, 3.11 and 3.12; the Python 3.11 job ran 42 tests successfully.
+
+Neither certificate fabricates real-corpus facts. Exact real counts/diversity/license distribution/duplicates and target coverage remain outputs of `EMP-DATASET-001` and `EMP-DATA-QUALITY-001`, and only then can `CERT-MK1-DF-CORPUS-001` close.
 
 ## Documentation certificate lineage
 
-`CERT-DOC-001` is an immutable historical certificate over the earlier 175-file Markdown corpus. Once the Data Foundry added substantive Markdown, its current-corpus claim became `INVALIDATED` by design. `CERT-DOC-002` supersedes it after `governance/DOCUMENTATION-AUDIT-2026-09-13-MK1-FOUNDRY.md` reviewed the new corpus.
+```text
+CERT-DOC-001  historical; invalidated for later corpus
+CERT-DOC-002  historical; invalidated/superseded after toolchain documentation expansion
+CERT-DOC-003  current; certifies 197-file Markdown corpus
+```
+
+Historical audits remain evidence for the exact repository states they covered; invalidation means only that they no longer describe the current corpus.
 
 ## Dependency DAG
 
@@ -63,25 +75,31 @@ CERT-MK0-002..012
 
 CERT-MK1-READY-001
   -> CERT-MK1-DF-SPEC-001
-      -> EMP-DATASET-001
-      -> EMP-DATA-QUALITY-001
-      -> CERT-MK1-DF-CORPUS-001
-          -> MK1 replay/audio pipeline
-          -> EMP-MODEL-001
+      -> CERT-MK1-DF-TOOLCHAIN-001
+          -> EXEC-DATA-001 [real source-media execution]
+              -> EMP-DATASET-001
+              -> EMP-DATA-QUALITY-001
+              -> CERT-MK1-DF-CORPUS-001
+                  -> MK1 replay/audio pipeline
+                  -> A/B/C benchmark
+                      -> EMP-MODEL-001
+                      -> EMP-THRESH-001
 
 DOCUMENTATION-STANDARD
   -> DOCUMENTATION-COVERAGE
-      -> DOCUMENTATION-AUDIT-2026-09-13      -> CERT-DOC-001 [historical/INVALIDATED for current corpus]
-      -> DOCUMENTATION-AUDIT-2026-09-13-MK1-FOUNDRY -> CERT-DOC-002
+      -> original audit -> CERT-DOC-001 [historical]
+      -> MK1 Foundry audit -> CERT-DOC-002 [historical]
+      -> MK1 Foundry Toolchain audit -> CERT-DOC-003 [current]
 
-EXT-CAMERA-001 -----> real-camera test branch
-MK1/test -----------> EMP-DIST-001 / EMP-SLO-001
+EXT-CAMERA-001 -----> real-camera test branch -> EMP-DIST-001
+MK1 load/soak ------> EMP-CAP-001
+MK1 quality/runtime -> EMP-SLO-001
 ```
 
 ## Invalidation
 
-Un cambio de taxonomy, schema, source contract, Foundry source registry/mapping/admission/split/manifest semantics, model benchmark set, delivery semantics o privacy policy obliga a recalcular versión/hash del artefacto afectado y pasar dependientes a `INVALIDATED` hasta re-auditar.
+Un cambio de taxonomy, schema, source/audio contract, Foundry source/acquisition registry semantics, mapping/admission/review/probe/dedup/split/manifest/handoff semantics, model benchmark set, delivery semantics o privacy policy obliga a recalcular versión/hash del artefacto afectado y pasar dependientes a `INVALIDATED` hasta re-auditar.
 
-`CERT-DOC-002` pasa a `INVALIDATED` si se agrega o reemplaza Markdown sustantivo sin revisión de cobertura, si aparece un stub utilizado como input certificado o si el inventario del audit deja de representar el corpus real.
+`CERT-DOC-003` pasa a `INVALIDATED` si se agrega o reemplaza Markdown sustantivo sin revisión de cobertura, aparece un stub utilizado como input certificado o el inventario de 197 archivos deja de representar el corpus real.
 
 No se usa blockchain: Git + hashes de assets + manifests + CI attestations dan la propiedad requerida sin consenso distribuido.

@@ -1,89 +1,102 @@
 # MK1 Dataset Selection Evidence
 
-**Status:** `FOUNDRY_FOUNDATION_READY / CORPUS_EXECUTION_PENDING`
+**Status:** `TOOLCHAIN_CERTIFIED / REAL_MANIFEST_EXECUTION_PENDING`
 
 ## Purpose
 
-Record what assets/classes actually survive MK0/MK1 semantic, license, provenance, duplicate and split gates. This is the empirical companion to `MK0/quarries/Q-DATASETS.md` and the build-time Data Foundry.
+Record what assets/classes actually survive MK0/MK1 semantic, rights, technical-quality and duplicate/leakage filters. This is the empirical companion to `Q-DATASETS.md` and the executable Data Foundry.
 
-## Foundation now available
+## Current boundary
 
-The repository now contains:
+The Foundry specification and complete G0..G8 toolchain are certified. Exact source-media counts are **not** inserted before `EXEC-DATA-001` acquires and runs the declared real releases. This document therefore tracks the evidence contract without fabricating numbers.
 
-- `configs/data_foundry/source_registry.v1.json` — seven source families with declared role/license/coverage;
-- `configs/data_foundry/label_mapping.v1.json` — explicit semantic mapping and hard-negative relations;
-- `configs/data_foundry/license_policy.v1.json` — release-safe vs research-only/review/quarantine decisions;
-- JSON schemas for source registry, asset records and dataset manifests;
-- metadata adapters for FSD50K, SONYC-UST, SINGA:PURA, ESC-50 and UrbanSound8K;
-- SHA-256/canonical-manifest logic;
-- deterministic group-aware split primitives;
-- exact-duplicate and metadata-quality checks;
-- admission orchestration that fails closed on rights/mapping uncertainty;
-- CI evidence across Python 3.10–3.12.
+## Required per-source report
 
-## Source-level coverage known before corpus execution
-
-`SIREN` and `VEHICLE_HORN` have multiple direct source families. `GLASS_SHATTER` has direct strong-label evidence from SINGA:PURA plus broader FSD50K `Shatter` candidates requiring glass-specific review. `FIRE_ALARM` and `TIRE_SQUEAL` remain explicit acquisition gaps for the default release-safe profile; they are not manufactured from generic alarm/screech/brake labels.
-
-This is a source-level statement only. It is **not** a final count or data-sufficiency claim.
-
-## Required per-source execution report
-
-For every acquired source release record:
+For every executed source/release record:
 
 ```text
-source release/version + canonical provenance
+source_id + release
+publisher acquisition verification
 candidate assets
-locally present/hashable assets
-admitted/quarantined/rejected counts
+admitted / quarantined / rejected counts
 rejection/quarantine reason distribution
 license distribution
-source/uploader/sensor/recording groups
-exact duplicate clusters / label conflicts
-near-duplicate findings when that stage is implemented
-mapping categories and manual-review outcomes
+source/uploader/recording groups
+technical-probe failures
+exact/near duplicate findings
+ECHO mapping categories
+source split preservation/fallback behavior
 ```
 
-## Per-class report
+## Required per-class report
 
-For each target report unique independent groups, events/clips, duration, source diversity, profile/license distribution, train/validation/test distribution and priority hard-negative coverage. Never report only raw clip count.
+For `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL` report:
+
+- admitted positive assets;
+- independent recording/source groups;
+- duration and/or event count where meaningful;
+- source diversity;
+- train/validation/test distribution;
+- hard-negative/confuser coverage;
+- ambiguous/reviewed candidates;
+- gaps that remain after admission.
+
+Do not report only total clip count.
+
+## Rights/profile split
+
+At minimum distinguish:
+
+- `release_safe`: assets compatible with the selected reusable/release-safe policy;
+- `research_extended`: may include assets allowed only for academic/research evaluation under recorded terms;
+- `field_holdout`: authorized deployment-domain evidence isolated from training unless a later policy explicitly changes that status.
+
+A research-only result cannot silently populate a release-safe manifest.
+
+## Technical-quality evidence
+
+Real execution records local SHA-256, file size, technical audio probe, codec/sample rate/channels/duration when discoverable, and quarantine reasons for missing/corrupt/unprobeable media. Registered near-duplicate fingerprints and exact-byte label conflicts feed the dedup report.
 
 ## Split audit
 
-Required protected-boundary invariants:
+Required result:
 
-- zero recording/source group overlap across prohibited splits;
-- zero exact-content hash overlap across prohibited splits;
-- field holdout separated from all training/calibration;
-- augmented/derived samples inherit parent split;
-- source-provided folds/sensor/time relationships retained as evidence.
+```text
+group overlap across protected splits        = 0
+exact SHA duplicate overlap across splits    = 0
+registered near-duplicate overlap            = 0
+field holdout contamination                  = 0
+```
+
+Any non-zero forbidden overlap is stop-the-line, not a caveat to hide in prose.
 
 ## Manifest identity
 
-The benchmark consumes only frozen Foundry outputs and records at least:
+The executed evidence records hashes for source registry, license policy, label mapping, split policy, asset manifest and split manifest. Benchmark result bundles reference these identities through the validated frozen-bundle handoff.
+
+## Known sourcing concerns before execution
+
+Research currently predicts stronger multi-source support for `SIREN` and `VEHICLE_HORN`; `GLASS_SHATTER` has direct plus reviewable candidates; `FIRE_ALARM` and `TIRE_SQUEAL` require defensible direct assets if the real release-safe execution confirms the gap. Generic alarm/screech/friction labels are not coerced into narrower targets.
+
+This is a sourcing hypothesis/landscape statement, not an achieved corpus result.
+
+## Closure outputs
+
+`EXEC-DATA-001` must generate:
 
 ```text
-source_registry_sha256
-license_policy_sha256
-label_mapping_sha256
-split_policy_sha256
-asset_manifest_sha256
-split_manifest_sha256
-profile
+EMP-DATASET-001
+EMP-DATA-QUALITY-001
+asset-manifest.jsonl
+split-manifest.json
+dataset-manifest.json
+coverage-report.json
+dedup-report.json
+quarantine-report.json
 ```
 
-Any asset or policy change creates a new data identity.
-
-## Current empirical nodes
-
-`EMP-DATASET-001 = OPEN` — exact admitted corpus/assets/counts/durations.  
-`EMP-DATA-QUALITY-001 = OPEN` — duplicate/quality/group-diversity findings.  
-`CERT-MK1-DF-CORPUS-001 = OPEN` — requires DF-G0..DF-G8 to pass for one named profile/manifest.
-
-## No fabricated metrics
-
-Numeric corpus results remain absent until source releases and audio are actually acquired and passed through the Foundry. Source headline counts in the catalog are evidence about upstream releases, not admitted ECHO counts.
+Only after DF-G0..DF-G8 pass against that named profile/manifest can `CERT-MK1-DF-CORPUS-001` become `CERTIFIED`.
 
 ## Invalidation
 
-New asset, corrected label/license, deduplication finding, source release change, taxonomy change or split-policy change creates a new manifest lineage and may invalidate dependent benchmark results.
+A source release change, corrected license/label, taxonomy/mapping change, probe/dedup finding or split-policy change creates a new corpus version rather than editing historical evidence in place.
