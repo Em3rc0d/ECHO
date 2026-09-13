@@ -14,9 +14,10 @@ from echo.data_foundry.pipeline import admit_from_files, freeze_corpus, load_spl
 
 
 class FoundryPipelineTests(unittest.TestCase):
-    def _write_wav(self, path: Path, amplitude: int, *, period: int = 200, positive_width: int | None = None) -> None:
-        width = positive_width if positive_width is not None else period // 2
-        samples = [amplitude if i % period < width else -amplitude for i in range(1600)]
+    def _write_wav(self, path: Path, envelope: list[int]) -> None:
+        samples: list[int] = []
+        for i, amplitude in enumerate(envelope):
+            samples.append(amplitude if i % 40 < 20 else -amplitude)
         with wave.open(str(path), "wb") as wav:
             wav.setnchannels(1)
             wav.setsampwidth(2)
@@ -40,8 +41,10 @@ class FoundryPipelineTests(unittest.TestCase):
     def test_release_safe_admit_freeze_and_benchmark_handoff(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            self._write_wav(root / "a.wav", 1000, period=200, positive_width=100)
-            self._write_wav(root / "b.wav", 1800, period=320, positive_width=80)
+            # Different temporal envelopes ensure the near-duplicate screen does not
+            # intentionally collapse the two fixtures merely because gain differs.
+            self._write_wav(root / "a.wav", [1000] * 800 + [200] * 800)
+            self._write_wav(root / "b.wav", [200] * 400 + [1500] * 800 + [200] * 400)
             candidates = [
                 RawAssetCandidate(source_dataset="sonyc-ust-v2", source_release="2.3", source_asset_id="a.wav", local_relpath="a.wav", license_id="CC-BY-4.0", original_labels=("siren",), recording_group_id="g1", original_split="train"),
                 RawAssetCandidate(source_dataset="sonyc-ust-v2", source_release="2.3", source_asset_id="b.wav", local_relpath="b.wav", license_id="CC-BY-4.0", original_labels=("car-horn",), recording_group_id="g2", original_split="test"),
