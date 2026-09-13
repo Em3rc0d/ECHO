@@ -1,29 +1,51 @@
 # Audio Contract — MK1
 
-## Canonical frame stream
+**Status:** `FROZEN_BASELINE / MODEL-SPECIFIC FRONTENDS VERSIONED`
 
-Toda fuente se transforma antes de inferencia a un formato canónico.
+## Purpose
+
+Create a deterministic boundary between heterogeneous source audio and model/window processing.
+
+## Canonical baseline
+
+Decoded source audio is converted to mono PCM/float samples under a versioned normalization policy. YAMNet baseline requires 16 kHz mono waveform; other candidates may have model-specific frontend adapters while consuming the same underlying admitted audio.
+
+## Audio frame metadata
 
 ```yaml
-source_id: CAM-01
-capture_ts: 2026-09-13T00:00:00.000Z
-sample_rate_hz: 16000
-channels: 1
-sample_format: float32
-range: [-1.0, 1.0]
-sequence_no: 18422
+source_id: ...
+stream_generation: ...
+sequence: ...
+received_at: ...
+media_time: optional
+original_codec: optional
+original_sample_rate: optional
+original_channels: optional
+normalized_sample_rate: ...
+sample_count: ...
+preprocessing_version: ...
 ```
 
-El `sample_rate_hz` final queda sujeto al modelo ganador; 16 kHz es baseline compatible con YAMNet y DCASE baselines, no una ley universal.
+## Windowing
 
-## Window contract
+Window size/hop are explicit config tied to model/frontend version. YAMNet's referenced implementation uses overlapping frames; PANNs/custom CNN may require different windows. Event Engine sees timestamped inference records, not raw model frame assumptions.
 
-Cada ventana incluye `window_id`, `source_id`, `start_ts`, `end_ts`, `samples`, `preprocess_version`. El overlap/hop se configura y versiona.
+## Signal processing policy
 
-## Reglas
+Resample/downmix deterministically. Avoid hidden AGC/noise filtering unless versioned and benchmarked. Record clipping/silence/level diagnostics as telemetry where useful, not as target labels.
 
-- downmix/resample ocurre una sola vez por pipeline;
-- clipping, silencio prolongado y discontinuidades generan métricas;
-- no se guarda PCM por defecto;
-- timestamps de captura no se sustituyen por tiempo de inferencia;
-- cualquier gap debe ser explícito, no rellenado silenciosamente sin policy.
+## Buffering
+
+Per-source buffers are bounded. Live mode favors freshness and explicit stale/drop metrics; offline benchmark mode may block to guarantee complete deterministic processing.
+
+## Risks
+
+Resampling artifacts, stereo cancellation during downmix, source AGC, low bitrate codecs, clipping and timestamp drift can change transient target quality.
+
+## Validation
+
+Golden audio fixtures verify deterministic resample/downmix/window timestamps. Codec/sample-rate ablations evaluate target sensitivity.
+
+## Invalidation
+
+A changed canonical sample format/preprocessing version invalidates benchmark comparability for affected models.

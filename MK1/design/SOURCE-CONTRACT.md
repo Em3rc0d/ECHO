@@ -1,31 +1,53 @@
 # Source Contract — MK1
 
-## SourceDescriptor
+**Status:** `FROZEN_V1`
+
+## Purpose
+
+Represent an acoustic source without coupling downstream processing to RTSP, local microphone or file replay.
+
+## Logical source
 
 ```yaml
-source_id: CAM-01
-kind: rtsp
-site_id: LAB-01
-enabled: true
-uri_secret_ref: echo/cam01/rtsp
-transport_preference: tcp
-audio_required: true
+source_id: stable unique id
+site_id: optional logical site
+source_type: replay|rtsp|microphone|nvr|other
+enabled: bool
+adapter_config_ref: non-secret configuration reference
+secret_ref: optional external secret reference
 metadata:
-  location_label: corridor-a
+  device/model: optional
+  location_label: optional non-sensitive logical label
 ```
 
-## Source states
+## Stream session
 
-`DISABLED -> CONNECTING -> HEALTHY -> DEGRADED -> RECONNECTING -> HEALTHY` o `FAILED`.
+Every connection/run creates `stream_generation` and emits samples/windows with sequence/timing metadata. This distinguishes a reconnect from the previous stream and prevents delayed old data from contaminating current event state.
 
-## Invariantes
+## Source adapter responsibilities
 
-- `source_id` estable y único;
-- URI/credentials nunca aparecen en eventos ni logs;
-- un source defectuoso no bloquea otros;
-- adapters implementan la misma interfaz para `file`, `microphone`, `rtsp`;
-- health incluye `last_audio_ts`, reconnect count, decode errors y buffer depth.
+Connect/open input; expose audio track; report original codec/rate/channels when known; emit decoded samples/timestamps; surface health/error states; respect cancellation/reconnect; never embed credentials into emitted domain objects.
 
-## External gate
+## Downstream guarantee
 
-Campos específicos de cámara (modelo, codec, RTSP path, ONVIF) se completan sólo con evidencia real.
+The normalization/window pipeline receives source identity independently of adapter type. A replay and RTSP adapter must be interchangeable at that boundary.
+
+## Health states
+
+`DISABLED`, `CONNECTING`, `ONLINE`, `DEGRADED`, `RECONNECTING`, `OFFLINE`. Health is not acoustic classification; a connected silent/muted microphone may require a signal-quality warning.
+
+## Failure behavior
+
+Adapter errors are source-scoped. Reconnect uses bounded/backoff policy. Stale generation data is rejected.
+
+## Security
+
+No raw passwords in config/log/event payload. Secret references resolve at runtime.
+
+## Validation
+
+Contract tests use at least replay + fake/faulting adapter; real RTSP later proves hardware compatibility.
+
+## Invalidation
+
+Only reopen if a required source cannot express identity/session/audio/health through this abstraction.

@@ -1,43 +1,27 @@
 # MK1 / Design
 
-Artefactos de diseño:
+**Status:** `CLOSED_FOR_BUILD`
 
-- `REQUIREMENTS.md`
-- `TAXONOMY.md`
-- `CONTRACTS.md`
+## Purpose
 
-## Diseño del Event Engine
+Specify observable behavior and versioned contracts for the first vertical before implementation. Design is implementation-agnostic: it defines source/audio/event semantics, requirements, taxonomy, privacy, observability and temporal rules.
 
-Por `{source_id,event_type}`:
+## Inputs
 
-```text
-IDLE
-  ↓ score >= enter_threshold
-CANDIDATE
-  ↓ M of N positive windows
-CONFIRMED/ACTIVE
-  ↓ maintain while evidence persists
-CLOSED
-  ↓ cooldown/dedup policy
-IDLE
-```
+Certified MK0 boundary, taxonomy, data policy, benchmark protocol and source/PubSub research.
 
-`enter_threshold > exit_threshold` es candidato para hysteresis.
+## Key artifacts
 
-## Raw inference != event
+`REQUIREMENTS.md`, `SOURCE-CONTRACT.md`, `AUDIO-CONTRACT.md`, `TAXONOMY.md`, `CONTRACTS.md`, `EVENT-LIFECYCLE.md`, `EVENT-ENGINE.md`, `OBSERVABILITY.md`, `PRIVACY-SECURITY.md`.
 
-Ventanas consecutivas del mismo sonido no deben generar N alertas. El Event Engine agrega duración, peak, mean confidence y estado temporal.
+## Design invariants
 
-## Configuración versionada
+`source_id` is mandatory end-to-end. Audio is normalized under a versioned contract. Multi-label scores remain separate from confirmed events. Thresholds are configuration/evidence, not embedded constants. Event delivery is independent from model internals. Raw audio retention is off by default.
 
-Se diseñan como artifacts separados:
+## Output to architecture
 
-```text
-labels.yaml
-thresholds.yaml
-event-engine.yaml
-sources.yaml
-model-registry.yaml
-```
+Architecture may choose process/task/worker topology but cannot violate these contracts without reopening design.
 
-No se implementan hasta que `build` esté READY.
+## Invalidation
+
+Taxonomy, source/audio envelope or lifecycle/schema changes require dependent architecture/build review.

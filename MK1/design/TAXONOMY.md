@@ -1,68 +1,53 @@
 # MK1 Acoustic Taxonomy v1
 
-**Estado:** `FROZEN_FOR_MK1`  
-**Decision:** D-022  
-**Certificate:** CERT-MK0-010
+**Status:** `FROZEN_V1`
 
-## Principio
+## Principle
 
-Cada target describe una **firma acústica observable**. Nunca implica por sí sola un delito, accidente, intención humana o causa social.
+Labels describe observable acoustic phenomena. They do not assert incident cause, intent or human/legal interpretation.
 
-## Targets MK1
+## Target classes
 
-| Label ECHO | Semántica | Mapping/evidence inicial | Confusores prioritarios |
-|---|---|---|---|
-| `GLASS_SHATTER` | sonido de vidrio/material vítreo fragmentándose | AudioSet `Glass`/`Shatter`; assets deben validarse para glass semantics | metal/ceramic impact, dishes, brittle plastic |
-| `SIREN` | patrón acústico de sirena de advertencia | AudioSet `Siren`; SONYC siren | alarms, tonal music, machinery |
-| `FIRE_ALARM` | señal acústica de alarma contra incendio/emergencia | AudioSet `Fire alarm`; comparable Frigate `fire_alarm` | smoke alarm, buzzer, reversing beep, siren |
-| `VEHICLE_HORN` | bocina/claxon de vehículo | AudioSet `Vehicle horn`; SONYC car-horn; ESC-50 car horn | air horn, alarm, tonal machinery |
-| `TIRE_SQUEAL` | chirrido/fricción de neumático sobre superficie | AudioSet `Tire squeal` | metal squeal, brakes, machinery |
+### `GLASS_SHATTER`
 
-## Estados no-target
+Acoustic signature consistent with brittle glass breaking/shattering. Exclude generic impact without glass evidence. Confusers: ceramic, metal impacts, dishes, construction transients.
 
-### `BACKGROUND_NO_TARGET`
+### `SIREN`
 
-No es una gran clase semántica. En entrenamiento multi-label corresponde normalmente a un vector target sin clases activas y debe cubrir contexto real diverso.
+Sustained/modulated siren-like warning sound. Distinguish from generic periodic beeps/fire alarm where possible. Confusers: music/synth sweeps, vehicle electronics and other alarms.
 
-### Hard negatives
+### `FIRE_ALARM`
 
-Obligatorios por target. Pool inicial:
+Acoustic signature specifically consistent with fire-alarm style patterns when mapping evidence supports that semantics. Do not map all `Alarm` clips here.
 
-```text
-speech / crowd / music
-normal traffic / engines
-wind / rain
-metal impacts / ceramic impacts
-beeps / buzzers / reversing beepers
-door slam
-construction machinery
-radio/TV playback
-```
+### `VEHICLE_HORN`
 
-### `UNKNOWN`
+Vehicle horn/honking acoustic event. Confusers: whistles, alarms and tonal machinery.
 
-Estado del decision layer cuando no existe evidencia suficiente para targets conocidos. No se fuerza necesariamente como neurona entrenada.
+### `TIRE_SQUEAL`
 
-## Deferred labels
+High-friction tire squeal/skid acoustic event. Confusers: brakes, metal squeal, machinery friction.
 
-| Label | Motivo de defer |
-|---|---|
-| `VEHICLE_COLLISION` | un `impact` no demuestra colisión vehicular; requiere corpus específico y definición acústica verificable |
-| `STRONG_IMPACT` | útil, pero demasiado amplio para la primera taxonomía; necesita hard-negative engineering |
-| `YELL_SCREAM` | viable, pero amplía sensibilidad de privacidad y dominio humano; queda MK2/extended |
-| `REVERSING_BEEPER` | SONYC ofrece evidencia, pero no es core para el primer vertical |
-| `CAR_ALARM` | disponible en AudioSet/SONYC; diferido para evitar solape temprano con `FIRE_ALARM`/`SIREN` |
+## Non-target states
 
-## Multi-label contract
+`BACKGROUND_NO_TARGET` represents examples/windows containing none of the target classes and includes structured hard-negative families. `UNKNOWN` is a decision-layer abstention state when no target evidence is sufficient; it need not be a training neuron.
 
-Las clases no son mutuamente excluyentes. El head debe permitir múltiples probabilidades simultáneas (p. ej. sigmoids por target).
+## Multi-label semantics
 
-```json
-{
-  "SIREN": 0.91,
-  "VEHICLE_HORN": 0.14,
-  "GLASS_SHATTER": 0.02
-}
-```
+A window/event may contain multiple target classes. Training/evaluation therefore uses independent labels/scores and multilabel metrics rather than forcing one softmax class.
 
-Thresholds numéricos quedan fuera de este documento: se calibran solo con validation data y se certifican después.
+## Mapping governance
+
+Source labels are categorized EXACT/NARROWER/BROADER/AMBIGUOUS/NEGATIVE/UNUSABLE. Human review is required for ambiguous mappings.
+
+## Deferred classes
+
+Vehicle collision, generic impact, yell/scream, reversing beeper and other candidates remain future/deferred; adding them is a versioned taxonomy change.
+
+## Versioning
+
+Published event payloads include taxonomy/schema version. A v2 change triggers review of dataset manifests, model heads, thresholds and downstream consumers.
+
+## Validation
+
+Per-class support/diversity, error analysis and confusion/hard-negative behavior determine whether each v1 target remains viable after MK1 evidence.

@@ -1,60 +1,47 @@
-# MK1 — First Build Specification
+# MK1 — First Vertical Product
 
-## Objetivo
+**Status:** `READY_NOT_STARTED` for replay/offline build  
+**Upstream:** `CERT-MK0-013`, `CERT-MK1-READY-001`
 
-MK1 define la primera vertical completa y científicamente evaluable de ECHO. Debe demostrar el pipeline de extremo a extremo con el menor scope físico razonable, sin sacrificar la arquitectura multi-source.
+## Purpose
+
+MK1 turns certified MK0 decisions into the first complete ECHO vertical and produces empirical evidence that documentation alone cannot provide: model winner, thresholds, false-alarm profile, latency/resources, Event Engine behavior and end-to-end delivery.
+
+## Pipeline
 
 ```text
 brainstorming -> design -> arch -> plan -> build -> test
 ```
 
-`mining-site/` y `quarries/` preservan la evidencia seleccionada y las preguntas que aún requieren benchmark.
+The build must follow frozen contracts rather than redesigning them opportunistically.
 
-## Scope de la primera build
-
-PoC física permitida:
+## First vertical
 
 ```text
-1 cámara IP con audio
-OR
-1 micrófono/replay equivalente mientras el hardware esté EXTERNAL_GATE_OPEN
+ReplaySource / later RTSP source
+ -> decode + normalize
+ -> bounded source buffer
+ -> windows
+ -> A/B/C model runner
+ -> RAW_INFERENCE
+ -> temporal Event Engine
+ -> CONFIRMED_EVENT
+ -> MQTT
+ -> subscriber / persistence / query
 ```
 
-Arquitectura lógica obligatoria:
+## Scope
 
-```text
-N sources
-```
+MK1 targets the v1 acoustic taxonomy, multi-label scoring, deterministic replay, source identity, temporal aggregation, Pub/Sub and measurable quality/runtime. It does not need production-scale distributed workers, unlimited cameras, advanced OOD or final cloud operations.
 
-## Vertical objetivo
+## Real-camera branch
 
-```text
-source
-  ↓
-decode/extract audio
-  ↓
-normalize/window
-  ↓
-model inference
-  ↓
-RAW_INFERENCE
-  ↓
-Event Engine
-  ↓
-CONFIRMED_EVENT
-  ↓
-MQTT Pub/Sub
-  ↓
-persistence/query/observability
-```
+`EXT-CAMERA-001` remains external. Replay can certify the core architecture. Camera-specific codec, jitter, distance and field latency claims require separate field evidence.
 
-## Estado
+## Completion
 
-- brainstorming: DESIGNED
-- design: IN_PROGRESS
-- arch: IN_PROGRESS
-- plan: IN_PROGRESS
-- build: GATED_NOT_STARTED
-- test: SPECIFIED_NOT_EXECUTED
+MK1 is certified only after build/test evidence satisfies the Definition of Done, including benchmark, calibration, streaming replay, multi-source logical tests, delivery/failure tests and known-limitations report.
 
-MK1/build no se habilita hasta satisfacer `governance/DEFINITION-OF-READY.md`.
+## Invalidation
+
+A material change to MK0 taxonomy, source/audio/event contracts or benchmark protocol invalidates the affected MK1 design/build evidence.

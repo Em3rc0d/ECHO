@@ -1,52 +1,49 @@
 # MK1 Requirements
 
-## Functional Requirements
+**Status:** `FROZEN_FOR_REPLAY_BUILD`
 
-| ID | Requisito | Prioridad |
-|---|---|---|
-| FR-001 | Registrar múltiples `SourceDescriptor` aunque solo una fuente esté activa | MUST |
-| FR-002 | Ingerir audio desde replay/local y al menos un adapter RTSP cuando el hardware esté disponible | MUST |
-| FR-003 | Normalizar input al formato requerido por el modelo activo | MUST |
-| FR-004 | Mantener buffers limitados e independientes por source | MUST |
-| FR-005 | Generar `RawInference` versionada por ventana | MUST |
-| FR-006 | Soportar scores multi-label en el contrato interno | MUST |
-| FR-007 | Agregar inferencias temporales en `CandidateEvent` | MUST |
-| FR-008 | Confirmar/cerrar/deduplicar eventos mediante Event Engine | MUST |
-| FR-009 | Publicar `ConfirmedEvent` en Pub/Sub | MUST |
-| FR-010 | Persistir metadata de eventos sin requerir audio raw | MUST |
-| FR-011 | Consultar eventos por tiempo/source/type | SHOULD |
-| FR-012 | Exponer health/source state/metrics | MUST |
-| FR-013 | Reconectar fuentes caídas con backoff | MUST para RTSP |
-| FR-014 | Identificar cada stream session | MUST |
-| FR-015 | Versionar model/config/schema en cada evento | MUST |
-| FR-016 | Permitir replay reproducible de audio de evaluación | MUST |
-| FR-017 | Registrar model inference latency y event latency | MUST |
-| FR-018 | Emitir alertas como downstream policy, no desde score crudo | MUST |
+## Functional requirements
 
-## Non-Functional Requirements
+`FR-01` Accept a configured logical source with stable `source_id`.  
+`FR-02` Support deterministic file/replay input and later RTSP input behind the same adapter contract.  
+`FR-03` Decode/normalize audio into the model input contract while retaining original-source metadata.  
+`FR-04` Produce multi-label target probabilities for each analysis window.  
+`FR-05` Attach model/preprocessing/config identity to inference evidence.  
+`FR-06` Convert inference windows into candidate and confirmed events by source/type.  
+`FR-07` Prevent cross-source Event Engine state leakage.  
+`FR-08` Publish confirmed events through versioned MQTT topics/payloads.  
+`FR-09` Provide a subscriber/persistence path sufficient for E2E verification.  
+`FR-10` Emit health/runtime telemetry separate from acoustic events.  
+`FR-11` Support replay of long positive/negative streams.  
+`FR-12` Support multiple concurrent replay sources.  
+`FR-13` Apply validation-derived per-class thresholds/config rather than hardcoded product truth.  
+`FR-14` Expose unknown/no-target behavior rather than forcing a target class.  
+`FR-15` Record reproducibility identifiers for benchmark/result bundles.
 
-| ID | Requisito | Tipo |
-|---|---|---|
-| NFR-001 | No bloquear N sources por falla de una | resilience |
-| NFR-002 | Sin colas ilimitadas | reliability |
-| NFR-003 | Secrets fuera de Git/logs | security |
-| NFR-004 | Audio continuo no retenido por defecto | privacy |
-| NFR-005 | Contratos JSON versionados | maintainability |
-| NFR-006 | Tests y benchmark reproducibles | scientific validity |
-| NFR-007 | Métricas per-class además de agregadas | ML quality |
-| NFR-008 | Todos los artifacts críticos con hash/version | provenance |
-| NFR-009 | Configuración separada del código | operability |
-| NFR-010 | CPU viability se mide, no se asume | performance |
-| NFR-011 | Deployment PoC debe poder funcionar local/self-hosted | cost/privacy |
-| NFR-012 | No asumir conectividad cloud | resilience/cost |
+## Non-functional requirements
 
-## Requisitos que aún NO son valores cerrados
+`NFR-01` Queues/buffers are bounded.  
+`NFR-02` One source failure does not terminate unrelated sources.  
+`NFR-03` Runtime lag/dropped windows are observable.  
+`NFR-04` Secrets are external to Git and redacted from logs.  
+`NFR-05` Continuous raw audio is not persisted by default.  
+`NFR-06` Test data is frozen and isolated from training/calibration.  
+`NFR-07` Benchmark runs are reproducible from commit/manifest/config/model hashes.  
+`NFR-08` Contracts are schema/version aware.  
+`NFR-09` ML quality is reported per class and operationally, not only aggregate accuracy.
 
-- accuracy/F1 exacto;
-- false alarms/hour máximo;
-- p95 latency exacta;
-- distancia máxima;
-- número de sources por nodo;
-- thresholds por clase.
+## Target vs measured values
 
-Se etiquetan `TARGET_CANDIDATE` hasta benchmark.
+MK1 requirements define dimensions, not fictional thresholds. Numeric latency, false-alarm, recall and capacity limits are `TARGET_CANDIDATE` until first evidence allows freezing them.
+
+## External requirements
+
+Real camera validation needs `EXT-CAMERA-001`; replay build is independent. Field capture also requires authorization/retention policy.
+
+## Acceptance mapping
+
+Each requirement maps to `MK1/test/TEST-MATRIX.md`; a requirement is not DONE without an evidence artifact.
+
+## Change control
+
+A change that alters source identity, taxonomy or event semantics requires design/architecture recertification; implementation-detail changes may remain within build.

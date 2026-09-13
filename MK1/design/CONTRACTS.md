@@ -1,94 +1,74 @@
 # MK1 Data Contracts
 
-## Flujo
+**Status:** `FROZEN_SEMANTICS / MACHINE SCHEMAS IN schemas/`
 
-```text
-SourceDescriptor
-  -> AudioWindow
-  -> RawInference
-  -> CandidateEvent
-  -> ConfirmedEvent
-  -> AlertEnvelope
+## Purpose
+
+Separate model internals from runtime/event consumers and make every stage versionable/replayable.
+
+## Raw inference
+
+Represents one model/window output:
+
+```yaml
+schema_version: echo.raw_inference.v1
+inference_id: ...
+source_id: ...
+stream_generation: ...
+window_id: ...
+window_start/end: ...
+model_id/model_version: ...
+preprocessing_version: ...
+scores:
+  GLASS_SHATTER: ...
+  SIREN: ...
+  FIRE_ALARM: ...
+  VEHICLE_HORN: ...
+  TIRE_SQUEAL: ...
+created_at: ...
 ```
 
-## SourceDescriptor
+It is diagnostic/model evidence, not a public alert.
 
-```json
-{
-  "schema_version": "echo.source.v1",
-  "source_id": "CAM-001",
-  "site_id": "SITE-001",
-  "kind": "ip_camera",
-  "stream_secret_ref": "secret://echo/cam-001",
-  "enabled": true,
-  "tags": ["north-gate"]
-}
+## Candidate event
+
+Internal temporal state for one `(source_id,event_type)` with first/last evidence timestamps, peak/aggregate confidence and confirmation counters/state.
+
+## Confirmed event
+
+```yaml
+schema_version: echo.event.v1
+event_id: globally unique/idempotency key
+source_id: ...
+site_id: optional
+event_type: ...
+started_at: ...
+confirmed_at: ...
+ended_at: optional
+confidence: ...
+model_version: ...
+config_version: ...
+taxonomy_version: ...
 ```
 
-## RawInference
+Optional severity is routing/product policy, not ground-truth acoustic class.
 
-```json
-{
-  "schema_version": "echo.inference.v1",
-  "window_id": "...",
-  "source_id": "CAM-001",
-  "stream_session_id": "...",
-  "window_start_utc": "...",
-  "window_end_utc": "...",
-  "model": {"name": "echo-yamnet-head", "version": "0.1.0", "sha256": "..."},
-  "scores": {"ALARM_SIREN": 0.84, "HORN": 0.05},
-  "inference_ms": 18.4
-}
-```
+## Source state/telemetry
 
-## CandidateEvent
+Connection state, stream generation, timestamps, lag, drops, reconnects and decode/inference health are separate schemas. They must not be confused with acoustic events.
 
-Existe mientras la evidencia temporal todavía no supera reglas de confirmación.
+## Compatibility
 
-```json
-{
-  "schema_version": "echo.candidate.v1",
-  "candidate_id": "...",
-  "source_id": "CAM-001",
-  "event_type": "ALARM_SIREN",
-  "first_seen_utc": "...",
-  "last_seen_utc": "...",
-  "positive_windows": 2,
-  "peak_score": 0.89,
-  "state": "CANDIDATE"
-}
-```
+Consumers reject/handle unknown major schema versions explicitly. Additive fields may be backward compatible under documented policy.
 
-## ConfirmedEvent
+## Privacy
 
-```json
-{
-  "schema_version": "echo.event.v1",
-  "event_id": "...",
-  "source_id": "CAM-001",
-  "site_id": "SITE-001",
-  "event_type": "ALARM_SIREN",
-  "onset_utc": "...",
-  "end_utc": "...",
-  "confidence": {"peak": 0.94, "mean": 0.88},
-  "model_version": "echo-yamnet-head@0.1.0",
-  "threshold_version": "thresholds@0.1.0",
-  "stream_session_id": "...",
-  "provenance": {"input_hash": "...", "config_hash": "..."}
-}
-```
+No credentials and no raw audio bytes in event/telemetry contracts. Evidence clip references, if later allowed, use access-controlled references and explicit retention policy.
 
-## AlertEnvelope
+## Validation
 
-```json
-{
-  "schema_version": "echo.alert.v1",
-  "alert_id": "...",
-  "event_id": "...",
-  "severity": "HIGH",
-  "route": "mqtt",
-  "created_utc": "..."
-}
-```
+JSON Schema tests, golden serialization fixtures, duplicate/idempotency tests and producer/consumer compatibility checks.
 
-Schemas machine-readable preliminares viven en `/schemas/`.
+## Invalidation
+
+Breaking schema change requires version bump and migration/consumer review.

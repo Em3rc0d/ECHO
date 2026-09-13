@@ -1,31 +1,47 @@
-# Event Engine — MK1
+# Event Engine Design — MK1
 
-## Responsabilidad
+**Status:** `FROZEN_ARCH-BEHAVIOR / NUMERIC PARAMETERS EMPIRICAL`
 
-Convertir inferencias ruidosas por ventana en eventos temporales estables.
+## Responsibility
 
-## Máquina candidata
+Consume ordered `RAW_INFERENCE` records and maintain state keyed by `(source_id,event_type)` to emit consolidated confirmed/closed events.
 
-`IDLE -> ACCUMULATING -> CONFIRMED -> COOLDOWN -> IDLE`.
+## Reference state machine
 
-## Parámetros versionados por clase
+```text
+IDLE
+ -> CANDIDATE   score/evidence enters
+ -> CONFIRMED   temporal rule satisfied
+ -> ACTIVE      evidence persists
+ -> CLOSING     below exit rule / gap handling
+ -> CLOSED
+ -> COOLDOWN/IDLE
+```
 
-- enter threshold;
-- exit threshold/hysteresis;
-- `min_positive_windows` o duración mínima;
-- max gap tolerado;
-- merge window;
-- cooldown/rearm;
-- confidence aggregation.
+## Why explicit state
 
-## No congelar números sin datos
+Overlapping windows produce correlated scores. A stateless threshold publisher would duplicate alerts and be unstable around threshold boundaries. Explicit state makes latency/false-positive trade-offs inspectable.
 
-Ejemplos como `0.85`, `2 ventanas` o `10 s cooldown` son placeholders históricos; MK1 debe calibrarlos en validation data y luego verificar en holdout.
+## Parameterization
 
-## Deduplicación
+Per-class `enter_threshold`, optional lower `exit_threshold`, evidence count/window, minimum duration, max gap, merge/dedup window and cooldown. Parameters live in validated config with version/hash.
 
-`event_id` identifica una ocurrencia consolidada. Reintentos de transporte no crean un nuevo evento. Eventos cercanos pueden fusionarse sólo si la regla temporal de la clase lo permite.
+## Ordering
 
-## Simultaneidad
+Process inference monotonically by source/generation/window sequence. Late/out-of-generation records are rejected or recorded as telemetry, not allowed to mutate current state.
 
-El estado se mantiene por `(source_id,event_type)`, permitiendo múltiples clases simultáneas y evitando que un horn bloquee un glass break.
+## Confidence aggregation
+
+Peak/mean/other aggregation is a configurable policy that must be defined before publishing event confidence. Do not silently reinterpret raw model probability as calibrated event probability.
+
+## Restart behavior
+
+MK1 may reset ephemeral candidate state on process restart; behavior must be explicit. MK2 can persist state if SLOs require it. Duplicate delivery after restart still uses event/idempotency strategy.
+
+## Tests
+
+Boundary scores, short impulses, sustained event, gaps, two close events, simultaneous classes, simultaneous sources, reconnect generation change and deterministic replay.
+
+## Invalidation
+
+If empirical replay shows explicit rules cannot meet recall/false-alarm/latency trade-offs, evaluate learned temporal aggregation while retaining event contract.

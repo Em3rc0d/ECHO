@@ -1,55 +1,27 @@
 # MK1 / Brainstorming
 
-## Pregunta
+**Status:** `CLOSED_FOR_BUILD`
 
-¿Cuál es la vertical mínima que demuestra que ECHO cumple su promesa sin esconder incertidumbres bajo una demo?
+## Purpose
 
-## Escenario de validación
+MK1 brainstorming narrows the certified research landscape into a minimal vertical that is valuable enough to test the ECHO promise and small enough to finish without hiding unresolved complexity.
 
-Una fuente de audio entrega stream continuo. ECHO:
+## Core questions
 
-1. identifica `source_id`;
-2. extrae y normaliza audio;
-3. produce scores por ventana;
-4. agrega temporalmente esos scores;
-5. confirma un evento;
-6. publica un mensaje estructurado;
-7. conserva provenance suficiente para reproducir la decisión.
+What must the first build prove? Which features are essential to produce trustworthy evidence? Which concerns can be deferred to MK2 without forcing a rewrite? How can one physical camera coexist with a logically multi-source architecture?
 
-## Clases candidatas
+## Artifacts
 
-Set candidato de 4–6 clases + no-target/unknown:
+`SCOPE-CUT.md` defines IN/OUT. `PRODUCT-HYPOTHESES.md` captures what the build must test. `DEMO-STORY.md` describes a truthful demonstration that mirrors the real pipeline rather than a hand-picked classifier clip.
 
-```text
-ALARM_SIREN
-HORN
-GLASS_BREAK
-IMPACT_CRASH
-YELL_SCREAM
-REVERSING_BEEPER
-```
+## Synthesis
 
-No se congelan todas automáticamente. La selección final depende de data, confusores, cámara/ambiente y valor de demostración.
+The first build is not “train YAMNet”. It is a full event pipeline with deterministic replay, model comparison, temporal aggregation, source identity and delivery. Camera integration is an adapter branch, not a hard dependency for core development.
 
-## Demo válida
+## Exit
 
-Una demo MK1 válida no es “reproducir un WAV y ver una etiqueta”. Debe mostrar:
+Brainstorming is closed because all remaining high-impact uncertainty is represented as an experiment or external gate and design can specify contracts without guessing.
 
-```text
-stream/replay continuo
-+ event lifecycle
-+ source identity
-+ latency measured
-+ false positives observed
-+ Pub/Sub delivery
-+ reproducibility metadata
-```
+## Invalidation
 
-## Demo inválida
-
-- scores mostrados sin event aggregation;
-- clips de train usados como test;
-- thresholds elegidos para que la demo salga bonita;
-- una sola clase fácil sin negativos;
-- claim de distancia no medido;
-- class label que infiere una situación que el audio no prueba.
+Reopen only if the MK1 objective or frozen taxonomy changes materially.

@@ -1,37 +1,40 @@
 # Event Lifecycle — MK1
 
-```text
-Audio Window
-   |
-   v
-RAW_INFERENCE
-   |
- threshold / calibration
-   v
-CANDIDATE_EVENT
-   |
- temporal confirmation + merge
-   v
-CONFIRMED_EVENT
-   |
- alert policy / routing
-   +--> EVENT STORE
-   +--> MQTT
-   +--> ALERT projection
-```
+**Status:** `FROZEN_SEMANTICS`
 
-## RAW_INFERENCE
+## Purpose
 
-Representa scores de una ventana. Puede contener múltiples labels y no tiene `severity` operacional obligatoria.
+Define the semantic transformation from repeated window scores to one temporal acoustic occurrence.
 
-## CANDIDATE_EVENT
+## Stages
 
-Estado interno keyed por `(source_id, event_type)`. Acumula evidencia, first_seen, last_seen, peak score y número de ventanas.
+`RAW_INFERENCE`: immutable record of a model/window.  
+`CANDIDATE_EVENT`: per-source/type temporal evidence has crossed an entry condition but is not yet confirmed.  
+`CONFIRMED_EVENT`: confirmation rule satisfied; event receives stable `event_id`.  
+`ACTIVE/CLOSING`: continued evidence or exit hysteresis controls duration.  
+`CLOSED`: event no longer active; optional cooldown/rearm prevents immediate duplicate reconfirmation.  
+`ALERT/PUBSUB`: downstream routing representation from confirmed event.
 
-## CONFIRMED_EVENT
+## Identity
 
-Tiene `event_id`, intervalos temporales, confidence agregada, source, model version y event-engine version. Es idempotente a nivel lógico.
+One physical occurrence should map to one stable event ID despite multiple positive windows and QoS redelivery. Event identity is not the inference-window ID.
 
-## ALERT
+## Time semantics
 
-No toda detección debe alertar. `ALERT` es una proyección de policy y puede añadir severity/routing. Cambiar policy de alertas no requiere reentrenar el modelo.
+Keep source/window capture time separately from processing/confirmation/publication times so latency can be decomposed. Reconnect changes stream generation; stale prior-generation inference cannot extend a new event.
+
+## Multi-label
+
+Different event types can be active simultaneously on one source. Same event type on different sources has independent lifecycle state.
+
+## Configuration
+
+Entry/exit thresholds, M-of-N/evidence rules, gap/merge/cooldown are versioned Event Engine config derived from validation.
+
+## Metrics
+
+Physical-event recall, false alarms/source-hour, confirmation latency, fragmentation, duplicate events and onset/offset error where labels allow.
+
+## Invalidation
+
+If a future temporal model replaces explicit state logic, preserve these semantic outputs or version the lifecycle contract.

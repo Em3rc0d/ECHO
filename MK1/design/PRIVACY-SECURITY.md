@@ -1,25 +1,39 @@
-# Privacy & Security — MK1
+# Privacy and Security Design — MK1
 
-## Privacy by default
+**Status:** `FROZEN_BASELINE / FIELD_GATE_EXTERNAL`
 
-- procesamiento local cuando sea viable;
-- audio continuo no persistido por defecto;
-- almacenar metadata de eventos y métricas;
-- clips de evaluación sólo bajo autorización y con retention explícita;
-- no transcribir ni extraer contenido semántico de conversaciones.
+## Privacy invariants
 
-## Secret handling
+No continuous ASR, speaker identification or voice profiling. Continuous raw audio retention off by default. Event/health metadata is preferred over media. Field clips require explicit authorized evaluation purpose and manifest permissions.
 
-RTSP/ONVIF/MQTT credentials se cargan desde variables/secret store local y jamás se incluyen en manifests, events o logs.
+## Secrets
 
-## MQTT
+RTSP/broker credentials are supplied through environment/secret references. Config stores secret names, not values. Logs redact URIs/userinfo and exceptions must not dump secret-bearing command lines.
 
-En laboratorio aislado puede usarse configuración simple; cualquier despliegue compartido exige auth/ACL y preferentemente TLS. Publisher identity debe limitar topics permitidos.
+## Adapter safety
 
-## FFmpeg adapter
+Construct FFmpeg/GStreamer arguments as structured arguments; avoid shell interpolation of untrusted source/config strings. Restrict file paths/URLs to configured schemes/policies.
 
-No concatenar input no confiable en shell commands. Usar argumentos estructurados y allowlists de opciones.
+## Model supply chain
 
-## Supply chain
+Checkpoints/dependencies record origin/version/hash. Do not execute arbitrary downloaded model code in privileged context without provenance review.
 
-Checkpoints y artefactos externos se fijan por versión + checksum; licencias/notices se registran antes de distribución.
+## Broker security
+
+Local PoC may run within a controlled environment, but field use requires authentication and topic ACLs; TLS/network segmentation depends on deployment threat model.
+
+## Data-at-rest
+
+If benchmark/field clips are stored, access, retention and permitted use are explicit. Temp files/crash dumps are part of privacy tests.
+
+## Threats explicitly not solved in MK1
+
+Acoustic anti-spoofing/replay authenticity, enterprise IAM, full vulnerability management and distributed secrets rotation are deferred unless external requirements demand them.
+
+## Validation
+
+Secret scan, log inspection, unauthorized broker tests, invalid model checksum, no-retention filesystem audit and field authorization checklist.
+
+## Invalidation
+
+Cloud upload, persistent evidence clips, ASR/speaker features or public-network deployment requires new threat/privacy review.
