@@ -1,0 +1,45 @@
+name: MK1 FSD50K Exact Freesound Candidates
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/data_foundry/extract_fsd50k_exact_freesound_candidates.py'
+      - 'configs/data_foundry/acquisition_registry.v1.json'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-fsd50k-exact-freesound-candidates.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  derive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Derive exact target candidate IDs from official ground truth
+        run: |
+          python scripts/data_foundry/extract_fsd50k_exact_freesound_candidates.py \
+            --work-root '${{ runner.temp }}/echo-fsd50k-gt' \
+            --output '${{ runner.temp }}/fsd50k-exact-freesound-candidates.json'
+      - name: Commit compact label-provenance evidence
+        run: |
+          test $(stat -c%s '${{ runner.temp }}/fsd50k-exact-freesound-candidates.json') -lt 5000000
+          cp '${{ runner.temp }}/fsd50k-exact-freesound-candidates.json' MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git pull --rebase origin main
+          git add MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json
+          if git diff --cached --quiet; then
+            echo 'No FSD50K exact candidate evidence changes.'
+          else
+            git commit -m 'evidence(mk1): derive FSD50K exact Freesound candidates [skip ci]'
+            git push origin HEAD:main
+          fi
