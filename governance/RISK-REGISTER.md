@@ -1,33 +1,91 @@
 # Risk Register / FMEA
 
-Escala cualitativa: Probabilidad `L/M/H`; Impacto `L/M/H/Critical`.
+**Status:** `ACTIVE / REVIEW_EACH_TEST_GATE`  
+**Purpose:** track technical, scientific, operational, privacy, security and supply-chain failure modes that can invalidate ECHO claims.
 
-| ID | Failure mode | P | I | Efecto | Mitigación / evidencia requerida |
-|---|---|---:|---:|---|---|
-| R-01 | Micrófono de cámara pobre | H | H | bajo recall / ruido | benchmark de cámara vs mic externo |
-| R-02 | Cámara no expone audio | M | H | no hay fuente | external mic asociado a source_id |
-| R-03 | Codec/AGC comprime transitorios | M | H | glass/impact degradados | test por codec/dispositivo |
-| R-04 | RTSP jitter/packet loss | M | H | gaps/latencia | reconnect, bounded buffers, telemetry |
-| R-05 | Domain shift web -> ambiente real | H | Critical | métricas offline engañosas | field dataset + holdout por site/device/session |
-| R-06 | Falsas alarmas por hard negatives | H | Critical | sistema inutilizable | hard-negative mining + event engine + per-class threshold |
-| R-07 | Clase crítica no detectada | M | Critical | miss operativo | priorizar recall, distance/SNR tests, reject/unknown |
-| R-08 | Leakage de dataset | M | Critical científico | benchmark inflado | group split por source/session/original event |
-| R-09 | Labels ambiguos | H | H | techo de performance | annotation guide + adjudicación |
-| R-10 | Eventos simultáneos | H | H | softmax incorrecto | multi-label benchmark |
-| R-11 | Threshold fijo global | H | H | precision/recall desigual | threshold por clase |
-| R-12 | Cola sin límite | M | Critical | memory blow-up/latency spiral | bounded queues + backpressure |
-| R-13 | Reconexión masiva simultánea | M | H | thundering herd | exponential backoff + jitter |
-| R-14 | Broker MQTT caído | M | H | alertas no entregadas | detector desacoplado, buffer/outbox policy MK2 |
-| R-15 | QoS1 duplica mensajes | H | M | eventos repetidos | event_id idempotente |
-| R-16 | Replay desde altavoz engaña detector | M | H | evento acústico no-originario | documentar límite; anti-spoofing es research separado |
-| R-17 | Relojes desalineados | M | M | timestamps inconsistentes | UTC + NTP + stream_session_id |
-| R-18 | Model drift | M | H | degradación futura | regression replay + field benchmark por release |
-| R-19 | Dataset/licencia incompatible | M | H | bloqueo legal/distribución | license manifest por asset |
-| R-20 | Credenciales en Git | M | Critical | exposición de cámara/red | secret refs + scanners + .env.example |
-| R-21 | Retención de conversaciones | M | H | privacy risk | no ASR, no continuous retention |
-| R-22 | Hardware insuficiente | M | M/H | lag | capacity benchmark 1/4/10/N sources |
-| R-23 | Dependencia YAMNet/TensorFlow rompe compatibilidad | M | M | build no reproducible | pin/hash model/runtime |
-| R-24 | Métrica accuracy oculta imbalance | H | H | decisión mala | macro/micro F1, PR-AUC, per-class recall |
-| R-25 | Distancia prometida sin medir | H | H | requisito falso | 5/10/15/20/25 m protocol |
+## 1. Method
 
-El register se revisa al final de cada `test/` y cualquier riesgo nuevo puede invalidar decisiones previas.
+The register uses qualitative probability (`L/M/H`) and impact (`L/M/H/Critical`) during pre-build design. Once MK1/MK2 produce empirical evidence, high-priority risks should add measurable occurrence/detection data instead of retaining purely qualitative labels.
+
+A risk is not closed because a mitigation is written down. It is closed or reduced only when a control is implemented/tested and evidence is linked.
+
+## 2. Core FMEA register
+
+| ID | Failure mode | P | I | Observable effect | Preventive/control strategy | Evidence required |
+|---|---|---:|---:|---|---|---|
+| R-01 | camera microphone poor/noisy | H | H | low recall, unstable scores | field/device benchmark; mic fallback | device comparison + SNR/error analysis |
+| R-02 | camera exposes no audio | M | H | no ingest | external mic/NVR source abstraction | hardware probe |
+| R-03 | AGC/codec damages transients | M | H | glass/shatter misses | codec/AGC ablation | replay/field matrix |
+| R-04 | RTSP jitter/packet loss | M | H | gaps, stale windows | bounded buffering + telemetry + reconnect | network fault tests |
+| R-05 | public-data domain shift | H | Critical | misleading offline quality | field holdout + device/site stratification | field benchmark |
+| R-06 | hard-negative false alarms | H | Critical | alert fatigue/unusable system | hard-negative mining + thresholds + Event Engine | false alarms/source-hour |
+| R-07 | critical event missed | M | Critical | false negative | recall-first analysis + SNR/distance testing | per-class misses/recall |
+| R-08 | dataset leakage | M | Critical | scientifically invalid benchmark | group-aware splits + duplicate audit | split audit |
+| R-09 | ambiguous/mislabeled audio | H | H | performance ceiling/noisy evaluation | annotation guide + adjudication | sample audit/inter-annotator notes |
+| R-10 | overlapping events | H | H | mutually-exclusive classifier fails | multi-label contract | polyphonic test set |
+| R-11 | one global threshold | H | H | class-specific precision/recall failure | validation-derived per-class thresholds | PR curves/calibration |
+| R-12 | unbounded queue/buffer | M | Critical | RAM growth + stale alarms | bounded queues + overload policy | load/soak evidence |
+| R-13 | reconnect storm | M | H | service contention | exponential backoff + jitter | fault injection |
+| R-14 | MQTT broker outage | M | H | event delivery interruption | detector/broker isolation; MK2 outbox/durability policy if required | broker outage test |
+| R-15 | QoS1 duplicate | H | M | duplicate events/actions | `event_id` idempotency | duplicate delivery test |
+| R-16 | replay from loudspeaker | M | H | event is acoustically real but source is spoofed | document boundary; anti-spoof research if required | threat test only if in scope |
+| R-17 | clock drift | M | M | bad timestamps/correlation | UTC/NTP/session sequence | timing audit |
+| R-18 | model/data drift | M | H | performance degrades after release | regression replay + field monitoring | version-to-version benchmark |
+| R-19 | incompatible data/checkpoint license | M | H | release blocked | asset/checkpoint manifest | license audit |
+| R-20 | credentials committed/logged | M | Critical | camera/network compromise | external secrets + redaction + scanning | repo/log scan |
+| R-21 | unnecessary conversation retention | M | H | privacy exposure | ephemeral buffers, retention off | filesystem/temp/log audit |
+| R-22 | hardware insufficient | M | H | queue lag/drops | capacity profiling | N-source load/soak |
+| R-23 | runtime/model dependency drift | M | M | irreproducible build | pin/hash runtime/model | reproducibility test |
+| R-24 | aggregate accuracy hides class failure | H | H | unsafe selection | per-class + macro + operational metrics | benchmark report |
+| R-25 | unmeasured distance claim | H | H | false requirement/expectation | distance/SNR protocol | field test |
+| R-26 | source state leaks across cameras | M | Critical | wrong camera/event association | state keyed by source+event | concurrent replay test |
+| R-27 | stale inference emitted after reconnect | M | H | wrong temporal event | stream_generation + sequence validation | reconnect race test |
+| R-28 | model score poorly calibrated | M | H | thresholds brittle | calibration/reliability analysis | Brier/reliability/ECE |
+| R-29 | long negative audio not represented | H | Critical | demo passes, always-on mode fails | continuous negative replay | source-hours negative evidence |
+| R-30 | deployment config/schema mismatch | M | H | runtime errors/wrong semantics | versioned config/schema validation | startup/compat tests |
+| R-31 | checkpoint supply-chain substitution | L/M | H | unexpected model/artifact | hash + official provenance | checksum/manifest |
+| R-32 | one noisy source starves others | M | H | unfair multi-source latency | per-source bounded queue + fair scheduling | adversarial load test |
+| R-33 | logging high-cardinality/raw media | M | M/H | resource/privacy issue | telemetry schema + sampling/redaction | observability review |
+| R-34 | test set used for tuning | M | Critical scientific | optimistic metrics | frozen test governance | run history audit |
+| R-35 | field holdout contaminates training | M | Critical scientific | invalid domain claim | manifest permissions/split immutability | manifest diff audit |
+
+## 3. Risk clusters
+
+### Scientific validity
+
+R-05, R-08, R-09, R-24, R-28, R-34 and R-35 can produce a convincing demo with invalid scientific conclusions. These have stop-the-line priority.
+
+### Continuous operation
+
+R-04, R-06, R-12, R-13, R-14, R-22, R-27 and R-32 determine whether the system remains useful outside short clips.
+
+### Security/privacy
+
+R-16, R-20, R-21, R-31 and R-33 require controls independent of classifier accuracy.
+
+## 4. Review cadence
+
+Review at: end of MK0 test; before MK1 build; after first benchmark; after streaming E2E; after camera integration; before MK1 certification; during MK2 capacity/security design; before release.
+
+## 5. Escalation rule
+
+Any new `Critical` risk that can invalidate architecture or scientific evidence blocks the dependent gate until it is mitigated, converted into a controlled experiment, or explicitly accepted with rationale.
+
+## 6. Evidence format
+
+Risk reduction records should include:
+
+```yaml
+risk_id: R-xx
+control_version: ...
+test_or_evidence: path/uri
+result: PASS|FAIL|PARTIAL
+measured_at: ...
+commit/config/model: ...
+residual_risk: ...
+owner_or_gate: ...
+```
+
+## 7. Invalidation
+
+Model, taxonomy, deployment, source hardware, data policy, broker semantics or privacy changes may introduce new risks or increase previously reduced ones. The register is therefore versioned and never treated as a one-time checklist.
