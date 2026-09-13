@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -68,6 +68,10 @@ jobs:
       - name: Commit hashes/probes/license-page evidence only
         if: ${{ always() }}
         run: |
+          cp MK1/mining-site/materialization/public-gap-assets-report.json /tmp/public-gap-assets-report.json
+          git reset --hard HEAD
+          git pull --rebase origin main
+          cp /tmp/public-gap-assets-report.json MK1/mining-site/materialization/public-gap-assets-report.json
           git config user.name 'echo-data-foundry-bot'
           git config user.email '123134857+Em3rc0d@users.noreply.github.com'
           git add MK1/mining-site/materialization/public-gap-assets-report.json
