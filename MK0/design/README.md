@@ -1,111 +1,29 @@
 # MK0 / Design
 
-## Diseño conceptual
+**Status:** `CERTIFIED_INPUT_TO_ARCH`
 
-ECHO separa cuatro niveles semánticos:
+## Purpose
 
-```text
-RAW_INFERENCE
-    ↓ temporal aggregation / thresholding
-CANDIDATE_EVENT
-    ↓ confirmation rules
-CONFIRMED_EVENT
-    ↓ routing/policy
-ALERT / PUBSUB
-```
+Design converts the broad problem landscape into a bounded product definition: what inputs/outputs exist, which acoustic labels are candidates, what non-functional qualities matter and which semantics must remain stable independent of implementation technology.
 
-Esto evita confundir “el modelo produjo score 0.82” con “ocurrió un evento confirmado”.
+## Inputs
 
-## Entidades conceptuales
+MK0 brainstorming, dataset/model research, related-system evidence and the fixed project charter.
 
-### Source
+## Artifacts
 
-Representa un punto de captura, no necesariamente una cámara.
+- `SYSTEM-BOUNDARY.md` defines ownership and interfaces.
+- `TAXONOMY-CANDIDATES.md` explains the path from broad candidate labels to the frozen MK1 v1 taxonomy.
+- `NONFUNCTIONAL-DRIVERS.md` defines qualities that drive architecture and tests.
 
-```text
-source_id
-site_id
-kind: ip_camera | microphone | replay
-stream_uri_ref
-capabilities
-tags
-status
-```
+## Key invariant
 
-### AudioWindow
+Design does not encode camera count, Python process topology or broker implementation into domain semantics. `source_id`, audio windows, inference records and events remain stable even when deployment topology changes.
 
-```text
-window_id
-source_id
-stream_session_id
-start_utc
-end_utc
-sample_rate
-channels
-samples/hash
-```
+## Exit condition
 
-### RawInference
+Architecture can proceed when responsibilities, data semantics, privacy boundary and quality drivers are explicit enough that component boundaries can be derived without guessing.
 
-```text
-window_id
-model_version
-scores[class]
-inference_ms
-```
+## Invalidation
 
-### AcousticEvent
-
-```text
-event_id
-source_id
-event_type
-onset_utc
-end_utc
-confidence_peak
-confidence_mean
-model_version
-threshold_version
-provenance
-```
-
-### Alert
-
-Es una consecuencia de policy/routing, no la salida directa del modelo.
-
-## Multi-label vs single-label
-
-`DECISION_CANDIDATE`: multi-label con sigmoid, porque sonidos reales pueden coexistir. Debe validarse con disponibilidad de labels y evaluación.
-
-## Unknown/background
-
-ECHO no debe forzar cualquier audio a una clase target. Diseñar explícitamente:
-
-```text
-background/no-target
-hard negatives
-unknown/reject
-```
-
-## Privacidad
-
-- sin transcripción;
-- sin identificación de voz;
-- ring buffer en memoria;
-- descarte por defecto;
-- evidencia acústica opcional solo bajo política explícita y retención limitada.
-
-## UX operacional mínima
-
-El consumidor de ECHO necesita saber:
-
-```text
-qué se detectó
-cuándo
-qué source
-con qué confianza
-qué modelo/config produjo la decisión
-si el evento fue confirmado o solo candidato
-```
-
-No necesita que ECHO declare causalidad social.
+Revisit if taxonomy semantics, product boundary, source/audio contract or major quality priorities change.

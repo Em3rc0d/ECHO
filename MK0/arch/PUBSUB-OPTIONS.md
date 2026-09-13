@@ -1,29 +1,62 @@
 # Pub/Sub Options — MK0
 
-## MQTT
+**Status:** `MQTT_MOSQUITTO_SELECTED_FOR_MK1`
 
-Candidato principal para MK1. MQTT 5 es un protocolo publish/subscribe ligero. QoS 1 ofrece entrega **at least once**, por lo que ECHO debe usar `event_id` e idempotencia downstream.
+## 1. Requirement
 
-## Mosquitto
+Confirmed acoustic events and source/system state need asynchronous distribution to multiple consumers without coupling the neural network to dashboards, storage or notification code.
 
-Broker liviano, adecuado para PoC local. Debe configurarse con autenticación/TLS cuando salga de un entorno aislado.
+## 2. Candidates
 
-## NATS JetStream
+### MQTT / Mosquitto
 
-Candidato MK2 si se requiere persistencia/replay/consumer state más fuerte. Añade semántica de stream durable y mayor complejidad.
+Selected for MK1 because it is lightweight, self-hostable, topic-oriented, widely used for edge/IoT event flows and offers explicit QoS/session semantics. QoS1 is intentionally paired with idempotent `event_id` handling.
 
-## RabbitMQ
+### NATS / JetStream
 
-Útil si aparecen routing/queues/ack patterns más ricos. No necesario como default de PoC.
+Attractive for lightweight messaging and optional persistence, but introduces another operational path before MK1 needs it. Reconsider in MK2 if durable replay/consumer semantics exceed MQTT design.
 
-## Kafka
+### RabbitMQ
 
-Alta capacidad y replay, pero overhead operativo injustificado para MK1.
+Mature queueing/routing and acknowledgements, but heavier than required for the first vertical.
 
-## Redis Pub/Sub
+### Redis Streams
 
-No se recomienda como bus crítico si se requiere recuperación de mensajes cuando un subscriber está desconectado.
+Useful stream structure/consumer groups; different operational semantics. Plain Redis Pub/Sub is explicitly unsuitable when disconnected consumers must recover missed messages.
 
-## Principio
+### Kafka
 
-El modelo no publica alarmas directamente. `Inference -> Event Engine -> confirmed event -> publisher` mantiene ML desacoplado de transporte.
+Strong durable log at high scale, but over-complex for the initial source count and PoC operational budget.
+
+## 3. Topic design
+
+```text
+echo/v1/{site_id}/{source_id}/events/{event_type}
+echo/v1/{site_id}/alerts/{severity}
+echo/v1/{site_id}/{source_id}/state
+echo/v1/{site_id}/{source_id}/telemetry
+```
+
+Topic structure complements, but never replaces, event payload identity/versioning.
+
+## 4. Candidate semantics
+
+Confirmed events/alerts: QoS1, retain=false. Source state: QoS1, retain=true where appropriate. High-rate telemetry: QoS0 unless evidence requires stronger guarantees.
+
+QoS1 means at-least-once; duplicates are legal. Consumers use `event_id` for idempotency. Retained state is not an event history mechanism.
+
+## 5. Failure modes
+
+Broker unavailable, slow subscriber, duplicate delivery, stale retained state, unauthorized publisher, topic explosion and credential leaks. Detector and broker failure domains should be separated enough that a broker outage is visible rather than crashing silently.
+
+## 6. Validation
+
+Tests must cover duplicate publish/delivery, reconnect, retained state, ACL/auth configuration, broker outage and consumer idempotency.
+
+## 7. MK2 trigger
+
+If requirements evolve toward durable multi-consumer replay, exactly-once-like processing or high-volume event logs, evaluate MQTT persistence/outbox versus NATS JetStream/RabbitMQ/Redis Streams/Kafka based on measured need.
+
+## 8. Invalidation
+
+Reopen if consumer delivery/replay SLOs cannot be met with the chosen MQTT design.

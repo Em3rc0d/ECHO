@@ -1,25 +1,55 @@
 # Ingestion Options — MK0
 
-## RTSP/RTP
+**Status:** `RTSP+FFMPEG_BASELINE_CERTIFIED / CAMERA_EXTERNAL`
 
-Ruta preferida para cámara IP/NVR si la fuente ofrece audio. ONVIF Profile T documenta obtención de stream URI mediante Media Profile y soporte de audio en dispositivos/clientes compatibles; la compatibilidad real debe verificarse por modelo.
+## 1. Requirement
 
-## ONVIF
+ECHO needs a source adapter that emits normalized acoustic samples plus source/timing metadata. Physical acquisition may come from IP camera, NVR, microphone or replay file.
 
-ONVIF no reemplaza el decoder. Sirve para descubrimiento/capabilities/perfiles/URI cuando el dispositivo es conformante. ECHO debe poder funcionar con una RTSP URI configurada manualmente aunque ONVIF no exista.
+## 2. IP-camera path
 
-## FFmpeg
+Primary candidate:
 
-Candidato principal para MK1 por soporte de protocolos/codecs y posibilidad de extraer sólo audio. Debe encapsularse detrás de un adapter para no contaminar el core con comandos específicos.
+```text
+camera/NVR -> RTSP/RTP -> FFmpeg -> decoded PCM -> normalization
+```
 
-## GStreamer
+ONVIF is useful for discovery/profile/configuration but is not required when an RTSP URI is explicitly configured. The actual professor-provided camera remains an external gate.
 
-Challenger para pipelines complejos o control fino de streaming. No se incorpora a MK1 salvo que FFmpeg falle en requisitos medidos.
+## 3. Decoder alternatives
 
-## Codecs relevantes
+### FFmpeg
 
-AAC y G.711 son frecuentes en vigilancia. El preprocessing de ECHO debe emitir PCM mono normalizado al sample rate requerido por el modelo, independientemente del codec de origen.
+Selected MK1 baseline because of broad codec/RTSP support, simple subprocess/library integration and mature diagnostics. Exact build/version must be recorded because codec availability and licensing vary.
 
-## Fallos a probar
+### GStreamer
 
-URI inválida, auth fallida, no-audio track, codec inesperado, packet loss, jitter, stream stall, reconexión y timestamps discontinuos.
+Strong alternative when the project needs finer streaming pipeline control, jitter behavior, dynamic reconnection or plugin-oriented composition. It is retained as a fallback/challenger, not a mandatory dependency.
+
+### go2rtc/NVR relay
+
+Useful for stream fan-out or normalizing camera quirks, but adds another process/config layer. It is optional and introduced only if hardware evidence justifies it.
+
+## 4. Normalized audio contract
+
+Baseline model research assumes mono normalized PCM at a defined sample rate (16 kHz for the YAMNet path). Original codec/sample rate/channels remain metadata so codec/domain effects can be audited.
+
+## 5. Timing/source metadata
+
+Each decoded stream/session carries `source_id`, `stream_generation`, sequence/media timestamps when reliable and receive time. Reconnect creates a new generation so stale windows from a prior stream cannot contaminate current event state.
+
+## 6. Failure modes
+
+Credential failure, unsupported codec, no audio track, packet loss, stalled stream, camera reboot, time jump, decode process crash and reconnect storms require explicit health state/telemetry.
+
+## 7. Alternatives rejected as core assumption
+
+Direct vendor SDK lock-in is avoided unless the actual hardware makes standards-based access impossible. Browser/WebRTC ingest is not required for the first backend acoustic pipeline.
+
+## 8. Validation
+
+Offline replay validates adapter contract. Real camera validation probes codec, stream stability, TCP/UDP behavior, reconnect, silence/mute detection and end-to-end timing.
+
+## 9. Invalidation
+
+If real hardware exposes no usable RTSP/audio, retain the source contract and add a vendor/NVR/external-mic adapter rather than rewriting downstream inference.

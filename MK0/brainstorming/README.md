@@ -1,59 +1,27 @@
 # MK0 / Brainstorming
 
-## Pregunta central
+**Status:** `CERTIFIED_INPUT_TO_DESIGN`
 
-¿Cómo convertir audio ambiental continuo, potencialmente ruidoso y proveniente de cámaras/micrófonos heterogéneos, en eventos acústicos estructurados y útiles en tiempo casi real?
+## Purpose
 
-## Escenarios
+Brainstorming establishes the problem space before choosing architecture. It asks what ECHO must detect/classify, what the acoustic evidence can and cannot prove, which environments matter, what constraints could make the project infeasible and which hypotheses must be tested later.
 
-1. **Archivo/replay controlado** — valida el core ML sin red ni cámara.
-2. **Micrófono local** — valida streaming continuo.
-3. **Cámara IP con audio** — valida RTSP/codec/latencia real.
-4. **N fuentes simultáneas** — valida scheduling, backpressure y aislamiento.
-5. **Subscriber externo** — valida Pub/Sub y contrato de evento.
+## Inputs
 
-## Eventos candidatos, no congelados
+Project promise, initial user/professor context, state-of-art discovery and the anti-scope rule that acoustic classification must not be inflated into incident/crime interpretation.
 
-```text
-ALARM_SIREN
-HORN
-GLASS_BREAK
-IMPACT_CRASH
-YELL_SCREAM
-REVERSING_BEEPER
-TIRE_SCREECH
-BACKGROUND_NO_TARGET
-UNKNOWN
-```
+## Artifacts
 
-La lista es candidata. Cada clase debe superar cuatro preguntas:
+`PROBLEM-LANDSCAPE.md` frames the real engineering problem. `HYPOTHESES-REGISTER.md` separates assumptions from facts. `ANTI-SCOPE.md` prevents scope creep and semantic overclaiming.
 
-```text
-¿es acústicamente observable?
-¿hay data suficiente/obtenible?
-¿se puede distinguir de confusores reales?
-¿tiene valor dentro de la promesa de ECHO?
-```
+## Key synthesis
 
-## Anti-scope
+The hard problem is not producing a label from a WAV file; it is sustaining useful event detection under noise, domain shift, weak camera microphones, continuous streams, multiple sources and false-positive pressure. Therefore real-world false alarms, domain holdout and streaming behavior are first-class concerns from the beginning.
 
-No incorporar por presión de demo:
+## Output gate
 
-- reconocimiento facial;
-- detección de personas/objetos por video;
-- ASR/transcripción;
-- identificación de hablante;
-- inferencia de crimen/situación;
-- mapas/dispatch;
-- blockchain;
-- cloud obligatorio.
+Brainstorming is sufficient when design can state a bounded system, candidate taxonomy, non-functional drivers and explicit external/empirical unknowns without inventing answers.
 
-## Hipótesis de producto
+## Invalidation
 
-- H-001: transfer learning sobre embeddings generales superará una CNN desde cero con poca data propia.
-- H-002: el Event Engine temporal reducirá falsas alarmas frente a publicar ventanas crudas.
-- H-003: el mayor error en campo vendrá de domain shift y hard negatives, no de la inferencia matemática en sí.
-- H-004: una arquitectura multi-source no exige N cámaras físicas para validar contratos.
-- H-005: 10–15 m puede ser rango nominal razonable para ciertos eventos fuertes, pero debe medirse.
-
-Todas permanecen hipótesis hasta test.
+Reopen if the product promise, intended deployment environment or definition of an acoustic event changes materially.

@@ -1,18 +1,34 @@
 # Hypotheses Register — MK0
 
-| ID | Hipótesis | Cómo podría falsarse | Evidencia requerida | Estado |
+**Status:** `ACTIVE / ARCHITECTURE-CHANGING HYPOTHESES RESOLVED`
+
+## Purpose
+
+The register prevents assumptions from silently becoming requirements or “facts”. Each hypothesis records why it matters, how it can be tested and whether its uncertainty blocks build.
+
+| ID | Hypothesis | Current state | Test/evidence path | If false |
 |---|---|---|---|---|
-| H-001 | YAMNet es baseline suficiente para PoC | PANNs/custom CNN lo supera claramente en calidad/latencia | benchmark común | OPEN |
-| H-002 | 16 kHz mono preserva suficiente información para clases iniciales | caída material frente a 32/44.1 kHz | ablation por sample rate | OPEN |
-| H-003 | Ventanas solapadas permiten alerta casi en tiempo real | p95 de latencia excede SLO o duplica eventos | replay + cámara | OPEN |
-| H-004 | MQTT QoS 1 es suficiente para MK1 | pérdidas/duplicados no controlables con idempotencia | fault tests | OPEN |
-| H-005 | Una taxonomía compacta mejora robustez | macro-F1/false alarms no mejora frente a taxonomía amplia | benchmark | OPEN |
-| H-006 | FSD50K + datasets de benchmark aportan positivos útiles | domain mismatch severo con cámara | field validation | OPEN |
-| H-007 | `OTHER/BACKGROUND` reduce falsas alarmas | no cambia o empeora calibración | hard-negative benchmark | OPEN |
-| H-008 | Un único worker CPU puede servir la PoC | real-time factor > 1 o backlog creciente | profiling | OPEN |
-| H-009 | Distancia nominal ~15 m es plausible para eventos intensos | recall cae bajo criterio definido | prueba 5/10/15/20/25 m | EXTERNAL_GATE_OPEN |
-| H-010 | Audio de cámara estará disponible vía RTSP/NVR | cámara no expone micrófono/audio | ficha técnica + acceso real | EXTERNAL_GATE_OPEN |
+| H-01 | pretrained acoustic representations outperform or simplify a small from-scratch model | EMPIRICAL | A/B/C benchmark | select custom model or another backbone |
+| H-02 | five MK1 target classes can be supported by licensed/diverse data | CONTROLLED | asset manifest + class mapping | shrink/rename taxonomy before affected training |
+| H-03 | per-class thresholds reduce operational false alarms vs a fixed global threshold | EMPIRICAL | validation PR curves + replay | use alternative calibration/event logic |
+| H-04 | a temporal Event Engine reduces duplicate/fragmented alerts | EMPIRICAL | streaming replay ablation | redesign aggregation |
+| H-05 | RTSP abstraction is sufficient for likely IP-camera integration | EXTERNAL_VALIDATION | camera probe | add NVR/vendor adapter without changing core source contract |
+| H-06 | 16 kHz mono normalized audio preserves enough signal for baseline targets | EMPIRICAL | codec/sample-rate ablation | adjust audio contract/model path |
+| H-07 | replay can validate most core behavior before camera access | ACCEPTED | deterministic source adapter design | camera dependency moves earlier |
+| H-08 | bounded worker scheduling can support multiple concurrent sources without state leakage | EMPIRICAL | N-replay load tests | revise worker/process architecture |
+| H-09 | public datasets alone cannot certify field performance | STRONGLY_SUPPORTED | domain evidence + field plan | if field matches unexpectedly, holdout still remains required for claim |
+| H-10 | raw continuous audio is unnecessary for normal product operation | DESIGN_DECISION | event/telemetry contract | retention policy must reopen if later feature requires media |
+| H-11 | MQTT QoS1 + idempotent consumers is sufficient for MK1 | EMPIRICAL | duplicate/reconnect tests | add durability/outbox or alternate bus in MK2 |
+| H-12 | simple abstention + hard negatives may be more useful than complex OOD in MK1 | EMPIRICAL | unknown/negative replay | investigate embedding/OOD methods |
 
-## Regla
+## Closure rules
 
-Una hipótesis nunca se promueve a `DECISION` por intuición. Debe enlazar dataset, experimento, métricas, hardware y evidencia reproducible.
+A hypothesis becomes `DECISION` only after either evidence or a product constraint justifies freezing it. Intrinsically measurable quantities remain empirical outputs instead of being “closed” by research.
+
+## Priority
+
+H-02, H-05/H-06, H-08 and H-11 can force implementation changes and therefore receive early tests. Model-winner and threshold hypotheses are expected outputs of MK1 and do not block build.
+
+## Invalidation
+
+New evidence, a taxonomy change, new camera hardware or a deployment constraint can reopen a hypothesis. Historical states remain traceable through Git.

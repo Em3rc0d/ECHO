@@ -1,25 +1,50 @@
-# Problem Landscape — MK0
+# Problem Landscape
 
-## Promesa fija
+**Status:** `CERTIFIED_PROBLEM_FRAMING`
 
-> Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.
+## 1. Core problem
 
-MK0 parte de un problema de percepción: el audio ambiental es continuo, ruidoso, no estructurado y dependiente del contexto. El valor de ECHO no está en «escuchar una cámara», sino en transformar señales acústicas en eventos observables, trazables y consumibles por otros sistemas.
+Environmental audio is continuous and unstructured. A camera/NVR can record it, but recording is not equivalent to automatically detecting a meaningful acoustic occurrence. ECHO must transform a stream into structured acoustic events with source, timing, class and confidence while controlling false alarms and latency.
 
-## Problemas técnicos a investigar
+## 2. Why clip classification is insufficient
 
-1. **Audio tagging vs Sound Event Detection (SED).** El tagging responde qué sonidos aparecen en una ventana; SED añade localización temporal. ECHO puede comenzar con ventanas + agregación temporal, pero debe medir si esa aproximación produce latencia y falsas alarmas aceptables.
-2. **Domain shift.** Modelos entrenados con AudioSet/Freesound no representan necesariamente micrófonos de cámaras, compresión AAC/G.711, reverberación, tráfico, viento ni distancias reales.
-3. **Open world.** El ambiente contiene sonidos fuera de taxonomía. Un clasificador cerrado puede forzar desconocidos a una clase conocida; por eso `OTHER/BACKGROUND`, calibración y OOD son líneas obligatorias.
-4. **Multi-label.** Dos eventos pueden coexistir. No se debe congelar softmax single-label sin comparar una salida multi-label/sigmoid cuando la taxonomía lo requiera.
-5. **Temporalidad.** Una inferencia de ventana no equivale a un evento real. Se necesita una máquina temporal que confirme, agrupe, deduplique y rearme.
-6. **Operación continua.** RTSP puede cortar, variar codec, introducir jitter o retrasos. ECHO debe separar fallos de captura, inferencia y entrega.
+Academic audio classifiers often receive isolated clips with a dominant event. A deployment receives hours of mostly negative audio, overlapping sources, compression, distance attenuation, reverberation, wind, speech, traffic and transient confusers. The operational denominator is therefore source-hours, not only balanced test clips.
 
-## Hipótesis de valor
+## 3. Primary challenges
 
-- H1: un backbone preentrenado puede reducir el volumen de datos etiquetados necesario para una primera PoC.
-- H2: los errores dominantes del producto surgirán más del dominio real y del Event Engine que del benchmark académico del backbone.
-- H3: la arquitectura multi-source debe existir desde el contrato, aunque MK1 pruebe físicamente una sola fuente.
-- H4: métricas por clip no bastan; `false alarms/hour`, miss rate y latencia end-to-end son métricas de producto.
+`DOMAIN SHIFT`: web/curated audio differs from IP-camera microphones and deployment sites.  
+`FALSE POSITIVES`: even a tiny window-level error rate can create many alerts over continuous operation.  
+`TEMPORAL AGGREGATION`: overlapping analysis windows must become one physical event.  
+`MULTI-LABEL`: simultaneous acoustic phenomena are plausible.  
+`MULTI-SOURCE`: source identity, buffers and event state must remain isolated.  
+`REAL-TIME PRESSURE`: backlog can make alerts stale even when offline accuracy is high.  
+`HARD NEGATIVES`: metal/ceramic impacts, beeps, music, brakes and machinery can resemble targets.  
+`PRIVACY`: ambient audio may incidentally include speech although speech content is not needed by ECHO.
 
-Estas hipótesis son **CANDIDATE**, no decisiones.
+## 4. Observable-event boundary
+
+ECHO can claim acoustic observations, not causes that require context. A glass-like shatter can be classified; a burglary cannot be concluded. This boundary improves scientific validity and reduces harmful overclaiming.
+
+## 5. Stakeholders/consumers
+
+Potential consumers include operators, academic evaluators, alerting applications and downstream fusion systems. They need stable contracts, not model-specific tensors.
+
+## 6. Success dimensions
+
+Success combines per-class detection quality, false alarms per source-hour, miss rate, latency, resource use, robustness to noise/domain shift and reproducibility. No single “accuracy” number captures the product.
+
+## 7. Alternatives to an ECHO-specific pipeline
+
+A fixed vendor camera detector can be simpler but limits class/model/data control. A general NVR such as Frigate validates parts of the pattern but ECHO remains a research/product pipeline centered on its acoustic promise, model benchmarking and evidence chain. Cloud-only inference may simplify compute provisioning but adds network/privacy/cost dependencies and is not required for the PoC.
+
+## 8. Failure definition
+
+ECHO fails even if a demo looks correct when it produces alert fatigue, misses critical targets under realistic SNR, cannot reproduce its metrics, leaks source state, accumulates unbounded latency, or bases claims on contaminated test data.
+
+## 9. Downstream impact
+
+This framing drives taxonomy design, hard-negative strategy, benchmark metrics, Event Engine design, multi-source architecture and field-test requirements.
+
+## 10. Invalidation
+
+Reframe if the target environment becomes fundamentally different (for example only curated uploads rather than continuous ambient audio) or the promise expands beyond acoustic detection/classification.

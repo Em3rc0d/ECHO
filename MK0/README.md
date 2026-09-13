@@ -1,52 +1,36 @@
-# MK0 — Research / Evidence Foundation
+# MK0 — Research, Evidence and Viability
 
-## Objetivo
+**Status:** `CERTIFIED`  
+**Certificate:** `CERT-MK0-013`
 
-MK0 convierte Internet, papers, repositorios, datasets, estándares y conocimiento del dominio en una base verificable para decidir qué construir.
+## Purpose
 
-**MK0 no es una PoC.** Su producto es reducción de incertidumbre.
+MK0 reduces architecture-changing uncertainty before product code. It collects Internet/state-of-art evidence, compares technical alternatives, defines what ECHO can truthfully claim, designs validation protocols and converts unknowns into either closed decisions, controlled experiments or explicit external gates.
 
-## Pipeline interno obligatorio
+## Internal flow
 
 ```text
 brainstorming -> design -> arch -> plan -> build -> test
 ```
 
-Áreas transversales internas:
+`mining-site/` preserves source/provenance evidence. `quarries/` are research workstreams that synthesize questions into decisions.
 
-```text
-mining-site/  # evidencia, claims, provenance
-quarries/     # líneas de investigación/extracción
-```
+## What MK0 certifies
 
-## Estado
+MK0 certifies the product boundary, initial taxonomy, model benchmark protocol, data governance, source abstraction, event lifecycle, Pub/Sub baseline, privacy principles and first-build architecture. It does **not** certify model accuracy, thresholds, distance, camera compatibility or production capacity; those require measurements.
 
-| Fase | Estado | Criterio |
-|---|---|---|
-| brainstorming | IN_PROGRESS | problem space y escenarios consolidados |
-| design | IN_PROGRESS | taxonomía/contratos/metrics candidates |
-| arch | IN_PROGRESS | arquitectura target + tradeoffs |
-| plan | IN_PROGRESS | benchmark/data/field protocol |
-| build | GATED_NOT_STARTED | solo tooling de research después de cierre previo |
-| test | NOT_STARTED | certifica MK0 y habilita MK1 |
+## Evidence model
 
-## Salida esperada
+Every important claim is categorized as `FACT/EVIDENCE`, `INFERENCE`, `HYPOTHESIS`, `DECISION` or `TARGET`. External sources favor primary documentation, official dataset releases and original papers/repos. Contradictions are preserved instead of silently resolved.
 
-MK0 termina cuando podemos responder sin improvisar:
+## Outputs to MK1
 
-- qué eventos vale la pena detectar;
-- qué datos existen y bajo qué licencias;
-- qué modelos deben benchmarkearse;
-- cómo ingresa el audio;
-- cómo se convierte una inferencia en evento;
-- cómo se publica el evento;
-- qué métricas deciden éxito;
-- qué depende de hardware/cámara real;
-- qué riesgos pueden matar el proyecto;
-- qué decisiones siguen abiertas y por qué.
+MK1 consumes: frozen v1 taxonomy, asset manifest rules, A/B/C benchmark, source/audio/event contracts, multi-source invariants, Event Engine lifecycle, MQTT delivery semantics, privacy/security constraints and explicit test gates.
 
-## Regla de evidencia
+## External boundary
 
-Cada afirmación relevante debe etiquetarse como `FACT/EVIDENCE`, `INFERENCE`, `HYPOTHESIS` o `DECISION_CANDIDATE`.
+The professor-provided camera remains `EXT-CAMERA-001`. MK0 cannot determine model, codec, stream URI, permissions or field conditions from Internet evidence alone. Replay/offline build remains valid independently.
 
-Ninguna hipótesis se convierte en requisito certificado por repetición.
+## Invalidation
+
+MK0 must be partially re-audited if the product promise, taxonomy, dataset/license facts, source protocol assumptions, model benchmark set, event semantics or privacy requirements materially change.

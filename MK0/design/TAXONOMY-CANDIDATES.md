@@ -1,25 +1,60 @@
-# Taxonomy Candidates — MK0
+# Acoustic Taxonomy Candidates — MK0
 
-La taxonomía todavía no está congelada. Se evalúa por observabilidad acústica, disponibilidad de datos, confusabilidad y valor para demo.
+**Status:** `SUPERSEDED_BY_MK1_V1 / HISTORICAL_EVIDENCE`
 
-| Clase candidata | Señal acústica | Riesgo principal | Prioridad investigación |
+## Purpose
+
+Document how candidate acoustic labels were screened before freezing MK1. This file preserves rejected/deferred reasoning so future teams do not rediscover the same ambiguity.
+
+## Candidate screening criteria
+
+A target must be an observable sound, have enough semantically valid/licensable evidence to support an experiment, have identifiable confusers, fit continuous-stream evaluation and avoid implying context not present in audio.
+
+## Candidate set considered
+
+| Candidate | Acoustic observability | Data/semantic notes | MK1 outcome |
 |---|---|---|---|
-| `GLASS_BREAK` | transiente de alta energía / fragmentación | platos/metal/chirridos | alta |
-| `SIREN_ALARM` | patrón tonal/temporal repetitivo | música/alarmas domésticas | alta |
-| `VEHICLE_COLLISION` | impacto complejo | portazos/obras/golpes | alta |
-| `HORN` | señal tonal breve | sirena/música/tráfico | media-alta |
-| `TIRE_SQUEAL` | energía sostenida alta frecuencia | maquinaria/frenos | media |
-| `SCREAM_SHOUT` | voz humana de alta energía | juego/deporte/canto | media, sensible |
-| `IMPACT` | transiente genérico | semántica ambigua | media |
-| `OTHER_BACKGROUND` | resto del mundo acústico | heterogeneidad extrema | obligatoria |
+| glass break/shatter | high | AudioSet has shatter; glass mapping needs semantic review | `GLASS_SHATTER` selected |
+| siren | high | distinct but overlaps alarms/music sweeps | selected |
+| fire alarm | high/medium | must not map generic alarm blindly | selected |
+| vehicle horn | high | clear ontology support; tonal confusers | selected |
+| tire squeal | medium/high | friction/squeal confusers | selected |
+| generic alarm | high | semantically broad; overlaps fire/security/beeps | split/refined |
+| vehicle collision | medium | impact sound does not prove vehicle collision | deferred |
+| strong impact | medium | acoustically valid but broad/heterogeneous | deferred/control negative family |
+| scream/yell | medium | high variability, speech/cheering confusers, privacy sensitivity | deferred |
+| reversing beeper | high | useful but lower priority for first taxonomy | deferred/hard negative |
+| dog bark | high | feasible but not aligned with initial security use-value | not selected |
+| speech/music/traffic | high | useful as negative/context rather than targets | negative families |
 
-## Criterios para congelar MK1
+## Frozen v1 result
 
-- positivos suficientes y legalmente utilizables;
-- separación acústica razonable;
-- hard negatives identificables;
-- consistencia de mapeo entre ontologías;
-- capacidad de validación con audio real;
-- no exigir inferir intención o contexto social.
+```text
+GLASS_SHATTER
+SIREN
+FIRE_ALARM
+VEHICLE_HORN
+TIRE_SQUEAL
+```
 
-La taxonomía final de MK1 puede ser menor que esta lista.
+`BACKGROUND_NO_TARGET` describes non-target training/evaluation context. `UNKNOWN` is an abstention state when target evidence is insufficient; it need not be a learned output neuron.
+
+## Multi-label rule
+
+Targets are not assumed mutually exclusive. A horn and siren can coexist, so model/evaluation contracts use independent target probabilities rather than forced softmax exclusivity.
+
+## Mapping rule
+
+String similarity never proves class equivalence. Upstream label mapping records EXACT/NARROWER/BROADER/AMBIGUOUS/NEGATIVE/UNUSABLE. Example: generic `Alarm` cannot become `FIRE_ALARM` without evidence.
+
+## Risks
+
+Too narrow a taxonomy may reduce available data; too broad a class can hide distinct confusers. Label ambiguity sets a ceiling on measurable performance and must be addressed through annotation review rather than model complexity alone.
+
+## Validation
+
+The selected targets must survive asset/license filtering and class-level error analysis. If one class lacks independent/diverse examples after deduplication, reopen its mapping or taxonomy before presenting benchmark conclusions.
+
+## Invalidation
+
+A new target requires downstream review of manifests, model head, metrics, thresholds, event schemas and consumers.

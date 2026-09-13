@@ -1,103 +1,33 @@
-# MK0 / Arch
+# MK0 / Architecture
 
-## Arquitectura target
+**Status:** `CERTIFIED_REFERENCE_ARCHITECTURE`
 
-```text
-CAM/MIC-01 ─┐
-CAM/MIC-02 ─┼──> Source Registry
-CAM/MIC-N  ─┘         |
-                       v
-                Ingestion Adapters
-                RTSP / file / mic
-                       |
-                       v
-                Decode / Normalize
-                 mono / 16 kHz*
-                       |
-                       v
-             bounded buffer per source
-                       |
-                       v
-               Inference Scheduler
-                /       |       \
-          worker A  worker B  worker N
-                       |
-                       v
-                 ModelScores
-                       |
-                       v
-                Event Engine
-       threshold + temporal smoothing
-       hysteresis + dedup + cooldown
-                       |
-                       v
-                 AcousticEvent
-                  /          \
-                 v            v
-             Event Store    MQTT/Event Bus
-                               |
-                               v
-                        Subscribers/Alerts
-```
+## Purpose
 
-`*` 16 kHz es baseline natural para YAMNet; no se convierte en requisito universal del dominio si otro modelo requiere otra entrada.
+Architecture translates MK0 design invariants into replaceable components and boundaries without pretending that worker counts, camera codecs or model winners are already known.
 
-## Ingestión
-
-`DECISION_CANDIDATE`:
-
-- RTSP como primary path para cámara IP;
-- ONVIF como discovery/config helper;
-- FFmpeg como decoder/normalizer baseline;
-- go2rtc solo si fan-out/reconnect/codec bridging lo justifica.
-
-## Aislamiento por source
-
-Cada source mantiene:
+## Reference flow
 
 ```text
-stream_session_id
-bounded ring buffer
-health state
-last frame timestamp
-reconnect state
-queue lag
+source adapter -> decode/normalize -> bounded source buffer -> windows
+-> inference scheduler/runner -> RAW_INFERENCE -> Event Engine
+-> CONFIRMED_EVENT -> publisher/store
 ```
 
-Una fuente caída no debe bloquear las demás.
+Every layer carries `source_id`; queues/buffers are bounded; the model runner and broker are replaceable behind contracts.
 
-## Scheduling
+## Artifacts
 
-No usar colas ilimitadas. Target MK2:
+`INGESTION-OPTIONS.md` evaluates camera/replay ingest. `MODEL-PIPELINE-OPTIONS.md` evaluates representation/runtime paths. `PUBSUB-OPTIONS.md` compares event-delivery choices. `REFERENCE-ARCHITECTURES.md` records PoC and target multi-source topologies.
 
-```text
-bounded source queues
-      ↓
-fair scheduler
-      ↓
-optional micro-batches
-      ↓
-N inference workers
-```
+## Architecture vs experiment
 
-## Messaging
+The architecture freezes boundaries, not unsupported numbers. Worker count, buffer seconds, thresholds, model winner and sustainable source count remain benchmark outputs.
 
-MQTT es candidato MK1 por simplicidad y Pub/Sub. ECHO debe diseñar idempotencia porque QoS 1 permite duplicados.
+## Failure philosophy
 
-## Arquitectura PoC
+Source disconnect, broker outage, inference overload and invalid media are isolated/observable states. A transient failure must not silently mutate event semantics or cause unbounded backlog.
 
-```text
-CAM-01 or replay
-   ↓
-FFmpeg/file adapter
-   ↓
-normalized windows
-   ↓
-model baseline
-   ↓
-Event Engine
-   ↓
-MQTT + event log
-```
+## Invalidation
 
-La PoC es unipunto físicamente; los contratos siguen siendo multi-source.
+Revisit if empirical results show the contracts prevent required latency/quality, if camera protocols cannot fit the source abstraction or if product scope adds modalities inside the core.

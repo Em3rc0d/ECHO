@@ -1,34 +1,69 @@
 # Reference Architectures — MK0
 
-## A. Single-process PoC
+**Status:** `CERTIFIED_BOUNDARIES`
+
+## 1. Offline/replay architecture
 
 ```text
-RTSP/file -> decoder -> window -> model -> event engine -> MQTT
+versioned audio assets
+   -> ReplaySource(source_id)
+   -> decode/normalize
+   -> windows
+   -> model runner
+   -> RAW_INFERENCE
+   -> Event Engine
+   -> MQTT publisher
+   -> test subscriber/event log
 ```
 
-Ventaja: mínima complejidad. Riesgo: acoplamiento y menor aislamiento.
+Purpose: deterministic development, benchmark and E2E testing without hardware dependency.
 
-## B. Multi-source modular target
+## 2. One-camera PoC architecture
 
 ```text
-Sources -> Ingestion workers -> bounded queues -> Inference workers
-                                  |                 |
-                                  +-> metrics       v
-                                              Event Engine
-                                                   |
-                                            Confirmed Events
-                                           /       |       \
-                                      MQTT      Store      API
+IP Camera/NVR
+    -> RTSP
+    -> FFmpeg
+    -> normalized PCM
+    -> same downstream pipeline as replay
 ```
 
-## C. Edge-first
+The camera adapter must be replaceable with replay without modifying model/event contracts.
 
-Cada sitio procesa localmente y publica sólo eventos/telemetría. Reduce ancho de banda y exposición de audio, pero complica distribución de modelos y observabilidad.
+## 3. Target multi-source architecture
 
-## D. Central inference
+```text
+CAM-01 --+
+CAM-02 --+--> Source Supervisors -> per-source bounded buffers --+
+FILE-N --+                                                   |
+                                                            v
+                                                fair inference scheduler
+                                                            |
+                                                     shared worker pool
+                                                            |
+                                                  RAW_INFERENCE records
+                                                            |
+                                          per-source/per-class Event Engine
+                                                            |
+                                                    confirmed event bus
+```
 
-Streams llegan a un nodo central. Simplifica gestión de modelos, pero aumenta red, superficie de fallo y dependencia de conectividad.
+## 4. Scale evolution
 
-## Decisión candidata
+MK1 can run components in one host/process group. MK2 may split ingest, inference and event delivery into separate processes/hosts if profiling demonstrates need. The logical contracts remain unchanged.
 
-MK1 debería usar un proceso modular en una máquina y mantener boundaries compatibles con separación futura. MK2 decide edge/central/híbrido con evidencia de capacidad y red.
+## 5. Deployment alternatives
+
+Edge/local deployment minimizes upstream raw-audio transfer and network dependency. Central inference can simplify model management and share accelerators across sources. Hybrid topology is valid if normalized source/event contracts remain explicit. ECHO does not freeze topology before capacity/security evidence.
+
+## 6. Resilience principles
+
+Source failure isolated; queues bounded; reconnect uses backoff; stale generation discarded; broker failure observable; model/config version attached to inference/event; health telemetry separate from event classification.
+
+## 7. Validation
+
+N deterministic replay sources validate logical scaling before claiming physical camera scale. Capacity claims require load/soak on target hardware.
+
+## 8. Invalidation
+
+Change reference architecture only when empirical constraints show the boundaries are inadequate, not merely because another framework is fashionable.
