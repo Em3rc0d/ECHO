@@ -1,0 +1,98 @@
+name: MK1 SONYC Free Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/data_foundry/materialize_sonyc_shard.py'
+      - 'scripts/data_foundry/merge_sonyc_reports.py'
+      - 'configs/data_foundry/acquisition_registry.v1.json'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-sonyc-free-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  shard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize one verified SONYC shard
+        env:
+          ECHO_WORK_ROOT: ${{ runner.temp }}/echo-sonyc-${{ matrix.shard }}
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-sonyc-report-${{ matrix.shard }}
+        run: |
+          python scripts/data_foundry/materialize_sonyc_shard.py \
+            --shard '${{ matrix.shard }}' \
+            --work-root "$ECHO_WORK_ROOT" \
+            --output-dir "$ECHO_REPORT_ROOT"
+      - name: Enforce per-shard evidence artifact budget
+        env:
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-sonyc-report-${{ matrix.shard }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path(os.environ['ECHO_REPORT_ROOT'])
+          total = sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+          limit = 5_000_000
+          print('report bytes=', total, 'limit=', limit)
+          if total > limit:
+              raise SystemExit('per-shard evidence exceeds bounded artifact budget')
+          PY
+      - name: Upload evidence only
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonyc-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/echo-sonyc-report-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+
+  merge:
+    runs-on: ubuntu-latest
+    needs: shard
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sonyc-shard-*
+          path: ${{ runner.temp }}/sonyc-shard-evidence
+      - name: Merge and validate all 19 shards
+        run: |
+          python scripts/data_foundry/merge_sonyc_reports.py \
+            --input-root '${{ runner.temp }}/sonyc-shard-evidence' \
+            --output-dir MK1/mining-site/materialization
+      - name: Commit durable evidence only
+        run: |
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git pull --rebase origin main
+          git add \
+            MK1/mining-site/materialization/sonyc-v2.3-full-materialization-summary.json \
+            MK1/mining-site/materialization/sonyc-v2.3-shard-digests.json \
+            MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl \
+            MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl
+          if git diff --cached --quiet; then
+            echo 'No SONYC evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize SONYC v2.3 under free-tier boundary [skip ci]'
+            git push origin HEAD:main
+          fi
