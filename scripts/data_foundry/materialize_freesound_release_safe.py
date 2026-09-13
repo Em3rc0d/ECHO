@@ -26,7 +26,7 @@ from urllib.request import Request, urlopen
 
 from echo.data_foundry.probe import probe_audio
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 FSD = ROOT / "MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json"
 DISCOVERY = ROOT / "MK1/mining-site/materialization/freesound-gap-discovery.json"
 SUPPLEMENTAL = ROOT / "configs/data_foundry/freesound_cc0_supplemental.v1.json"
@@ -58,7 +58,6 @@ def fetch(url: str, attempts: int = 5) -> tuple[bytes, str | None, str]:
 
 def classify_license(text: str) -> str | None:
     normalized = html.unescape(text).replace("\\/", "/").casefold()
-    # Reject restricted families before checking generic BY markers.
     if "creativecommons.org/licenses/by-nc" in normalized or "attribution noncommercial" in normalized:
         return None
     if "sampling+" in normalized or "sampling plus" in normalized:
@@ -69,9 +68,7 @@ def classify_license(text: str) -> str | None:
         return "CC0"
     match = re.search(r"creativecommons\.org/licenses/by/(\d+(?:\.\d+)?)", normalized)
     if match:
-        version = match.group(1)
-        return f"CC-BY-{version}"
-    # Historical Freesound pages sometimes render only the license title.
+        return f"CC-BY-{match.group(1)}"
     if "attribution license" in normalized and "noncommercial" not in normalized and "share alike" not in normalized:
         return "CC-BY"
     return None
@@ -190,11 +187,11 @@ def materialize_one(candidate: dict[str, Any], limit: int) -> dict[str, Any]:
     }
     if not license_id:
         return {**base, "status": "RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED"}
-    candidates = previews(text, resolved_page)
-    if not candidates:
+    preview_urls = previews(text, resolved_page)
+    if not preview_urls:
         return {**base, "status": "RELEASE_SAFE_PAGE_NO_PUBLIC_PREVIEW"}
     last_error = None
-    for media_url in candidates:
+    for media_url in preview_urls:
         try:
             media, content_type, resolved_media = fetch(media_url)
             reserve_bytes(len(media), limit)
