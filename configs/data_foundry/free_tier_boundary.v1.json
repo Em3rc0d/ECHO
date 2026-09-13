@@ -1,0 +1,47 @@
+{
+  "schema_version": "echo.free-tier-boundary.v1",
+  "policy_id": "ECHO-FREE-TIER-001",
+  "checked_at": "2026-09-13",
+  "billing_policy": {
+    "paid_services_allowed": false,
+    "paid_runners_allowed": false,
+    "paid_storage_allowed": false,
+    "paid_apis_allowed": false,
+    "automatic_overage_allowed": false
+  },
+  "github_actions": {
+    "repository_visibility_required": "public",
+    "allowed_runner_labels": [
+      "ubuntu-latest",
+      "ubuntu-24.04",
+      "ubuntu-22.04",
+      "ubuntu-slim"
+    ],
+    "standard_runner_ssd_bytes": 15032385536,
+    "project_max_working_set_bytes": 10737418240,
+    "artifact_total_project_budget_bytes": 262144000,
+    "artifact_per_run_preferred_max_bytes": 104857600,
+    "artifact_default_retention_days": 1,
+    "dataset_cache_allowed": false
+  },
+  "dataset_rules": {
+    "process_shard_then_delete": true,
+    "full_dataset_artifact_upload": false,
+    "full_corpus_git_commit": false,
+    "multipart_source_must_fit_working_set": true,
+    "fallback_when_source_does_not_fit": [
+      "use_bounded_shards",
+      "use_defensible_public_per_asset_subset",
+      "keep_empirical_node_open"
+    ]
+  },
+  "source_execution": {
+    "sonyc-ust-v2": "SHARD_BY_SHARD_ALLOWED",
+    "singapura-v1.0a": "BOUNDED_EXTRACTION_ONLY",
+    "fsd50k-1.0": "FULL_MULTIPART_NOT_REQUIRED_OR_AUTHORIZED_ON_STANDARD_RUNNER",
+    "esc50": "RESEARCH_ONLY_IF_PINNED_AND_FITS",
+    "urbansound8k-1.0": "MANUAL_FREE_ACCESS_ONLY",
+    "public_gap_sources": "INCREMENTAL_PER_ASSET_PREFERRED"
+  },
+  "stop_line": "If an execution requires payment, a larger runner, storage beyond project budget, or a working set above 10 GiB, stop and redesign the execution path."
+}
