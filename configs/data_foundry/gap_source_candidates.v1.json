@@ -26,6 +26,21 @@
       "kind": "explicit_pages_and_public_previews",
       "license_model": "CC0",
       "targets": {
+        "GLASS_SHATTER": [
+          {"asset_key": "bigsoundbank-148", "url": "https://bigsoundbank.com/glass-burst-s0148.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0148.mp3", "semantic": "glass_shatter", "recording_family": "glass_burst_148"},
+          {"asset_key": "bigsoundbank-771", "url": "https://bigsoundbank.com/broken-glass-s0771.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0771.mp3", "semantic": "glass_shatter", "recording_family": "broken_glass_771"},
+          {"asset_key": "bigsoundbank-2039", "url": "https://bigsoundbank.com/bulb-bursting-1-s2039.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2039.mp3", "semantic": "glass_shatter", "recording_family": "bulb_bursting_family"},
+          {"asset_key": "bigsoundbank-2040", "url": "https://bigsoundbank.com/bulb-bursting-2-s2040.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2040.mp3", "semantic": "glass_shatter", "recording_family": "bulb_bursting_family"},
+          {"asset_key": "bigsoundbank-1591", "url": "https://bigsoundbank.com/broken-glass-of-champagne-s1591.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1591.mp3", "semantic": "glass_shatter", "recording_family": "champagne_glass_1591"},
+          {"asset_key": "bigsoundbank-649", "url": "https://bigsoundbank.com/recycling-bin-glass-1-s0649.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0649.mp3", "semantic": "glass_shatter", "recording_family": "recycling_glass_family"},
+          {"asset_key": "bigsoundbank-2681", "url": "https://bigsoundbank.com/recycling-bin-glass-2-s2681.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2681.mp3", "semantic": "glass_shatter", "recording_family": "recycling_glass_family"}
+        ],
+        "SIREN": [
+          {"asset_key": "bigsoundbank-2731", "url": "https://bigsoundbank.com/vehicle-siren-s2731.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2731.mp3", "semantic": "vehicle_siren", "recording_family": "vehicle_siren_2731"},
+          {"asset_key": "bigsoundbank-1463", "url": "https://bigsoundbank.com/ambulance-3-ton-siren-s1463.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1463.mp3", "semantic": "siren", "recording_family": "ambulance_1463"},
+          {"asset_key": "bigsoundbank-1468", "url": "https://bigsoundbank.com/ambulance-siren-engine-hangar-s1468.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1468.mp3", "semantic": "siren", "recording_family": "ambulance_1468"},
+          {"asset_key": "bigsoundbank-2031", "url": "https://bigsoundbank.com/ambulance-3-tons-passage-s2031.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2031.mp3", "semantic": "siren", "recording_family": "ambulance_2031"}
+        ],
         "FIRE_ALARM": [
           {"asset_key": "bigsoundbank-268", "url": "https://bigsoundbank.com/fire-alarm-communities-1-s0268.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0268.mp3", "semantic": "fire_alarm", "recording_family": "communities_alarm_family"},
           {"asset_key": "bigsoundbank-269", "url": "https://bigsoundbank.com/fire-alarm-communities-2-s0269.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0269.mp3", "semantic": "fire_alarm", "recording_family": "communities_alarm_family"},
@@ -37,6 +52,10 @@
           {"asset_key": "bigsoundbank-3411", "url": "https://bigsoundbank.com/evacuation-alarm-1-s3411.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3411.mp3", "semantic": "evacuation_alarm_review_required", "recording_family": "evacuation_alarm_family"},
           {"asset_key": "bigsoundbank-3412", "url": "https://bigsoundbank.com/evacuation-alarm-2-s3412.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3412.mp3", "semantic": "evacuation_alarm_review_required", "recording_family": "evacuation_alarm_family"},
           {"asset_key": "bigsoundbank-3413", "url": "https://bigsoundbank.com/evacuation-alarm-3-s3413.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3413.mp3", "semantic": "evacuation_alarm_review_required", "recording_family": "evacuation_alarm_family"}
+        ],
+        "VEHICLE_HORN": [
+          {"asset_key": "bigsoundbank-260", "url": "https://bigsoundbank.com/car-horn-4-s0260.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0260.mp3", "semantic": "car_horn", "recording_family": "car_horn_260"},
+          {"asset_key": "bigsoundbank-3438", "url": "https://bigsoundbank.com/car-honking-at-90km-h-3-s3438.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3438.mp3", "semantic": "car_horn", "recording_family": "car_horn_3438"}
         ],
         "TIRE_SQUEAL": [
           {"asset_key": "bigsoundbank-2368", "url": "https://bigsoundbank.com/screeching-tires-1-s2368.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2368.mp3", "semantic": "tire_squeal", "recording_family": "tire_2368"},
