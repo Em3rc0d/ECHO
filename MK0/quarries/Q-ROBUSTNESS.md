@@ -1,99 +1,43 @@
-# Quarry — Acoustic Robustness
+# Quarry — Robustness
 
-**Status:** test design `CERTIFIED`; measured envelope `EMPIRICAL`.
+**Status:** `PROTOCOL_CERTIFIED / RESULTS_EMPIRICAL`
 
-## 1. Purpose
+## Purpose
 
-Determine whether ECHO remains useful when audio differs from clean training clips. Robustness is a multidimensional envelope, not one accuracy number.
+Measure how detection degrades when deployment conditions differ from clean public clips. Robustness is an operating envelope, not a binary property.
 
-## 2. Robustness axes
+## Axes
 
-```text
-SNR/background level
-distance
-reverberation
-microphone response
-orientation/occlusion
-codec + bitrate
-sample rate
-AGC/noise suppression
-clipping/gain
-packet gaps
-polyphony
-weather/wind
-site-specific ambient patterns
-```
+SNR/background type, distance, reverberation, orientation, microphone/device, codec/bitrate, sample-rate conversion, AGC/noise suppression, clipping, wind/weather, packet gaps and overlapping events.
 
-## 3. Why public datasets are insufficient
+## Target confusers
 
-Public environmental datasets often contain curated clips, varied microphones and web-derived media. Security cameras can have low-bitrate speech-optimized microphones, aggressive AGC, compression and fixed mounting. Therefore public-test performance establishes algorithmic sanity, not field certification.
+Glass vs metal/ceramic/dishes. Siren/fire alarm vs beeps/music/reversing beeper. Horn vs alarms/whistles/tonal machinery. Tire squeal vs brakes/metal/friction machinery.
 
-Frigate's audio documentation explicitly notes practical degradation from poor camera microphones, distance, low bitrate and background noise; this is useful operational evidence: https://docs.frigate.video/configuration/audio_detectors/ .
+## Controlled corruption matrix
 
-## 4. Test matrix
+Synthetic mixing/noise/reverb/transcode can identify sensitivity before field access. It must not be presented as proof of real-world robustness. Each transform records parameters and clean source identity.
 
-For each target class and finalist model, evaluate controlled strata where data allows:
+## Field holdout
 
-```text
-clean/reference
-+ low/medium/high background noise
-+ codec/transcode variants
-+ gain/clipping variants
-+ reverberation variants
-+ field distance strata
-```
+Actual camera/site recordings are the strongest domain evidence. Holdout remains untouched during training/threshold selection and is stratified by conditions when enough data exists.
 
-Synthetic corruption never substitutes for real field holdout; it is sensitivity analysis.
+## Metrics
 
-## 5. SNR
+Per-class recall/F1 vs SNR/condition, false alarms/source-hour on long negatives, calibration drift, latency/resource changes and failure examples.
 
-Report performance by SNR bucket when ground truth permits. The exact SNR estimation method must be documented because environmental events do not always offer a clean signal/noise decomposition.
+## Augmentation
 
-## 6. Distance
+Training augmentation should approximate plausible deployment variation without generating artifacts that teach shortcuts. Evaluate augmentation by ablation on untouched data rather than assuming “more augmentation = better”.
 
-Distance is not a model-only property. It depends on event loudness, microphone, orientation, environment and codec. ECHO therefore treats distance as a field-test variable and does not promise a universal meter value in MK0.
+## Failure analysis
 
-Initial field test points such as 5/10/15/20/25 m are experimental points, not product guarantees.
+Classify failures as representation, label ambiguity, preprocessing, threshold, Event Engine, signal quality or domain shift. This prevents blindly changing the neural network.
 
-## 7. Codec/transient sensitivity
+## Closure
 
-Short transients such as shattering can be particularly sensitive to microphone bandwidth, AGC and compression. The actual camera codec should be used to create replay/transcode comparisons where legally/technically feasible.
+MK0 closes only the robustness **protocol**. MK1/MK2 produce curves and field envelope.
 
-## 8. Hard-negative robustness
+## Invalidation
 
-Build a class-by-confuser matrix rather than only generic background:
-
-```text
-rows = target events
-columns = confuser families
-cell = FP rate / score distribution / reviewed examples
-```
-
-This directly identifies whether, for example, metal impact is a dominant GLASS_SHATTER failure.
-
-## 9. Long negative replay
-
-Balanced clips exaggerate target prevalence. Continuous negative recordings are required to estimate operational false alarms/source-hour.
-
-## 10. Polyphony
-
-Test target + background and target + target overlap. ECHO's multi-label contract should permit simultaneous events, but representation and Event Engine may still fail under masking.
-
-## 11. Augmentation policy
-
-Useful candidates include gain, additive environmental noise, time/frequency masking and controlled reverberation; however every augmentation must have a plausible domain rationale and ablation evidence. Avoid augmentation that produces acoustically impossible examples simply to increase diversity.
-
-## 12. Acceptance philosophy
-
-No robustness claim is certified unless it identifies the condition tested. Prefer:
-
-```text
-Recall(GLASS_SHATTER) at condition X
-false alarms/hour on corpus Y
-```
-
-over “93% accurate in noise”.
-
-## 13. Invalidation conditions
-
-Revisit robustness design when target hardware changes, codec settings change materially, taxonomy expands or field errors reveal a missing domain factor.
+New hardware/site or preprocessing/model change requires relevant robustness regression.

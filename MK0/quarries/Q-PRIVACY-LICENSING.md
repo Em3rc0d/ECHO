@@ -1,101 +1,50 @@
-# Quarry — Privacy, Data Governance and Licensing
+# Quarry — Privacy and Licensing
 
-**Status:** baseline policy `CERTIFIED`; site-specific legal authorization and final source-code license remain separate gates.
+**Status:** `DESIGN_POLICY_CERTIFIED / FIELD_AND_RELEASE_GATES_OPEN`
 
-## 1. Privacy design
+## Privacy baseline
 
-Default runtime flow:
+ECHO fulfills its promise without understanding speech content or identity. Default pipeline:
 
 ```text
 continuous audio
- -> bounded volatile buffer
- -> preprocessing/inference
- -> event metadata
- -> discard raw continuous audio by default
+ -> short bounded in-memory buffer
+ -> features/inference/event decision
+ -> discard raw samples
 ```
 
-The goal is data minimization: ECHO needs acoustic features/events, not a permanent archive of ambient conversations.
+`ASR_CONTINUOUS`, speaker identification and voice profiling remain off. Field/evidence clips require explicit purpose, permission, retention and ACL.
 
-## 2. Explicit exclusions
+## Privacy risks
 
-Core ECHO does not require:
+Incidental conversations, excessive retention, reuse of field data for training without authorization, raw audio in debug/crash files, credentials in URLs/logs and broad access to camera streams.
+
+## Controls
+
+Metadata-first storage, retention off, temp-file audits, access minimization, secrets external to Git, data manifests with permitted use and separate field-holdout/training permissions.
+
+## Licensing layers
 
 ```text
-speech transcription
-speaker identification
-voice biometrics
-conversation-content analysis
+ECHO source code license
+third-party library/binary license
+model architecture code license
+checkpoint license
+pretraining/data terms
+dataset release license
+individual asset license
 ```
 
-Adding one of those later would require a new privacy/scope review and cannot be smuggled into the existing promise as an implementation detail.
+Never collapse these into “open source”. FSD50K's per-clip licensing illustrates why asset-level governance matters. AudioSet metadata/ontology terms do not grant automatic redistribution rights to underlying YouTube media.
 
-## 3. Evidence clips
+## Release gate
 
-If evaluation/debugging requires storing short clips, the capture protocol must define:
+Exact dependency/checkpoint/data BOM, notices, hashes and permitted-use records required before distributable release. ECHO-owned license remains an explicit owner decision.
 
-```text
-purpose
-authorization
-who can access
-retention period
-storage location
-encryption/access controls where applicable
-redaction/deletion process
-link to event/experiment id
-```
+## Field gate
 
-No default “store everything in case it is useful later”.
+Real capture requires authorization and documented purpose/access/retention; project engineering controls do not replace legal/institutional review.
 
-## 4. Field dataset governance
+## Invalidation
 
-A field recording manifest includes consent/authorization reference as appropriate to the deployment context, collection purpose, site/device metadata, retention status and whether the asset may be used for training, testing or only transient debugging.
-
-Local legal compliance is an external/site gate. Engineering documentation does not substitute for legal review.
-
-## 5. Licensing layers
-
-Always separate:
-
-1. ECHO-owned source-code license;
-2. third-party library license;
-3. pretrained model/checkpoint license;
-4. dataset release license;
-5. individual audio-asset license;
-6. media/service terms that may govern access/redistribution.
-
-“Free”, “open source” and “publicly downloadable” are not interchangeable.
-
-## 6. Dataset examples
-
-- ESC-50 full dataset is distributed under CC BY-NC; its smaller ESC-10 subset has different terms documented by the project.
-- FSD50K contains mixed per-clip licenses and therefore requires asset-level filtering/recording.
-- AudioSet metadata/ontology licensing does not automatically grant rights to redistribute underlying YouTube media.
-
-Exact license text/release is the source of truth at ingestion time.
-
-## 7. THIRD_PARTY registry
-
-Before distributable release ECHO should generate/maintain a registry with:
-
-```text
-component/asset
-version/release
-source URL
-license SPDX/name
-copyright/attribution
-redistribution requirements
-checkpoint/data-specific conditions
-hash
-```
-
-## 8. Source-code license
-
-The license for ECHO-owned code remains a repository-owner decision. Apache-2.0 is a candidate, not silently assumed. This does not block internal engineering but blocks a clean public release claim until closed.
-
-## 9. Data deletion and reproducibility tension
-
-Reproducibility prefers immutable data; privacy/licensing may require deletion. Resolve by keeping manifests/hashes/provenance even if the actual asset cannot be retained. A missing/revoked asset is marked unavailable rather than silently replaced under the same identity.
-
-## 10. Closure conditions
-
-The architecture-level privacy/licensing policy is closed. Re-open if ECHO adds speech/identity processing, continuous recording, new datasets with incompatible terms, cloud transfer of raw audio, or a new distribution model.
+New jurisdiction, cloud media processing, ASR/speaker features, persistent clips or a new restricted dependency reopens this quarry.

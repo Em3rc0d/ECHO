@@ -1,27 +1,39 @@
-# Sources — Streaming & Pub/Sub
+# Streaming and Pub/Sub Sources — MK0
 
-## ONVIF Profile T
+**Status:** `CERTIFIED_LANDSCAPE`
 
-Profile T cubre streaming IP y audio bidireccional cuando el dispositivo/cliente soporta esas capacidades. La especificación describe `GetProfiles`/`GetStreamURI`, RTSP y codecs de audio como G.711 μ-law y AAC para conformidad condicional de audio.
+## Purpose
 
-- https://www.onvif.org/profiles/profile-t/
-- https://www.onvif.org/wp-content/uploads/2018/09/ONVIF_Profile_T_Specification_v1-0.pdf
+Preserve authoritative sources that justify the ingest and event-delivery design without confusing standard capability with actual-device support.
 
-## FFmpeg
+## ONVIF
 
-Documentación oficial de protocolos/demuxers se usa para validar RTSP/RTP y opciones de transporte. ECHO no debe codificar una ruta RTSP de fabricante como estándar universal.
+Profile T/media specifications support interoperable media profiles and audio capabilities where implemented. ECHO uses ONVIF as optional discovery/configuration evidence. The actual camera's support remains a hardware gate.
 
-- https://ffmpeg.org/ffmpeg-protocols.html
+## RTSP / FFmpeg
 
-## MQTT 5
+FFmpeg protocol/format documentation establishes RTSP transport and decoding options used by the baseline adapter. Exact codec support depends on the binary/build; ECHO records runtime version/config.
 
-OASIS define QoS 0 `at most once`, QoS 1 `at least once`, QoS 2 `exactly once` a nivel de protocolo. Para ECHO MK1 se considera QoS 1 + `event_id` idempotente; la durabilidad end-to-end requiere configuración adicional del broker/cliente.
+## GStreamer
 
-- https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html
+`rtspsrc` and related elements expose jitter/latency/transport controls useful when camera behavior requires finer pipeline management. GStreamer remains a fallback/challenger.
 
-## Frigate benchmark arquitectónico
+## MQTT 5.0
 
-Frigate expone detección de audio por cámara y múltiples topics MQTT. Sirve como prueba de patrón, no como especificación de ECHO.
+OASIS specification defines QoS/session/topic semantics. QoS1 is at-least-once, motivating `event_id` idempotency. Retained messages represent last-known retained publication behavior, not a durable event-history substitute.
 
-- https://docs.frigate.video/configuration/audio_detectors/
-- https://docs.frigate.video/integrations/mqtt/
+## Eclipse Mosquitto
+
+Official project documentation establishes the lightweight broker used for MK1 local/self-hosted event routing.
+
+## Related system: Frigate
+
+Frigate documentation shows per-camera audio detection and MQTT integration in an open-source NVR. It is used as operational precedent for the pattern, not as evidence of ECHO accuracy or architecture identity.
+
+## Validation boundary
+
+Standard documentation certifies feasible interfaces; actual packet loss, codec, jitter, connection limits, broker performance and camera firmware behavior require ECHO tests.
+
+## Source hygiene
+
+Pin protocol/spec versions where relevant and record accessed docs in the web audit/reference catalog.

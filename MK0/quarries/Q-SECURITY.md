@@ -1,117 +1,31 @@
-# Quarry — Security Threat Model
+# Quarry — Security
 
-**Status:** baseline controls `CERTIFIED_FOR_MK1`; production hardening continues in MK2.
+**Status:** `BASELINE_CERTIFIED / PRODUCTION_HARDENING_MK2`
 
-## 1. Assets
+## Assets and trust boundaries
 
-Protect:
+Camera/NVR credentials, broker credentials, stream URIs, model/checkpoint files, configuration, logs, event store and optional field audio clips are security-sensitive. The source network and third-party model/data supply chain are separate trust boundaries.
 
-```text
-camera/NVR credentials
-broker credentials
-API credentials
-source registry
-model/checkpoint artifacts
-configuration
-field audio/evidence clips
-event history
-certification manifests
-logs/telemetry
-```
+## Threats
 
-## 2. Trust boundaries
+Credential leakage in Git/logs/process arguments, unauthorized RTSP access, MQTT publisher spoofing, command/path injection in FFmpeg adapters, tampered model/checkpoint, malformed media/decoder attack surface, replayed audio, excessive privileges and denial-of-service through unbounded queues/reconnect storms.
 
-```text
-camera network -> ingest adapter
-ingest process -> inference service
-inference -> Event Engine
-Event Engine -> broker
-broker -> subscribers
-CI/repository -> deployment/model artifacts
-```
+## MK1 controls
 
-Each boundary must define authenticated identity, accepted input shape and failure behavior appropriate to the deployment stage.
+Secrets via environment/secret references; sanitize RTSP URLs; fixed argument construction rather than shell concatenation; checksum/provenance model artifacts; bounded resources; broker auth/ACL for field use; least-privilege filesystem/network; explicit source_id authorization mapping; no raw media in logs.
 
-## 3. Threats
+## Replay/spoofing boundary
 
-### Credential disclosure
+A loudspeaker replay is still an acoustic signal and may trigger a classifier. Anti-spoof/source-authenticity is a separate research problem unless the product later requires it. ECHO must document this limitation rather than implying authenticity.
 
-Secrets accidentally committed, printed in RTSP URLs or leaked in process logs.
+## Tests
 
-Controls: environment/secret store injection, URL redaction, `.gitignore`, no credentials in fixtures.
+Secret scan, log redaction, invalid credentials, unauthorized publish/subscribe, malformed config, model checksum mismatch, adapter argument injection cases, reconnect storm and resource exhaustion.
 
-### Source impersonation
+## MK2 hardening
 
-A malicious or misconfigured publisher claims another `source_id`.
+TLS/network segmentation as deployment requires, container/service isolation, SBOM, signed provenance, vulnerability/dependency process, rotation/incident procedures and stricter broker ACLs.
 
-Controls: source registry, broker ACLs/identities, validate source identity at adapter boundary.
+## Invalidation
 
-### Audio spoof/replay
-
-A speaker can replay a target sound. ECHO detects acoustics and cannot claim the physical cause is genuine from audio alone. This is a documented limitation, not something the classifier silently “solves”. Downstream systems may corroborate with video/sensors.
-
-### Command/path injection
-
-Unsafe construction of FFmpeg shell commands from user/vendor strings can execute unintended shell syntax.
-
-Control: structured subprocess arguments, avoid shell execution, validate paths/options, constrain adapter config.
-
-### Malformed streams/payloads
-
-Unexpected codecs, corrupt packets or malformed MQTT/HTTP payloads can crash parsers.
-
-Controls: process isolation, timeouts, schema validation, bounded buffers, restart policy.
-
-### Supply-chain tampering
-
-Model/checkpoint/dependency content can change upstream.
-
-Controls: pin versions, checksum downloaded artifacts, provenance manifest, later signatures/attestations.
-
-## 4. Network stance
-
-PoC may operate on an isolated trusted lab LAN, but that is an explicit deployment assumption. It must not be generalized to production.
-
-Production design should consider network segmentation, least-privilege routing, broker/API TLS where feasible and no direct public exposure of camera management ports.
-
-## 5. Broker controls
-
-At minimum beyond local dev:
-
-```text
-authentication
-ACLs by client/topic
-unique identities
-secret rotation
-connection/audit logs
-rate/size limits where supported
-```
-
-## 6. Data security
-
-Continuous audio is not stored by default. Any approved evidence clip receives access control, retention and provenance. Event metadata can still be sensitive operational data and should not be treated as public by default.
-
-## 7. Availability threats
-
-- reconnect storm;
-- queue exhaustion;
-- broker outage;
-- intentionally noisy audio causing excessive inference/event load;
-- disk/log exhaustion;
-- model worker crash loop.
-
-Controls are bounded queues, backoff, rate/volume observability and independent source supervision.
-
-## 8. Security test requirements
-
-- verify secrets absent from repo/log samples;
-- malformed source config rejected;
-- invalid event payload rejected;
-- unauthorized MQTT topic publication denied in hardened profile;
-- checkpoint hash mismatch fails closed;
-- one source failure cannot crash all sources;
-- replayed duplicate event is idempotently handled downstream.
-
-## 9. Non-claims
-
-ECHO does not authenticate that a sound came from a real-world event rather than playback, does not identify speakers and does not infer a crime from sound. Those boundaries must remain visible in product/documentation language.
+Cloud deployment, public-network exposure, new media retention or remote model-update mechanisms expand the threat model and require recertification.

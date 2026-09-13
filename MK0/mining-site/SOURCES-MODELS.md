@@ -1,19 +1,49 @@
-# Sources — Models
+# Model Sources — MK0
 
-Consulta base: 2026-09.
+**Status:** `CERTIFIED_SOURCE_SET / EXTENDABLE`
 
-| Fuente | Evidencia útil | URL |
-|---|---|---|
-| TensorFlow YAMNet transfer learning | 521 clases; MobileNetV1; mono 16 kHz; frames 0.96 s / hop 0.48 s; embeddings 1024D | https://www.tensorflow.org/tutorials/audio/transfer_learning_audio |
-| TensorFlow Hub YAMNet | inferencia/clases AudioSet | https://www.tensorflow.org/hub/tutorials/yamnet |
-| PANNs paper | pretraining AudioSet; CNNs; transferencia | https://arxiv.org/abs/1912.10211 |
-| PANNs official repo | checkpoints, tagging/SED, MIT code | https://github.com/qiuqiangkong/audioset_tagging_cnn |
-| AST | transformer puro para spectrogram | https://arxiv.org/abs/2104.01778 |
-| HTS-AT | transformer jerárquico; clasificación + localización | https://arxiv.org/abs/2202.00874 |
-| BEATs | self-supervised audio pretraining con acoustic tokenizers | https://arxiv.org/abs/2212.09058 |
-| BEATs official implementation | checkpoints/evaluación | https://github.com/microsoft/unilm/tree/master/beats |
-| CLAP | audio-text contrastive / zero-shot | https://arxiv.org/abs/2206.04769 |
+## Purpose
 
-## Lectura ECHO
+Record primary sources for candidate acoustic model families and the specific questions each source answers.
 
-YAMNet y PANNs son candidatos prácticos para MK1 por madurez y facilidad de transferencia. AST/HTS-AT/BEATs/CLAP son challengers de investigación; una cifra SOTA externa no prueba conveniencia operacional en cámara CPU/edge.
+## YAMNet
+
+Primary TensorFlow transfer-learning documentation and TensorFlow Models/Hub artifacts establish input/preprocessing expectations, AudioSet class outputs and embedding use. ECHO uses these facts to define baseline A, not to claim best performance.
+
+Questions retained for benchmark: frozen embeddings vs partial fine-tuning, runtime footprint, export/version pinning, field-domain robustness and score calibration.
+
+## PANNs/Cnn14
+
+Original PANNs paper and author repository establish the AudioSet-pretrained CNN family and available representations/tagging/detection variants. ECHO uses Cnn14 as challenger B and measures runtime/quality on the same ECHO splits.
+
+## AST
+
+Original Audio Spectrogram Transformer paper/repository provides a pure transformer baseline for spectrogram classification. Potential quality must be weighed against memory/CPU latency and input-window assumptions.
+
+## HTS-AT / PaSST / BEATs
+
+These are retained as extended candidates because they represent hierarchical transformer, efficient patchout and self-supervised/general representation approaches. They enter a benchmark only after exact code/checkpoint licenses and preprocessing/runtime are pinned.
+
+## Model source checklist
+
+For every model candidate record:
+
+```text
+paper/repo/docs
+code license
+checkpoint origin/license
+pretraining corpus
+sample rate/input duration
+feature frontend
+embedding/output shape
+export/runtime options
+maintenance/version
+```
+
+## Decision boundary
+
+External leaderboard metrics are context, not ECHO selection evidence. The model winner is `EMP-MODEL-001` and requires the project benchmark.
+
+## References
+
+Canonical URLs are consolidated in `research/MODEL-MATRIX.md` and `research/REFERENCES.md`; exact checkpoints will enter MK1 model manifests.

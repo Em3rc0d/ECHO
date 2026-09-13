@@ -1,77 +1,37 @@
-# Quarry — Open Set, Unknowns and Abstention
+# Quarry — Open Set / OOD
 
-**Status:** simple abstention architecture `CERTIFIED_FOR_MK1`; advanced OOD method `OPTIONAL_RESEARCH`.
+**Status:** `MK1_SIMPLE_ABSTENTION_DESIGN_CERTIFIED / ADVANCED_OOD_DEFERRED`
 
-## 1. Problem
+## Problem
 
-The world contains far more sounds than ECHO target classes. A closed classifier can be forced to assign confidence to something it has never seen. `OTHER` does not solve this mathematically because no finite class can represent every non-target distribution.
+The world contains far more sounds than the five targets. A classifier forced to choose one known class creates false positives. `OTHER` is not mathematically equivalent to open-set recognition and cannot enumerate everything.
 
-## 2. Operational concepts
+## MK1 approach
 
-Separate:
+Use independent target probabilities, validation-derived thresholds, explicit background/hard negatives and an `UNKNOWN`/abstain decision when no target has sufficient evidence. Event Engine temporal confirmation further reduces transient false positives.
 
-- `BACKGROUND_NO_TARGET`: known/collected non-target audio used during training/evaluation;
-- `HARD_NEGATIVE`: non-target sound specifically likely to be confused with a target;
-- `UNKNOWN`: decision-layer abstention when no target has sufficient evidence;
-- `OOD`: distribution materially different from training data, whether or not detectable automatically.
+## Alternatives
 
-## 3. MK1 policy
+- global max-probability threshold: simple but ignores class score distributions;
+- per-class thresholds: selected baseline;
+- temperature scaling/calibration: useful when probability quality is poor;
+- embedding distance/prototypes: promising for known-vs-unknown structure;
+- energy/OOD scores: candidate if model architecture supports it;
+- dedicated unknown class: usually incomplete because unknown space is unbounded;
+- iterative hard-negative mining: operationally valuable and selected.
 
-Use explainable mechanisms first:
+## Evaluation
 
-```text
-per-class thresholding
-calibration on validation
-hard-negative training/mining
-Event Engine temporal confirmation
-abstain when no class satisfies evidence rule
-```
+Long negative audio, unseen confuser families and field holdout. Measure false alarms/source-hour, score distributions, coverage/abstention rate and target recall lost due to rejection.
 
-This is preferred over adding a complex OOD detector before ordinary false positives are understood.
+## Decision
 
-## 4. Candidate advanced methods
+Do not add complex OOD machinery before baseline abstention and hard-negative performance are measured. Simplicity and explainability matter in MK1.
 
-Research options if MK1 evidence requires them:
+## Risks
 
-- max-probability/score rejection;
-- energy-based rejection;
-- embedding-distance or prototype methods;
-- one-class density estimates;
-- dedicated outlier-exposure datasets;
-- conformal/selective prediction approaches where assumptions fit.
+Too-high thresholds suppress targets; too-low thresholds create alert fatigue. Calibration can shift by device/domain, so field validation is mandatory.
 
-None is frozen as required.
+## Invalidation
 
-## 5. Calibration interaction
-
-A poorly calibrated model can appear confident on OOD examples. Calibration must be evaluated separately from discrimination. Per-class reliability matters because different targets can have different score scales.
-
-## 6. OOD evaluation corpus
-
-Create categories outside the five targets, including unseen confuser families and field background. The strongest evaluation set should contain examples never used in hard-negative mining.
-
-## 7. Metrics
-
-Operational metrics remain primary:
-
-```text
-false alarms/source-hour on unknown/background streams
-selective risk vs coverage
-per-class false positive rate on OOD families
-score distributions for target vs hard-negative vs unknown
-```
-
-AUROC for an OOD detector can be reported if one exists, but it cannot replace event false-alarm metrics.
-
-## 8. Failure modes
-
-- thresholds too low -> alert flood;
-- thresholds too high -> missed targets;
-- “unknown” becomes a dumping label with no semantics;
-- hard negatives leak into test after mining;
-- OOD benchmark becomes easier than real ambient audio;
-- calibration fitted on test data.
-
-## 9. Closure
-
-MK1 does not require solving open-set recognition in the research sense. It requires a conservative, measured abstention policy and a process to mine/learn from false positives. Advanced OOD becomes justified only if evidence shows ordinary threshold/calibration/hard-negative controls are insufficient.
+If unknown confusers dominate false alarms after hard-negative iteration, promote advanced OOD/prototype experiments into benchmark scope.

@@ -1,14 +1,47 @@
-# Sources — Datasets
+# Dataset Sources — MK0
 
-| Dataset | Evidencia | Riesgo/licencia | URL |
-|---|---|---|---|
-| AudioSet | ~2.08M segmentos de 10 s; 527 labels en sitio actual; ontología jerárquica | clips referencian YouTube; disponibilidad mutable; revisar términos | https://research.google.com/audioset/dataset/index.html |
-| FSD50K | 51,197 clips, 200 clases, 108.3 h, weak multi-label | dataset CC-BY pero assets mezclan CC0/CC-BY/CC-BY-NC/Sampling+ | https://zenodo.org/records/4060432 |
-| ESC-50 | 2,000 clips, 50 clases, 5 s, incluye siren/car horn | dataset CC BY-NC; ESC-10 CC BY | https://github.com/karolpiczak/ESC-50 |
-| DCASE/DESED | SED con weak/strong/synthetic subsets y timestamps en subsets fuertes | dominio doméstico; no asumir transferencia urbana | https://dcase.community/challenge2021/task-sound-event-detection-and-separation-in-domestic-environments |
-| UrbanSound8K | benchmark urbano candidato | verificar licencia/metadata exacta antes de ingestión | https://urbansounddataset.weebly.com/urbansound8k.html |
-| SONYC-UST | urban sound tagging candidato | verificar versión/licencia exacta | https://zenodo.org/communities/sonyc |
+**Status:** `CERTIFIED_LANDSCAPE / ASSET_MANIFEST_PENDING`
 
-## Regla ECHO
+## Purpose
 
-La selección se hace a nivel de **asset + licencia + provenance**. FSD50K es especialmente útil para diversidad y mapeo AudioSet, pero sus licencias por clip impiden tratar todos los assets como equivalentes.
+Record official dataset releases and what they can legitimately contribute to ECHO. Dataset discovery is not equivalent to asset admission.
+
+## AudioSet
+
+Useful for ontology, pretrained-model provenance and target/confuser discovery. Media is YouTube-derived; ECHO does not infer redistribution rights for underlying media from metadata/ontology licensing.
+
+## FSD50K
+
+Large Freesound-derived multilabel environmental corpus. Valuable for positives/negatives, but per-clip mixed Creative Commons conditions require asset-level license filtering and provenance.
+
+## ESC-50
+
+Small, balanced environmental benchmark with useful classes such as siren/horn/glass-like categories depending on mapping. Its size and non-commercial conditions make it a sanity/research benchmark rather than unrestricted production corpus.
+
+## UrbanSound8K
+
+Urban clips useful for domain contrast and classes including siren/horn. Narrow taxonomy and curated clip structure limit its value as a continuous-deployment proxy.
+
+## SONYC-UST
+
+Real urban acoustic sensor network with multilabel annotations and site/sensor structure. Useful evidence for polyphony, urban background, domain/device separation and field-style evaluation methodology.
+
+## DCASE / DESED
+
+Task-specific releases support SED evaluation, strong/weak labels, overlapping events and PSDS-style methodologies. Each task/release has its own terms and domain.
+
+## MIMII
+
+Industrial machine audio can supply domain-shift/hard-negative research. Its anomaly-detection objective is not directly ECHO classification.
+
+## ECHO Field Dataset
+
+Future authorized recordings from actual camera/microphone/site. It is the decisive domain holdout but must preserve privacy/permission/retention metadata.
+
+## Admission caveat
+
+No asset enters MK1 because its dataset name appears here. `Q-DATASETS.md` defines semantic mapping, grouping, hashing, license and split requirements.
+
+## References
+
+Official release links are consolidated in `research/DATASET-MATRIX.md` and the dated web audit.

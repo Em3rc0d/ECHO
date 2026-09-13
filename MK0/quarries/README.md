@@ -1,34 +1,23 @@
 # MK0 / Quarries
 
-Quarries are **deep research workstreams**, not question lists. Their job is to turn uncertainty into traceable evidence and then into either a closed engineering decision, a controlled MK1 experiment or an explicit external gate.
+**Status:** `CERTIFIED_WORKSTREAM_SET`
 
-Every quarry follows:
+## Purpose
 
-```text
-question
-  -> evidence
-  -> alternatives
-  -> synthesis
-  -> candidate decision
-  -> validation protocol
-  -> closure / invalidation conditions
-```
+A quarry is a research workstream, not a question list. It starts with uncertainty and must preserve evidence, alternatives, synthesis, current decision, validation plan, empirical/external remainder and invalidation conditions.
 
-Active/retained quarries:
+## Workstreams
 
-```text
-Q-MODELS.md
-Q-DATASETS.md
-Q-STREAMING.md
-Q-EVENT-ENGINE.md
-Q-PUBSUB.md
-Q-MULTISOURCE.md
-Q-ROBUSTNESS.md
-Q-OPENSET-OOD.md
-Q-SECURITY.md
-Q-PRIVACY-LICENSING.md
-```
+`Q-MODELS` model/representation/runtime. `Q-DATASETS` data/licensing/leakage/domain. `Q-STREAMING` cameras/RTSP/codecs. `Q-EVENT-ENGINE` temporal event semantics. `Q-PUBSUB` delivery. `Q-MULTISOURCE` scheduling/backpressure. `Q-ROBUSTNESS` noise/domain/codec. `Q-OPENSET-OOD` abstention/unknown. `Q-SECURITY` trust/secrets. `Q-PRIVACY-LICENSING` data minimization and rights.
 
-A quarry can be `CERTIFIED_FOR_ARCHITECTURE` while empirical outputs remain pending. Example: multi-source boundaries and bounded queues can be certified now; the exact maximum source count cannot be certified until load/soak tests.
+## Closure semantics
 
-Substantive quarry documents must follow `governance/DOCUMENTATION-STANDARD.md`. README files are navigation artifacts and may remain shorter.
+A quarry may be `CERTIFIED_FOR_ARCHITECTURE` while leaving numeric outputs for MK1. Closure means the next stage will not have to invent an architecture-changing answer.
+
+## Evidence language
+
+Use FACT/EVIDENCE, INFERENCE, HYPOTHESIS, DECISION and TARGET when ambiguity is possible.
+
+## Invalidation
+
+New material evidence reopens only the dependent quarry/certificates rather than resetting unrelated MK0 work.
