@@ -1,0 +1,85 @@
+{
+  "candidate_manifest_sha256": "5371d673b0bfd0127353b2fb60c184fdb2cb7c4fb497112bdce8145a9c7f0a01",
+  "certification_boundary": "Real selected SINGA:PURA bytes verified and probed under ECHO-FREE-TIER-001. CC-BY-SA-4.0 keeps this evidence in research_extended unless release policy is separately cleared.",
+  "hard_negative_counts_by_target": {
+    "FIRE_ALARM": 255,
+    "GLASS_SHATTER": 3784,
+    "SIREN": 255,
+    "TIRE_SQUEAL": 867
+  },
+  "probe_failures": 0,
+  "profile": "research_extended",
+  "publisher_file_evidence": [
+    {
+      "actual_md5": "c5beb6374e55abfe7cd50f4f498c8376",
+      "name": "labelled_metadata_public.csv",
+      "publisher_md5": "c5beb6374e55abfe7cd50f4f498c8376",
+      "sha256": "91034d7938427d1f9f20be07fbc057367904f715de815f48216820909a999a7f",
+      "size_bytes": 903782,
+      "status": "PASS"
+    },
+    {
+      "actual_md5": "535242cf1094d95d086fc574874e9ddf",
+      "name": "labels_public.zip",
+      "publisher_md5": "535242cf1094d95d086fc574874e9ddf",
+      "sha256": "4db4d505d2d8fee8c2f58dfa01754ac6b877f32834d9977c4c63643f26bee04b",
+      "size_bytes": 3404815,
+      "status": "PASS"
+    },
+    {
+      "actual_md5": "98477daca861c6950cc8b620cecc286d",
+      "name": "labelled.z01",
+      "publisher_md5": "98477daca861c6950cc8b620cecc286d",
+      "sha256": "a84b481311fd99dda41f5dad67f8923f5f2e7cb8858f57e973a25d8b34d47f09",
+      "size_bytes": 1048576000,
+      "status": "PASS"
+    },
+    {
+      "actual_md5": "873b26cfe25bb3084e39e5af0dfebcad",
+      "name": "labelled.z02",
+      "publisher_md5": "873b26cfe25bb3084e39e5af0dfebcad",
+      "sha256": "3aaa33df13bef8231d46f9ac72b8efb1d5f4ae7263de053a3bdcb1f5325c58e8",
+      "size_bytes": 1048576000,
+      "status": "PASS"
+    },
+    {
+      "actual_md5": "71322a5c3ba33badfdd8e25c9ebf559a",
+      "name": "labelled.z03",
+      "publisher_md5": "71322a5c3ba33badfdd8e25c9ebf559a",
+      "sha256": "d157f2a16891e912d3472ba82aad053345895cf35b52b65715d440048f02d5c9",
+      "size_bytes": 1048576000,
+      "status": "PASS"
+    },
+    {
+      "actual_md5": "a6d087babea1f797af99b81cb7c7ea4a",
+      "name": "labelled.z04",
+      "publisher_md5": "a6d087babea1f797af99b81cb7c7ea4a",
+      "sha256": "9dc47398bb5503945bcd1effab86196d11f29dae4edc5aa88ccf7321e43344ab",
+      "size_bytes": 1048576000,
+      "status": "PASS"
+    },
+    {
+      "actual_md5": "bdd46cc5e9187e97c37989b3b73e786e",
+      "name": "labelled.zip",
+      "publisher_md5": "bdd46cc5e9187e97c37989b3b73e786e",
+      "sha256": "715ce1b261457fa9c0e8a03362ad63c7e4343ddcde8669b4ed5953eb57d00e38",
+      "size_bytes": 302249479,
+      "status": "PASS"
+    }
+  ],
+  "publisher_files_verified": 7,
+  "schema_version": "echo.singapura-bounded-materialization.v1",
+  "selected_recording_count": 4183,
+  "selected_uncompressed_bytes": 3765424092,
+  "source_id": "singapura-v1.0a",
+  "source_release": "v1.0a",
+  "status": "PASS",
+  "target_counts": {
+    "GLASS_SHATTER": 2,
+    "SIREN": 19,
+    "VEHICLE_HORN": 59
+  },
+  "total_selected_duration_seconds": 41830.0,
+  "working_set_final_bytes": 8266757772,
+  "working_set_limit_bytes": 10737418240
+}
