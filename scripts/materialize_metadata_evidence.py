@@ -12,8 +12,9 @@ import hashlib
 import json
 from pathlib import Path
 import re
-import shutil
 import tempfile
+import time
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,10 +23,30 @@ GAPS = ROOT / "configs/data_foundry/gap_source_candidates.v1.json"
 OUT = ROOT / "MK1/mining-site/materialization"
 
 
-def get(url: str) -> bytes:
-    request = Request(url, headers={"User-Agent": "ECHO-Data-Foundry/1.0"})
-    with urlopen(request, timeout=120) as response:  # nosec B310 - versioned public evidence URLs
-        return response.read()
+def get(url: str, *, attempts: int = 7) -> bytes:
+    """Fetch public evidence with bounded retry for transient publisher errors."""
+    last_error: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        request = Request(
+            url,
+            headers={
+                "User-Agent": "ECHO-Data-Foundry/1.0 (+https://github.com/Em3rc0d/ECHO)",
+                "Accept": "*/*",
+            },
+        )
+        try:
+            print(f"fetch [{attempt}/{attempts}] {url}", flush=True)
+            with urlopen(request, timeout=180) as response:  # nosec B310 - URLs are versioned public evidence
+                return response.read()
+        except HTTPError as exc:
+            last_error = exc
+            if exc.code not in {408, 425, 429, 500, 502, 503, 504}:
+                raise
+        except (URLError, TimeoutError) as exc:
+            last_error = exc
+        if attempt < attempts:
+            time.sleep(min(30, 2 ** (attempt - 1)))
+    raise RuntimeError(f"public evidence fetch failed after {attempts} attempts: {url}: {last_error}") from last_error
 
 
 def md5_bytes(data: bytes) -> str:
@@ -62,6 +83,7 @@ def materialize_metadata() -> dict:
                     "size_bytes": len(data),
                     "md5_expected": expected,
                     "md5_actual": actual,
+                    "sha256": hashlib.sha256(data).hexdigest(),
                     "status": "PASS",
                 })
     return {
