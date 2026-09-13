@@ -14,9 +14,10 @@
         "sonyc-ust-v2",
         "fsd50k-1.0-filtered-after-policy-clearance",
         "echo-freesound-exact-gap-v1",
-        "echo-bigsoundbank-cc0-gap-v1"
+        "echo-bigsoundbank-cc0-gap-v1",
+        "echo-wikimedia-fire-alarm-v1"
       ],
-      "notes": "Only policy-compatible assets may enter. FSD50K remains conditional until intended-use/source policy is explicitly cleared; gap sources remain candidate-only until real asset bytes, per-asset rights and semantic review are materialized."
+      "notes": "Only policy-compatible assets may enter. FSD50K remains conditional until intended-use/source policy is explicitly cleared; public gap sources remain candidates until real bytes, per-asset rights, semantic review, grouping and dedup are materialized."
     },
     "research_extended": {
       "required": [
@@ -26,8 +27,10 @@
         "esc50",
         "urbansound8k-1.0",
         "mivia-road-aed",
+        "nina-road-events",
         "echo-freesound-exact-gap-v1",
         "echo-bigsoundbank-cc0-gap-v1",
+        "echo-wikimedia-fire-alarm-v1",
         "shantycam-smoke-synth"
       ],
       "notes": "Research-only/non-commercial sources remain isolated from release_safe lineage. Synthetic smoke-alarm clips are augmentation only and never satisfy the independent-source floor."
@@ -88,6 +91,14 @@
       "target_role": ["TIRE_SQUEAL_semantic_review_from_tire_skidding", "background"],
       "notes": "The source class is tire skidding, not automatically TIRE_SQUEAL. Event segments must pass semantic review."
     },
+    "nina-road-events": {
+      "kind": "reconstruction_repository",
+      "canonical_evidence": "https://github.com/axa-rev-research/NINA-Dataset",
+      "profile": ["research_extended"],
+      "status": "UNDERLYING_MEDIA_RIGHTS_REQUIRED",
+      "target_role": ["TIRE_SQUEAL_semantic_review_from_tire_skidding", "SIREN", "VEHICLE_HORN"],
+      "notes": "YouTube-derived reconstruction identities are research evidence only until underlying-media rights are defensible."
+    },
     "echo-freesound-exact-gap-v1": {
       "kind": "curated_per_asset_source",
       "profile": ["release_safe_candidate", "research_extended"],
@@ -106,10 +117,18 @@
     "echo-bigsoundbank-cc0-gap-v1": {
       "kind": "curated_cc0_source",
       "profile": ["release_safe_candidate", "research_extended"],
-      "status": "CANDIDATE_PAGES_VERIFIED_MEDIA_NOT_ACQUIRED",
+      "status": "PUBLIC_MEDIA_MATERIALIZATION_ENABLED",
       "target_role": ["FIRE_ALARM", "TIRE_SQUEAL"],
       "license_model": "CC0_page_level_evidence_per_asset",
       "requirements": ["downloaded_bytes", "sha256", "audio_probe", "manual_semantic_review", "recording_group", "dedup"]
+    },
+    "echo-wikimedia-fire-alarm-v1": {
+      "kind": "curated_public_media_source",
+      "profile": ["release_safe_candidate", "research_extended"],
+      "status": "PUBLIC_MEDIA_MATERIALIZATION_ENABLED",
+      "target_role": ["FIRE_ALARM"],
+      "license_model": "per_asset_public_domain_or_cc",
+      "requirements": ["downloaded_bytes", "sha256", "audio_probe", "manual_semantic_review", "recording_group", "dedup", "ShareAlike_review_when_applicable"]
     },
     "shantycam-smoke-synth": {
       "kind": "synthetic_augmentation",
