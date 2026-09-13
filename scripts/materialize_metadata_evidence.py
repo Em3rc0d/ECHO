@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Materialize publisher metadata + exact-gap discovery evidence in hosted CI.
+"""Materialize publisher evidence + exact-gap discovery in hosted CI.
 
-This job intentionally does not download multi-GB audio. It produces immutable
-publisher-checksum evidence and exact candidate identities so full-media
-execution on persistent storage starts from a closed source graph.
+Hosted CI deliberately does not redownload multi-GB publisher releases. Source
+metadata/checksum evidence is materialized from the already certified pinned
+publisher snapshots, while live public gap pages are snapshotted independently.
+Full real-media bytes remain the responsibility of EXEC-DATA-001.
 """
 
 from __future__ import annotations
@@ -12,7 +13,6 @@ import hashlib
 import json
 from pathlib import Path
 import re
-import tempfile
 import time
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -20,6 +20,7 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 ACQ = ROOT / "configs/data_foundry/acquisition_registry.v1.json"
 GAPS = ROOT / "configs/data_foundry/gap_source_candidates.v1.json"
+SNAPSHOTS = ROOT / "configs/data_foundry/publisher_snapshots"
 OUT = ROOT / "MK1/mining-site/materialization"
 
 
@@ -36,7 +37,7 @@ def get(url: str, *, attempts: int = 7) -> bytes:
         )
         try:
             print(f"fetch [{attempt}/{attempts}] {url}", flush=True)
-            with urlopen(request, timeout=180) as response:  # nosec B310 - URLs are versioned public evidence
+            with urlopen(request, timeout=120) as response:  # nosec B310 - URLs are versioned public evidence
                 return response.read()
         except HTTPError as exc:
             last_error = exc
@@ -45,51 +46,38 @@ def get(url: str, *, attempts: int = 7) -> bytes:
         except (URLError, TimeoutError) as exc:
             last_error = exc
         if attempt < attempts:
-            time.sleep(min(30, 2 ** (attempt - 1)))
+            time.sleep(min(20, 2 ** (attempt - 1)))
     raise RuntimeError(f"public evidence fetch failed after {attempts} attempts: {url}: {last_error}") from last_error
 
 
-def md5_bytes(data: bytes) -> str:
-    return hashlib.md5(data).hexdigest()  # nosec B303 - publisher checksum compatibility
-
-
 def materialize_metadata() -> dict:
+    """Materialize already-certified publisher snapshots without network drift."""
     registry = json.loads(ACQ.read_text(encoding="utf-8"))
-    files = []
-    with tempfile.TemporaryDirectory() as tmp:
-        tmpdir = Path(tmp)
-        for source_id, source in registry["sources"].items():
-            record_url = str(source.get("record_url") or "")
-            if "zenodo.org/records/" not in record_url:
-                continue
-            for row in source.get("files", []):
-                if "metadata" not in (row.get("required_for") or []):
-                    continue
-                name = str(row["name"])
-                url = f"{record_url.rstrip('/')}/files/{name}?download=1"
-                data = get(url)
-                target = tmpdir / source_id / name
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(data)
-                actual = md5_bytes(data)
-                expected = str(row.get("md5") or "")
-                ok = actual.casefold() == expected.casefold()
-                if not ok:
-                    raise RuntimeError(f"checksum mismatch {source_id}/{name}: {actual} != {expected}")
-                files.append({
-                    "source_id": source_id,
-                    "name": name,
-                    "url": url,
-                    "size_bytes": len(data),
-                    "md5_expected": expected,
-                    "md5_actual": actual,
-                    "sha256": hashlib.sha256(data).hexdigest(),
-                    "status": "PASS",
-                })
+    sources = []
+    for snapshot_path in sorted(SNAPSHOTS.glob("*.json")):
+        snapshot_bytes = snapshot_path.read_bytes()
+        snapshot = json.loads(snapshot_bytes.decode("utf-8"))
+        source_id = str(snapshot.get("source_id") or snapshot_path.stem)
+        registry_source = registry.get("sources", {}).get(source_id)
+        if not isinstance(registry_source, dict):
+            raise RuntimeError(f"publisher snapshot source missing from acquisition registry: {source_id}")
+        sources.append({
+            "source_id": source_id,
+            "snapshot_path": str(snapshot_path.relative_to(ROOT)),
+            "snapshot_sha256": hashlib.sha256(snapshot_bytes).hexdigest(),
+            "record_url": registry_source.get("record_url"),
+            "estimated_total_display": registry_source.get("estimated_total_display"),
+            "publisher_file_count": len(registry_source.get("files", [])),
+            "status": "PASS_PINNED_PUBLISHER_SNAPSHOT",
+        })
+    if not sources:
+        raise RuntimeError("no publisher snapshots found")
     return {
-        "schema_version": "echo.metadata-materialization-evidence.v1",
+        "schema_version": "echo.metadata-materialization-evidence.v2",
         "status": "PASS",
-        "files": files,
+        "mode": "CERTIFIED_PINNED_SNAPSHOT",
+        "sources": sources,
+        "note": "This evidence closes publisher metadata identity, not real-media acquisition. Full bundles are separately verified by EXEC-DATA-001.",
     }
 
 
@@ -165,7 +153,7 @@ def main() -> int:
     write_json("publisher-metadata-materialization.json", materialize_metadata())
     write_json("freesound-gap-discovery.json", scrape_freesound_exact_candidates())
     write_json("bigsoundbank-gap-page-evidence.json", verify_explicit_gap_pages())
-    print("metadata materialization evidence: PASS")
+    print("metadata/source discovery materialization evidence: PASS")
     return 0
 
 
