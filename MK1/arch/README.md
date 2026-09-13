@@ -1,66 +1,38 @@
-# MK1 / Arch
+# MK1 / Architecture
 
-## Componentes
+**Status:** `CLOSED_FOR_BUILD`
 
-```text
-source_registry
-stream_ingest
-preprocess
-inference
-model_registry
-event_engine
-messaging
-storage
-api
-observability
-provenance
-```
+## Purpose
 
-## Flujo de runtime
+Define component/process boundaries that implement the frozen MK1 contracts while allowing replay, RTSP and future scale without rewriting event semantics.
+
+## Reference topology
 
 ```text
-[Source Registry]
-       ↓
-[Ingestion Adapter] --health--> [Observability]
-       ↓ AudioFrame
-[Preprocessor]
-       ↓ AudioWindow
-[Inference Scheduler] <------ [Model Registry]
-       ↓ RawInference
-[Event Engine] <------------- [Threshold Config]
-       ↓ ConfirmedEvent
-[Publisher] -----> MQTT
-       ↓
-[Event Store] <----> [Query API]
+SourceSupervisor(s)
+ -> adapters
+ -> normalized per-source buffers
+ -> WindowProducer
+ -> bounded inference scheduler
+ -> model runner(s)
+ -> RAW_INFERENCE
+ -> EventEngine
+ -> CONFIRMED_EVENT
+ -> publisher/store
 ```
 
-## Boundaries
+## Architecture laws
 
-### Ingest no sabe ML
-Solo entrega frames/ventanas normalizadas con timestamps y source identity.
+Source identity is explicit. Buffers/queues are bounded. Failures isolate by source/component. Model runner is replaceable. Event Engine is separate from model. Broker outage is not model failure. Observability crosses every boundary.
 
-### Inference no decide alertas
-Solo produce scores + metadata del modelo.
+## Artifacts
 
-### Event Engine no conoce RTSP
-Consume inferencias y produce estados/eventos.
+`ARCHITECTURE.md` is the full view; `COMPONENTS.md` owns responsibilities; `DATAFLOW.md` owns record movement; `DEPLOYMENT-POC.md` maps to processes; `MULTISOURCE-BOUNDARY.md` owns concurrency invariants; `FAILURE-RECOVERY.md` owns degraded behavior.
 
-### Messaging no decide clasificación
-Publica envelopes idempotentes.
+## Output
 
-## Concurrency
+Plan/build receives stable boundaries but may choose exact Python libraries, worker count and process layout within them.
 
-Una fuente = una state machine de stream + buffer independiente. Inference workers se comparten mediante scheduler.
+## Invalidation
 
-## Failure strategy MK1
-
-- reconnect con backoff;
-- source state `ONLINE/DEGRADED/OFFLINE`;
-- bounded queue;
-- drop policy explícita si el consumidor se atrasa;
-- detector no debe crashar porque MQTT no esté disponible;
-- publisher debe reportar delivery failure.
-
-## Deployment PoC
-
-Un host local puede contener todos los procesos inicialmente, pero interfaces deben permitir separar workers/broker/storage en MK2.
+Reopen if a frozen design contract cannot be implemented without violating latency, isolation or reproducibility.

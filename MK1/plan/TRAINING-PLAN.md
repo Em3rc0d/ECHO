@@ -1,25 +1,39 @@
-# Training Plan — MK1
+# MK1 Training Plan
 
-## Stage 0 — zero/frozen baseline
+**Status:** `PROTOCOL_READY`
 
-Evaluar scores directos o embeddings preentrenados sin fine-tuning para establecer piso.
+## Common controls
 
-## Stage 1 — frozen encoder + ECHO head
+Same taxonomy, split groups and admitted data regime for A/B/C. Training-only augmentation. Fixed/recorded seeds, optimizer/schedule, early stopping, class weighting/sampling and dependency versions.
 
-Entrenar head sobre manifest ECHO; class weights/sampling se comparan si hay imbalance.
+## A — YAMNet
 
-## Stage 2 — selective fine-tuning
+Start frozen embeddings + small head; vary head capacity as a named experiment. Partial fine-tuning only if frozen baseline plateaus and resources/data justify it.
 
-Sólo si Stage 1 no alcanza criterios. Descongelar parcialmente con LR menor y early stopping.
+## B — PANNs/Cnn14
 
-## Data augmentation candidate
+Evaluate feature extraction first; optional fine-tune as separate experiment. Record frontend/window assumptions and runtime footprint.
 
-background mixing, gain, time shift y ruido representativo. Pitch/time-stretch sólo si no destruye identidad de la clase. Toda augmentation tiene versión.
+## C — compact CNN
 
-## Hard-negative loop
+Use a versioned log-mel frontend and architecture small enough to serve as deployment/scientific control. Do not artificially disadvantage it with fewer tuning opportunities.
 
-Recolectar falsos positivos del holdout/field set, etiquetar y añadirlos a entrenamiento siguiente sin contaminar el test final.
+## Loss/outputs
 
-## Reproducibilidad
+Multi-label targets use sigmoid-compatible multilabel loss/metrics. Class imbalance strategy is explicit and does not alter test distribution.
 
-Registrar seed, optimizer, LR schedule, epochs, checkpoint checksum, dataset manifest y preprocessing version.
+## Augmentation
+
+Candidate noise mixing, gain, reverb and codec-like transforms are train-only and versioned. Ablate their value on validation/holdout rather than assuming benefit.
+
+## Checkpointing
+
+Every retained checkpoint has model ID, code commit, config, seed, manifest hash and checkpoint hash.
+
+## Stop conditions
+
+Divergence, leakage, non-reproducibility or license ambiguity blocks promotion. Overfitting is handled by data/error analysis rather than repeatedly inspecting test results.
+
+## Output
+
+Comparable checkpoints/result metadata for evaluation plan.

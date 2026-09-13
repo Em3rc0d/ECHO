@@ -1,53 +1,27 @@
 # MK1 / Plan
 
-## Execution order after Ready
+**Status:** `CLOSED_FOR_BUILD`
 
-```text
-1 contracts/config schemas
-2 replay/file adapter
-3 preprocessing/windowing
-4 model baseline A
-5 benchmark harness
-6 challenger B/C
-7 event engine
-8 MQTT publisher
-9 storage/query
-10 RTSP adapter
-11 observability
-12 e2e/reconnect/replay tests
-13 camera field test
-14 MK1 certification
-```
+## Purpose
 
-RTSP can move earlier if external camera access arrives, but the system is never allowed to skip offline benchmark/replay tests.
+Order the first implementation and experiments so evidence remains comparable and the team does not tune the system against the final test set.
 
-## No big-bang build
+## Sequence
 
-Cada slice debe conservar un contrato ejecutable:
+Data manifest/splits -> replay/audio core -> A/B/C model arms -> validation/calibration -> EventEngine -> streaming replay -> MQTT/E2E -> multi-source/fault tests -> real-camera branch -> MK1 certification.
 
-```text
-file -> inference
-file -> event
-file -> event -> mqtt
-rtsp -> event -> mqtt
-N replay sources -> scheduler -> events
-```
+## Artifacts
 
-## Version freeze antes de benchmark
+Benchmark, data, training, evaluation, integration, field-test, implementation sequence and rollback plans describe this order in detail.
 
-Registrar:
+## Scientific rule
 
-```text
-code git sha
-dataset manifest sha
-split manifest sha
-model/checkpoint sha
-training config sha
-threshold config sha
-runtime/environment
-hardware profile
-```
+Model and event parameters are chosen with train/validation evidence; test/field holdout is used only for final evaluation. Changing data/taxonomy after seeing test results creates a new benchmark version.
 
-## Exit
+## Operational rule
 
-MK1/test certifica la vertical; cualquier fallo importante vuelve al nodo upstream correspondiente.
+Every phase produces artifacts that can be replayed/recomputed before the next phase claims success.
+
+## Invalidation
+
+Any upstream contract/manifest change requires recomputing dependent plan outputs/results.

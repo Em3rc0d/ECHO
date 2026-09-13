@@ -1,52 +1,35 @@
-# MK1 Field Test Protocol
+# MK1 Field Test Plan
 
-**Estado:** `EXTERNAL_GATE_OPEN` hasta disponer de cámara/ambiente/autorización.
+**Status:** `EXTERNAL_GATE_OPEN`
 
-## Distancia
+## Preconditions
 
-```text
-5 m
-10 m
-15 m
-20 m
-25 m
-```
+Authorized camera/site access, known model/audio capability, RTSP/codec/network path, permitted test/capture policy, safe event playback/generation plan and external mic fallback if needed.
 
-## Registrar por trial
+## Device characterization
 
-```text
-source_id
-device/mic
-codec
-distance
-background condition
-event label
-start/end ground truth
-model/event timestamps
-confidence
-SNR estimate if available
-latency
-result hit/miss/false alarm
-```
+Record camera/NVR model, firmware where available, microphone, codec, bitrate/sample rate/channels, AGC/noise settings, mounting/orientation and network transport.
 
-## Condiciones
+## Connectivity tests
 
-Comparar al menos background bajo/medio/alto cuando sea práctico. Mantener eventos y posiciones reproducibles.
+Probe RTSP stability, audio track, TCP/UDP behavior as applicable, reconnect after interruption/reboot and simultaneous client limits without exposing credentials in evidence.
 
-## Seguridad
+## Acoustic matrix
 
-No generar físicamente eventos peligrosos para probar ECHO. Usar sonidos seguros/autorizados, playback controlado cuando sea válido o capturas pasivas de eventos reales autorizados.
+Where safe/feasible: distance points such as 5/10/15/20/25 m, low/medium/high ambient noise, direct/oblique orientation, target examples that can be ethically/safely reproduced, plus matched hard negatives. These are test points, not guaranteed range.
 
-## Salida
+## Metrics
 
-Curvas por clase/dispositivo:
+Per-class detection/misses, confidence distribution, false alarms during continuous ambient capture, detection/alert latency, packet/decode issues and signal quality.
 
-```text
-recall vs distance
-confidence vs distance
-recall vs SNR
-latency vs network/device
-false alarms/hour
-```
+## Field holdout
 
-Solo después se congela una promesa de rango.
+Keep a subset untouched by tuning. If authorization only permits transient evaluation, derive allowed metadata/results and delete media according to policy.
+
+## Safety/scope
+
+Do not create dangerous incidents to generate sound. Use safe recordings/replay or benign controlled equivalents when real target generation is inappropriate.
+
+## Output
+
+Sanitized field evidence bundle closing applicable external gates and feeding distance/domain/SLO decisions.

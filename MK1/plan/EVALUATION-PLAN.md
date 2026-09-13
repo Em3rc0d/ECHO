@@ -1,20 +1,39 @@
-# Evaluation Plan — MK1
+# MK1 Evaluation Plan
 
-## Tres capas
+**Status:** `FROZEN_PROTOCOL`
 
-### 1. Clip/window ML
-Precision, recall, F1 por clase, macro-F1, PR curves, calibration.
+## Offline evaluation
 
-### 2. Event-level
-Matching temporal entre ground truth y confirmed events; false alarms/hour, misses, duplicates/event, onset delay.
+Per class: precision, recall, F1, PR-AUC, support/unique groups and score/error distributions. Aggregate macro/micro metrics complement, never replace, per-class reporting.
 
-### 3. System-level
-Capture-to-publish latency p50/p95/p99, real-time factor, CPU/RAM, recovery time y backlog.
+## Calibration
 
-## Slices obligatorios
+Validation-only reliability/Brier/ECE where useful; fit any calibrator on validation. Thresholds are per class and versioned with model/config.
 
-clean/noisy, near/far si existe field data, codec/source type, class, hard negatives y long-background audio.
+## Streaming evaluation
 
-## Holdout discipline
+Replay long annotated/negative streams through full window + EventEngine path. Measure false alarms/source-hour, physical-event misses, confirmation latency, duplicates/event, fragmentation and onset/offset errors if labels exist.
 
-El field test final no se usa para ajustar thresholds. Si se usa para tuning, debe crearse un segundo holdout.
+## Runtime
+
+Fixed hardware/runtime after warm-up: inference p50/p95/p99, end-to-end event latency, throughput, CPU/GPU/RAM, queue lag/drops and artifact size.
+
+## Robustness
+
+Noise/SNR, codec/transcode, gain/clipping, reverb and hard-negative families. Field holdout later provides real-device domain evidence.
+
+## Statistical treatment
+
+Report raw counts; bootstrap confidence intervals over independent groups/events where practical; final shortlist uses multiple seeds if compute permits.
+
+## Error review
+
+Review representative false positives/negatives, low-confidence positives, high-confidence false positives, polyphonic failures and domain failures. Assign likely root cause category.
+
+## Promotion
+
+Choose model after operational constraints + Pareto comparison, not one weighted magic score.
+
+## Invalidation
+
+Leakage, test tuning, taxonomy/preprocessing changes or incomparable hardware invalidates affected result bundles.

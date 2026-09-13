@@ -1,17 +1,37 @@
-# Multi-Source Boundary — MK1
+# MK1 Multi-Source Boundary
 
-Aunque exista una sola cámara física, el runtime debe aceptar una colección de `SourceDescriptor`.
+**Status:** `FROZEN_LOGICAL_CONTRACT / CAPACITY_EMPIRICAL`
 
-```text
-CAM-01 --┐
-FILE-02 -┼-> source tasks -> independent buffers -> shared inference scheduler
-FILE-03 -┘                                      -> event state keyed by source
-```
+## Principle
 
-## Validación sin N cámaras
+One-camera PoC is a deployment choice, not an architecture assumption. Every source is isolated by `source_id` and `stream_generation` from ingest through event state.
 
-Usar múltiples replays concurrentes con diferentes `source_id` y ritmos. Verificar aislamiento, fairness, memoria y que los eventos nunca mezclen identidades.
+## Per-source state
 
-## No objetivo MK1
+Connection/reconnect, audio buffer, window sequence, lag/drop telemetry and EventEngine state are source-scoped. Model workers may be shared, but model work items always carry source identity.
 
-No fijar capacidad máxima de sources. El objetivo es demostrar que la arquitectura no está hardcodeada a uno; capacidad certificada pertenece a MK2.
+## Scheduler requirement
+
+A single noisy/high-rate source cannot monopolize all pending work. Use bounded per-source contribution and round-robin/weighted-fair scheduling or equivalent. Exact algorithm/worker count is profiled, not frozen.
+
+## Backpressure
+
+Offline replay can block for completeness. Live mode uses bounded buffers/queues and an explicit stale/freshness policy. Never solve overload with unbounded memory.
+
+## Failure isolation
+
+Disconnect/reconnect one source while others continue. A new generation invalidates late work from the old generation. Source failure does not reset model/EventEngine state for unrelated sources.
+
+## Test points
+
+Run 1,2,4,8 replays or until resource saturation; simultaneous events on different sources; one slow/noisy source; one reconnecting source; overload; verify zero cross-source state leakage.
+
+These counts are test points, not support promises.
+
+## Capacity claim
+
+Supported N is the largest measured load satisfying quality/latency/drop/resource constraints with margin over soak duration on declared hardware.
+
+## Invalidation
+
+If shared model runtime cannot safely/concurrently serve work or codecs demand stronger process isolation, implementation topology can change while contract remains.
