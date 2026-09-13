@@ -1,14 +1,35 @@
-# Migration Plan — MK2
+# MK2 Migration Plan
 
-Cambios en schemas, taxonomy, event-engine state o storage requieren migración explícita.
+**Status:** `SPECIFIED`
 
-## Principles
+## Migration domains
 
-- backward-compatible readers durante ventana de transición;
-- versioned topics o envelopes cuando sea necesario;
-- no reescribir eventos históricos con taxonomía nueva;
-- persistir versión original de modelo/taxonomy;
-- dry-run antes de migration destructiva;
-- rollback plan probado.
+Event/schema versions, config format, model/preprocessing bundles, broker topics, persistence schema and deployment topology.
 
-Metadata histórica debe seguir interpretable aun cuando una clase se renombre/depreque.
+## Compatibility strategy
+
+Prefer additive/backward-compatible changes. Breaking changes receive new major schema/topic/config version with explicit consumer migration and overlap period when feasible.
+
+## Data migration
+
+Structured event/history migrations are reversible or backed up. Raw continuous audio is not a migration dependency because it is not retained by default.
+
+## Model migration
+
+New model can require new thresholds/calibrator but should emit the same event contract unless taxonomy semantics change. A taxonomy change is a larger migration with consumer/data impacts.
+
+## Source migration
+
+Camera/device replacement updates source/device metadata while preserving stable logical `source_id` only when it represents the same intended monitoring point and audit semantics.
+
+## Rollout
+
+Dry-run in staging with production-like data/replay -> compatibility tests -> backup/snapshot -> controlled migration -> validation -> rollback window.
+
+## Evidence
+
+Migration runbook, before/after schema versions, data counts/checksums, consumer compatibility and rollback test.
+
+## Invalidation
+
+Update for any new persistent service or cross-site deployment.

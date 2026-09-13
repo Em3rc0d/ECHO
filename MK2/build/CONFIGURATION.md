@@ -1,11 +1,31 @@
-# Configuration — MK2
+# MK2 Configuration
 
-## Desired hierarchy
+**Status:** `TARGET_SPEC`
 
-`defaults < site config < source config < deployment overrides < secrets`.
+## Configuration hierarchy
 
-Todos los valores efectivos no secretos se pueden exportar a snapshot para auditoría. Secrets se representan por referencias, nunca por valor.
+Base application defaults -> deployment-profile config -> site/source inventory -> model/event-engine bundle -> secret references -> controlled runtime overrides.
 
-## Hot reload
+## Properties
 
-Sólo parámetros seguros (p.ej. enable/disable source) pueden recargarse sin restart. Cambios de taxonomy/model/preprocessing requieren rollout versionado para evitar mezclar estados incompatibles.
+Typed/schema validated; versioned; redacted effective dump; immutable per release where practical; clear precedence; no plaintext secrets; backward-compat migration when config schema changes.
+
+## Source config
+
+Logical identity, adapter endpoint/profile, enable state, site metadata, secret ref, optional service class. Device-specific codec settings remain adapter-level.
+
+## Runtime config
+
+Queue capacities, worker counts, batching/deadlines and backpressure policy are profile-specific and justified by capacity tests.
+
+## Model config
+
+Active model bundle references checkpoint/preprocessing/calibration/threshold/EventEngine config as compatible set.
+
+## Delivery config
+
+Broker endpoints, TLS/auth refs, topic namespace, QoS/durability/outbox parameters.
+
+## Validation
+
+Startup fails on incompatible model/schema/config or unsafe unbounded settings. Config hash appears in release/event evidence.

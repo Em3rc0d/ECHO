@@ -1,20 +1,43 @@
-# Release Artifacts — MK2
+# MK2 Release Artifacts
 
-**Estado actual: GATED_NOT_STARTED**
+**Status:** `SPECIFICATION`
 
-Release target:
+## Required bundle
 
 ```text
-release/
-  echo-runtime
-  config-schema/
-  event-schemas/
-  model-package/
-  THIRD_PARTY.md
-  SBOM.json
-  build-manifest.yaml
-  certification-manifest.yaml
-  checksums.sha256
+application/container digest
+source commit
+SBOM/dependency lock
+model/checkpoint digest
+preprocessing/calibration/EventEngine config digests
+taxonomy/schema/config versions
+deployment profile
+migration scripts/runbook
+license/notices inventory
+security scan summary
+quality/runtime/load/soak/resilience reports
+field-holdout report
+rollback artifact/reference
+provenance/attestation
+known limitations/release notes
 ```
 
-Los binarios/containers reales sólo aparecen después de MK1 certificado y MK2 DoR.
+## Integrity
+
+Artifacts reference each other through a release manifest; changing any component after certification creates a new release candidate.
+
+## Storage
+
+Large binaries/models live in appropriate artifact/model registry with immutable digest, not necessarily Git. Git stores manifests, policies and references.
+
+## Promotion
+
+Only artifacts listed in the candidate manifest may be deployed. Ad hoc model/config replacement invalidates release evidence.
+
+## Retention
+
+Keep enough prior certified artifacts to reproduce/rollback supported releases under policy.
+
+## Invalidation
+
+Any post-certification change to digest-bearing artifact invalidates the release certificate.

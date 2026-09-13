@@ -1,39 +1,31 @@
 # MK2 Release Plan
 
-## Release manifest candidate
+**Status:** `SPECIFIED / RELEASE GATED`
 
-```yaml
-release: echo-1.0.0
-code_git_sha: ...
-schemas:
-  event: echo.event.v1
-model:
-  name: echo-model
-  version: 1.0.0
-  sha256: ...
-config:
-  thresholds_sha256: ...
-  event_engine_sha256: ...
-dataset:
-  manifest_sha256: ...
-tests:
-  report_sha256: ...
-provenance:
-  attestation_sha256: ...
-```
+## Release bundle
 
-## Certification
+Application artifact/container, model/calibration/EventEngine bundle, schema/config versions, dependency lock/SBOM, native tool/broker versions as applicable, migrations, deployment manifest, notices/licenses, test reports, provenance/attestation and known limitations.
 
-El release gate debe verificar:
+## Pre-release gates
 
-- artifact hashes;
-- ancestors certified;
-- required test reports exist;
-- active SLO set passed;
-- no external release gate open;
-- secrets absent;
-- dependency/license inventory complete.
+Frozen SLO profile; MK1 dependencies valid; capacity/load/soak pass; resilience/chaos pass; model regression/field holdout pass; security/privacy checks; rollback test; external gates required by declared deployment closed.
 
-## Signing candidate
+## Release candidate
 
-in-toto/Sigstore/Cosign se evalúan como herramientas de firma/attestation. No se diseña criptografía propia si una herramienta estándar satisface el objetivo.
+Immutable RC deployed to staging under production-like source/replay load. No last-minute configuration change outside the manifest.
+
+## Promotion
+
+Controlled rollout/canary where possible with health/SLO observation. Promotion stops on critical regression or unexplained alert behavior.
+
+## Release notes
+
+State supported deployment profile, model/taxonomy/schema versions, measured envelope, known limitations, security/privacy considerations and migration steps.
+
+## Post-release
+
+Monitor source health, false-alert trends, latency/capacity, delivery and model drift; preserve regression corpus and prior rollback artifact.
+
+## Failure
+
+A failed gate delays release or explicitly changes scope/SLO through governance; it is never converted to PASS by documentation wording.

@@ -1,44 +1,35 @@
 # MK2 Capacity Plan
 
-## Métricas por escala
+**Status:** `PROTOCOL_SPECIFIED / CAPACITY_NUMBER_PENDING`
 
-Para cada N sources registrar:
+## Objective
 
-```text
-CPU total/per worker
-RAM
-windows/s
-inference latency p50/p95/p99
-queue depth/lag
-dropped windows
-source reconnects
-broker publish latency
-e2e event latency
-```
+Determine sustainable source count and headroom for each declared hardware/model/deployment profile while satisfying latency, drop, quality and stability constraints.
 
-## Workload profiles
+## Load dimensions
 
-### Quiet
-Mayoría background/silence.
+Source count, window rate/source, model candidate/version, batch/micro-batch policy, codec/decode cost, event rate, broker/store load and telemetry overhead.
 
-### Normal
-Tráfico/eventos esporádicos.
+## Test pattern
 
-### Burst
-Múltiples fuentes generan eventos simultáneos.
+Baseline idle -> 1 source -> step 2/4/8/... until SLO breach -> ramp/spike -> sustained soak near target capacity -> failure injection under load.
 
-### Degraded network
-Jitter/disconnect/reconnect.
+## Metrics
 
-### Slow model
-Artificially constrained inference para forzar backpressure.
+Inference throughput; queue lag p50/p95/p99; dropped/stale windows/source; event latency; CPU/GPU/RAM/VRAM; decoder utilization; broker/store latency; thermal/throttling; fairness by source.
 
-## Resultado
+## Capacity definition
 
-Generar capacity envelope:
+Supported N is not the crash point. It is the highest sustained load meeting all frozen SLOs with declared safety/headroom over a soak period.
 
-```text
-hardware profile -> max certified sources under SLO
-```
+## Profiles
 
-No usar specs teóricas del modelo como sustituto de este test.
+CPU-only and accelerator profiles may have different certified N. A production claim always names model/config/hardware/audio cadence.
+
+## Failure analysis
+
+When a limit is reached, identify decoder, scheduler, model, memory, broker/store or thermal bottleneck before changing architecture.
+
+## Output
+
+Capacity curve, recommended operating N, headroom and scale trigger feeding deployment/release docs.

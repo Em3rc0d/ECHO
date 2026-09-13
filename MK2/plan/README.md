@@ -1,54 +1,27 @@
 # MK2 / Plan
 
-## Entrada
+**Status:** `SPECIFIED / VALUES DEPEND ON MK1`
 
-MK1 `CERTIFIED` + error analysis + field/capacity evidence.
+## Purpose
 
-## Orden
+Translate measured MK1 behavior into an ordered hardening/release program. The plan covers capacity, scale topology, CI/CD, model release, migrations, incidents and final certification.
 
-```text
-1 freeze MK2 SLOs
-2 choose model winner + fallback
-3 harden source lifecycle
-4 bounded queues/backpressure
-5 worker scheduler/batching
-6 reliable publisher/idempotency
-7 model/config registry
-8 observability
-9 provenance/attestation
-10 rollback/release pipeline
-11 load/soak/failure tests
-12 field holdout
-13 release certification
-```
+## Planning rule
 
-## Capacity ladder
+First freeze a deployment profile and SLOs from evidence; then harden. Do not build distributed complexity before a bottleneck/availability requirement justifies it.
 
-Benchmark mínimo sugerido:
+## Sequence
 
-```text
-1 source
-4 sources
-10 sources
-N synthetic/replay stress (e.g. 25/50 if hardware allows)
-```
+Capacity baseline -> scale/backpressure -> resilience/delivery durability -> observability/security -> model/release pipeline -> migration/incident drills -> load/soak/chaos/regression -> release certification.
 
-No prometer N cámaras por servidor antes del benchmark.
+## Artifacts
 
-## Model promotion
+`CAPACITY-PLAN.md`, `SCALE-PLAN.md`, `CI-CD-PLAN.md`, `MODEL-RELEASE-PLAN.md`, `MIGRATION-PLAN.md`, `INCIDENT-PLAN.md`, `RELEASE-PLAN.md`.
 
-```text
-candidate checkpoint
-  ↓ offline gate
-stream replay gate
-  ↓ field holdout gate
-runtime/capacity gate
-  ↓ signed/hashed release
-STAGED
-  ↓ controlled activation
-ACTIVE
-```
+## Evidence
 
-## Release
+Every plan step names expected metrics/result artifacts and rollback criteria. Release does not proceed on undocumented manual confidence.
 
-Release incluye code + model + config + schemas + manifests, no solo un Git tag.
+## Invalidation
+
+Major deployment profile, model or SLO change requires re-planning affected workstreams.
