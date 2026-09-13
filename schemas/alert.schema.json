@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/alert.schema.json",
+  "title": "EchoAlertV1",
+  "type": "object",
+  "required": ["schema_version", "alert_id", "event_id", "severity", "route", "created_utc"],
+  "properties": {
+    "schema_version": {"const": "echo.alert.v1"},
+    "alert_id": {"type": "string"},
+    "event_id": {"type": "string"},
+    "severity": {"enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "route": {"type": "string"},
+    "created_utc": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

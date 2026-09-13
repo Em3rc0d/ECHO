@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/inference.schema.json",
+  "title": "EchoRawInferenceV1",
+  "type": "object",
+  "required": ["schema_version", "window_id", "source_id", "stream_session_id", "window_start_utc", "window_end_utc", "model", "scores", "inference_ms"],
+  "properties": {
+    "schema_version": {"const": "echo.inference.v1"},
+    "window_id": {"type": "string"},
+    "source_id": {"type": "string"},
+    "stream_session_id": {"type": "string"},
+    "window_start_utc": {"type": "string", "format": "date-time"},
+    "window_end_utc": {"type": "string", "format": "date-time"},
+    "model": {"type": "object"},
+    "scores": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}},
+    "inference_ms": {"type": "number", "minimum": 0}
+  }
+}

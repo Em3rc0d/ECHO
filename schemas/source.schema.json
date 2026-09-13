@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/source.schema.json",
+  "title": "EchoSourceV1",
+  "type": "object",
+  "required": ["schema_version", "source_id", "site_id", "kind", "enabled"],
+  "properties": {
+    "schema_version": {"const": "echo.source.v1"},
+    "source_id": {"type": "string", "minLength": 1},
+    "site_id": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["ip_camera", "microphone", "replay"]},
+    "stream_secret_ref": {"type": ["string", "null"]},
+    "enabled": {"type": "boolean"},
+    "tags": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

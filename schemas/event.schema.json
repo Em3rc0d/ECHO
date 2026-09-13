@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/event.schema.json",
+  "title": "EchoConfirmedEventV1",
+  "type": "object",
+  "required": ["schema_version", "event_id", "source_id", "site_id", "event_type", "onset_utc", "confidence", "model_version", "threshold_version", "stream_session_id"],
+  "properties": {
+    "schema_version": {"const": "echo.event.v1"},
+    "event_id": {"type": "string", "minLength": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "site_id": {"type": "string", "minLength": 1},
+    "event_type": {"type": "string", "minLength": 1},
+    "onset_utc": {"type": "string", "format": "date-time"},
+    "end_utc": {"type": ["string", "null"], "format": "date-time"},
+    "confidence": {
+      "type": "object",
+      "required": ["peak", "mean"],
+      "properties": {
+        "peak": {"type": "number", "minimum": 0, "maximum": 1},
+        "mean": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "model_version": {"type": "string"},
+    "threshold_version": {"type": "string"},
+    "stream_session_id": {"type": "string"},
+    "provenance": {"type": "object"}
+  }
+}
