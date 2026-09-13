@@ -1,0 +1,39 @@
+{
+  "archive_sha256": "661183a6f53ef04f12c9bd618fed0ddc1713280d6c94a5a5431e844ba6f6a21f",
+  "archive_size_bytes": 645832161,
+  "archive_url": "https://codeload.github.com/karolpiczak/ESC-50/zip/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6",
+  "candidate_manifest_sha256": "f2fcca2861d463ffb2ef6c3248d01e8844c6722f7e29b66538bc8ba123e21f12",
+  "certification_boundary": "Pinned real ESC-50 target bytes materialized under the free-tier boundary. CC-BY-NC keeps this evidence research-only and it cannot satisfy release_safe source diversity.",
+  "license_id": "CC-BY-NC",
+  "pinned_commit": "33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6",
+  "probe_failures": 0,
+  "profile": "research_extended",
+  "resolved_archive_url": "https://codeload.github.com/karolpiczak/ESC-50/zip/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6",
+  "schema_version": "echo.esc50-pinned-materialization.v1",
+  "selected_asset_count": 80,
+  "source_id": "esc50",
+  "status": "PASS",
+  "target_counts": {
+    "SIREN": 40,
+    "VEHICLE_HORN": 40
+  },
+  "target_fold_counts": {
+    "SIREN": {
+      "1": 8,
+      "2": 8,
+      "3": 8,
+      "4": 8,
+      "5": 8
+    },
+    "VEHICLE_HORN": {
+      "1": 8,
+      "2": 8,
+      "3": 8,
+      "4": 8,
+      "5": 8
+    }
+  },
+  "total_selected_duration_seconds": 400.0,
+  "working_set_final_bytes": 681115681,
+  "working_set_limit_bytes": 10737418240
+}
