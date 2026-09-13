@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import shutil
 import time
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 from urllib.request import Request, urlopen
 
 from echo.data_foundry.acquisition import files_for_stage, load_acquisition_registry, md5_file
@@ -23,23 +23,41 @@ USER_AGENT = "ECHO-Data-Foundry/1.0 (+https://github.com/Em3rc0d/ECHO)"
 
 
 def publisher_file_url(source: dict, filename: str) -> str:
+    """Return Zenodo's published-record Files API content endpoint.
+
+    The human-facing ``/records/<id>/files/...`` route can intermittently time
+    out on automated runners.  Published record metadata exposes files via the
+    public REST API, whose canonical content route is
+    ``/api/records/<id>/files/<key>/content``.
+    """
+
     record_url = str(source.get("record_url") or "").rstrip("/")
-    if record_url.startswith("https://zenodo.org/records/"):
-        return f"{record_url}/files/{quote(filename, safe='')}?download=1"
+    parsed = urlparse(record_url)
+    if parsed.netloc == "zenodo.org" and "/records/" in parsed.path:
+        record_id = parsed.path.rstrip("/").split("/")[-1]
+        if not record_id.isdigit():
+            raise ValueError(f"invalid Zenodo record id in {record_url!r}")
+        return f"https://zenodo.org/api/records/{record_id}/files/{quote(filename, safe='')}/content"
     explicit = source.get("download_base_url")
     if explicit:
         return f"{str(explicit).rstrip('/')}/{quote(filename, safe='')}"
     raise ValueError(f"no deterministic download route for source record {record_url!r}")
 
 
-def _download(url: str, destination: Path, retries: int = 4) -> str:
+def _download(url: str, destination: Path, retries: int = 5) -> str:
     destination.parent.mkdir(parents=True, exist_ok=True)
     partial = destination.with_suffix(destination.suffix + ".part")
     last_error: Exception | None = None
     for attempt in range(1, retries + 1):
         try:
-            request = Request(url, headers={"User-Agent": USER_AGENT})
-            with urlopen(request, timeout=90) as response, partial.open("wb") as handle:
+            request = Request(
+                url,
+                headers={
+                    "User-Agent": USER_AGENT,
+                    "Accept": "application/octet-stream,*/*;q=0.8",
+                },
+            )
+            with urlopen(request, timeout=60) as response, partial.open("wb") as handle:
                 shutil.copyfileobj(response, handle, length=1024 * 1024)
                 final_url = response.geturl()
             partial.replace(destination)
@@ -48,7 +66,7 @@ def _download(url: str, destination: Path, retries: int = 4) -> str:
             last_error = exc
             partial.unlink(missing_ok=True)
             if attempt < retries:
-                time.sleep(min(2**attempt, 8))
+                time.sleep(min(2**attempt, 10))
     raise RuntimeError(f"download failed after {retries} attempts: {url}") from last_error
 
 

@@ -25,7 +25,7 @@
     {
       "source_id": "sonyc-ust-v2",
       "name": "SONYC Urban Sound Tagging",
-      "release": "v2 family",
+      "release": "2.3",
       "canonical_url": "https://zenodo.org/records/3966543",
       "role": ["urban_sensor_positive", "hard_negative_pool", "domain_context"],
       "license_model": "uniform_dataset",
@@ -40,7 +40,7 @@
         "TIRE_SQUEAL": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true}
       },
       "group_keys": ["sensor_id", "recording_id", "split/time metadata"],
-      "notes": "Keep car-alarm/reverse-beeper as alert-family confusers rather than positives."
+      "notes": "Pinned to official Zenodo v2.3 release. Keep car-alarm/reverse-beeper as alert-family confusers rather than positives."
     },
     {
       "source_id": "singapura-v1.0a",

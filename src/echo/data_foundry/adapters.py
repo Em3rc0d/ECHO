@@ -97,7 +97,7 @@ def parse_fsd50k_ground_truth(
     """Parse FSD50K using AudioSet MIDs to avoid ambiguity in display names.
 
     FSD50K ground truth exposes comma-separated MIDs; display names themselves
-    can contain commas.  Therefore ``vocabulary.csv`` is the preferred route
+    can contain commas. Therefore ``vocabulary.csv`` is the preferred route
     to reconstruct labels rather than splitting the human-readable labels cell.
     """
 
@@ -119,8 +119,6 @@ def parse_fsd50k_ground_truth(
             if vocabulary:
                 labels = tuple(sorted({vocabulary[mid] for mid in mids if mid in vocabulary}))
             else:
-                # Without vocabulary, preserve MIDs themselves instead of
-                # guessing how commas in display names should be segmented.
                 labels = mids
             info_raw = clip_info.get(source_id, {})
             info = info_raw if isinstance(info_raw, dict) else {}
@@ -182,7 +180,7 @@ def parse_sonyc_annotations(csv_path: str | Path, *, audio_root: str | Path | No
         local = str(Path(audio_root) / filename) if audio_root else filename
         result.append(RawAssetCandidate(
             source_dataset="sonyc-ust-v2",
-            source_release="v2-family",
+            source_release="2.3",
             source_asset_id=filename,
             local_relpath=local,
             license_id="CC-BY-4.0",
