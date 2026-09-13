@@ -1,0 +1,134 @@
+{
+  "blocking_precheck_nodes": [
+    "GLASS_SHATTER:DIRECT_ASSETS_0_LT_50",
+    "GLASS_SHATTER:DIRECT_GROUPS_0_LT_25",
+    "GLASS_SHATTER:DIRECT_SOURCES_0_LT_2",
+    "SIREN:DIRECT_SOURCES_1_LT_2",
+    "FIRE_ALARM:DIRECT_ASSETS_4_LT_50",
+    "FIRE_ALARM:DIRECT_GROUPS_1_LT_25",
+    "FIRE_ALARM:DIRECT_SOURCES_1_LT_2",
+    "VEHICLE_HORN:DIRECT_SOURCES_1_LT_2",
+    "TIRE_SQUEAL:DIRECT_ASSETS_5_LT_50",
+    "TIRE_SQUEAL:DIRECT_GROUPS_5_LT_25",
+    "TIRE_SQUEAL:DIRECT_SOURCES_1_LT_2"
+  ],
+  "classes": {
+    "FIRE_ALARM": {
+      "cc0_pending_review_duration_seconds": 1320.477549,
+      "cc0_real_assets_pending_semantic_review": 56,
+      "current_readiness": "NOT_READY",
+      "precheck_blockers": [
+        "DIRECT_ASSETS_4_LT_50",
+        "DIRECT_GROUPS_1_LT_25",
+        "DIRECT_SOURCES_1_LT_2"
+      ],
+      "release_safe_direct_duration_seconds_known_from_public_gap_only": 43.433525,
+      "release_safe_direct_real_asset_count_before_global_dedup": 4,
+      "release_safe_direct_source_count": 1,
+      "release_safe_direct_sources": [
+        "echo-bigsoundbank-cc0-gap-v1"
+      ],
+      "release_safe_group_candidate_count_before_global_group_audit": 1,
+      "research_only_real_asset_count": 0
+    },
+    "GLASS_SHATTER": {
+      "cc0_pending_review_duration_seconds": 0.0,
+      "cc0_real_assets_pending_semantic_review": 0,
+      "current_readiness": "NOT_READY",
+      "precheck_blockers": [
+        "DIRECT_ASSETS_0_LT_50",
+        "DIRECT_GROUPS_0_LT_25",
+        "DIRECT_SOURCES_0_LT_2"
+      ],
+      "release_safe_direct_duration_seconds_known_from_public_gap_only": 0.0,
+      "release_safe_direct_real_asset_count_before_global_dedup": 0,
+      "release_safe_direct_source_count": 0,
+      "release_safe_direct_sources": [],
+      "release_safe_group_candidate_count_before_global_group_audit": 0,
+      "research_only_real_asset_count": 2
+    },
+    "SIREN": {
+      "cc0_pending_review_duration_seconds": 0.0,
+      "cc0_real_assets_pending_semantic_review": 0,
+      "current_readiness": "NOT_READY",
+      "precheck_blockers": [
+        "DIRECT_SOURCES_1_LT_2"
+      ],
+      "release_safe_direct_duration_seconds_known_from_public_gap_only": 0.0,
+      "release_safe_direct_real_asset_count_before_global_dedup": 106,
+      "release_safe_direct_source_count": 1,
+      "release_safe_direct_sources": [
+        "sonyc-ust-v2"
+      ],
+      "release_safe_group_candidate_count_before_global_group_audit": 106,
+      "research_only_real_asset_count": 59
+    },
+    "TIRE_SQUEAL": {
+      "cc0_pending_review_duration_seconds": 456.425633,
+      "cc0_real_assets_pending_semantic_review": 25,
+      "current_readiness": "NOT_READY",
+      "precheck_blockers": [
+        "DIRECT_ASSETS_5_LT_50",
+        "DIRECT_GROUPS_5_LT_25",
+        "DIRECT_SOURCES_1_LT_2"
+      ],
+      "release_safe_direct_duration_seconds_known_from_public_gap_only": 43.1472,
+      "release_safe_direct_real_asset_count_before_global_dedup": 5,
+      "release_safe_direct_source_count": 1,
+      "release_safe_direct_sources": [
+        "echo-bigsoundbank-cc0-gap-v1"
+      ],
+      "release_safe_group_candidate_count_before_global_group_audit": 5,
+      "research_only_real_asset_count": 0
+    },
+    "VEHICLE_HORN": {
+      "cc0_pending_review_duration_seconds": 0.0,
+      "cc0_real_assets_pending_semantic_review": 0,
+      "current_readiness": "NOT_READY",
+      "precheck_blockers": [
+        "DIRECT_SOURCES_1_LT_2"
+      ],
+      "release_safe_direct_duration_seconds_known_from_public_gap_only": 0.0,
+      "release_safe_direct_real_asset_count_before_global_dedup": 157,
+      "release_safe_direct_source_count": 1,
+      "release_safe_direct_sources": [
+        "sonyc-ust-v2"
+      ],
+      "release_safe_group_candidate_count_before_global_group_audit": 157,
+      "research_only_real_asset_count": 99
+    }
+  },
+  "materialized_sources": {
+    "esc50": {
+      "profile": "research_extended",
+      "selected_asset_count": 80,
+      "status": "PASS"
+    },
+    "freesound_cc0": {
+      "candidate_count": 129,
+      "materialized_count": 81
+    },
+    "fsd50k": {
+      "mode": "metadata_ground_truth_only_due_free_tier_boundary",
+      "status": "PASS"
+    },
+    "public_gap": {
+      "materialized_count": 21,
+      "status": "PASS"
+    },
+    "singapura": {
+      "profile": "research_extended",
+      "selected_recording_count": 4183,
+      "status": "PASS"
+    },
+    "sonyc": {
+      "asset_count": 18510,
+      "shards": 19,
+      "status": "PASS_WITH_REVIEW_FLAGS"
+    }
+  },
+  "next_rule": "Do not weaken thresholds. Close blockers using free, rights-defensible real media; then run full Foundry admission/dedup/group/split/freeze and require coverage-gate.json PASS with gap_codes=[].",
+  "schema_version": "echo.materialized-coverage-audit.v1",
+  "scope": "Pre-admission empirical materialization audit. Not a substitute for Foundry coverage-gate.json.",
+  "status": "OPEN"
+}
