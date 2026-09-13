@@ -23,24 +23,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Confirm ffprobe
-        run: ffprobe -version | head -n 1
+      - name: Install deterministic media probe dependency
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          set -o pipefail
+          ffprobe -version | head -n 1
       - name: Materialize public real-media candidates
+        id: materialize
+        continue-on-error: true
         env:
           PYTHONPATH: src
           ECHO_GAP_ASSET_ROOT: ${{ runner.temp }}/echo-public-gap-assets
         run: python scripts/materialize_public_gap_assets.py
       - name: Validate evidence report
+        if: ${{ always() }}
         run: python -m json.tool MK1/mining-site/materialization/public-gap-assets-report.json >/dev/null
       - name: Upload real media as ephemeral controlled artifact
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: echo-public-gap-assets-${{ github.sha }}
           path: ${{ runner.temp }}/echo-public-gap-assets/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 90
           compression-level: 0
       - name: Commit hashes/probes/license-page evidence only
+        if: ${{ always() }}
         run: |
           git config user.name 'echo-data-foundry-bot'
           git config user.email '123134857+Em3rc0d@users.noreply.github.com'
@@ -51,3 +60,15 @@ jobs:
             git commit -m 'evidence(mk1): materialize public gap audio candidates [skip ci]'
             git push origin HEAD:main
           fi
+      - name: Enforce materialization stop line
+        if: ${{ always() }}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('MK1/mining-site/materialization/public-gap-assets-report.json').read_text())
+          print('materialized_count=', report['materialized_count'])
+          print('failure_count=', report['failure_count'])
+          if report['status'] != 'PASS':
+              raise SystemExit('public gap materialization remains PARTIAL; inspect committed evidence report')
+          PY
