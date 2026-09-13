@@ -22,6 +22,11 @@ _ALLOWED_PROFILE_STATES = {
 
 _CERTIFIED_RELEASE_EVIDENCE_STATES = {
     "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
+    # Curated/public pools do not have one monolithic publisher release.
+    # Their source-level certification binds a curation version while every
+    # concrete asset remains fail-closed on page provenance, current rights,
+    # byte hash, probe, semantic review and global dedup/group gates.
+    "CURATED_PER_ASSET_EVIDENCE_CERTIFIED",
 }
 
 
@@ -93,7 +98,7 @@ def assert_source_records_allowed(
     profile: str,
     policy: Mapping[str, Any],
 ) -> None:
-    """Require source profile permission, certified release evidence and pin match."""
+    """Require source profile permission, certified evidence and release pin match."""
     failures: list[str] = []
     sources = policy.get("sources", {})
     pairs = sorted({(str(source_id), str(release)) for source_id, release in source_releases})
