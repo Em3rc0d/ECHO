@@ -10,7 +10,7 @@
   "sources": {
     "sonyc-ust-v2": {
       "release": "2.3",
-      "source_release_status": "CERTIFIED_SOURCE_RELEASE_CANDIDATE",
+      "source_release_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
       "profiles": {
         "release_safe": "ALLOW",
         "research_extended": "ALLOW",
@@ -23,12 +23,12 @@
       "conditions": [
         "Preserve attribution and source release identity.",
         "Use source-provided split/context metadata and ECHO grouping rules.",
-        "Source certification becomes CERTIFIED only after publisher metadata files pass checksum verification in CI."
+        "Publisher metadata/checksum snapshot is pinned and verified by the dataset-source certification workflow; full real-media bundle checksum verification is still required during EXEC-DATA-001."
       ]
     },
     "fsd50k-1.0": {
       "release": "1.0",
-      "source_release_status": "CERTIFIED_SOURCE_RELEASE_CANDIDATE",
+      "source_release_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
       "profiles": {
         "release_safe": "CONDITIONAL",
         "research_extended": "ALLOW",
@@ -43,12 +43,12 @@
         "No release-safe freeze until the intended-use review explicitly resolves the dataset-level commercial-use note.",
         "Per-asset license metadata is mandatory; CC-BY-NC and Sampling+ assets cannot silently enter release-safe lineage.",
         "Shatter is broader than ECHO GLASS_SHATTER and requires manual semantic review.",
-        "Source certification becomes CERTIFIED only after publisher metadata/doc/ground-truth bundles pass checksum verification in CI."
+        "Publisher metadata/doc/ground-truth checksum snapshot is pinned and verified; full real-media bundle checksum verification remains part of EXEC-DATA-001."
       ]
     },
     "singapura-v1.0a": {
       "release": "1.0a",
-      "source_release_status": "CERTIFIED_SOURCE_RELEASE_CANDIDATE",
+      "source_release_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
       "profiles": {
         "release_safe": "CONDITIONAL",
         "research_extended": "ALLOW",
@@ -61,7 +61,7 @@
       "conditions": [
         "Preserve attribution.",
         "Do not convert generic screeching or friction-brake labels into TIRE_SQUEAL positives.",
-        "Source certification becomes CERTIFIED only after publisher metadata/labels/readme bundles pass checksum verification in CI."
+        "Publisher metadata/labels/readme checksum snapshot is pinned and verified; full real-media bundle checksum verification remains part of EXEC-DATA-001."
       ]
     },
     "esc50": {
