@@ -1,85 +1,27 @@
 # MK0 / Plan
 
-## Orden de cierre
+**Status:** `CERTIFIED_PLAN`
 
-```text
-1. Source catalog
-2. Model landscape
-3. Dataset/license landscape
-4. Related-project analysis
-5. Taxonomy candidate
-6. Architecture tradeoffs
-7. Event contracts
-8. Benchmark protocol
-9. Field protocol
-10. Risk register
-11. External gates
-12. MK0 test/gate
-```
+## Purpose
 
-## Benchmark A/B/C mínimo
+Plan converts research/design/architecture into executable experiments and closure criteria. It answers what must be measured before implementation, what evidence each experiment produces, how results remain comparable and what is allowed to remain external.
 
-- **A:** YAMNet embeddings + ECHO head.
-- **B:** PANNs/Cnn14 transfer baseline.
-- **C:** CNN propia sobre log-mel como control.
+## Inputs
 
-Extended benchmark: AST/HTS-AT/PaSST/BEATs si el presupuesto de MK1 lo permite o en MK2.
+Frozen problem boundary, candidate/final taxonomy, model/data/source research, architecture boundaries, risk register and privacy/license constraints.
 
-## Dataset plan
+## Artifacts
 
-1. crear registry de datasets;
-2. registrar licencia por asset cuando aplique;
-3. mapear labels a taxonomía ECHO;
-4. extraer hard negatives;
-5. crear group-aware splits;
-6. reservar field holdout;
-7. no commit de audio raw.
+`RESEARCH-PLAN.md` orders knowledge closure. `DATA-ACQUISITION-PLAN.md` defines how public/field data enters evidence. `BENCHMARK-DESIGN.md` is the certified model-comparison protocol. `EXIT-CRITERIA.md` defines when MK0 is complete without confusing protocol readiness with empirical product performance.
 
-## Metrics plan
+## Planning principles
 
-Offline:
+No test set tuning; group-aware splits; same manifest for model comparison; external gates never guessed; performance targets labeled as targets; every result bundle references code/data/model/config identity.
 
-```text
-precision/recall/F1 per class
-macro/micro F1
-PR-AUC
-calibration
-```
+## Output
 
-Streaming:
+A complete MK0 plan yields the MK1 Definition of Ready and leaves only empirical outputs—model winner, thresholds, runtime, capacity, distance/SNR—and hardware/permission gates open.
 
-```text
-false alarms / source-hour
-missed events
-onset->event latency p50/p95/p99
-CPU/RAM
-throughput windows/s
-queue lag
-reconnect count
-```
+## Invalidation
 
-Robustez:
-
-```text
-recall vs distance
-F1/recall vs SNR
-performance vs microphone/codec/site
-```
-
-## Distance protocol candidate
-
-Evaluar, cuando sea seguro y autorizado:
-
-```text
-5 m
-10 m
-15 m
-20 m
-25 m
-```
-
-No se fabrican eventos peligrosos. Para eventos no seguros se utiliza audio autorizado/replay controlado o capturas pasivas.
-
-## Gate
-
-`MK0/test/MK0-GATE.md` decide si MK1 puede pasar a build.
+Reopen if taxonomy, model set, data policy, source contract or metric definitions materially change.

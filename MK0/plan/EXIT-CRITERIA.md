@@ -1,16 +1,43 @@
 # MK0 Exit Criteria
 
-MK0 puede certificarse cuando:
+**Status:** `PASS / CERT-MK0-013`
 
-- [ ] promesa y anti-scope están congelados;
-- [ ] taxonomía MK1 tiene mapeo y justificación;
-- [ ] datasets exactos y licencias/assets seleccionados están inventariados;
-- [ ] benchmark A/B/C está congelado antes de ejecutarse en MK1;
-- [ ] arquitectura PoC y target multi-source no tienen decisiones críticas ambiguas;
-- [ ] lifecycle `RAW_INFERENCE -> CANDIDATE_EVENT -> CONFIRMED_EVENT -> ALERT` está aceptado;
-- [ ] política de privacidad/retención está definida;
-- [ ] external camera gate está documentado;
-- [ ] riesgos críticos tienen mitigación o aceptación explícita;
-- [ ] Definition of Ready de MK1 puede evaluarse objetivamente.
+## Principle
 
-`EXTERNAL_GATE_OPEN` no bloquea investigación offline, pero sí la certificación de claims que dependan del hardware real.
+MK0 ends when the project can start the first build without unresolved architecture-changing assumptions. It does not wait for empirical values that only implementation/tests can produce.
+
+## Required closure
+
+- fixed promise and semantic anti-scope;
+- system boundary and multi-source invariant;
+- v1 target taxonomy and unknown/background semantics;
+- model landscape and minimum A/B/C benchmark;
+- data admission, license, split and field-holdout policy;
+- source/RTSP abstraction and decoder baseline;
+- inference -> candidate -> confirmed event lifecycle;
+- Pub/Sub candidate/semantics;
+- privacy/security baseline;
+- risk register;
+- benchmark/test protocol;
+- explicit external gates;
+- MK1 DoR.
+
+## Allowed open outputs
+
+Model winner, numerical thresholds, measured latency/resources, supported N, distance/SNR envelope and final SLOs remain open because they are outputs of MK1/MK2 evidence.
+
+## External gate handling
+
+Real-camera model/audio/codec/network/permission may remain `EXTERNAL_GATE_OPEN` if a replay path can exercise the same core contracts. This prevents a hardware delay from corrupting the design process.
+
+## Fail conditions
+
+MK0 is not valid if a target has no defensible semantic/data path, if benchmark protocols use leaked/test-tuned data, if source/event semantics are still ambiguous, or if the repo marks aspirational metrics as measured facts.
+
+## Evidence
+
+See `MK0/test/MK0-GATE.md`, `MK0/test/MK0-CERTIFICATE.md`, `governance/CERTIFICATION-LEDGER.md` and the MK0 web audit.
+
+## Invalidation
+
+Material changes to promise, taxonomy, source contract, event schema, benchmark set or privacy policy trigger selective recertification.

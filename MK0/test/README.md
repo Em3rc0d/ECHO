@@ -1,25 +1,23 @@
 # MK0 / Test
 
-## Objetivo
+**Status:** `CERTIFIED`
 
-Test en MK0 significa **validar la calidad de las decisiones y evidencia**, no medir accuracy de un modelo todavía.
+## Purpose
 
-## Checks
+MK0 test validates the **quality of the research/design evidence**, not classifier performance. It checks that claims have sources, protocols are reproducible, unresolved facts are not invented and the next milestone has a defensible Definition of Ready.
 
-- [ ] todas las fuentes clave tienen provenance;
-- [ ] claims externos no se presentan como resultados propios;
-- [ ] licencias críticas están registradas o marcadas OPEN;
-- [ ] datasets se evaluaron por utilidad real, no solo nombre de clase;
-- [ ] modelos se comparan con benchmark propio antes de elegir ganador;
-- [ ] arquitectura soporta N sources conceptualmente;
-- [ ] event lifecycle separa inference/event/alert;
-- [ ] thresholds no fueron inventados;
-- [ ] distancia no fue prometida sin medir;
-- [ ] privacy scope excluye ASR/speaker ID;
-- [ ] external gates están enumerados;
-- [ ] risk register cubre domain shift, false alarms, RTSP y licensing;
-- [ ] DoR de MK1 puede evaluarse objetivamente.
+## Artifacts
 
-## Resultado
+`CLAIM-CHECKLIST.md` audits epistemic status. `EVIDENCE-VALIDATION.md` defines source/provenance review. `FEASIBILITY-TESTS.md` describes what must be empirically tested later. `MK0-GATE.md` and `MK0-CERTIFICATE.md` record the certification boundary.
 
-`PASS` certifica MK0. `FAIL` devuelve el grafo al artefacto upstream defectuoso.
+## Key distinction
+
+Protocol readiness != test result. MK0 can certify “we know how to compare models fairly” while leaving “which model wins?” open for MK1.
+
+## Pass condition
+
+All architecture-changing unknowns are closed, isolated as an experiment or marked external; no dependent artifact relies on an untraceable claim; MK1 replay build can proceed without core redesign.
+
+## Invalidation
+
+New contradictory primary evidence, license changes, semantic scope changes or leakage in assumptions can invalidate only the affected certificate subgraph.

@@ -1,20 +1,39 @@
 # Evidence Validation — MK0
 
-## Niveles
+**Status:** `CERTIFIED_METHOD`
 
-- **FACT/EVIDENCE:** fuente primaria o experimento reproducible.
-- **INFERENCE:** conclusión razonada derivada de evidencia; no equivale a hecho.
-- **HYPOTHESIS:** afirmación falsable pendiente de prueba.
-- **DECISION_CANDIDATE:** opción suficientemente respaldada para debate.
-- **DECISION/CERTIFIED:** decisión aceptada con inputs y dependencias trazables.
+## Evidence hierarchy
 
-## Checklist por claim
+1. standards/specifications and official project documentation;
+2. original papers and author repositories;
+3. official dataset release/DOI pages;
+4. original open-source project docs/code;
+5. secondary explanations only when primary evidence is unavailable or for context.
 
-1. ¿Tiene source_id/URL o experiment_id?
-2. ¿La fuente es primaria cuando existe?
-3. ¿La licencia fue leída en el artefacto exacto?
-4. ¿El dato publicado se está extrapolando fuera de su benchmark?
-5. ¿La conclusión depende de cámara/hardware todavía desconocido?
-6. ¿Una modificación upstream debe invalidar este claim?
+## Validation fields
 
-Claims sin estas respuestas permanecen `OPEN`.
+For each evidence node record source URI, publisher/maintainer, accessed/release context when relevant, exact claim supported, ECHO implication, confidence and license/provenance notes.
+
+## Cross-checking
+
+Cross-check high-impact facts when one source may be stale or ambiguous—especially model/checkpoint licenses, dataset terms, protocol support and deployment behavior. Absence from docs is not proof a feature is impossible.
+
+## Related-project evidence
+
+Frigate and similar systems can establish that a pattern such as per-camera audio detection + MQTT is operationally plausible. They cannot establish ECHO's model quality, capacity or field distance.
+
+## License evidence
+
+Repository license, checkpoint license, dataset release terms and individual asset license are distinct evidence nodes.
+
+## Contradictions
+
+Preserve contradictory findings in mining-site and mark the decision unresolved until scoped or tested. Do not silently choose the convenient source.
+
+## Validation output
+
+A source catalog and web-audit ledger feeding certificates in `governance/CERTIFICATION-LEDGER.md`.
+
+## Invalidation
+
+Material upstream changes, dead/mutated assets or corrected evidence require re-audit of dependent claims.

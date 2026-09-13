@@ -1,25 +1,38 @@
-# BUILD GATE — MK0
+# MK0 Build Gate
 
-**Estado: GATED / NOT_STARTED**
+**Status:** `CLOSED_FOR_RESEARCH_ARTIFACTS`
 
-MK0 no construye producto. La carpeta `build/` documenta únicamente qué artefactos experimentales podrán existir una vez cerrados design/arch/plan.
+## Purpose
 
-## Permitido después del gate
+Prevent MK0 from turning into unreviewed product implementation while still allowing reproducibility tooling.
 
-- scripts reproducibles de dataset manifest;
-- harness de benchmark;
-- probes de FFmpeg/RTSP;
-- notebooks/CLI de análisis aislados;
-- generación de checksums/manifests.
+## Preconditions
 
-## No permitido todavía
+Problem boundary, research plan, architecture candidates and test/claim validation policy must exist. Any code/probe created in MK0 must answer a research question and be disposable or explicitly versioned.
 
-- servicio ECHO definitivo;
-- API productiva;
-- dashboard;
-- broker como dependencia arquitectónica congelada sin decisión;
-- entrenamiento presentado como modelo final.
+## Permitted examples
 
-## Unlock
+- script to inspect metadata/license manifests;
+- minimal RTSP/codec feasibility probe with no credentials committed;
+- model-input sanity check;
+- schema validation prototype;
+- benchmark environment capture.
 
-Sólo cuando `MK0/test/MK0-GATE.md` certifique el milestone y no existan nodos internos críticos `OPEN`.
+## Prohibited as certification evidence by itself
+
+- one successful demo clip;
+- hand-picked model prediction;
+- manually observed camera connection without logs/config provenance;
+- performance number without frozen data/config/hardware identity.
+
+## Evidence required
+
+Every research artifact names question, inputs, environment, command/config, output, interpretation and whether result is reproducible.
+
+## Exit
+
+MK0 build stage is complete when no additional tooling is required to validate the research claims feeding MK0 test/certification.
+
+## Invalidation
+
+A changed research question or input version invalidates the affected probe/result.

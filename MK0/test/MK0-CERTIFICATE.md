@@ -1,52 +1,37 @@
 # MK0 Certificate
 
-```yaml
-certificate_id: CERT-MK0-013
-project: ECHO
-milestone: MK0
-status: CERTIFIED
-issued_at: 2026-09-13
-promise: "Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial"
-scope:
-  - research evidence
-  - problem/scope boundary
-  - dataset/model landscape
-  - source/streaming architecture
-  - event lifecycle
-  - pubsub decision
-  - MK1 taxonomy
-  - benchmark protocol
-  - privacy requirements
-excludes:
-  - empirical model winner
-  - thresholds
-  - real-camera compatibility
-  - measured distance
-  - measured latency
-  - final SLOs
-external_gates:
-  - EXT-CAMERA-001
-owner_legal_gate:
-  - ECHO source-code license
-```
+**Certificate ID:** `CERT-MK0-013`  
+**Status:** `CERTIFIED`  
+**Scope:** research/design/architecture/plan readiness for MK1 replay build.
 
-## Inputs
+## Certified statements
 
-- `PROJECT-CHARTER.md`
-- `MK0/mining-site/WEB-AUDIT-2026-09-13.md`
-- `research/MODEL-MATRIX.md`
-- `research/DATASET-MATRIX.md`
-- `research/RELATED-PROJECTS.md`
-- `MK1/design/TAXONOMY.md`
-- `MK1/plan/BENCHMARK-PROTOCOL.md`
-- `governance/DECISION-LOG.md`
-- `governance/RISK-REGISTER.md`
-- `governance/PRIVACY-COMPLIANCE.md`
+- ECHO's immutable promise and observable-event boundary are explicit.
+- A multi-source logical architecture is defined independent of physical camera count.
+- RTSP source abstraction, FFmpeg baseline and optional ONVIF/GStreamer path are defensible.
+- The MK1 v1 taxonomy and multi-label semantics are frozen.
+- Public-data use is governed by provenance/license/group-aware split rules.
+- A/B/C benchmark protocol is frozen before model selection.
+- Raw inference, candidate event, confirmed event and alert semantics are separated.
+- MQTT/Mosquitto + QoS1/idempotency is the MK1 delivery baseline.
+- Privacy/security baseline and external camera gate are explicit.
 
-## Validation rule
+## Not certified
 
-This certificate is valid only while the exact upstream artifacts remain semantically compatible. Git history supplies immutable versions; future CI should compute SHA-256 for each input and generate a machine-readable attestation manifest.
+This certificate does not assert model accuracy, model winner, thresholds, real-camera compatibility, distance, latency, source capacity or final SLOs. Those are empirical/external outputs.
 
-## Next certificate
+## Evidence inputs
 
-`CERT-MK1-READY-001` authorizes **starting** the replay/offline MK1 build. It does not claim the build exists or passes tests.
+MK0 brainstorming/design/arch/plan artifacts, mining-site source audit, quarries, research matrices, risk register, privacy/license controls and `MK0-GATE.md`.
+
+## Dependency behavior
+
+A material taxonomy change invalidates data mappings/benchmark/event consumers but not necessarily RTSP evidence. A source-protocol change affects ingestion certificates without automatically invalidating model/data research. Dependency-specific invalidation follows the certification DAG.
+
+## Handoff
+
+The certificate authorizes `CERT-MK1-READY-001` for replay/offline build while `EXT-CAMERA-001` remains open.
+
+## Historical integrity
+
+The certificate is versioned through Git; future recertification creates a new active version rather than erasing this record.

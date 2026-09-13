@@ -1,29 +1,43 @@
-# Feasibility Tests — MK0
+# Feasibility Tests — MK0 to MK1
 
-## T-01 Offline inference
+**Status:** `TEST_PROTOCOL_DEFINED / EXECUTION_SPLIT_ACROSS_MK1`
 
-Dado WAV mono/estéreo válido, el pipeline candidato genera scores/embeddings reproducibles y timestamps de ventanas.
+## Purpose
 
-## T-02 Temporal aggregation
+Define experiments needed to turn research assumptions into ECHO evidence.
 
-Una secuencia de ventanas positivas debe consolidarse en un solo evento; ventanas aisladas de baja evidencia no deben generar múltiples alarmas.
+## Data feasibility
 
-## T-03 Hard-negative replay
+Build a candidate manifest, filter by license/semantics, deduplicate/group and report unique groups per class. Failure: one or more target classes become too sparse/ambiguous for defensible evaluation.
 
-Reproducir confusores cercanos a cada clase y medir false positives por hora equivalente.
+## Model feasibility
 
-## T-04 Noise/SNR
+Run A/B/C with common splits and report per-class metrics plus runtime. Failure: no candidate achieves a viable quality/resource frontier, triggering extended model research.
 
-Mezclar positivos con fondos a varios SNR y medir degradación por clase.
+## Streaming feasibility
 
-## T-05 RTSP smoke
+Replay continuous positives/negatives through windowing + Event Engine. Measure false alarms/source-hour, misses, fragmentation/duplicates and detection latency. Failure: clip quality does not translate to event quality.
 
-Cuando exista cámara: conectar, extraer audio, detectar stall y reconectar sin bloquear el proceso.
+## Multi-source feasibility
 
-## T-06 Distance field
+Run concurrent deterministic sources, inject one failure/noisy source, verify bounded memory, per-source state isolation and scheduler fairness.
 
-5/10/15/20/25 m bajo protocolo controlado cuando sea legal/seguro; registrar ruido, orientación y dispositivo.
+## Delivery feasibility
 
-## T-07 Multi-source synthetic
+Publish confirmed events through MQTT, test QoS1 duplicate behavior, reconnect and idempotent consumer handling.
 
-Multiplexar N streams de replay para descubrir límites de CPU, memoria y backlog antes de disponer de N cámaras físicas.
+## Camera feasibility
+
+When external gate closes, probe RTSP/audio codec, decode stability, reconnect/jitter and signal quality. Compare with replay path using same downstream contracts.
+
+## Privacy/security feasibility
+
+Verify no secrets in logs/Git, no default persistent audio, temp/crash behavior and least-privilege broker/source access.
+
+## Evidence bundles
+
+Every test records commit, manifest/config/model hashes, environment, expected criteria, actual result and limitation.
+
+## Gate interaction
+
+Replay/model/data tests can proceed before hardware. Field claims remain blocked until camera/site evidence exists.
