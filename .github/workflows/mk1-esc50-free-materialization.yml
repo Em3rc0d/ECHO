@@ -1,0 +1,64 @@
+name: MK1 ESC50 Free Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/data_foundry/materialize_esc50_pinned.py'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-esc50-free-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Materialize pinned ESC-50 target bytes
+        env:
+          ECHO_WORK_ROOT: ${{ runner.temp }}/echo-esc50
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-esc50-report
+        run: |
+          python scripts/data_foundry/materialize_esc50_pinned.py \
+            --work-root "$ECHO_WORK_ROOT" \
+            --output-dir "$ECHO_REPORT_ROOT"
+      - name: Enforce compact evidence budget
+        env:
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-esc50-report
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path(os.environ['ECHO_REPORT_ROOT'])
+          total = sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+          if total > 10_000_000:
+              raise SystemExit(f'ESC-50 durable evidence too large: {total}')
+          print('durable evidence bytes=', total)
+          PY
+      - name: Commit durable research evidence only
+        env:
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-esc50-report
+        run: |
+          cp "$ECHO_REPORT_ROOT/esc50-pinned-materialization-summary.json" MK1/mining-site/materialization/
+          cp "$ECHO_REPORT_ROOT/esc50-pinned-target-candidates.jsonl" MK1/mining-site/materialization/
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git pull --rebase origin main
+          git add \
+            MK1/mining-site/materialization/esc50-pinned-materialization-summary.json \
+            MK1/mining-site/materialization/esc50-pinned-target-candidates.jsonl
+          if git diff --cached --quiet; then
+            echo 'No ESC-50 evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize pinned ESC-50 research targets [skip ci]'
+            git push origin HEAD:main
+          fi
