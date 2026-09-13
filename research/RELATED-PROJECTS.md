@@ -1,40 +1,49 @@
-# Related Projects / Ecosystem
+# Related Projects and Comparable Systems
 
-| Proyecto | Qué ya resuelve | Qué aprende ECHO | Qué NO copiar |
-|---|---|---|---|
-| Frigate | IP cameras, FFmpeg, audio detection, events, MQTT, restream | source roles, volume gating, event lifecycle, MQTT patterns | convertir ECHO en NVR/video platform |
-| Frigate MQTT | topics/event states | desacoplar detection de consumers | schema exacto del producto |
-| go2rtc | relay/restream multiprotocolo | reducir conexiones a cámaras y fan-out | hard dependency en PoC |
-| Crywatch | RTSP -> go2rtc -> FFmpeg -> YAMNet -> temporal decisions -> alerts | streaming + sustained positives + cooldown | thresholds/caso baby monitor |
-| Real-Time-Sound-Event-Detection | YAMNet live inference | referencia de loop realtime | asumir que demo = producción |
-| PANNs repo | pretrained audio models / frame-wise variants | challenger/model research | stack completo como dependencia obligatoria |
-| SONYC baseline | multilabel urban sensor inference | evaluación realista en red de sensores | taxonomía urbana como taxonomía ECHO |
-| MIMII baseline | industrial anomaly sound | domain robustness ideas | confundir anomaly detection con event classification |
+**Status:** `MK0_CERTIFIED_LANDSCAPE / CONTINUOUSLY EXTENDABLE`
 
-## Valor propio de ECHO
+## Purpose
 
-Gran parte del plumbing ya existe. ECHO aporta integración disciplinada alrededor de:
+Identify which ECHO components are already solved by the ecosystem, validate operational patterns and clarify where ECHO's own engineering/research contribution remains. Related projects are references, not templates to copy blindly.
 
-```text
-multi-source acoustic ingestion
-+ domain-specific transfer/benchmarking
-+ temporal event engine
-+ versioned contracts
-+ operational Pub/Sub
-+ field robustness
-+ reproducible evidence/provenance
-```
+## Frigate NVR
 
-La innovación de ingeniería no debe venderse como “inventamos YAMNet/RTSP/MQTT”, sino como un sistema cohesivo, auditable y evaluado para convertir audio ambiental en eventos acústicos confiables.
+Relevant features documented by the project include IP-camera processing, FFmpeg/go2rtc integration patterns, per-camera audio detection and MQTT integration. ECHO learns that camera-scoped audio event processing and Pub/Sub are operationally realistic. Difference: Frigate is a broader NVR, whereas ECHO focuses on an independently benchmarked/certified acoustic detection/classification layer and its evidence pipeline.
 
-## Fuentes
+Primary docs: https://docs.frigate.video/configuration/audio_detectors/ and https://docs.frigate.video/integrations/mqtt/
 
-- Frigate audio: https://docs.frigate.video/configuration/audio_detectors/
-- Frigate MQTT: https://docs.frigate.video/integrations/mqtt/
-- Frigate restream: https://docs.frigate.video/configuration/restream
-- go2rtc: https://github.com/AlexxIT/go2rtc
-- Crywatch: https://github.com/drjc1001/crywatch
-- Real-Time-Sound-Event-Detection: https://github.com/robertanto/Real-Time-Sound-Event-Detection
-- PANNs: https://github.com/qiuqiangkong/audioset_tagging_cnn
-- SONYC baseline: https://github.com/sonyc-project/urban-sound-tagging-baseline
-- MIMII baseline: https://github.com/MIMII-hitachi/mimii_baseline
+## YAMNet real-time detectors
+
+Open projects using microphone/stream input with YAMNet show that continuous short-window classification and selected-class notification are practical. Many are useful PoCs but do not necessarily include rigorous data governance, group-aware splits, source-hour false-positive evaluation, multi-source scheduling or event lifecycle semantics.
+
+## IP-camera / RTSP audio monitors
+
+Projects such as specialized cry/baby sound monitors demonstrate a concrete path `RTSP -> audio extraction -> model -> notification`. ECHO uses them as feasibility evidence while retaining different target taxonomy, privacy context, Event Engine and multi-source goals.
+
+## Acoustic localization systems
+
+Research/open implementations combine sound-event detection with microphone arrays and direction-of-arrival. They show a future extension path but are outside the fixed current scope because direction estimation is not required to detect/classify events.
+
+## Sensor-network research
+
+SONYC and DCASE-related urban SED work provide stronger evidence for real ambient sound, multilabel/polyphony and site/domain variation than small curated clip projects. They influence ECHO evaluation design more than application architecture.
+
+## Commercial camera analytics
+
+Vendor/NVR products may expose audio anomaly classes, proving market relevance but offering limited visibility into models/training/evaluation. They are not acceptable scientific evidence for ECHO quality.
+
+## Comparison framework
+
+For each system record source type/protocol; audio preprocessing; model; label semantics; continuous/temporal aggregation; multi-source behavior; event API/PubSub; hardware; licensing; maintenance; privacy; known limitations.
+
+## What ecosystem already solves
+
+RTSP decoding, broker messaging, pretrained audio representations and basic camera supervision are existing building blocks. ECHO does not claim novelty for them.
+
+## ECHO-specific value
+
+Versioned source/audio/event contracts; controlled target taxonomy; asset-level data governance; comparative model selection; continuous false-alarm/latency evidence; temporal Event Engine; multi-source capacity/failure testing; and chained evidence/certification.
+
+## Invalidation
+
+Update when a new directly comparable open system materially changes assumptions or offers a component whose adoption would simplify ECHO without violating scope.

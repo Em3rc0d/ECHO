@@ -1,37 +1,59 @@
-# Source Catalog
+# ECHO Research Source Catalog
 
-Provenance labels usadas en MK0:
+**Status:** `CERTIFIED_MK0_CATALOG / EXTENDABLE`
 
-- `FACT/EVIDENCE`: afirmación directamente soportada por fuente.
-- `INFERENCE`: conclusión de ingeniería derivada de evidencia.
-- `HYPOTHESIS`: debe probarse.
-- `DECISION_CANDIDATE`: opción propuesta aún no cerrada.
+## Purpose
 
-| ID | Área | Fuente | Tipo | Nota |
-|---|---|---|---|---|
-| S-001 | AudioSet | https://research.google.com/audioset/ | primary | ontology + dataset metadata |
-| S-002 | YAMNet | https://www.tensorflow.org/tutorials/audio/transfer_learning_audio | primary | official transfer-learning flow |
-| S-003 | YAMNet code | https://github.com/tensorflow/models/tree/master/research/audioset/yamnet | primary | implementation/spec |
-| S-004 | PANNs paper | https://arxiv.org/abs/1912.10211 | paper | pretrained audio networks |
-| S-005 | PANNs repo | https://github.com/qiuqiangkong/audioset_tagging_cnn | primary code | models/checkpoints/license |
-| S-006 | AST | https://arxiv.org/abs/2104.01778 | paper | audio transformer |
-| S-007 | AST code | https://github.com/YuanGongND/ast | primary code | official implementation |
-| S-008 | HTS-AT | https://github.com/RetroCirce/HTS-Audio-Transformer | primary code | hierarchical transformer |
-| S-009 | Frigate audio | https://docs.frigate.video/configuration/audio_detectors/ | primary docs | production pattern |
-| S-010 | Frigate MQTT | https://docs.frigate.video/integrations/mqtt/ | primary docs | pub/sub pattern |
-| S-011 | go2rtc | https://github.com/AlexxIT/go2rtc | primary code | stream relay |
-| S-012 | ONVIF | https://www.onvif.org/ | standards body | IP security interoperability |
-| S-013 | FFmpeg RTSP | https://ffmpeg.org/ffmpeg-protocols.html | primary docs | ingestion/transport |
-| S-014 | MQTT | https://mqtt.org/mqtt-specification/ | standard | Pub/Sub semantics |
-| S-015 | Mosquitto | https://mosquitto.org/ | primary | open-source broker |
-| S-016 | FSD50K | https://zenodo.org/records/4060432 | dataset release | open sound data |
-| S-017 | ESC-50 | https://github.com/karolpiczak/ESC-50 | dataset release | benchmark |
-| S-018 | UrbanSound8K | https://zenodo.org/records/1203745 | dataset release | urban benchmark |
-| S-019 | SONYC-UST | https://zenodo.org/records/3966543 | dataset release | sensor network/multilabel |
-| S-020 | MIMII | https://zenodo.org/records/3384388 | dataset release | industrial noise/domain |
-| S-021 | DCASE | https://dcase.community/ | challenge | SED methodology |
-| S-022 | in-toto | https://in-toto.io/ | primary docs | attestation chain |
-| S-023 | Sigstore/Cosign | https://docs.sigstore.dev/ | primary docs | artifact signing |
-| S-024 | SLSA | https://slsa.dev/ | standard | provenance framework |
+Provide a curated map of authoritative sources used by ECHO. The catalog is organized by the claim each source can support, not by search-engine popularity.
 
-Este catálogo es vivo. Agregar una fuente no implica aprobar una dependencia.
+## Source tiers
+
+`T1 PRIMARY`: standard, official docs, original paper/repo, official dataset release, normative authority.  
+`T2 OPERATIONAL`: original docs of a related deployed/open project.  
+`T3 SECONDARY`: explanatory material used only when T1/T2 do not directly answer a contextual question.
+
+## Models
+
+TensorFlow YAMNet transfer-learning documentation and model source; PANNs paper/repository; AST paper/repository; HTS-AT repository/paper; PaSST and BEATs original papers/repositories when promoted. Exact checkpoint pages/licenses are added to model manifests.
+
+## Datasets/evaluation
+
+AudioSet official site/ontology; FSD50K official Zenodo release; ESC-50 official repo; UrbanSound8K official distribution; SONYC-UST official Zenodo; DCASE challenge/task/metric pages; release-specific DESED/MIMII sources.
+
+## Streaming/cameras
+
+ONVIF Profile T/media specs; FFmpeg protocol documentation; GStreamer `rtspsrc` docs; actual camera manufacturer documentation after model is known.
+
+## Messaging
+
+OASIS MQTT 5.0 specification; Eclipse Mosquitto official docs/project; related-system MQTT docs such as Frigate for operational patterns.
+
+## Privacy/compliance
+
+Peru ANPD official legal/normative/publication sources for personal data/videovigilance context; deployment may require additional institutional review.
+
+## Licensing
+
+Original repository LICENSE files, package metadata, checkpoint release terms and dataset/asset license metadata. Never infer checkpoint or media rights from surrounding source-code license.
+
+## Catalog record format
+
+```yaml
+source_id: EV-...
+tier: T1|T2|T3
+canonical_uri: ...
+publisher: ...
+release_or_access_context: ...
+claim_supported: ...
+limitations: ...
+license_relevance: ...
+downstream_artifacts: [...]
+```
+
+## Quality rule
+
+A URL in the catalog is not automatically evidence for every related claim. Each citation is scoped to what the source states or reasonably supports.
+
+## Maintenance
+
+New source -> stable ID. Corrected/superseded source -> new record plus impact review. Dead URLs are replaced with canonical archived/official equivalents when possible without rewriting history.
