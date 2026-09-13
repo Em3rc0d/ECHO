@@ -1,0 +1,29 @@
+{
+  "schema_version": "echo.split-policy.v1",
+  "taxonomy_version": "echo.taxonomy.v1",
+  "seed": "echo-mk1-data-v1",
+  "preserve_recognized_original_splits": true,
+  "original_split_map": {
+    "train": "train",
+    "training": "train",
+    "validate": "validation",
+    "validation": "validation",
+    "val": "validation",
+    "test": "test",
+    "eval": "test",
+    "evaluation": "test"
+  },
+  "fallback_group_hash_ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "rules": [
+    "Field holdout is always isolated and never remapped into train/validation/test.",
+    "Recognized upstream train/validation/test semantics are preserved when present.",
+    "Unpartitioned groups use deterministic SHA-256 group hashing with the frozen seed.",
+    "All assets sharing recording_group_id receive exactly one ECHO split.",
+    "Exact or registered near-duplicate content may not cross protected split boundaries.",
+    "Changing seed, ratios, original split mapping or grouping semantics creates a new split-policy version."
+  ]
+}

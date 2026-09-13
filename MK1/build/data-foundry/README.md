@@ -1,127 +1,122 @@
 # MK1 Data Foundry
 
-**Status:** `BUILD_IN_PROGRESS / CORE_SPEC_FROZEN / CORPUS_NOT_YET_ADMITTED`
+**Status:** `TOOLCHAIN_IMPLEMENTED / REAL_CORPUS_INSTANCE_NOT_YET_CERTIFIED`
 
-## 1. Purpose
+## Purpose
 
-The MK1 Data Foundry is the build-time layer that converts heterogeneous public, sensor-network and future ECHO field audio into a **traceable, versioned, license-aware and leakage-resistant corpus**. It lives inside `MK1/build`; it is not a new milestone phase and does not alter the frozen flow `brainstorming -> design -> arch -> plan -> build -> test`.
+The MK1 Data Foundry converts heterogeneous public, sensor-network and future ECHO field audio into a traceable, versioned, license-aware and leakage-resistant corpus. It is part of `MK1/build` and implements the data path required before model A/B/C benchmarking.
 
-The Foundry exists because model quality cannot be certified if the data path is informal. A clip is not usable merely because it can be downloaded or because its source label resembles an ECHO label.
-
-## 2. Contract
-
-Every admitted asset must be reconstructible through:
+## End-to-end contract
 
 ```text
-source release
-  -> upstream asset identity
-  -> origin/provenance
-  -> exact license/use decision
-  -> content hash
-  -> original labels
-  -> semantic mapping decision
-  -> group identity
-  -> quality/dedup evidence
-  -> split assignment
-  -> frozen manifest identity
+publisher/source release
+  -> acquisition registry + checksum verification
+  -> source-specific metadata intake
+  -> RawAssetCandidate manifest
+  -> local asset SHA-256
+  -> rights policy
+  -> semantic mapping + manual review where required
+  -> technical quality
+  -> group identity + duplicate screening
+  -> protected split / field holdout
+  -> frozen asset/split/report bundle
+  -> dataset manifest hashes
+  -> benchmark handoff
 ```
 
-If any mandatory link is missing, the asset is `QUARANTINED` or `REJECTED`; it does not silently enter training.
+No mandatory link may be skipped. Missing rights, provenance, local file, group identity or required review produces quarantine/rejection rather than silent admission.
 
-## 3. Data zones
+## Implemented code surface
+
+```text
+src/echo/data_foundry/
+  acquisition.py     publisher bundle verification
+  adapters.py        FSD50K/SONYC/SINGA:PURA/ESC-50/UrbanSound8K metadata adapters
+  admission.py       per-asset rights + mapping + quality decision
+  contracts.py       dataset-neutral typed contracts
+  dedup.py           group/exact/registered-near-duplicate leakage audits
+  fingerprints.py    PCM-WAV normalized-envelope screening fingerprint
+  hashing.py         canonical JSON + SHA-256 helpers
+  intake.py          config-driven candidate-manifest production
+  manifest.py        canonical asset/dataset manifests
+  mapping.py         versioned semantic label mapping
+  pipeline.py        admission, split and freeze orchestration
+  policies.py        rights/use decisions
+  quality.py         candidate quality checks
+  registry.py        source registry validation
+  reports.py         coverage/quarantine reports
+  reviews.py         manual review evidence
+  splits.py          deterministic group-aware splitting
+  cli.py             executable Foundry commands
+```
+
+Machine-readable policies live in `configs/data_foundry/`; JSON contracts live in `schemas/data_foundry/`; tests live in `tests/data_foundry/`.
+
+## Data zones
 
 ```text
 EXTERNAL / LANDING
-  immutable downloaded release or authorized field capture
-        |
-        v
+  immutable publisher bundle or authorized field capture
+        ↓
 STAGING
-  source-specific metadata parsed to RawAssetCandidate
-        |
-        v
-QUARANTINE <---- license/provenance/mapping/quality uncertainty
-        |
-        v
+  parsed source metadata / candidates
+        ↓
+QUARANTINE  ← rights / semantic / technical uncertainty
+        ↓
 CURATED
-  hashed + mapped + grouped + deduplicated assets
-        |
-        +--> TRAIN
-        +--> VALIDATION
-        +--> TEST
-        +--> FIELD_HOLDOUT  (never used for fitting/calibration)
+  hashed + mapped + reviewed + grouped assets
+        ↓
+FROZEN
+  train | validation | test | field_holdout
 ```
 
-Large audio is not committed to Git. Git stores code, schemas, registries, manifests, hashes, reports and certification evidence. Raw media stays in governed local/object storage according to its license and privacy constraints.
+Large audio is not committed to Git. Git stores source/policy registries, schemas, code, manifests, hashes, reports and certification evidence.
 
-## 4. Frozen taxonomy input
+## Frozen MK1 taxonomy
 
-MK1 v1 targets are:
+`GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL`.
 
-- `GLASS_SHATTER`
-- `SIREN`
-- `FIRE_ALARM`
-- `VEHICLE_HORN`
-- `TIRE_SQUEAL`
+`BACKGROUND_NO_TARGET` is a data state and hard-negative role. `UNKNOWN` is a decision-layer abstention state, not an automatically trained sixth class.
 
-`BACKGROUND_NO_TARGET` is a data state; `UNKNOWN` is a decision-layer abstention state and is not automatically a training class.
+## Source roles
 
-## 5. Source strategy
+FSD50K supplies broad/mixed-license environmental candidates and requires asset-level rights filtering. SONYC-UST supplies urban sensor-domain multilabel data. SINGA:PURA supplies strongly labelled urban sensor examples but ShareAlike use requires the chosen profile to respect policy. ESC-50 and UrbanSound8K are research-only in the default policy. AudioSet is ontology/pretraining/reference evidence rather than a default raw-media source. ECHO Field Dataset remains gated by authorized device/site collection.
 
-The Foundry intentionally combines sources by role rather than pretending one dataset covers ECHO:
+## Known sourcing gaps
 
-- **FSD50K 1.0** — broad permissive/mixed-license source pool; strong for `Shatter`, `Siren`, `Vehicle horn`; asset-level license filtering is mandatory.
-- **SONYC-UST v2** — real urban sensor domain; exact `car-horn` and `siren`, multilabel context and hard negatives.
-- **SINGA:PURA v1.0a** — strongly labelled urban sensor audio; includes `Glass breaking`, `Car horn`, `Siren` and temporal onset/offset; ShareAlike implications require release-policy review.
-- **ESC-50** — small sanity benchmark with `Siren` and `Car horn`; full dataset is non-commercial and therefore research-only for ECHO's default release-safe profile.
-- **UrbanSound8K** — urban contrast with `car_horn` and `siren`; non-commercial, research-only.
-- **AudioSet** — ontology/pretraining/reference metadata. Raw YouTube-derived media is not admitted by default because metadata availability does not grant ECHO redistribution/training rights for each underlying item.
-- **ECHO Field Dataset** — future authorized camera/microphone evidence and holdout; gated by `EXT-CAMERA-001` and privacy/permission controls.
+The Foundry never fabricates `FIRE_ALARM` or `TIRE_SQUEAL` from generic alarm/screech/friction labels. If a frozen real manifest lacks direct valid evidence, the generated coverage report keeps the gap visible and the model benchmark cannot pretend the class is certified.
 
-## 6. Important data gaps
+## CLI execution
 
-`FACT/EVIDENCE`: no currently selected release-safe source gives ECHO a sufficient, clean, directly ingestible pool for both `FIRE_ALARM` and `TIRE_SQUEAL`.
+```bash
+# 1. verify publisher release files
+echo-data-foundry acquisition-plan fsd50k-1.0 --stage metadata
+echo-data-foundry verify-acquisition fsd50k-1.0 /data/landing/fsd50k --stage metadata
 
-Therefore these two classes are **not fabricated from broader labels**. The Foundry records them as coverage gaps to be solved through a permissively licensed source, controlled/synthetic generation validated against real examples, and/or authorized ECHO field collection. A generic `Alarm`, `Screech`, `Brake` or `Friction brake` label is not promoted to these targets without semantic evidence.
+# 2. parse source metadata to deterministic candidate JSONL
+echo-data-foundry intake work/intake-sonyc.json work/sonyc-candidates.jsonl
 
-## 7. Build outputs
+# 3. hash / rights / mapping / review admission
+echo-data-foundry admit work/candidates.jsonl work/records.jsonl \
+  --profile release_safe --audio-root /data/curated --reviews work/reviews.json
 
-The Foundry build produces:
-
-```text
-source registry
-license policy
-label mapping registry
-asset manifest JSONL
-split manifest
-quarantine/rejection report
-dedup report
-class/source/license coverage report
-manifest SHA-256
-field-holdout manifest (when available)
+# 4. assign splits, audit leakage and freeze evidence
+echo-data-foundry freeze work/records.jsonl work/frozen/echo-mk1-data-001 \
+  --manifest-id echo-mk1-data-001 --profile release_safe
 ```
 
-These identities become inputs to the MK1 model benchmark. A benchmark without the exact Foundry manifest/split hashes is non-certifiable.
+## Freeze outputs
 
-## 8. Implementation
+`asset-manifest.jsonl`, `split-manifest.json`, `dataset-manifest.json`, `coverage-report.json`, `dedup-report.json`, `quarantine-report.json`.
 
-Runtime-independent Foundry code lives in `src/echo/data_foundry/`. Machine-readable policies live in `configs/data_foundry/`; schemas live in `schemas/data_foundry/`; tests live in `tests/data_foundry/`.
+A benchmark without the exact frozen component hashes is non-certifiable.
 
-The implementation intentionally starts with deterministic metadata/provenance/split logic before decoding audio or training a neural network.
+## Stop-the-line rules
 
-## 9. Stop-the-line conditions
+Stop downstream execution on unknown/incompatible rights, release checksum mismatch, missing file/hash, broad positive mapping without review, group or duplicate leakage across protected splits, field-holdout contamination, mutable manual file selection, or a report that cannot reconstruct its asset population.
 
-Stop downstream corpus construction when any of the following is detected:
+## Certification boundary
 
-- unknown/incompatible license or missing attribution provenance;
-- same physical/source group crossing protected splits;
-- duplicate/near-duplicate leakage across test boundary;
-- broad/ambiguous label being automatically treated as an exact target;
-- field holdout consumed by training, threshold tuning or error-driven augmentation;
-- mutable manifest without new version/hash;
-- data report that cannot reproduce its asset population.
+The complete Foundry software/toolchain can be tested and certified without downloading tens of gigabytes into CI. **A real corpus certificate cannot be fabricated**: `EMP-DATASET-001`, `EMP-DATA-QUALITY-001` and `CERT-MK1-DF-CORPUS-001` require the declared external source media to be acquired and the implemented pipeline to run against it.
 
-## 10. Certification boundary
-
-The Foundry architecture/policies can be certified before the corpus exists. **Exact admitted counts, durations, class balance, duplicate findings and final data sufficiency remain empirical outputs** until the source releases are acquired and the pipeline is executed.
-
-See the other files in this folder for source evidence, semantic mappings, admission policy, split/dedup design, hard negatives, field holdout, runbook and gates.
+See `ACQUISITION.md`, `METADATA-INTAKE.md`, `SEMANTIC-REVIEW.md`, `CORPUS-FREEZE.md` and `FOUNDRY-GATES.md` for gate-level details.

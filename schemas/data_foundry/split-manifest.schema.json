@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/split-manifest.v1.json",
+  "title": "ECHO Split Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "seed", "assignments"],
+  "properties": {
+    "schema_version": {"const": "echo.split-manifest.v1"},
+    "seed": {"type": "string", "minLength": 1},
+    "assignments": {
+      "type": "object",
+      "additionalProperties": {"enum": ["train", "validation", "test", "field_holdout"]}
+    }
+  }
+}

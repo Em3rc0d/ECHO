@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/split-policy.v1.json",
+  "title": "ECHO Data Foundry Split Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "seed", "preserve_recognized_original_splits", "original_split_map", "fallback_group_hash_ratios", "rules"],
+  "properties": {
+    "schema_version": {"const": "echo.split-policy.v1"},
+    "taxonomy_version": {"type": "string"},
+    "seed": {"type": "string", "minLength": 1},
+    "preserve_recognized_original_splits": {"type": "boolean"},
+    "original_split_map": {
+      "type": "object",
+      "additionalProperties": {"enum": ["train", "validation", "test"]}
+    },
+    "fallback_group_hash_ratios": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "validation", "test"],
+      "properties": {
+        "train": {"type": "number", "minimum": 0, "maximum": 1},
+        "validation": {"type": "number", "minimum": 0, "maximum": 1},
+        "test": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "rules": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/review-decisions.v1.json",
+  "title": "ECHO Data Foundry Review Decisions v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "decisions"],
+  "properties": {
+    "schema_version": {"const": "echo.review-decisions.v1"},
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_id", "approved", "echo_labels", "reviewer", "reviewed_at_utc", "rationale"],
+        "properties": {
+          "asset_id": {"type": "string", "minLength": 1},
+          "approved": {"type": "boolean"},
+          "echo_labels": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"enum": ["GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"]}
+          },
+          "reviewer": {"type": "string", "minLength": 1},
+          "reviewed_at_utc": {"type": "string", "minLength": 1},
+          "rationale": {"type": "string", "minLength": 1},
+          "evidence_ref": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

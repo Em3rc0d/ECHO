@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/raw-asset-candidate.v1.json",
+  "title": "ECHO Raw Asset Candidate v1",
+  "type": "object",
+  "required": ["schema_version", "asset_id", "source_dataset", "source_release", "source_asset_id", "license_id", "original_labels"],
+  "properties": {
+    "schema_version": {"const": "echo.raw-asset-candidate.v1"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "source_dataset": {"type": "string", "minLength": 1},
+    "source_release": {"type": "string", "minLength": 1},
+    "source_asset_id": {"type": "string", "minLength": 1},
+    "origin_uri": {"type": ["string", "null"]},
+    "local_relpath": {"type": ["string", "null"]},
+    "license_id": {"type": "string"},
+    "original_labels": {"type": "array", "items": {"type": "string"}},
+    "label_provenance": {"type": ["string", "null"]},
+    "recording_group_id": {"type": ["string", "null"]},
+    "uploader_or_source_id": {"type": ["string", "null"]},
+    "site_id": {"type": ["string", "null"]},
+    "device_id": {"type": ["string", "null"]},
+    "original_split": {"type": ["string", "null"]},
+    "duration_seconds": {"type": ["number", "null"], "minimum": 0},
+    "sample_rate_hz": {"type": ["integer", "null"], "minimum": 1},
+    "channels": {"type": ["integer", "null"], "minimum": 1},
+    "field_holdout": {"type": "boolean"},
+    "extra": {"type": "object"}
+  }
+}

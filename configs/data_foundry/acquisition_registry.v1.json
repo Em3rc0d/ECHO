@@ -1,0 +1,84 @@
+{
+  "schema_version": "echo.acquisition-registry.v1",
+  "checked_at": "2026-09-13",
+  "checksum_note": "Publisher MD5 verifies downloaded release bundles where published. ECHO still computes SHA-256 for every local admitted asset.",
+  "sources": {
+    "fsd50k-1.0": {
+      "record_url": "https://zenodo.org/records/4060432",
+      "estimated_total_display": "24.7 GB",
+      "files": [
+        {"name": "FSD50K.ground_truth.zip", "md5": "ca27382c195e37d2269c4c866dd73485", "size_display": "334.7 kB", "required_for": ["metadata", "full"]},
+        {"name": "FSD50K.metadata.zip", "md5": "b9ea0c829a411c1d42adb9da539ed237", "size_display": "6.7 MB", "required_for": ["metadata", "full"]},
+        {"name": "FSD50K.doc.zip", "md5": "3516162b82dc2945d3e7feba0904e800", "size_display": "7.0 kB", "required_for": ["metadata", "full"]},
+        {"name": "FSD50K.dev_audio.z01", "md5": "faa7cf4cc076fc34a44a479a5ed862a3", "size_display": "3.2 GB", "required_for": ["full"]},
+        {"name": "FSD50K.dev_audio.z02", "md5": "8f9b66153e68571164fb1315d00bc7bc", "size_display": "3.2 GB", "required_for": ["full"]},
+        {"name": "FSD50K.dev_audio.z03", "md5": "1196ef47d267a993d30fa98af54b7159", "size_display": "3.2 GB", "required_for": ["full"]},
+        {"name": "FSD50K.dev_audio.z04", "md5": "d088ac4e11ba53daf9f7574c11cccac9", "size_display": "3.2 GB", "required_for": ["full"]},
+        {"name": "FSD50K.dev_audio.z05", "md5": "81356521aa159accd3c35de22da28c7f", "size_display": "3.2 GB", "required_for": ["full"]},
+        {"name": "FSD50K.dev_audio.zip", "md5": "c480d119b8f7a7e32fdb58f3ea4d6c5a", "size_display": "2.3 GB", "required_for": ["full"]},
+        {"name": "FSD50K.eval_audio.z01", "md5": "3090670eaeecc013ca1ff84fe4442aeb", "size_display": "3.2 GB", "required_for": ["full"]},
+        {"name": "FSD50K.eval_audio.zip", "md5": "6fa47636c3a3ad5c7dfeba99f2637982", "size_display": "3.0 GB", "required_for": ["full"]}
+      ],
+      "notes": "Multipart audio archives must be fully present before extraction."
+    },
+    "sonyc-ust-v2": {
+      "record_url": "https://zenodo.org/records/3966543",
+      "version_evidence": "2.3",
+      "estimated_total_display": "13.3 GB",
+      "files": [
+        {"name": "annotations.csv", "md5": "70b507b15bb4cfcce4870925302f276b", "size_display": "14.5 MB", "required_for": ["metadata", "full"]},
+        {"name": "dcase-ust-taxonomy.yaml", "md5": "6c1cca1c4c383a6ebb0cb71cb74fe3a9", "size_display": "1.1 kB", "required_for": ["metadata", "full"]},
+        {"name": "README.md", "md5": "bdfa3a4c0d90053f622b52afa0fc86f7", "size_display": "11.3 kB", "required_for": ["metadata", "full"]},
+        {"name": "unpack_audio.sh", "md5": "c78525e474d920b4b6af6385ee94bdc9", "size_display": "144 B", "required_for": ["full"]},
+        {"name": "audio-0.tar.gz", "md5": "bbb4dbae7d2e58e18d24878b9ee1eb51", "size_display": "721.6 MB", "required_for": ["full"]},
+        {"name": "audio-1.tar.gz", "md5": "7c369ff37ac6a1fdd8493fdffe62e0a1", "size_display": "721.7 MB", "required_for": ["full"]},
+        {"name": "audio-2.tar.gz", "md5": "412241c063d7f196953d3dd1c44aeb5e", "size_display": "715.8 MB", "required_for": ["full"]},
+        {"name": "audio-3.tar.gz", "md5": "d2a872392d95993a2c238d305b940812", "size_display": "718.6 MB", "required_for": ["full"]},
+        {"name": "audio-4.tar.gz", "md5": "b15b0e0cb3f8584259ef0d24293a9be3", "size_display": "714.7 MB", "required_for": ["full"]},
+        {"name": "audio-5.tar.gz", "md5": "de745f887067433757a2f2c8f99f99bb", "size_display": "719.4 MB", "required_for": ["full"]},
+        {"name": "audio-6.tar.gz", "md5": "b0286c67468369d66336f6f5ddede31f", "size_display": "714.7 MB", "required_for": ["full"]},
+        {"name": "audio-7.tar.gz", "md5": "ff300183ab7a9d3f2f74c3b730ffeb52", "size_display": "718.4 MB", "required_for": ["full"]},
+        {"name": "audio-8.tar.gz", "md5": "7be76b821fa6dbe20f6b50ca440e1024", "size_display": "715.5 MB", "required_for": ["full"]},
+        {"name": "audio-9.tar.gz", "md5": "959f7edfbb26eadad9865069f38aa9dd", "size_display": "715.3 MB", "required_for": ["full"]},
+        {"name": "audio-10.tar.gz", "md5": "84e94de273666c537a3e6b709ee88d9b", "size_display": "717.7 MB", "required_for": ["full"]},
+        {"name": "audio-11.tar.gz", "md5": "44fe1f43121a7d1178aa0cdf7477793b", "size_display": "719.1 MB", "required_for": ["full"]},
+        {"name": "audio-12.tar.gz", "md5": "a7eb21011f460b5ac289f8e285e875ab", "size_display": "716.1 MB", "required_for": ["full"]},
+        {"name": "audio-13.tar.gz", "md5": "27945a8b1008eec787f97213164951e6", "size_display": "719.9 MB", "required_for": ["full"]},
+        {"name": "audio-14.tar.gz", "md5": "fb8c7d81c3bde3a0c86c1e55e6a85a24", "size_display": "713.4 MB", "required_for": ["full"]},
+        {"name": "audio-15.tar.gz", "md5": "f6af9b65d876ef96d199b9e5f0473cb9", "size_display": "718.1 MB", "required_for": ["full"]},
+        {"name": "audio-16.tar.gz", "md5": "e8337c61a90c30989d500f950fbe443a", "size_display": "714.2 MB", "required_for": ["full"]},
+        {"name": "audio-17.tar.gz", "md5": "3e47e85eb4564a30fe7f442ee97ec7b9", "size_display": "718.9 MB", "required_for": ["full"]},
+        {"name": "audio-18.tar.gz", "md5": "c6b2ef4d0d5b7269d465c469cdbbdc4b", "size_display": "365.9 MB", "required_for": ["full"]}
+      ]
+    },
+    "singapura-v1.0a": {
+      "record_url": "https://zenodo.org/records/5645825",
+      "estimated_total_display": "4.5 GB",
+      "files": [
+        {"name": "labelled_metadata_public.csv", "md5": "c5beb6374e55abfe7cd50f4f498c8376", "size_display": "903.8 kB", "required_for": ["metadata", "full"]},
+        {"name": "labels_public.zip", "md5": "535242cf1094d95d086fc574874e9ddf", "size_display": "3.4 MB", "required_for": ["metadata", "full"]},
+        {"name": "Readme.md", "md5": "f9296e5a796daaf5e9452fb9fd8ddae4", "size_display": "15.4 kB", "required_for": ["metadata", "full"]},
+        {"name": "APSIPA.pdf", "md5": "4e0a5437b87d8db9c343adce8ef25cc8", "size_display": "544.9 kB", "required_for": ["metadata", "full"]},
+        {"name": "labelled.z01", "md5": "98477daca861c6950cc8b620cecc286d", "size_display": "1.0 GB", "required_for": ["full"]},
+        {"name": "labelled.z02", "md5": "873b26cfe25bb3084e39e5af0dfebcad", "size_display": "1.0 GB", "required_for": ["full"]},
+        {"name": "labelled.z03", "md5": "71322a5c3ba33badfdd8e25c9ebf559a", "size_display": "1.0 GB", "required_for": ["full"]},
+        {"name": "labelled.z04", "md5": "a6d087babea1f797af99b81cb7c7ea4a", "size_display": "1.0 GB", "required_for": ["full"]},
+        {"name": "labelled.zip", "md5": "bdd46cc5e9187e97c37989b3b73e786e", "size_display": "302.2 MB", "required_for": ["full"]}
+      ]
+    },
+    "esc50": {
+      "record_url": "https://github.com/karolpiczak/ESC-50",
+      "estimated_total_display": "~600 MB",
+      "default_stage": "research_extended",
+      "files": [],
+      "notes": "Prefer a pinned repository commit/archive. Full dataset is non-commercial; exact pinned archive digest must be recorded by the acquisition run."
+    },
+    "urbansound8k-1.0": {
+      "record_url": "https://serv.cusp.nyu.edu/projects/urbansounddataset/urbansound8k.html",
+      "default_stage": "research_extended",
+      "manual_download_required": true,
+      "files": [],
+      "notes": "Official distribution uses a download form. Full dataset is non-commercial; record archive hash locally after authorized/manual acquisition."
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/acquisition-registry.v1.json",
+  "title": "ECHO Data Foundry Acquisition Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "checked_at", "sources"],
+  "properties": {
+    "schema_version": {"const": "echo.acquisition-registry.v1"},
+    "checked_at": {"type": "string", "format": "date"},
+    "checksum_note": {"type": "string"},
+    "sources": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["record_url", "files"],
+        "properties": {
+          "record_url": {"type": "string", "minLength": 1},
+          "version_evidence": {"type": "string"},
+          "estimated_total_display": {"type": "string"},
+          "default_stage": {"type": "string"},
+          "manual_download_required": {"type": "boolean"},
+          "notes": {"type": "string"},
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "md5": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+                "size_display": {"type": "string"},
+                "required_for": {
+                  "type": "array",
+                  "items": {"enum": ["metadata", "full"]},
+                  "uniqueItems": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -14,12 +14,8 @@ __pycache__/
 .ruff_cache/
 .venv/
 venv/
-build/
-dist/
-*.egg-info/
 
-# MK1 Data Foundry / ML data artifacts
-/data/
+# ML/data artifacts
 *.wav
 *.flac
 *.mp3
@@ -39,6 +35,12 @@ dist/
 models/artifacts/
 datasets/raw/
 datasets/cache/
+datasets/landing/
+datasets/staging/
+datasets/quarantine/
+datasets/curated/
+datasets/frozen/
+work/data_foundry/
 
 # Runtime
 logs/

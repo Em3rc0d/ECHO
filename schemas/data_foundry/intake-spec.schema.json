@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/intake-spec.v1.json",
+  "title": "ECHO Data Foundry Intake Spec v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "adapter", "parameters"],
+  "properties": {
+    "schema_version": {"const": "echo.intake-spec.v1"},
+    "adapter": {"enum": ["fsd50k", "sonyc", "singapura", "esc50", "urbansound8k"]},
+    "parameters": {"type": "object"}
+  }
+}
