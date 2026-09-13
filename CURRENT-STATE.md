@@ -41,7 +41,26 @@ MK2
   milestone      = GATED_BY_MK1
 ```
 
-## 3. Decisiones congeladas para MK1
+## 3. Estado documental
+
+El depth pass documental quedó cerrado en todas las zonas y la investigación consolidada de `research/` fue incorporada a `main` antes del audit global.
+
+```text
+Root             DEPTH_PASS = PASS
+Governance       DEPTH_PASS = PASS
+Research         DEPTH_PASS = PASS
+MK0              DEPTH_PASS = PASS
+MK1              DEPTH_PASS = PASS
+MK2              DEPTH_PASS = PASS
+Global MD audit  = PASS
+Markdown corpus  = 175 files after audit ledger
+```
+
+La evidencia archivo por archivo está en `governance/DOCUMENTATION-AUDIT-2026-09-13.md`; la política permanente está en `governance/DOCUMENTATION-STANDARD.md` y `governance/DOCUMENTATION-COVERAGE.md`.
+
+`DOCUMENTATION PASS` significa que los artefactos son reconstructibles y no dependen del chat original para entender propósito, estado, decisiones/evidencia, incertidumbres y reglas de cierre/invalidation. No convierte resultados empíricos pendientes en hechos.
+
+## 4. Decisiones congeladas para MK1
 
 `DECISION` ECHO nace lógicamente multi-source aunque la primera validación física pueda usar una sola cámara. Todas las unidades de audio, inferencia, estado y eventos llevan `source_id`.
 
@@ -61,7 +80,7 @@ MK2
 
 `DECISION` No se retiene audio continuo por defecto, no se incorpora ASR continuo ni identificación de hablantes.
 
-## 4. Nodos que siguen abiertos por evidencia empírica
+## 5. Nodos que siguen abiertos por evidencia empírica
 
 `EMP-MODEL-001` Modelo ganador: requiere ejecutar el benchmark común y comparar calidad, falsas alarmas, latencia y recursos.
 
@@ -73,15 +92,15 @@ MK2
 
 `EMP-SLO-001` SLOs finales: se congelan después de obtener evidencia de MK1.
 
-## 5. Gates externos
+## 6. Gates externos
 
 `EXT-CAMERA-001 = EXTERNAL_GATE_OPEN`. Falta marca/modelo, confirmación de audio, perfil RTSP, posible ONVIF, codec/sample-rate, red, credenciales autorizadas, permisos de prueba y condiciones de captura. Este gate no impide iniciar MK1 con dataset/replay, pero bloquea cualquier claim de campo.
 
-## 6. Qué ya NO necesita nueva investigación para habilitar MK1 build
+## 7. Qué ya NO necesita nueva investigación para habilitar MK1 build
 
-El límite semántico, contratos principales, taxonomía v1, estrategia de datos, benchmark, lifecycle, source abstraction, Pub/Sub, privacy baseline y test strategy están suficientemente cerrados. Reabrirlos requiere nueva evidencia material, no preferencia subjetiva.
+El límite semántico, contratos principales, taxonomía v1, estrategia de datos, benchmark, lifecycle, source abstraction, Pub/Sub, privacy baseline, test strategy y corpus documental están suficientemente cerrados. Reabrirlos requiere nueva evidencia material, no preferencia subjetiva.
 
-## 7. Siguiente transición autorizada
+## 8. Siguiente transición autorizada
 
 ```text
 CERT-MK1-READY-001
@@ -97,6 +116,6 @@ MK1 certification
 
 `READY_NOT_STARTED` significa que la implementación está autorizada, no que sus resultados estén certificados.
 
-## 8. Invalidation
+## 9. Invalidation
 
-Si cambia la promesa, taxonomía, event schema, source/audio contract, benchmark set, delivery semantics o privacy policy, revisar `governance/CERTIFICATION-DAG.md` y marcar downstream dependiente como `INVALIDATED` hasta revalidación.
+Si cambia la promesa, taxonomía, event schema, source/audio contract, benchmark set, delivery semantics, privacy policy o un artefacto documental certificado es reemplazado por contenido insuficiente, revisar `governance/CERTIFICATION-DAG.md` y marcar downstream dependiente como `INVALIDATED` hasta revalidación.
