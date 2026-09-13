@@ -1,0 +1,30 @@
+{
+  "schema_version": "echo.freesound-cc0-supplemental.v1",
+  "checked_at": "2026-09-13",
+  "policy": "Only assets whose live Freesound page confirms Creative Commons 0 are eligible for automated public-domain preview materialization. Semantic status remains review-required unless explicitly exact.",
+  "targets": {
+    "FIRE_ALARM": [
+      {"sound_id": 369848, "semantic": "smoke_detector_alarm_review_required", "recording_family": "SpliceSound-smoke-alarm-close"},
+      {"sound_id": 369847, "semantic": "smoke_detector_alarm_review_required", "recording_family": "SpliceSound-smoke-alarm-distant"},
+      {"sound_id": 680073, "semantic": "smoke_alarm_review_required", "recording_family": "jess90-smoke-alarm"},
+      {"sound_id": 569842, "semantic": "fire_station_alarm_review_required", "recording_family": "monosfera-fire-station"},
+      {"sound_id": 678345, "semantic": "fire_alarm_bell", "recording_family": "msx2plus-fire-alarm-bell"},
+      {"sound_id": 516057, "semantic": "fire_alarm", "recording_family": "Engineer815-industrial-fire-alarm"},
+      {"sound_id": 666761, "semantic": "smoke_alarm_review_required", "recording_family": "opalmirage-smoke-alarm"},
+      {"sound_id": 204960, "semantic": "fire_alarm", "recording_family": "Conundrumer-fire-alarms"},
+      {"sound_id": 462262, "semantic": "fire_alarm_bell_contact_review_required", "recording_family": "Josherman4-fire-bell"},
+      {"sound_id": 834335, "semantic": "fire_alarm", "recording_family": "bangcorrupt-fire-alarm"}
+    ],
+    "TIRE_SQUEAL": [
+      {"sound_id": 850041, "semantic": "tire_squeal", "recording_family": "JeffPearson-tire-squeal"},
+      {"sound_id": 752837, "semantic": "tire_squeal", "recording_family": "LukaCafuka-distant-tire-screech"},
+      {"sound_id": 58150, "semantic": "contains_tire_squeal_temporal_review_required", "recording_family": "monnie101-car-screech"},
+      {"sound_id": 438339, "semantic": "contains_tire_squeal_temporal_review_required", "recording_family": "craigsmith-vintage-crash-438339"},
+      {"sound_id": 481712, "semantic": "contains_tire_squeal_temporal_review_required", "recording_family": "craigsmith-vintage-car-481712"},
+      {"sound_id": 438335, "semantic": "contains_tire_squeal_temporal_review_required", "recording_family": "craigsmith-vintage-crash-438335"},
+      {"sound_id": 828733, "semantic": "contains_tire_squeal_temporal_review_required", "recording_family": "inspire153-drag-race"},
+      {"sound_id": 614627, "semantic": "tire_squeal_foley_augmentation_only", "recording_family": "johnnydekk-foley"},
+      {"sound_id": 536769, "semantic": "derived_cc0_tire_squeal_augmentation_only", "recording_family": "egomassive-derived-rutgermuller"}
+    ]
+  }
+}
