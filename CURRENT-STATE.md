@@ -1,58 +1,50 @@
 # Estado actual de ECHO
 
-**Fecha base:** 2026-09-13
+**Fecha:** 2026-09-13
 
-## Resumen
-
-ECHO se encuentra en **research/design-first**. La documentación de MK0, MK1 y MK2 ya no funciona como una colección de README: cada fase contiene artefactos específicos de problema, contratos, arquitectura, planes, riesgos, benchmarks, build gates y test strategy. No existe todavía implementación de producto; el bloqueo es intencional y forma parte de la metodología.
-
-## Promesa inmutable
+## Promise
 
 > **Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.**
 
-## Cerrado estructuralmente
-
-- evolución `MK0 -> MK1 -> MK2`;
-- estructura interna exacta `brainstorming -> design -> arch -> plan -> build -> test`;
-- `mining-site` y `quarries` dentro de cada MK;
-- arquitectura multi-source desde origen;
-- PoC físicamente unipunto permitida sin hardcodear single-source;
-- lifecycle `RAW_INFERENCE -> CANDIDATE_EVENT -> CONFIRMED_EVENT -> ALERT`;
-- source/audio/event contracts preliminares;
-- RTSP como ruta primaria candidata y ONVIF como discovery/config opcional;
-- FFmpeg como decoder/extractor baseline;
-- MQTT/Mosquitto como Pub/Sub candidate de MK1;
-- YAMNet/PANNs/custom CNN como benchmark mínimo, con transformers/SSL como challengers;
-- privacy-by-default y no ASR/speaker identification;
-- certification DAG y propagación de invalidaciones;
-- test design desde antes de build.
-
-## Investigación materializada
-
-MK0 contiene evidencia y líneas de investigación sobre modelos, datasets, streaming, codecs, ONVIF/RTSP, FFmpeg, MQTT, related systems, robustness, OOD, multi-source, security, data acquisition y benchmark design.
-
-MK1 contiene scope cut, demo story, contracts, Event Engine, observability, privacy/security, component boundaries, dataflow, PoC deployment, failure recovery, implementation/training/evaluation/integration plans, build manifest/module/config specs y test matrices E2E.
-
-MK2 contiene production goals, scaling hypotheses, SLO/model governance, multi-source runtime, backpressure, delivery durability, security/observability architecture, scale/CI-CD/model-release/migration/incident plans y load/soak/resilience/regression/release certification.
-
-## Abierto / necesita evidencia
-
-- taxonomía final de MK1 y label mappings;
-- licencias exactas de todos los assets/checkpoints seleccionados;
-- ejecución del benchmark y modelo ganador;
-- thresholds/calibration por clase;
-- hardware mínimo certificado;
-- marca/modelo/audio/codec/RTSP/ONVIF/red de la cámara real;
-- dataset de campo autorizado;
-- distancia real y SLOs cuantitativos;
-- capacidad N-sources en hardware objetivo.
-
-## Estado de build
+## Certification state
 
 ```text
-MK0/build  = GATED / NOT_STARTED
-MK1/build  = GATED / NOT_STARTED
-MK2/build  = GATED / NOT_STARTED
+MK0 research/design         = CERTIFIED
+MK1 DoR (offline/replay)    = CERTIFIED
+MK1 build                   = READY / NOT_STARTED
+MK1 real-camera branch      = EXTERNAL_GATE_OPEN
+MK1 overall                 = NOT_CERTIFIED (build/test pendiente)
+MK2 build                   = GATED
 ```
 
-El siguiente gate correcto es cerrar MK0 con evidencia concreta y resolver los external gates necesarios para certificar el paso hacia MK1/build.
+## Decisiones técnicas cerradas para MK1
+
+- multi-source contracts desde origen;
+- PoC físicamente unipunto permitida;
+- RTSP source abstraction;
+- ONVIF discovery/config opcional;
+- FFmpeg baseline, GStreamer fallback/challenger;
+- YAMNet A / PANNs Cnn14 B / custom log-mel CNN C;
+- multi-label probability contract;
+- targets v1: `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL`;
+- `BACKGROUND_NO_TARGET` + hard negatives + `UNKNOWN` decision state;
+- temporal Event Engine;
+- MQTT/Mosquitto;
+- QoS1 para confirmed events/alerts + idempotencia por `event_id`;
+- no retención de audio continuo por defecto;
+- evidence/certification DAG en Git/manifests/CI, no blockchain.
+
+## OPEN / empirical / external
+
+Estos nodos no se pueden cerrar con más lectura de Internet:
+
+- `EXT-CAMERA-001`: cámara real, audio, codec, stream, red y permisos;
+- modelo ganador: requiere benchmark;
+- thresholds: requiere validation;
+- distance/SNR envelope: requiere field test;
+- final SLOs: requiere MK1 measurement;
+- licencia jurídica del código propio ECHO: decisión explícita del propietario antes de release.
+
+## Qué significa la auditoría
+
+La búsqueda quedó certificada **hasta el límite de lo demostrable documentalmente**. No se han inventado resultados de ML ni hardware. El siguiente nodo ejecutable es `MK1/build`, primero en replay/offline; después, cuando cierre `EXT-CAMERA-001`, se integra y valida la cámara real.

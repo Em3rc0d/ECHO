@@ -1,93 +1,130 @@
-# MK1 Benchmark Protocol
+# MK1 Benchmark Protocol v1
+
+**Estado:** `FROZEN_FOR_EXECUTION`  
+**Decision:** D-025  
+**Certificate:** CERT-MK0-011
 
 ## Objetivo
 
-Seleccionar baseline/model candidate por evidencia del dominio ECHO, no por leaderboard externo.
+Seleccionar el modelo operativo de ECHO por evidencia del dominio ECHO, no por leaderboard externo.
 
-## Modelos mínimos
+## Model set obligatorio
 
 ```text
-A YAMNet + ECHO head
-B PANNs/Cnn14 + ECHO head
-C ECHO custom CNN log-mel
+A — YAMNet embeddings + ECHO multi-label head
+B — PANNs Cnn14 (preferir 16 kHz checkpoint/recipe cuando sea técnicamente equivalente) + ECHO head
+C — ECHO custom CNN sobre log-mel, sin pretrained backbone
 ```
 
-## Dataset split
+AST/HTS-AT/PaSST/BEATs quedan como benchmark extendido/MK2 o fallback si A/B/C no satisface constraints.
 
-Group-aware. Nunca separar clips del mismo evento/grabación física entre train y test.
+## Data protocol
 
-Suggested structure, no dogma:
+1. Cada asset debe tener provenance + license + hash.
+2. Preservar split oficial cuando sea metodológicamente relevante.
+3. Para datasets combinados, split **group-aware**: nunca separar fragmentos del mismo source/session/recording/event entre train/validation/test.
+4. Mantener `field_holdout` separado y no tocarlo durante tuning.
+5. Augmentation solo en train.
+6. Hard negatives deben aparecer en validation/test sin leakage.
+7. Si se usan múltiples seeds, el conjunto de seeds se fija en el run manifest antes de entrenar y no cambia por resultados.
+
+No se impone 70/15/15 cuando el dataset ya ofrece folds/splits oficiales; el criterio de independencia es más importante que un porcentaje arbitrario.
+
+## Fairness de benchmark
+
+A/B/C comparten:
+
+- taxonomía;
+- exactamente los mismos groups/splits;
+- augmentation policy;
+- loss/imbalance policy documentada;
+- early-stopping rule;
+- threshold calibration policy;
+- hardware y runtime budget;
+- warm-up policy;
+- batch/streaming policy;
+- número de runs/seeds definido antes de mirar resultados.
+
+## Metrics — calidad
+
+Por clase:
 
 ```text
-train ~70%
-validation ~15%
-test ~15%
-+
-field_holdout = completely untouched
+Precision
+Recall
+F1
+PR-AUC / average precision
+confusion/confuser analysis
 ```
 
-## Training fairness
-
-- mismas clases;
-- mismos groups/splits;
-- augmentations solo train;
-- early stopping definido;
-- seed(s) registradas;
-- class imbalance strategy registrada;
-- calibración de threshold solo validation.
-
-## Metrics
-
-### Clip/window
+Global:
 
 ```text
-precision[class]
-recall[class]
-F1[class]
 macro F1
 micro F1
-PR-AUC[class]
+macro PR-AUC
 ```
 
-### Streaming replay
+Si existe strong temporal ground truth suficiente:
+
+```text
+PSDS / polyphonic SED score (secondary)
+event-based onset/offset metrics
+```
+
+## Metrics — streaming
 
 ```text
 false alarms / source-hour
-misses / class
+misses / target class
 detection latency p50/p95/p99
 onset error
 duration error
+duplicate confirmed events / source-hour
 ```
 
-### Runtime
+## Metrics — runtime
 
 ```text
-CPU%
-RAM
+inference latency p50/p95/p99
+CPU utilization
+RAM peak/steady
 model size
-windows/s
-inference p50/p95
+windows/second
+real-time factor
+queue depth / dropped windows under load
 ```
 
-### Calibration
+## Calibration
 
-```text
-Brier score
-reliability curve
-ECE if appropriate
-```
+- threshold por clase se aprende **solo** en validation;
+- test no participa en threshold tuning;
+- reportar reliability curves/Brier/ECE cuando sean interpretables;
+- registrar operating point exacto en model manifest.
 
 ## Selection rule
 
-No utilizar una suma arbitraria de scores. Primero definir constraints operacionales y después Pareto.
-
-Ejemplo conceptual:
+No existe score mágico. Selección Pareto:
 
 ```text
-maximize critical recall + macro F1
-subject to false alarms/hour <= accepted limit
-           latency p95 <= accepted limit
-           CPU/RAM <= deployment budget
+maximize critical-class recall and macro F1
+while minimizing false alarms/source-hour
+subject to latency/resource constraints measured on target-class hardware
 ```
 
-Los límites permanecen TARGET_CANDIDATE hasta medir.
+Los constraints numéricos se marcan `TARGET_CANDIDATE` hasta que el hardware/uso real permita congelarlos.
+
+## Output obligatorio
+
+El benchmark produce un `MODEL-SELECTION-REPORT` con:
+
+- config hashes;
+- data manifest hash;
+- model/checkpoint hashes;
+- environment/hardware;
+- raw metrics;
+- error analysis;
+- Pareto comparison;
+- winner o `NO_MODEL_MEETS_CONSTRAINTS`.
+
+Nunca se fuerza un ganador.

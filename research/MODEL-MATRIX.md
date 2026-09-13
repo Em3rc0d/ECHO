@@ -1,81 +1,89 @@
-# Model Landscape
+# Model Landscape — audited
 
-## Regla
+**Audit:** 2026-09-13
 
-No se selecciona ganador por benchmark publicado en otro dataset. ECHO selecciona por su propio Pareto: recall crítico, macro F1, falsas alarmas, latencia, memoria/CPU y facilidad operativa.
+## Selection rule
 
-| Modelo | Tipo | Pretraining | Papel ECHO | Fortalezas | Riesgos | Estado |
-|---|---|---|---|---|---|---|
-| YAMNet | MobileNetV1 CNN | AudioSet | Baseline A | compacto, 16 kHz, embeddings 1024, TF transfer-learning oficial | domain shift; runtime/version pinning | BENCHMARK_REQUIRED |
-| PANNs/Cnn14 | CNN | AudioSet | Challenger B | representaciones fuertes; embeddings; SED variants | footprint mayor | BENCHMARK_REQUIRED |
-| ECHO CNN log-mel | CNN propia | ninguno | Control C | control total, deployment simple | requiere más data; menor prior | BENCHMARK_REQUIRED |
-| AST | pure transformer | Audio/ImageNet-AudioSet recipes | Challenger extendido | contexto global; buen historial de audio tagging | coste/latencia/footprint | MK1_EXTENDED_OR_MK2 |
-| HTS-AT | hierarchical audio transformer | AudioSet recipes | Challenger extendido | clasificación + detection orientation | complejidad/compute | MK2_CANDIDATE |
-| PaSST | patchout spectrogram transformer | AudioSet | Challenger extendido | eficiencia vs transformers clásicos | integration/footprint a medir | MK2_CANDIDATE |
-| BEATs | self-supervised audio transformer | large audio pretraining | Representation challenger | embeddings generales modernos | mayor complejidad y deployment | MK2_CANDIDATE |
+Un benchmark publicado en otro corpus no selecciona el modelo ECHO. El ganador se decide con el protocolo propio y target/runtime constraints.
 
-## YAMNet facts útiles
+| Modelo | Arquitectura/pretraining | Rol | Estado MK1 | Riesgo principal |
+|---|---|---|---|---|
+| YAMNet | MobileNetV1, AudioSet | Baseline A / embeddings | CERTIFIED_FOR_BENCHMARK | domain shift / TensorFlow runtime |
+| PANNs Cnn14 | CNN, AudioSet | Challenger B | CERTIFIED_FOR_BENCHMARK | footprint/latency mayor |
+| ECHO custom log-mel CNN | CNN propia | Control C | CERTIFIED_FOR_BENCHMARK | menos prior; necesita suficiente data |
+| AST | audio spectrogram transformer | extended challenger | DEFERRED_MK2 | compute/latency/export |
+| HTS-AT | hierarchical token-semantic transformer | extended challenger | DEFERRED_MK2 | complexity/compute |
+| PaSST | patchout spectrogram transformer | extended challenger | DEFERRED_MK2 | integration/runtime |
+| BEATs | self-supervised audio representation | representation challenger | DEFERRED_MK2 | deployment footprint/complexity |
 
-- entrada: waveform mono 16 kHz;
-- patch aproximado: 0.96 s;
-- hop aproximado: 0.48 s;
-- output: class scores + log-mel + embedding de 1024 dimensiones;
-- clases del modelo publicado: 521 AudioSet classes;
-- uso recomendado en ECHO: extractor/backbone, no taxonomía final del producto.
+## YAMNet certified facts
+
+Fuente: https://www.tensorflow.org/tutorials/audio/transfer_learning_audio
+
+- MobileNetV1 depthwise-separable architecture;
+- 521 AudioSet event outputs;
+- input mono 16 kHz float waveform;
+- frames de 0.96 s;
+- hop de 0.48 s;
+- outputs: scores, log-mel spectrogram, embeddings;
+- embedding = 1024 dimensiones;
+- TensorFlow documenta explícitamente transfer learning sobre embeddings.
+
+Por eso YAMNet es el baseline inicial más defendible para ECHO, **no** porque esté predeclarado ganador.
 
 ## PANNs
 
-Cnn14 sirve como challenger porque fue preentrenado en AudioSet y el ecosistema oficial incluye modelos con salidas de tagging y variantes de frame-wise detection. El benchmark de ECHO debe medir inferencia CPU, memoria, latencia y calidad de embeddings sobre exactamente los mismos splits.
+PANNs se conserva como challenger porque el trabajo/repo original ofrece AudioSet-pretrained CNNs y variantes para tagging/SED. MK1 debe medir la variante/weight exacta, su preprocessing y runtime bajo el mismo corpus que A/C.
 
-## Transformers
+## Extended models
 
-AST, HTS-AT, PaSST y BEATs se mantienen como candidatos de investigación, no como default inicial. Para cada uno MK0/MK1 debe verificar por separado:
+AST, HTS-AT, PaSST y BEATs quedan investigados/certificados como candidatos conocidos pero **deferred**. No existe razón para ampliar el search space de MK1 antes de que A/B/C establezca una base empírica. Pueden entrar si:
 
-- licencia del código;
-- licencia del checkpoint;
-- requisitos de preprocessing;
-- sample rate/input duration;
-- export/ONNX/TFLite si aplica;
-- latencia CPU;
-- tamaño de modelo;
-- batch behavior;
-- mantenimiento del repo.
+1. A/B/C no cumple constraints;
+2. MK2 necesita mejor tradeoff;
+3. existe hardware suficiente;
+4. licencia/checkpoint/export están verificados para la versión exacta.
 
-## Benchmark protocol
+## Required run manifest
 
-Mismos:
-
-- clips y splits;
-- augmentations;
-- labels;
-- threshold calibration protocol;
-- hardware;
-- warm-up;
-- batch policy;
-- métricas.
-
-Reportar:
+Todo modelo ejecutado debe registrar:
 
 ```text
-Precision/Recall/F1 por clase
-Macro/Micro F1
-PR-AUC
-False alarms/hour (stream replay)
-Latency p50/p95/p99
-CPU/RAM
-model size
-throughput windows/s
-calibration
+model_family
+source/repository
+source_version/commit
+checkpoint_id + sha256
+checkpoint_license/provenance
+preprocessing version
+sample_rate
+window/hop
+feature config
+head architecture
+training config hash
+dataset manifest hash
+runtime/library versions
+hardware
 ```
 
-### Fuentes primarias
+## Metrics
+
+```text
+per-class precision/recall/F1/PR-AUC
+macro/micro F1
+false alarms/source-hour
+misses/class
+detection latency p50/p95/p99
+CPU/RAM/model size/throughput
+calibration
+PSDS when strong temporal labels support it
+```
+
+## Primary sources
 
 - YAMNet/TensorFlow: https://www.tensorflow.org/tutorials/audio/transfer_learning_audio
-- YAMNet repo: https://github.com/tensorflow/models/tree/master/research/audioset/yamnet
 - PANNs paper: https://arxiv.org/abs/1912.10211
 - PANNs repo: https://github.com/qiuqiangkong/audioset_tagging_cnn
-- AST paper: https://arxiv.org/abs/2104.01778
 - AST repo: https://github.com/YuanGongND/ast
 - HTS-AT repo: https://github.com/RetroCirce/HTS-Audio-Transformer
-
-Licencias de checkpoints y cualquier asset se verifican individualmente antes de integración.
+- PaSST repo: https://github.com/kkoutini/PaSST
+- BEATs source: https://github.com/microsoft/unilm/tree/master/beats

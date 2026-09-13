@@ -1,25 +1,47 @@
 # Definition of Ready — MK1 Build
 
-MK1/build puede pasar de `GATED` a `READY` cuando:
+**Estado:** `CERTIFIED_FOR_REPLAY_BUILD`  
+**Certificate:** `CERT-MK1-READY-001`
 
-- [ ] MK0 está certificado.
-- [ ] Promesa y scope IN/OUT congelados.
-- [ ] Clases MK1 finales aprobadas.
-- [ ] Label mapping documentado.
-- [ ] Hard negatives definidos.
-- [ ] Dataset registry y license checks definidos.
-- [ ] Split policy group-aware congelada.
-- [ ] Benchmark A/B/C definido.
-- [ ] Source abstraction congelada.
-- [ ] Pipeline de audio definido.
-- [ ] `RAW_INFERENCE -> CANDIDATE_EVENT -> CONFIRMED_EVENT -> ALERT` definido.
-- [ ] Event schema versionado.
-- [ ] MQTT topics/payload/QoS candidate congelados para build.
-- [ ] Secrets policy definida.
-- [ ] Observability mínima definida.
-- [ ] Test plan preparado antes de escribir producto.
-- [ ] Acceptance targets etiquetados como `TARGET`, no como resultados.
-- [ ] External gates necesarios para la vertical resueltos o existe simulador/replay autorizado equivalente.
-- [ ] No queda ninguna decisión `OPEN` que obligue a rediseñar componentes core.
+MK1/build puede comenzar en modo dataset/replay porque:
 
-`EXTERNAL_GATE_OPEN` no bloquea documentación, pero sí bloquea cualquier test que pretenda certificar comportamiento de hardware real.
+- [x] MK0 está certificado.
+- [x] Promesa y scope IN/OUT congelados.
+- [x] Clases MK1 finales aprobadas.
+- [x] Label mapping documentado.
+- [x] Hard negatives definidos.
+- [x] Dataset registry y license checks definidos.
+- [x] Split policy group-aware congelada.
+- [x] Benchmark A/B/C definido.
+- [x] Source abstraction congelada.
+- [x] Pipeline de audio definido.
+- [x] `RAW_INFERENCE -> CANDIDATE_EVENT -> CONFIRMED_EVENT -> ALERT` definido.
+- [x] Event schemas versionados.
+- [x] MQTT/Mosquitto + QoS1 + idempotency congelados para MK1.
+- [x] Secrets policy definida.
+- [x] Observability mínima definida.
+- [x] Test plan preparado antes de escribir producto.
+- [x] Acceptance targets se expresan como `TARGET`, nunca como resultados inventados.
+- [x] Existe camino replay/dataset que no depende de cámara real.
+- [x] No queda decisión `OPEN` que obligue a rediseñar componentes core.
+
+## External branch
+
+`EXT-CAMERA-001 = EXTERNAL_GATE_OPEN`.
+
+Esto **no bloquea** el primer vertical replay/offline; sí bloquea:
+
+- certificación de ingestión de cámara real;
+- codec compatibility real;
+- reconnect/jitter sobre hardware real;
+- distance/SNR claims;
+- end-to-end field latency.
+
+## OPEN que no bloquea build
+
+- licencia jurídica del código ECHO: bloquea release/distribución definitiva, no la ingeniería interna;
+- modelo ganador: es output del benchmark;
+- thresholds: output de validation;
+- SLO final: output de MK1 evidence.
+
+`READY` significa autorización para empezar a construir, no que la build ya exista.

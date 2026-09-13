@@ -1,48 +1,68 @@
-# MK1 Acoustic Taxonomy
+# MK1 Acoustic Taxonomy v1
+
+**Estado:** `FROZEN_FOR_MK1`  
+**Decision:** D-022  
+**Certificate:** CERT-MK0-010
 
 ## Principio
 
-La clase describe una firma acústica, no una interpretación social.
+Cada target describe una **firma acústica observable**. Nunca implica por sí sola un delito, accidente, intención humana o causa social.
 
-## Candidatos
+## Targets MK1
 
-| Label | Qué significa | Confusores esperables | Estado |
+| Label ECHO | Semántica | Mapping/evidence inicial | Confusores prioritarios |
 |---|---|---|---|
-| ALARM_SIREN | patrón de alarma/sirena | beeps, música tonal, reverse beeper | CANDIDATE |
-| HORN | bocina/claxon | alarms, tonal machinery | CANDIDATE |
-| GLASS_BREAK | rotura/fragmentación de vidrio | metal/ceramic impacts | CANDIDATE |
-| IMPACT_CRASH | impacto/choque acústico fuerte | door slam, rock/metal impact | CANDIDATE |
-| YELL_SCREAM | vocalización humana fuerte | speech, cheering, laughter | CANDIDATE |
-| REVERSING_BEEPER | beeps repetitivos de reversa | alarms, electronic beeps | CANDIDATE |
-| TIRE_SCREECH | fricción/chirrido de neumático | metal squeal, brakes, machinery | OPTIONAL |
-| BACKGROUND_NO_TARGET | contexto sin target | infinito/heterogéneo | DESIGN STATE |
-| UNKNOWN | ningún target con evidencia suficiente | todo lo fuera de distribución | DESIGN STATE |
+| `GLASS_SHATTER` | sonido de vidrio/material vítreo fragmentándose | AudioSet `Glass`/`Shatter`; assets deben validarse para glass semantics | metal/ceramic impact, dishes, brittle plastic |
+| `SIREN` | patrón acústico de sirena de advertencia | AudioSet `Siren`; SONYC siren | alarms, tonal music, machinery |
+| `FIRE_ALARM` | señal acústica de alarma contra incendio/emergencia | AudioSet `Fire alarm`; comparable Frigate `fire_alarm` | smoke alarm, buzzer, reversing beep, siren |
+| `VEHICLE_HORN` | bocina/claxon de vehículo | AudioSet `Vehicle horn`; SONYC car-horn; ESC-50 car horn | air horn, alarm, tonal machinery |
+| `TIRE_SQUEAL` | chirrido/fricción de neumático sobre superficie | AudioSet `Tire squeal` | metal squeal, brakes, machinery |
 
-## Selección final
+## Estados no-target
 
-Para entrar a MK1/build, cada target debe cumplir:
+### `BACKGROUND_NO_TARGET`
+
+No es una gran clase semántica. En entrenamiento multi-label corresponde normalmente a un vector target sin clases activas y debe cubrir contexto real diverso.
+
+### Hard negatives
+
+Obligatorios por target. Pool inicial:
 
 ```text
->= data mínima razonable
-+ license path conocida
-+ confusores identificados
-+ mapping consistente entre datasets
-+ valor dentro de promesa ECHO
-+ test protocol posible
+speech / crowd / music
+normal traffic / engines
+wind / rain
+metal impacts / ceramic impacts
+beeps / buzzers / reversing beepers
+door slam
+construction machinery
+radio/TV playback
 ```
 
-## Multi-label
+### `UNKNOWN`
 
-Contrato: vector de probabilidades por clase. No asumir exclusividad mutua.
+Estado del decision layer cuando no existe evidencia suficiente para targets conocidos. No se fuerza necesariamente como neurona entrenada.
 
-Ejemplo:
+## Deferred labels
+
+| Label | Motivo de defer |
+|---|---|
+| `VEHICLE_COLLISION` | un `impact` no demuestra colisión vehicular; requiere corpus específico y definición acústica verificable |
+| `STRONG_IMPACT` | útil, pero demasiado amplio para la primera taxonomía; necesita hard-negative engineering |
+| `YELL_SCREAM` | viable, pero amplía sensibilidad de privacidad y dominio humano; queda MK2/extended |
+| `REVERSING_BEEPER` | SONYC ofrece evidencia, pero no es core para el primer vertical |
+| `CAR_ALARM` | disponible en AudioSet/SONYC; diferido para evitar solape temprano con `FIRE_ALARM`/`SIREN` |
+
+## Multi-label contract
+
+Las clases no son mutuamente excluyentes. El head debe permitir múltiples probabilidades simultáneas (p. ej. sigmoids por target).
 
 ```json
 {
-  "ALARM_SIREN": 0.91,
-  "HORN": 0.08,
-  "IMPACT_CRASH": 0.03
+  "SIREN": 0.91,
+  "VEHICLE_HORN": 0.14,
+  "GLASS_SHATTER": 0.02
 }
 ```
 
-`UNKNOWN` no necesariamente es una neurona entrenada; puede ser un estado del decision layer cuando no existe evidencia suficiente.
+Thresholds numéricos quedan fuera de este documento: se calibran solo con validation data y se certifican después.

@@ -1,84 +1,75 @@
-# Dataset Landscape
+# Dataset Landscape — audited
 
-| Dataset | Naturaleza | Clases/valor para ECHO | Licencia / condición | Uso propuesto |
+**Audit:** 2026-09-13
+
+| Dataset | Facts auditados | Licencia/condición | Rol ECHO | Estado |
 |---|---|---|---|---|
-| AudioSet | >2M segmentos etiquetados de YouTube; ontología amplia | base de YAMNet/PANNs; mapping semántico | metadata/YouTube availability; no asumir redistribución de audio | pretraining/taxonomía/reference |
-| FSD50K | 51,197 clips, 200 clases, >100 h | eventos ambientales variados | licencia por clip; incluye CC0/CC-BY/CC-BY-NC/Sampling+ | pool principal filtrado por licencia |
-| ESC-50 | 2,000 clips, 50 clases, 5 folds | siren, car horn, glass breaking, engine, etc. | CC BY-NC para dataset completo | benchmark académico/reproducibilidad |
-| UrbanSound8K | 8,732 clips, 10 clases | horn, siren, drilling, engine, jackhammer | CC BY-NC 3.0 | benchmark/domain urban |
-| SONYC-UST / V2 | red real de sensores, multilabel | ruido urbano/polyphony/contexto | verificar release exacto | arquitectura de sensor + robustness |
-| MIMII | maquinaria normal/anómala + factory noise | domain shift/industrial noise | CC BY-SA 4.0 en release original | robustness/anomaly research |
-| DCASE/DESED tasks | SED con weak/strong labels | temporal localization, overlapping events | depende del task/release | metodología SED/evaluation |
-| ECHO Field Dataset | por construir | dominio real de la cámara/ambiente | governance propia | decisivo para MK1/MK2 |
+| AudioSet | 2,084,320 segmentos humanos de 10 s; 527 labels anotados; ontología amplia | metadata/dataset release CC BY 4.0; ontology CC BY-SA 4.0; no asumir derechos sobre media YouTube subyacente | ontology, mapping, pretrained backbones, metadata research | CERTIFIED_REFERENCE |
+| FSD50K | 51,197 clips; 108.3 h; 200 clases; multilabel; weak clip labels; eval exhaustive | licencia **por clip**: CC0/CC-BY/CC-BY-NC/Sampling+; curation dataset CC-BY | pool de assets con filtro explícito por licencia + negatives | CERTIFIED_WITH_ASSET_FILTER |
+| SONYC-UST v2 | sensor network urbano real; 23 fine/8 coarse; multilabel; sensor-disjoint train/val; test desplazado temporalmente | revisar release exacto en manifest; Zenodo es fuente autoritativa | domain robustness, urban multilabel, horn/siren/alarm/reverse-beeper context | CERTIFIED_REFERENCE |
+| ESC-50 | 2,000 clips de 5 s, 50 clases, folds oficiales | dataset completo CC BY-NC; no usar como supuesto asset comercial | benchmark académico, confusores, reproducibilidad | CERTIFIED_RESEARCH_ONLY |
+| UrbanSound8K | corpus urbano con folds; useful horn/siren/context | verificar release/licencia exacta en manifest antes de asset use | benchmark urbano secundario | CANDIDATE_ASSET_SOURCE |
+| DCASE / DESED releases | SED weak/strong/synthetic methodology; polyphonic evaluation | depende del task/release exacto | SED methodology, temporal metrics, PSDS/evaluation | CERTIFIED_METHODOLOGY |
+| ECHO Field Dataset | aún inexistente | gobernanza/consent/retention propia | dominio decisivo para camera/device/SNR/distance | EXTERNAL_BUILD_ARTIFACT |
 
-## No confundir “contiene una clase” con “sirve para producción”
+## Asset admission rule
 
-Para integrar una muestra se requiere:
+Ningún audio entra al corpus ECHO entrenable/evaluable sin:
 
 ```text
-origin URL
-source dataset
-asset/license
-sha256
-label provenance
-session/source grouping
+asset_id
+origin_url
+source_dataset + release
+author/uploader when required
+asset_license
 permitted_use
+sha256
+original_recording/group_id
+labels + label_provenance
 split
+imported_at
 ```
 
-## Split policy
+Si la licencia del clip es NC/restringida, el manifest debe impedir que el asset se mezcle silenciosamente con un corpus destinado a usos incompatibles.
 
-Nunca mezclar segmentos provenientes del mismo evento físico/grabación/sesión entre train y test.
+## Split / leakage policy
 
-Agrupar por, cuando exista:
+Nunca mezclar el mismo evento físico, recording, session o source-equivalent entre train y test.
+
+Prioridad de grouping:
 
 ```text
-original recording
-session
-site
-device/microphone
-physical event
+physical_event > original_recording > session > device/source > site
 ```
 
-Además mantener un **field holdout** completamente separado.
+Conservar splits oficiales cuando su diseño evita leakage (p. ej. folds del corpus o sensor-disjoint splits). Además, ECHO mantiene un `field_holdout` independiente.
 
-## Background / negatives
+## Target evidence
 
-No depender de `OTHER` como bolsa infinita. Construir:
+MK1 usa cinco targets:
 
-- background/no-target;
-- hard negatives;
-- unknown/reject state;
-- confusores por clase.
+- `GLASS_SHATTER`
+- `SIREN`
+- `FIRE_ALARM`
+- `VEHICLE_HORN`
+- `TIRE_SQUEAL`
 
-Hard negatives candidatos: speech, music, door slam, metal/rock impacts, engines, traffic, wind, rain, radio, normal machinery, construction sounds y otros ruidos frecuentes del ambiente real.
+AudioSet respalda la existencia/semántica de estos nodos o de sus padres/children. La disponibilidad en un dataset no basta: cada asset seleccionado debe validar semántica y licencia.
 
-## Metadata de campo
+## Negatives
 
-Registrar:
+No existe una bolsa `OTHER` infinita. Se construyen:
 
-```text
-recording_id
-site_id
-source_id
-camera_model
-microphone_model
-codec
-sample_rate_original
-distance_m
-orientation/weather/noise state
-event_type
-onset/offset
-annotator
-label_quality
-```
+- `BACKGROUND_NO_TARGET`;
+- hard negatives específicos por target;
+- OOD/reject scenarios;
+- confusores reales del ambiente.
 
-## Fuentes
+## Fuentes primarias
 
 - AudioSet: https://research.google.com/audioset/
+- AudioSet license/download: https://research.google.com/audioset/download.html
 - FSD50K: https://zenodo.org/records/4060432
+- SONYC-UST v2: https://zenodo.org/records/3966543
 - ESC-50: https://github.com/karolpiczak/ESC-50
-- UrbanSound8K: https://zenodo.org/records/1203745
-- SONYC-UST: https://zenodo.org/records/3966543
-- MIMII: https://zenodo.org/records/3384388
 - DCASE: https://dcase.community/
