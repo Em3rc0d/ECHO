@@ -1,0 +1,140 @@
+{
+  "schema_version": "echo.source-registry.v1",
+  "evidence_checked_at": "2026-09-13",
+  "sources": [
+    {
+      "source_id": "fsd50k-1.0",
+      "name": "FSD50K",
+      "release": "1.0",
+      "canonical_url": "https://zenodo.org/records/4060432",
+      "companion_url": "https://fsannotator.upf.edu/fsd/release/FSD50K/",
+      "role": ["positive_pool", "hard_negative_pool", "environmental_context"],
+      "license_model": "mixed_per_asset_plus_dataset_level",
+      "dataset_license": "CC-BY",
+      "default_profile": "release_safe_filtered",
+      "asset_license_required": true,
+      "target_coverage": {
+        "GLASS_SHATTER": {"source_label": "Shatter", "relation": "BROADER", "review_required": true, "source_count_evidence": 510},
+        "SIREN": {"source_label": "Siren", "relation": "EXACT", "review_required": false, "source_count_evidence": 132},
+        "FIRE_ALARM": {"source_label": null, "relation": "UNAVAILABLE_IN_RELEASED_200", "review_required": true},
+        "VEHICLE_HORN": {"source_label": "Vehicle horn, car horn, honking", "relation": "EXACT", "review_required": false, "source_count_evidence": 183},
+        "TIRE_SQUEAL": {"source_label": null, "relation": "UNAVAILABLE_IN_RELEASED_200", "review_required": true}
+      },
+      "notes": "Default release-safe profile filters individual clip licenses; source headline counts are not admitted counts."
+    },
+    {
+      "source_id": "sonyc-ust-v2",
+      "name": "SONYC Urban Sound Tagging",
+      "release": "v2 family",
+      "canonical_url": "https://zenodo.org/records/3966543",
+      "role": ["urban_sensor_positive", "hard_negative_pool", "domain_context"],
+      "license_model": "uniform_dataset",
+      "dataset_license": "CC-BY-4.0",
+      "default_profile": "release_safe",
+      "asset_license_required": false,
+      "target_coverage": {
+        "GLASS_SHATTER": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true},
+        "SIREN": {"source_label": "siren", "relation": "EXACT", "review_required": false},
+        "FIRE_ALARM": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true},
+        "VEHICLE_HORN": {"source_label": "car-horn", "relation": "EXACT", "review_required": false},
+        "TIRE_SQUEAL": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true}
+      },
+      "group_keys": ["sensor_id", "recording_id", "split/time metadata"],
+      "notes": "Keep car-alarm/reverse-beeper as alert-family confusers rather than positives."
+    },
+    {
+      "source_id": "singapura-v1.0a",
+      "name": "SINGA:PURA",
+      "release": "v1.0a strong-labelled subset",
+      "canonical_url": "https://zenodo.org/records/5645825",
+      "role": ["strong_temporal_positive", "urban_sensor_context", "hard_negative_pool"],
+      "license_model": "uniform_dataset",
+      "dataset_license": "CC-BY-SA-4.0",
+      "default_profile": "review_required",
+      "asset_license_required": false,
+      "target_coverage": {
+        "GLASS_SHATTER": {"source_label": "3-1", "source_label_name": "Glass breaking", "relation": "EXACT", "review_required": false},
+        "SIREN": {"source_label": "5-3", "source_label_name": "Siren", "relation": "EXACT", "review_required": false},
+        "FIRE_ALARM": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true},
+        "VEHICLE_HORN": {"source_label": "5-1", "source_label_name": "Car horn", "relation": "EXACT", "review_required": false},
+        "TIRE_SQUEAL": {"source_label": null, "relation": "NO_EXACT_CLASS", "review_required": true}
+      },
+      "group_keys": ["sensor_id", "filename"],
+      "notes": "Friction brake and generic screeching are confusers, not automatic tire-squeal positives; ShareAlike terms require release-policy review."
+    },
+    {
+      "source_id": "esc50",
+      "name": "ESC-50",
+      "release": "official repository current dataset",
+      "canonical_url": "https://github.com/karolpiczak/ESC-50",
+      "role": ["research_sanity"],
+      "license_model": "uniform_dataset_with_subset_exception",
+      "dataset_license": "CC-BY-NC",
+      "default_profile": "research_extended",
+      "asset_license_required": false,
+      "target_coverage": {
+        "SIREN": {"source_label": "siren", "relation": "EXACT", "review_required": false},
+        "VEHICLE_HORN": {"source_label": "car_horn", "relation": "EXACT", "review_required": false}
+      },
+      "group_keys": ["src_file", "take"],
+      "notes": "Full dataset is non-commercial; not part of default release-safe training lineage."
+    },
+    {
+      "source_id": "urbansound8k-1.0",
+      "name": "UrbanSound8K",
+      "release": "1.0",
+      "canonical_url": "https://serv.cusp.nyu.edu/projects/urbansounddataset/urbansound8k.html",
+      "role": ["research_urban_contrast"],
+      "license_model": "uniform_dataset",
+      "dataset_license": "CC-BY-NC-3.0",
+      "default_profile": "research_extended",
+      "asset_license_required": false,
+      "target_coverage": {
+        "SIREN": {"source_label": "siren", "relation": "EXACT", "review_required": false},
+        "VEHICLE_HORN": {"source_label": "car_horn", "relation": "EXACT", "review_required": false}
+      },
+      "group_keys": ["fsID", "occurrenceID"],
+      "notes": "Preserve official folds and source/occurrence relationships; do not randomize slices independently."
+    },
+    {
+      "source_id": "audioset-ontology",
+      "name": "AudioSet ontology and annotations",
+      "release": "ontology/current research release",
+      "canonical_url": "https://research.google.com/audioset/ontology/",
+      "role": ["ontology_reference", "pretraining_provenance", "coverage_reference"],
+      "license_model": "metadata_ontology_separate_from_underlying_media",
+      "dataset_license": "see official terms",
+      "default_profile": "reference_only",
+      "asset_license_required": true,
+      "raw_media_auto_ingest": false,
+      "target_coverage": {
+        "GLASS_SHATTER": {"source_label": "Shatter", "relation": "BROADER", "annotation_count_evidence": 368},
+        "SIREN": {"source_label": "Siren", "relation": "EXACT", "annotation_count_evidence": 8498},
+        "FIRE_ALARM": {"source_label": "Fire alarm", "relation": "EXACT", "annotation_count_evidence": 921},
+        "VEHICLE_HORN": {"source_label": "Vehicle horn, car horn, honking", "relation": "EXACT", "annotation_count_evidence": 3707},
+        "TIRE_SQUEAL": {"source_label": "Tire squeal", "relation": "EXACT", "annotation_count_evidence": 1557}
+      },
+      "notes": "Ontology/annotation evidence does not authorize automatic acquisition/redistribution of underlying YouTube media."
+    },
+    {
+      "source_id": "echo-field-v1",
+      "name": "ECHO Field Dataset",
+      "release": "future-v1",
+      "canonical_url": null,
+      "role": ["field_holdout", "domain_validation"],
+      "license_model": "permission_specific",
+      "dataset_license": null,
+      "default_profile": "field_holdout",
+      "asset_license_required": true,
+      "external_gate": "EXT-CAMERA-001",
+      "target_coverage": {
+        "GLASS_SHATTER": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
+        "SIREN": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
+        "FIRE_ALARM": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
+        "VEHICLE_HORN": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
+        "TIRE_SQUEAL": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"}
+      },
+      "notes": "Field capture requires authorization/privacy/retention metadata and remains untouched holdout initially."
+    }
+  ]
+}

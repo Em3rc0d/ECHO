@@ -1,0 +1,26 @@
+{
+  "schema_version": "echo.license-policy.v1",
+  "default_profile": "release_safe",
+  "decisions": {
+    "CC0-1.0": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": false},
+    "CC0": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": false},
+    "PUBLIC-DOMAIN": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": false},
+    "CC-BY-4.0": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": true},
+    "CC-BY": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": true},
+    "CC-BY-SA-4.0": {"release_safe": "REVIEW_REQUIRED", "research_extended": "ALLOW_RESEARCH_ONLY", "attribution_required": true},
+    "CC-BY-NC": {"release_safe": "RESEARCH_ONLY", "research_extended": "ALLOW_RESEARCH_ONLY", "attribution_required": true},
+    "CC-BY-NC-3.0": {"release_safe": "RESEARCH_ONLY", "research_extended": "ALLOW_RESEARCH_ONLY", "attribution_required": true},
+    "CC-BY-NC-4.0": {"release_safe": "RESEARCH_ONLY", "research_extended": "ALLOW_RESEARCH_ONLY", "attribution_required": true},
+    "CC-SAMPLING+": {"release_safe": "REVIEW_REQUIRED", "research_extended": "REVIEW_REQUIRED", "attribution_required": true},
+    "UNKNOWN": {"release_safe": "QUARANTINE", "research_extended": "QUARANTINE", "attribution_required": null},
+    "CUSTOM": {"release_safe": "REVIEW_REQUIRED", "research_extended": "REVIEW_REQUIRED", "attribution_required": null},
+    "DENIED": {"release_safe": "DENY", "research_extended": "DENY", "attribution_required": null}
+  },
+  "rules": [
+    "Per-asset license overrides a dataset-level headline license when the dataset contains mixed media licenses.",
+    "Unknown terms fail closed into quarantine.",
+    "Research-only assets must never be silently included in a release-safe lineage.",
+    "ShareAlike/custom terms require intended-use review before release-safe admission.",
+    "Policy classification is engineering governance and must be re-reviewed when intended distribution changes."
+  ]
+}

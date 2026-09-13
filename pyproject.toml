@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "echo-acoustic"
+version = "0.1.0.dev0"
+description = "ECHO — intelligent detection and classification of acoustic events"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+echo-data-foundry = "echo.data_foundry.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.unittest]
+start-directory = "tests"

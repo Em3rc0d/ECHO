@@ -1,0 +1,60 @@
+{
+  "schema_version": "echo.label-mapping.v1",
+  "taxonomy_version": "echo.taxonomy.v1",
+  "targets": ["GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"],
+  "sources": {
+    "fsd50k-1.0": {
+      "Shatter": {"status": "BROADER", "echo_labels": ["GLASS_SHATTER"], "review_required": true, "use": "positive_after_review", "notes": "Brittle shatter is broader than glass."},
+      "Glass": {"status": "BROADER", "echo_labels": [], "review_required": true, "use": "context", "notes": "Glass presence does not imply shattering."},
+      "Siren": {"status": "EXACT", "echo_labels": ["SIREN"], "review_required": false, "use": "positive"},
+      "Vehicle horn, car horn, honking": {"status": "EXACT", "echo_labels": ["VEHICLE_HORN"], "review_required": false, "use": "positive"},
+      "Alarm": {"status": "BROADER", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["SIREN", "FIRE_ALARM"]},
+      "Doorbell": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["FIRE_ALARM"]},
+      "Ringtone": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["FIRE_ALARM"]},
+      "Bell": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["FIRE_ALARM"]},
+      "Chime": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["FIRE_ALARM"]},
+      "Screech": {"status": "AMBIGUOUS", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["TIRE_SQUEAL"]},
+      "Squeak": {"status": "AMBIGUOUS", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["TIRE_SQUEAL"]},
+      "Dishes, pots, and pans": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]},
+      "Chink, clink": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]},
+      "Crack": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]},
+      "Slam": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]}
+    },
+    "sonyc-ust-v2": {
+      "car-horn": {"status": "EXACT", "echo_labels": ["VEHICLE_HORN"], "review_required": false, "use": "positive"},
+      "siren": {"status": "EXACT", "echo_labels": ["SIREN"], "review_required": false, "use": "positive"},
+      "car-alarm": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["SIREN", "FIRE_ALARM"]},
+      "reverse-beeper": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["SIREN", "FIRE_ALARM"]},
+      "other-unknown-alert-signal": {"status": "AMBIGUOUS", "echo_labels": [], "review_required": true, "use": "quarantine_for_positive"},
+      "machinery-impact": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]},
+      "non-machinery-impact": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]}
+    },
+    "singapura-v1.0a": {
+      "3-1": {"source_name": "Glass breaking", "status": "EXACT", "echo_labels": ["GLASS_SHATTER"], "review_required": false, "use": "positive"},
+      "5-1": {"source_name": "Car horn", "status": "EXACT", "echo_labels": ["VEHICLE_HORN"], "review_required": false, "use": "positive"},
+      "5-3": {"source_name": "Siren", "status": "EXACT", "echo_labels": ["SIREN"], "review_required": false, "use": "positive"},
+      "5-2": {"source_name": "Car alarm", "status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["SIREN", "FIRE_ALARM"]},
+      "5-4": {"source_name": "Reverse beeper", "status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["SIREN", "FIRE_ALARM"]},
+      "12-1": {"source_name": "Friction brake", "status": "AMBIGUOUS", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["TIRE_SQUEAL"]},
+      "0-1": {"source_name": "Screeching", "status": "AMBIGUOUS", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["TIRE_SQUEAL"]},
+      "3-0": {"source_name": "Other non-machinery impact", "status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "hard_negative", "confuses": ["GLASS_SHATTER"]}
+    },
+    "esc50": {
+      "siren": {"status": "EXACT", "echo_labels": ["SIREN"], "review_required": false, "use": "positive_research_only"},
+      "car_horn": {"status": "EXACT", "echo_labels": ["VEHICLE_HORN"], "review_required": false, "use": "positive_research_only"}
+    },
+    "urbansound8k-1.0": {
+      "siren": {"status": "EXACT", "echo_labels": ["SIREN"], "review_required": false, "use": "positive_research_only"},
+      "car_horn": {"status": "EXACT", "echo_labels": ["VEHICLE_HORN"], "review_required": false, "use": "positive_research_only"},
+      "engine_idling": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "background"},
+      "street_music": {"status": "NEGATIVE", "echo_labels": [], "review_required": false, "use": "background"}
+    },
+    "audioset-ontology": {
+      "Shatter": {"status": "BROADER", "echo_labels": ["GLASS_SHATTER"], "review_required": true, "use": "reference_only"},
+      "Siren": {"status": "EXACT", "echo_labels": ["SIREN"], "review_required": false, "use": "reference_only"},
+      "Fire alarm": {"status": "EXACT", "echo_labels": ["FIRE_ALARM"], "review_required": false, "use": "reference_only"},
+      "Vehicle horn, car horn, honking": {"status": "EXACT", "echo_labels": ["VEHICLE_HORN"], "review_required": false, "use": "reference_only"},
+      "Tire squeal": {"status": "EXACT", "echo_labels": ["TIRE_SQUEAL"], "review_required": false, "use": "reference_only"}
+    }
+  }
+}

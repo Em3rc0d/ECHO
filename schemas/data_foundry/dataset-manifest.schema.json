@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/dataset-manifest.v1.json",
+  "title": "ECHO Data Foundry Dataset Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "manifest_id",
+    "created_at_utc",
+    "taxonomy_version",
+    "profile",
+    "source_registry_sha256",
+    "license_policy_sha256",
+    "label_mapping_sha256",
+    "split_policy_sha256",
+    "asset_manifest_sha256",
+    "asset_count",
+    "source_releases",
+    "known_gaps"
+  ],
+  "properties": {
+    "schema_version": {"const": "echo.dataset-manifest.v1"},
+    "manifest_id": {"type": "string", "minLength": 1},
+    "created_at_utc": {"type": "string", "format": "date-time"},
+    "taxonomy_version": {"type": "string", "minLength": 1},
+    "profile": {"enum": ["release_safe", "research_extended", "field_holdout"]},
+    "source_registry_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "license_policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "label_mapping_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "split_policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "split_manifest_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "asset_count": {"type": "integer", "minimum": 0},
+    "source_releases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "known_gaps": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "reports": {"type": "object", "additionalProperties": {"type": "string"}},
+    "notes": {"type": ["string", "null"]}
+  }
+}
