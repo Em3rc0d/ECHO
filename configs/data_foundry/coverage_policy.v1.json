@@ -1,7 +1,7 @@
 {
   "schema_version": "echo.coverage-policy.v1",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
-  "description": "Minimum fail-closed corpus coverage/diversity floor for an ECHO release-safe benchmark corpus. Passing this floor is necessary but not sufficient for model quality.",
+  "description": "Minimum fail-closed corpus coverage, diversity, confuser and asset-quality floor for an ECHO release-safe benchmark corpus. Passing this floor is necessary but not sufficient for model quality.",
   "profiles": {
     "release_safe": {
       "target_labels": {
@@ -21,6 +21,23 @@
         "min_assets": 200,
         "min_independent_groups": 50,
         "min_sources": 3
+      },
+      "hard_negatives": {
+        "per_target": {
+          "GLASS_SHATTER": {"min_assets": 20, "min_independent_groups": 10, "min_sources": 2},
+          "SIREN": {"min_assets": 20, "min_independent_groups": 10, "min_sources": 2},
+          "FIRE_ALARM": {"min_assets": 20, "min_independent_groups": 10, "min_sources": 2},
+          "VEHICLE_HORN": {"min_assets": 20, "min_independent_groups": 10, "min_sources": 2},
+          "TIRE_SQUEAL": {"min_assets": 20, "min_independent_groups": 10, "min_sources": 2}
+        }
+      },
+      "asset_quality": {
+        "require_audio_probe_ok": true,
+        "require_positive_duration": true,
+        "require_known_license": true,
+        "require_label_provenance": true,
+        "max_exact_duplicate_groups": 0,
+        "max_near_duplicate_groups": 0
       }
     }
   },
@@ -28,6 +45,8 @@
     "field_holdout_cannot_close_development_coverage": true,
     "broad_or_ambiguous_labels_cannot_close_exact_target_gaps": true,
     "synthetic_augmentation_cannot_be_counted_as_independent_source": true,
+    "hard_negatives_must_be_explicitly_mapped_to_confused_targets": true,
+    "duplicate_assets_cannot_satisfy_coverage_floor": true,
     "threshold_changes_require_evidence_and_new_policy_version": true
   }
 }

@@ -13,7 +13,7 @@
       "type": "object",
       "additionalProperties": {
         "type": "object",
-        "required": ["target_labels", "per_split", "max_single_source_fraction_per_class", "background"],
+        "required": ["target_labels", "per_split", "max_single_source_fraction_per_class", "background", "hard_negatives", "asset_quality"],
         "properties": {
           "target_labels": {
             "type": "object",
@@ -21,9 +21,9 @@
               "type": "object",
               "required": ["min_assets", "min_independent_groups", "min_sources", "min_clip_duration_seconds"],
               "properties": {
-                "min_assets": {"type": "integer", "minimum": 1},
-                "min_independent_groups": {"type": "integer", "minimum": 1},
-                "min_sources": {"type": "integer", "minimum": 1},
+                "min_assets": {"type": "integer", "minimum": 0},
+                "min_independent_groups": {"type": "integer", "minimum": 0},
+                "min_sources": {"type": "integer", "minimum": 0},
                 "min_clip_duration_seconds": {"type": "number", "minimum": 0}
               },
               "additionalProperties": false
@@ -49,6 +49,39 @@
               "min_assets": {"type": "integer", "minimum": 0},
               "min_independent_groups": {"type": "integer", "minimum": 0},
               "min_sources": {"type": "integer", "minimum": 0}
+            },
+            "additionalProperties": false
+          },
+          "hard_negatives": {
+            "type": "object",
+            "required": ["per_target"],
+            "properties": {
+              "per_target": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": ["min_assets", "min_independent_groups", "min_sources"],
+                  "properties": {
+                    "min_assets": {"type": "integer", "minimum": 0},
+                    "min_independent_groups": {"type": "integer", "minimum": 0},
+                    "min_sources": {"type": "integer", "minimum": 0}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "asset_quality": {
+            "type": "object",
+            "required": ["require_audio_probe_ok", "require_positive_duration", "require_known_license", "require_label_provenance", "max_exact_duplicate_groups", "max_near_duplicate_groups"],
+            "properties": {
+              "require_audio_probe_ok": {"type": "boolean"},
+              "require_positive_duration": {"type": "boolean"},
+              "require_known_license": {"type": "boolean"},
+              "require_label_provenance": {"type": "boolean"},
+              "max_exact_duplicate_groups": {"type": "integer", "minimum": 0},
+              "max_near_duplicate_groups": {"type": "integer", "minimum": 0}
             },
             "additionalProperties": false
           }

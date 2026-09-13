@@ -11,6 +11,7 @@ from echo.data_foundry.contracts import AdmissionStatus, RawAssetCandidate
 from echo.data_foundry.dataset import load_benchmark_split, validate_frozen_bundle
 from echo.data_foundry.intake import read_candidate_manifest, write_candidate_manifest
 from echo.data_foundry.pipeline import admit_from_files, freeze_corpus, load_split_policy, read_record_manifest
+from echo.data_foundry.source_policy import load_dataset_certification
 
 
 class FoundryPipelineTests(unittest.TestCase):
@@ -23,6 +24,34 @@ class FoundryPipelineTests(unittest.TestCase):
             wav.setsampwidth(2)
             wav.setframerate(16000)
             wav.writeframes(b"".join(struct.pack("<h", sample) for sample in samples))
+
+    def _permissive_test_coverage_policy(self) -> dict:
+        targets = ["GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"]
+        return {
+            "schema_version": "echo.coverage-policy.v1",
+            "policy_id": "TEST-ONLY-PERMISSIVE-COVERAGE",
+            "profiles": {
+                "release_safe": {
+                    "target_labels": {
+                        label: {
+                            "min_assets": 0,
+                            "min_independent_groups": 0,
+                            "min_sources": 0,
+                            "min_clip_duration_seconds": 0.0,
+                        }
+                        for label in targets
+                    },
+                    "per_split": {},
+                    "max_single_source_fraction_per_class": 1.0,
+                    "background": {
+                        "min_assets": 0,
+                        "min_independent_groups": 0,
+                        "min_sources": 0,
+                    },
+                }
+            },
+            "governance": {},
+        }
 
     def test_candidate_manifest_round_trip_is_deterministic(self) -> None:
         candidates = [
@@ -72,6 +101,7 @@ class FoundryPipelineTests(unittest.TestCase):
             license_policy = json.loads(Path("configs/data_foundry/license_policy.v1.json").read_text(encoding="utf-8"))
             mapping = json.loads(Path("configs/data_foundry/label_mapping.v1.json").read_text(encoding="utf-8"))
             split_policy = load_split_policy("configs/data_foundry/split_policy.v1.json")
+            source_certification = load_dataset_certification("configs/data_foundry/dataset_certification.v1.json")
             bundle = root / "frozen"
             result = freeze_corpus(
                 records=records,
@@ -83,11 +113,15 @@ class FoundryPipelineTests(unittest.TestCase):
                 license_policy=license_policy,
                 label_mapping=mapping,
                 split_policy=split_policy,
+                source_certification=source_certification,
+                coverage_policy=self._permissive_test_coverage_policy(),
             )
-            self.assertTrue(result["status"].startswith("PASS"))
+            self.assertEqual(result["status"], "PASS")
             self.assertEqual(result["admitted_assets"], 2)
             identity = validate_frozen_bundle(bundle)
             self.assertEqual(identity["asset_count"], 2)
+            self.assertIsNotNone(identity["source_certification_sha256"])
+            self.assertIsNotNone(identity["coverage_gate_sha256"])
             train = load_benchmark_split(bundle, "train")
             test = load_benchmark_split(bundle, "test")
             self.assertEqual([row["asset_id"] for row in train], ["sonyc-ust-v2:a.wav"])

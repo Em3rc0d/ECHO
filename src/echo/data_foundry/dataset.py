@@ -69,7 +69,21 @@ def validate_frozen_bundle(bundle_dir: str | Path) -> dict[str, Any]:
 
     reports = dataset.get("reports") or {}
     known_gaps = list(dataset.get("known_gaps") or [])
+    profile = dataset.get("profile")
     coverage_gate_digest = reports.get("coverage_gate_sha256")
+    coverage_policy_digest = reports.get("coverage_policy_sha256")
+
+    # release_safe is a cryptographically bound certification claim.  A legacy
+    # or hand-built bundle is not allowed to obtain that status merely because
+    # its asset/split hashes are internally consistent.
+    if profile == "release_safe":
+        if not dataset.get("source_certification_sha256"):
+            raise ValueError("release_safe bundle lacks source certification identity")
+        if not coverage_policy_digest:
+            raise ValueError("release_safe bundle lacks coverage policy identity")
+        if not coverage_gate_digest:
+            raise ValueError("release_safe bundle lacks coverage gate identity")
+
     if coverage_gate_digest:
         gate_path = root / "coverage-gate.json"
         if not gate_path.is_file():
@@ -78,16 +92,20 @@ def validate_frozen_bundle(bundle_dir: str | Path) -> dict[str, Any]:
         actual_gate_digest = canonical_json_sha256(gate)
         if actual_gate_digest != coverage_gate_digest:
             raise ValueError("coverage-gate digest does not match dataset manifest")
+        if gate.get("profile") != profile:
+            raise ValueError("coverage-gate profile does not match dataset manifest")
         if gate.get("status") != "PASS" or known_gaps:
             raise ValueError("frozen bundle has unresolved corpus coverage/diversity gaps")
 
     return {
         "manifest_id": dataset.get("manifest_id"),
-        "profile": dataset.get("profile"),
+        "profile": profile,
         "taxonomy_version": dataset.get("taxonomy_version"),
         "asset_count": len(rows),
         "asset_manifest_sha256": asset_digest,
         "split_manifest_sha256": split_digest,
+        "source_certification_sha256": dataset.get("source_certification_sha256"),
+        "coverage_policy_sha256": coverage_policy_digest,
         "coverage_gate_sha256": coverage_gate_digest,
         "known_gaps": known_gaps,
     }

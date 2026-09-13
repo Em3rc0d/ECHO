@@ -30,6 +30,15 @@ _ADMITTED = {
     AdmissionStatus.ADMITTED_FIELD_HOLDOUT,
 }
 
+_PROFILE_ADMISSION = {
+    "release_safe": {AdmissionStatus.ADMITTED_RELEASE_SAFE},
+    "research_extended": {
+        AdmissionStatus.ADMITTED_RELEASE_SAFE,
+        AdmissionStatus.ADMITTED_RESEARCH_ONLY,
+    },
+    "field_holdout": {AdmissionStatus.ADMITTED_FIELD_HOLDOUT},
+}
+
 
 def _path_for_candidate(candidate: RawAssetCandidate, audio_root: str | Path | None) -> Path:
     rel = Path(candidate.local_relpath or "")
@@ -205,6 +214,31 @@ def assign_record_splits(records: Sequence[AssetRecord], *, policy: Mapping[str,
     return result
 
 
+def _select_profile_records(records: Sequence[AssetRecord], profile: str) -> list[AssetRecord]:
+    try:
+        allowed = _PROFILE_ADMISSION[profile]
+    except KeyError as exc:
+        raise ValueError(f"unsupported corpus profile: {profile}") from exc
+
+    admitted_like = [record for record in records if record.admission_status in _ADMITTED]
+    incompatible = [record.asset_id for record in admitted_like if record.admission_status not in allowed]
+    if incompatible:
+        sample = ", ".join(sorted(incompatible)[:20])
+        raise ValueError(f"admitted records incompatible with {profile} profile: {sample}")
+
+    selected = [record for record in admitted_like if record.admission_status in allowed]
+    if profile == "release_safe":
+        wrong_rights = [
+            record.asset_id
+            for record in selected
+            if record.use_decision is not UseDecision.ALLOW_RELEASE_SAFE
+        ]
+        if wrong_rights:
+            sample = ", ".join(sorted(wrong_rights)[:20])
+            raise ValueError(f"release_safe records lack release-safe asset rights: {sample}")
+    return selected
+
+
 def freeze_corpus(
     *,
     records: Sequence[AssetRecord],
@@ -219,8 +253,17 @@ def freeze_corpus(
     source_certification: Mapping[str, Any] | None = None,
     coverage_policy: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    # A release-safe corpus is a certification artifact, not a convenience
+    # manifest. Do not permit programmatic callers to bypass the policies that
+    # make the release-safe claim meaningful.
+    if profile == "release_safe":
+        if source_certification is None:
+            raise ValueError("release_safe freeze requires source certification policy")
+        if coverage_policy is None:
+            raise ValueError("release_safe freeze requires corpus coverage policy")
+
     assigned = assign_record_splits(records, policy=split_policy)
-    admitted = [record for record in assigned if record.admission_status in _ADMITTED]
+    admitted = _select_profile_records(assigned, profile)
 
     if source_certification is not None:
         assert_sources_allowed(
