@@ -1,15 +1,14 @@
 # MK1 / Quarries
 
-Quarries activas durante la primera build:
+MK1 quarries are **empirical decision workstreams**. MK0 closed the architecture-changing research questions; MK1 now turns those protocols into measured evidence.
 
 ```text
-Q1 threshold calibration
-Q2 hard-negative mining
-Q3 domain adaptation
-Q4 stream stability
-Q5 model Pareto
-Q6 latency decomposition
-Q7 distance/SNR
+Q-CLASS-MAPPING.md   semantic mapping into taxonomy v1
+Q-HARD-NEGATIVES.md iterative false-positive mining
+Q-LATENCY.md         latency decomposition/instrumentation
+Q-THRESHOLDS.md      calibration and Event Engine operating points
 ```
 
-Cada quarry produce evidencia que puede cambiar design/arch/plan. Si lo hace, los certificados downstream se invalidan antes de continuar.
+Each quarry must follow `governance/DOCUMENTATION-STANDARD.md` and must produce versioned artifacts/hashes when its empirical work starts.
+
+A quarry is not complete because a number was chosen; it is complete when the number/decision is tied to a frozen dataset/model/config and reproducible evidence.

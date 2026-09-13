@@ -1,15 +1,15 @@
 # MK2 / Quarries
 
-Quarries permanentes de producto:
+MK2 quarries convert the working MK1 vertical into an operable, scalable and supportable product.
 
 ```text
-Q-DRIFT       domain/model drift
-Q-CAPACITY    scaling/performance
-Q-OOD         unknown/open-set behavior
-Q-CALIBRATION confidence reliability
-Q-FAILURES    new operational failure modes
-Q-DATA        new field data/hard negatives
-Q-SECURITY    dependency/secret/provenance issues
+Q-CAPACITY.md             measured source-count envelope
+Q-COST.md                 total-cost model
+Q-DRIFT.md                field drift and revalidation
+Q-REPLAY-DELIVERY.md       durability/replay semantics
+Q-SECURITY-OPERATIONS.md   day-2 security controls
 ```
 
-Un hallazgo puede invalidar una release o abrir MK3 en el futuro, pero no modifica retroactivamente la promesa inmutable de ECHO.
+These documents intentionally separate **framework decisions** from **measured release values**. A capacity/cost/SLO number cannot be certified until the MK2 build exists and the corresponding load/soak/operations tests have run.
+
+All substantive artifacts follow `governance/DOCUMENTATION-STANDARD.md`.
