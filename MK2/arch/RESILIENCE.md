@@ -1,57 +1,39 @@
 # MK2 Resilience Architecture
 
-## Source reconnect
+**Status:** `DESIGN_SPECIFIED`
 
-```text
-failure
-  ↓
-mark DEGRADED
-  ↓
-close broken decoder/session
-  ↓
-backoff + jitter
-  ↓
-new stream_session_id
-  ↓
-reconnect
-```
+## Objectives
 
-No reutilizar silently timestamps/session state de una conexión anterior.
+Recover predictably from source, process, model, broker, storage and network failures while keeping unaffected sources operating and avoiding duplicate/stale events.
 
-## Backpressure
+## Source resilience
 
-Cuando inference no alcanza ingest:
+Supervised adapters, exponential backoff+jitter, generation IDs, stall detection and explicit offline/degraded state. Permanent auth/config errors avoid retry storms.
 
-1. medir queue lag;
-2. aplicar policy por source;
-3. preservar fairness;
-4. preferir datos recientes si el caso realtime lo requiere;
-5. registrar dropped windows;
-6. degradar health state.
+## Worker resilience
 
-## Broker failure
+Worker crash isolates in-flight work; scheduler expires stale generation/deadline items. Restart does not silently reuse incompatible model/config state.
 
-Detection no debe caer porque MQTT esté offline. MK2 evalúa una de estas estrategias:
+## Broker/storage resilience
 
-```text
-bounded local outbox
-persistent outbox
-retry with backoff
-```
+Health/circuit behavior prevents indefinite blocking. Durability/outbox policy depends on production SLO. Recovery preserves event IDs and avoids duplicate logical events.
 
-La selección depende del delivery SLO.
+## Process/host resilience
 
-## Storage failure
+Service supervision restarts crashed components. HA/multi-host redundancy is only added if availability targets justify it; otherwise document recovery time and single-host limitation.
 
-Pub/Sub y persistencia no deben compartir un único failure point si no es necesario. Definir orden y compensación: persist-first, publish-first o transactional/outbox; benchmarkear costo.
+## Configuration/model resilience
 
-## Model failure
+Validated immutable release bundles, health checks after activation and rollback to previous certified bundle.
 
-- model artifact hash mismatch => fail closed;
-- incompatible schema/preprocess => reject activation;
-- rollback to last certified model;
-- warm-up before traffic.
+## Chaos/fault testing
 
-## Config failure
+Kill decoder/worker/broker, network partition, packet loss/stall, disk/full/read-only store, bad config/model checksum and load saturation.
 
-Config inválida no entra en runtime. Validation ocurre antes de activation.
+## Metrics
+
+MTTR/recovery time, event loss/duplicates, source downtime, queue behavior, stale work rejection and SLO impact.
+
+## Invalidation
+
+Final redundancy/retry parameters depend on frozen MK2 SLO/profile.

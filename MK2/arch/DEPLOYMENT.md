@@ -1,42 +1,41 @@
 # MK2 Deployment Architecture
 
-## Profiles
+**Status:** `PROFILE-BASED DESIGN`
 
-### Edge single-node
+## Deployment profiles
 
-```text
-ECHO runtime + broker + DB/embedded store
-```
+### Edge single-host
 
-Adecuado a instalaciones pequeñas cuando capacidad lo permita.
+Sources on LAN -> ECHO runtime -> local broker/store. Lowest raw-audio network exposure and operational complexity; capacity bounded by host.
 
-### Split services
+### Centralized inference
 
-```text
-edge ingest
-   ↓ secure network
-inference/event workers
-   ↓
-broker/store/api
-```
+Multiple remote/edge ingest nodes -> secured network -> central worker(s)/broker. Better accelerator sharing/model rollout; higher network/privacy/failure dependence.
 
-Adecuado cuando N sources o hardware requieran separación.
+### Hybrid
 
-## Containers
+Decode/preprocess/event buffering near sources with centralized inference or event services. Added complexity justified only by scale/site constraints.
 
-Containerization es candidato para reproducibilidad, no requisito conceptual. Si se adopta:
+## Deployment unit
 
-- images pinned by digest;
-- SBOM/provenance future gate;
-- model artifacts versioned separately;
-- secrets mounted/injected, no baked.
+Container/service packaging should pin code/dependencies/model/config/schema and expose health endpoints/metrics. Native FFmpeg/GStreamer/broker versions remain in SBOM/BOM.
 
-## Health
+## Network
 
-```text
-/liveness  -> process alive
-/readiness -> dependencies/model/config ready
-source health -> per source state
-```
+Camera/source network, inference service and broker/store boundaries use least privilege. Avoid exposing RTSP/broker publicly. Time synchronization strategy documented.
 
-No declarar service ready si el modelo activo no está validado.
+## State
+
+Runtime configuration/model artifacts are versioned; persistent event/model registry data has backup/migration policy. Ephemeral audio buffers are not backed up.
+
+## Rollout
+
+Staging -> limited/canary or controlled source subset -> full profile after SLO/regression checks, with rollback artifact retained.
+
+## Capacity mapping
+
+Each deployment profile names hardware, model, source count/rate and SLO envelope. No universal support number.
+
+## Invalidation
+
+Different organization/network/jurisdiction may require a distinct deployment/security profile.

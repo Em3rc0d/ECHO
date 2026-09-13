@@ -1,67 +1,23 @@
-# MK2 / Arch
+# MK2 / Architecture
 
-## Target topology
+**Status:** `TARGET_ARCHITECTURE_SPECIFIED / FINALIZE_FROM MK1 CAPACITY`
 
-```text
-                    ┌──────────────────┐
-CAM/MIC 1..N ──────>│ Source Registry  │
-                    └────────┬─────────┘
-                             v
-                    ┌──────────────────┐
-                    │ Ingest Workers   │
-                    │ bounded/source   │
-                    └────────┬─────────┘
-                             v
-                    ┌──────────────────┐
-                    │ Fair Scheduler   │
-                    └────────┬─────────┘
-                             v
-               ┌─────────────┼─────────────┐
-               v             v             v
-          Inference W1  Inference W2  Inference Wn
-               └─────────────┼─────────────┘
-                             v
-                    ┌──────────────────┐
-                    │ Event Engine     │
-                    └───────┬───┬──────┘
-                            │   │
-                            │   └────> Event Store/API
-                            v
-                     Reliable Publisher
-                            v
-                        MQTT Bus
-                            v
-                   subscribers/alerts
-```
+## Purpose
 
-## Bounded everything
+Harden MK1 boundaries into a production-capable multi-source runtime with explicit backpressure, resilience, observability, security and event-delivery semantics.
 
-No componente puede crecer sin límite:
+## Core principle
 
-```text
-bounded ring buffer/source
-bounded ingest queue
-bounded inference queue
-bounded publish queue/outbox
-bounded evidence retention
-```
+Scale topology is evidence-driven. Start with the simplest architecture meeting frozen SLOs; introduce distributed queues/workers only when capacity/resilience requirements justify operational complexity.
 
-Cuando hay sobrecarga, la política de drop/degradation debe ser explícita y observable.
+## Artifacts
 
-## Isolation
+`MULTISOURCE-RUNTIME.md`, `BACKPRESSURE.md`, `EVENT-DELIVERY.md`, `DEPLOYMENT.md`, `RESILIENCE.md`, `OBSERVABILITY-ARCH.md`, `SECURITY-ARCH.md`.
 
-Una cámara corrupta o lenta no consume indefinidamente workers. Scheduler debe mantener fairness y timeouts.
+## Invariants inherited
 
-## Horizontal evolution
+Source identity/state isolation, versioned contracts, bounded memory, no direct model->alert coupling, privacy by default and reproducible model/config release.
 
-Interfaces deben permitir separar:
+## Invalidation
 
-```text
-ingest nodes
-inference nodes
-event/publisher service
-storage/api
-broker
-```
-
-sin cambiar schemas core.
+MK1 measurements can change worker/process deployment, not the fixed promise.

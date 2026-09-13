@@ -1,12 +1,31 @@
-# Scaling Hypotheses — MK2
+# MK2 Scaling Hypotheses
 
-| ID | Hipótesis | Prueba |
-|---|---|---|
-| SH-01 | separar ingestion e inference mejora aislamiento | fault/load comparison |
-| SH-02 | batching entre sources aumenta throughput sin romper latency SLO | batch-size/latency sweep |
-| SH-03 | queues acotadas evitan colapso ante overload | overload soak |
-| SH-04 | edge processing reduce red/privacidad | edge vs central profile |
-| SH-05 | QoS1 + durable event store es suficiente para alerting normal | broker restart/replay tests |
-| SH-06 | model drift puede detectarse con score/data telemetry | field drift analysis |
+**Status:** `OPEN_EMPIRICAL`
 
-Todas permanecen abiertas hasta benchmark MK2.
+## H-SCALE-01 — shared inference workers
+
+A shared bounded worker pool should use accelerator/model memory more efficiently than one full model copy per source. Measure throughput, queue contention and fairness.
+
+## H-SCALE-02 — vertical before distributed
+
+A single host may support the initial target source count; distributed queues/workers are justified only when capacity/resilience evidence requires them.
+
+## H-SCALE-03 — batching trade-off
+
+Cross-source batching may improve throughput but can increase per-event latency. Benchmark batch=1 and bounded micro-batching under identical load.
+
+## H-SCALE-04 — model choice affects topology
+
+The selected model footprint may determine whether CPU-only, single GPU or multiple inference workers are viable. Scale architecture is therefore downstream of MK1 model selection.
+
+## H-SCALE-05 — source ingest is not the only bottleneck
+
+Decode, preprocessing, model inference, EventEngine, broker/storage and observability can each saturate first. Capacity tests measure per-component utilization/lag.
+
+## H-SCALE-06 — bounded degradation
+
+Under overload, dropping stale live windows with explicit health may be safer than processing an ever-growing backlog. Verify effect on event recall.
+
+## Closure
+
+Each hypothesis becomes decision only after capacity/load/soak evidence on a declared hardware/deployment profile.

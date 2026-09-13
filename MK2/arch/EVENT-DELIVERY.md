@@ -1,21 +1,37 @@
-# Event Delivery — MK2
+# MK2 Event Delivery Architecture
 
-## Semántica
+**Status:** `DESIGN_SPECIFIED / DURABILITY PROFILE TBD`
 
-El core genera un `CONFIRMED_EVENT` una vez lógicamente. El transporte puede redeliver.
+## Event truth vs transport
 
-## MQTT path
+A `CONFIRMED_EVENT` exists independently of whether a broker subscriber has received it. Transport retries/duplicates must not create a new logical event.
 
-QoS 1 sigue siendo candidato: at-least-once requiere idempotencia. Persistencia de sesión/broker y client behavior deben probarse, no asumirse.
+## MK1 inheritance
 
-## Durable path
+MQTT/Mosquitto with QoS1 and `event_id` idempotency remains baseline. Production requirements determine whether broker persistence plus a local/event-store outbox is necessary.
 
-Si requisitos exigen replay después de outage prolongado, introducir event outbox/store o stream durable (por ejemplo JetStream/RabbitMQ/Kafka según carga) detrás de adapter.
+## Durability alternatives
 
-## Outbox candidate
+1. MQTT only — simplest, sufficient if short disconnect semantics meet SLO.
+2. Transactional/outbox-like event store + MQTT — preserves local confirmed events for replay/republication.
+3. Durable streaming broker (NATS JetStream/RabbitMQ/Redis Streams/Kafka) — justified only by explicit replay/consumer/scale requirements.
 
-`event engine commit -> local durable outbox -> publisher -> ack -> mark delivered` evita perder eventos entre persistencia y publish, pero añade disco/operación.
+## Ordering
 
-## Decision gate
+Per-source event order may be preserved by publisher/consumer logic where needed. Global ordering across sources is not promised.
 
-Elegir simple MQTT vs durable outbox a partir del SLO de pérdida/replay, no por moda tecnológica.
+## Idempotency
+
+Consumers store/compare `event_id`; republished same logical event keeps identity. Event updates/closure use explicit version/action semantics rather than new IDs accidentally.
+
+## Security
+
+Authenticated publishers, topic ACLs, encrypted transport where required, secret rotation and audit. Source identity in payload is validated against publisher authorization.
+
+## Failure tests
+
+Broker restart/partition, duplicate ack/loss scenarios, slow consumer, outbox replay and schema-version mismatch.
+
+## Invalidation
+
+Choose stronger delivery architecture only if measured SLO/consumer needs exceed baseline.

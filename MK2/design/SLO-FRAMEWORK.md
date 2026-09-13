@@ -1,63 +1,35 @@
 # MK2 SLO Framework
 
-## Dimensiones
+**Status:** `FRAMEWORK_FROZEN / NUMBERS_PENDING MK1`
 
-### ML quality
+## Why SLOs are multidimensional
 
-```text
-critical recall
-precision
-macro F1
-false alarms/source-hour
-calibration
-```
+ECHO can have high classifier F1 but still fail operationally through false alarms, stale processing or unavailable sources. Production SLOs therefore cover ML quality, event quality, latency, availability, capacity and delivery.
 
-### Realtime
+## Quality dimensions
 
-```text
-onset -> confirmed_event p50/p95/p99
-queue lag
-publisher delay
-```
+Per-class event recall/miss rate, false alarms/source-hour, precision/F1/PR-AUC as diagnostics, calibration and field-holdout performance by relevant condition.
 
-### Reliability
+## Timing
 
-```text
-source recovery time
-service availability during soak
-message delivery success
-idempotency correctness
-```
+Source freshness, inference latency, confirmation latency, end-to-end event latency and queue lag p95/p99. Separate camera/network from core runtime where possible.
 
-### Capacity
+## Availability
 
-```text
-active sources/node
-windows/s
-CPU/RAM
-backpressure events
-```
+Source ingest availability (when source itself is healthy), inference service availability, broker/publisher health and event-delivery success. Do not blame ECHO for an externally powered-off camera without separate attribution.
 
-## Candidate gates from research
+## Capacity
 
-Los valores investigados (por ejemplo macro F1 ~0.90, false alarms ~0.05/source-hour o p95 ~1.5–2 s) se consideran **objetivos exploratorios**, no SLOs oficiales.
-
-El proceso correcto:
-
-```text
-MK1 evidence
-  ↓
-error/capacity analysis
-  ↓
-operational requirement
-  ↓
-SLO proposal
-  ↓
-approval
-  ↓
-MK2 test gate
-```
+Maximum supported N under declared hardware/model/source window rate while meeting lag/drop/latency/quality constraints over soak duration.
 
 ## Error budget
 
-Para componentes operacionales puede definirse error budget (stream outages, publish failures, source unavailable), pero no maquillar fallos de clasificación bajo un availability SLO.
+For production profiles, define acceptable periods of degraded availability/latency and how releases are halted when error budget is exhausted. Exact policy follows deployment criticality.
+
+## Freeze procedure
+
+Use MK1 baseline evidence -> choose achievable but meaningful TARGETs -> freeze before MK2 final tests -> evaluate holdout/load/soak. Never move SLO after seeing failure without a new decision/version.
+
+## Invalidation
+
+Major model/hardware/topology/site class can require a new SLO profile.

@@ -1,66 +1,27 @@
 # MK2 / Design
 
-## Dominios congelados
+**Status:** `SPECIFIED / FREEZE AFTER MK1`
 
-```text
-Source
-StreamSession
-AudioWindow
-RawInference
-CandidateEvent
-ConfirmedEvent
-AlertEnvelope
-ModelVersion
-ConfigVersion
-Attestation
-```
+## Purpose
 
-## Versioning
+Turn MK1 evidence into production contracts: SLOs, model governance, retention/privacy policy and compatibility rules. Numeric targets remain provisional until MK1 measurements provide a credible baseline.
 
-Cada evento MK2 debe identificar:
+## Inputs
 
-```text
-schema_version
-model_version + artifact hash
-threshold_version + hash
-event-engine config version + hash
-code git sha/release
-stream_session_id
-```
+MK1 certificate/result bundles, field evidence, failure analysis, capacity profile and the fixed charter.
 
-## Delivery semantics
+## Artifacts
 
-El sistema debe diseñarse para `at-least-once` en el bus cuando se use QoS 1. El consumidor o publisher/outbox debe utilizar `event_id` para idempotencia.
+`PRODUCT-CONTRACTS.md`, `SLO-CATALOG.md`, `SLO-FRAMEWORK.md`, `MODEL-GOVERNANCE.md`, `RETENTION-PRIVACY.md`.
 
-## Model rollout
+## Key principle
 
-Estados candidatos:
+Production design must state an operating envelope including hardware/model/source count/environment assumptions. It cannot advertise universal performance.
 
-```text
-REGISTERED
-VALIDATED
-STAGED
-ACTIVE
-RETIRED
-REJECTED
-```
+## Output
 
-Solo un modelo `VALIDATED` puede promoverse a `ACTIVE`.
+Architecture receives frozen SLO categories, compatibility/versioning and model/privacy policies.
 
-## Config rollout
+## Invalidation
 
-Thresholds y Event Engine config son artefactos separados del modelo. Cambiar un threshold no debe requerir reentrenar; sí requiere nueva versión y revalidación.
-
-## Retention
-
-Default:
-
-```text
-event metadata: retained per product policy
-continuous audio: not retained
-evidence clip: optional, encrypted, bounded TTL, policy-controlled
-```
-
-## SLO philosophy
-
-SLOs MK2 se congelan usando evidencia MK1. No se copian los target candidates como resultados.
+New deployment class, major model change or altered retention/compliance requirement triggers review.

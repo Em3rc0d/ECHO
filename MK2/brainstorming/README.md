@@ -1,42 +1,23 @@
 # MK2 / Brainstorming
 
-## Pregunta
+**Status:** `PREPARED / AWAITS MK1 MEASUREMENTS`
 
-¿Qué debe ser cierto para que ECHO deje de ser una PoC convincente y sea un sistema operacionalmente confiable?
+## Purpose
 
-## Problemas que MK2 debe resolver
+Identify production/hardening questions that MK1 evidence must answer before MK2 design freezes. Unlike MK0 brainstorming, this phase starts from a working vertical and asks what breaks under sustained/multi-source/operational conditions.
 
-```text
-N sources concurrentes
-reconnect storms
-slow/failed source isolation
-bounded memory
-fair scheduling
-model rollout/rollback
-schema evolution
-message duplication
-broker outage
-storage outage
-observability
-configuration drift
-field/domain drift
-reproducible release
-privacy enforcement
-```
+## Workstreams
 
-## Principio
+Production goals, scaling hypotheses and operations scenarios cover capacity, failure domains, maintainability, cost, drift and release behavior.
 
-MK2 no debe ocultar ML uncertainty detrás de infraestructura robusta. La resiliencia del sistema y la calidad del modelo se certifican por separado y luego como pipeline completo.
+## Evidence dependency
 
-## Anti-features
+Do not hardcode “supports 10 cameras” or “<2 s p95” here. Those become targets only after MK1 supplies model throughput, event latency and source-domain results.
 
-No convertir MK2 en:
+## Exit
 
-- NVR completo;
-- plataforma de video analytics;
-- SIEM;
-- dispatch platform;
-- reconocimiento de voz/personas;
-- blockchain.
+Brainstorming closes when MK1 evidence is translated into explicit production hypotheses and the design can define SLO/model/retention contracts.
 
-Cualquier integración externa consume eventos de ECHO; no redefine su core.
+## Invalidation
+
+New deployment profile or major MK1 model/runtime change reopens relevant assumptions.

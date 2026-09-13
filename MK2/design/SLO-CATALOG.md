@@ -1,16 +1,35 @@
-# SLO Catalog — MK2
+# MK2 SLO Catalog
 
-Los valores numéricos se completan después de capacity benchmark.
+**Status:** `METRICS_DEFINED / TARGET_VALUES_PENDING`
 
-| SLI | Definición | Target | Estado |
-|---|---|---|---|
-| capture-to-event p95 | captura -> confirmed event | TBD | OPEN |
-| publish p95 | confirmed -> broker ack | TBD | OPEN |
-| source availability | tiempo HEALTHY por source | TBD | OPEN |
-| false alarms/hour | por clase/site | TBD | OPEN |
-| miss rate | por clase/condición | TBD | OPEN |
-| recovery time | disconnect -> healthy | TBD | OPEN |
-| max backlog | segundos/windows | bounded | DECISION_CANDIDATE |
-| event duplicate rate | después de consumer dedup | TBD | OPEN |
+## ML/event SLO candidates
 
-Un SLO sólo puede certificarse para una combinación de hardware, modelo, config y workload definida.
+`event_recall[class]`, `miss_rate[class]`, `false_alarms_per_source_hour[class]`, aggregate false-alert burden, duplicate/fragmentation rate and calibration error.
+
+## Latency SLO candidates
+
+`source_to_window_lag`, `inference_latency`, `confirmation_latency`, `publish_latency`, `end_to_end_alert_latency` with p50/p95/p99 as appropriate.
+
+## Capacity SLO candidates
+
+Supported source count at declared audio cadence/model/hardware, queue lag ceiling, maximum sustained drop rate, CPU/GPU/RAM/thermal headroom.
+
+## Availability SLO candidates
+
+Healthy-source processing availability, broker publishing availability, service process uptime/recovery time and source reconnection objectives.
+
+## Data/model governance objectives
+
+Reproducible model release, complete artifact provenance, regression pass and rollback readiness are release gates rather than percentages when binary compliance is clearer.
+
+## Privacy/security objectives
+
+No secret leakage, default no-audio retention, authorized field data only, dependency/artifact provenance complete.
+
+## Profiles
+
+Development/lab and production may have different SLO profiles. Claims always name the profile/hardware/model/site assumptions.
+
+## Pending
+
+Numerical values are not filled until MK1 evidence exists; placeholders must be explicitly `TARGET_TBD`, never zero/100% defaults.

@@ -1,21 +1,39 @@
-# Model Governance — MK2
+# MK2 Model Governance
 
-## Model package
+**Status:** `DESIGN_SPECIFIED`
 
-Cada modelo incluye model ID/version, checkpoint hash, taxonomy version, preprocessing version, training dataset manifest, metrics report, calibration artifact, license/notices y runtime requirements.
+## Model identity
 
-## States
+Every production artifact has model ID/version, architecture code commit, checkpoint hash, preprocessing version, taxonomy version, training dataset manifest, training config/seed(s), calibration and compatible EventEngine config.
 
-`EXPERIMENTAL -> CANDIDATE -> VALIDATED -> PRODUCTION -> DEPRECATED -> RETIRED`.
+## Promotion stages
 
-## Promotion
+```text
+EXPERIMENTAL -> CANDIDATE -> STAGING -> CERTIFIED -> ACTIVE -> DEPRECATED/ROLLED_BACK
+```
 
-Un modelo no pasa a `PRODUCTION` si falla regression suite, field holdout, latency/resource gate o license gate.
+Promotion requires reproducible benchmark, regression comparison and supply-chain/license checks.
 
-## Rollback
+## Registry metadata
 
-La versión anterior permanece disponible durante ventana definida. Thresholds y calibration se versionan junto al modelo; nunca se reutilizan implícitamente.
+Quality metrics per class/condition, streaming false alarms/misses, runtime profile, compatible schema/config range, known limitations, creator/build provenance and signed/hash identity where MK2 tooling supports it.
+
+## Regression
+
+A new model cannot silently trade a critical class for aggregate improvement. Compare same frozen regression/field suites and report statistically/operationally meaningful changes.
+
+## Calibration coupling
+
+Thresholds/calibrator/EventEngine config are versioned with model because score distributions change. A rollback restores a compatible bundle.
 
 ## Drift
 
-Monitorear cambios en score distributions, class prevalence, hard-negative patterns y source acoustic statistics. Drift alerta revisión; no auto-reentrena sin gate.
+Operational drift evidence triggers offline review/data collection and a new model version. No unsupervised online self-modification is required for MK2.
+
+## Rollback
+
+Keep at least one previous certified artifact/config deployable. Rollback test is part of release certification.
+
+## Security/license
+
+Checkpoint origin/hash/license and runtime dependencies are required before promotion.

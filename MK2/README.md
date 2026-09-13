@@ -1,49 +1,29 @@
-# MK2 — Robust Product Specification
+# MK2 — Robust Multi-Source Product
 
-## Objetivo
+**Status:** `GATED_BY_MK1_EVIDENCE`
 
-MK2 convierte la vertical MK1 en un producto limpio, funcional, resiliente, multipunto y certificable dentro del alcance de ECHO.
+## Purpose
 
-**100% funcional** significa cumplir el scope, contratos, SLOs y Definition of Done aprobados. No significa 100% de accuracy ML.
+MK2 converts the first vertical into a robust, operable, multi-source product within the fixed ECHO promise. It does not start from speculative scale numbers; it consumes MK1 model/runtime/field evidence and freezes production requirements from measured behavior.
 
-## Pipeline interno obligatorio
+## Internal flow
 
 ```text
 brainstorming -> design -> arch -> plan -> build -> test
 ```
 
-Áreas transversales:
+## Primary concerns
 
-```text
-mining-site/
-quarries/
-```
+Capacity and fairness across sources, bounded backpressure, source/broker/model resilience, observability, security hardening, model/config/schema lifecycle, deployment/rollback, supply-chain provenance, drift/regression and release certification.
 
-## MK2 no es “agregar features”
+## Entry evidence
 
-MK2 elimina fragilidades descubiertas por MK1:
+MK1 certificate, selected/reasoned model, thresholds/EventEngine config, schemas, benchmark/error analysis, initial runtime profile and external camera/field evidence for any production claim involving real hardware.
 
-- source scaling;
-- backpressure;
-- stream recovery;
-- model/config/schema versioning;
-- deployment reproducible;
-- observability;
-- signed provenance;
-- rollback;
-- load/soak/failure testing;
-- field validation;
-- privacy/security hardening.
+## Exit
 
-## Estado
+MK2 is DONE when the declared deployment profile meets frozen SLOs under load/soak/fault/security/model-regression tests with reproducible release artifacts and closed required external gates.
 
-```text
-brainstorming = SPECIFIED
- design      = SPECIFIED_CANDIDATE
- arch        = SPECIFIED_CANDIDATE
- plan        = SPECIFIED_CANDIDATE
- build       = GATED_NOT_STARTED
- test        = SPECIFIED_NOT_EXECUTED
-```
+## Non-goal
 
-MK2/build solo puede abrirse después de MK1 certificado.
+MK2 does not expand ECHO into vision analytics, speech understanding or unrelated smart-city functionality.
