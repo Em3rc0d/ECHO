@@ -10,11 +10,13 @@ from typing import Any, Iterable, Mapping, Sequence
 from .admission import materialize_asset_record
 from .contracts import AdmissionStatus, AssetRecord, MappingStatus, RawAssetCandidate, UseDecision
 from .dedup import audit_duplicate_leakage
+from .fingerprints import wav_envelope_fingerprint
 from .hashing import canonical_json_sha256
 from .intake import read_candidate_manifest
 from .manifest import build_dataset_manifest, write_asset_manifest, write_json
 from .mapping import LabelMapper
 from .policies import load_policy
+from .probe import probe_audio
 from .reports import coverage_report, quarantine_report
 from .reviews import ReviewDecision, load_review_decisions, review_for
 from .splits import SplitRatios, assign_group
@@ -34,6 +36,35 @@ def _path_for_candidate(candidate: RawAssetCandidate, audio_root: str | Path | N
     return Path(audio_root) / rel
 
 
+def _enrich_candidate_from_probe(candidate: RawAssetCandidate, path: Path) -> tuple[RawAssetCandidate, tuple[str, ...], dict[str, Any]]:
+    probe = probe_audio(path)
+    issues: list[str] = []
+    extra: dict[str, Any] = {"audio_probe": probe.to_dict()}
+    if not probe.ok:
+        issues.append("AUDIO_PROBE_FAILED")
+        return candidate, tuple(issues), extra
+
+    enriched = replace(
+        candidate,
+        duration_seconds=(candidate.duration_seconds if candidate.duration_seconds is not None else probe.duration_seconds),
+        sample_rate_hz=(candidate.sample_rate_hz if candidate.sample_rate_hz is not None else probe.sample_rate_hz),
+        channels=(candidate.channels if candidate.channels is not None else probe.channels),
+    )
+    mismatches: list[str] = []
+    if candidate.sample_rate_hz is not None and probe.sample_rate_hz is not None and candidate.sample_rate_hz != probe.sample_rate_hz:
+        mismatches.append("sample_rate_hz")
+    if candidate.channels is not None and probe.channels is not None and candidate.channels != probe.channels:
+        mismatches.append("channels")
+    if mismatches:
+        extra["source_probe_metadata_mismatch"] = mismatches
+
+    fingerprint = wav_envelope_fingerprint(path)
+    if fingerprint:
+        extra["near_duplicate_fingerprint"] = fingerprint
+        extra["near_duplicate_fingerprint_method"] = "pcm_wav_envelope_v1"
+    return enriched, tuple(issues), extra
+
+
 def admit_candidates(
     candidates: Sequence[RawAssetCandidate],
     *,
@@ -44,16 +75,20 @@ def admit_candidates(
     reviews: Mapping[str, ReviewDecision] | None = None,
 ) -> list[AssetRecord]:
     records: list[AssetRecord] = []
-    for candidate in candidates:
+    for original_candidate in candidates:
+        path = _path_for_candidate(original_candidate, audio_root)
+        candidate, probe_issues, probe_extra = _enrich_candidate_from_probe(original_candidate, path)
         review = review_for(candidate.asset_id, reviews)
         record = materialize_asset_record(
             candidate,
             mapper=mapper,
             profile=profile,
-            local_path=_path_for_candidate(candidate, audio_root),
+            local_path=path,
             policy_decisions=license_decisions,
             manual_review_approved=bool(review and review.approved),
             manual_echo_labels=(review.echo_labels if review and review.approved else None),
+            additional_quality_issues=probe_issues,
+            additional_extra=probe_extra,
         )
         if review is not None:
             extra = dict(record.extra)
@@ -150,9 +185,7 @@ def assign_record_splits(records: Sequence[AssetRecord], *, policy: Mapping[str,
                 split = assign_group(record.recording_group_id, seed=seed, ratios=ratios)
         previous = group_splits.get(record.recording_group_id)
         if previous is not None and previous != split:
-            raise ValueError(
-                f"group {record.recording_group_id!r} receives conflicting splits: {previous} vs {split}"
-            )
+            raise ValueError(f"group {record.recording_group_id!r} receives conflicting splits: {previous} vs {split}")
         group_splits[record.recording_group_id] = split
         result.append(replace(record, echo_split=split))
     return result

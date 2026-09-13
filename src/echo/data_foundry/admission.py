@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import replace
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -49,6 +48,7 @@ def decide_admission(
         "SAMPLE_RATE_INVALID",
         "CHANNEL_COUNT_INVALID",
         "FIELD_HOLDOUT_SOURCE_SPLIT_CONFLICT",
+        "AUDIO_PROBE_FAILED",
         "LICENSE_REVIEW_OR_UNKNOWN",
         "LICENSE_RESEARCH_ONLY_FOR_REQUESTED_PROFILE",
         "LABEL_REVIEW_REQUIRED",
@@ -73,6 +73,8 @@ def materialize_asset_record(
     policy_decisions: Mapping[str, Mapping[str, Any]] | None = None,
     manual_review_approved: bool = False,
     manual_echo_labels: Sequence[str] | None = None,
+    additional_quality_issues: Sequence[str] = (),
+    additional_extra: Mapping[str, Any] | None = None,
 ) -> AssetRecord:
     path = Path(local_path or candidate.local_relpath or "")
     if not str(path) or not path.exists() or not path.is_file():
@@ -91,7 +93,7 @@ def materialize_asset_record(
         )
 
     use_decision = classify_license(candidate.license_id, profile=profile, decisions=policy_decisions)
-    quality_issues = candidate_quality_issues(candidate)
+    quality_issues = tuple(sorted(set(candidate_quality_issues(candidate)) | set(additional_quality_issues)))
     status, reasons = decide_admission(
         profile=profile,
         use_decision=use_decision,
@@ -128,5 +130,10 @@ def materialize_asset_record(
         field_holdout=candidate.field_holdout,
         admission_status=status,
         reason_codes=reasons,
-        extra={**dict(candidate.extra), "mapping_uses": mapping.uses, "confuses": mapping.confuses},
+        extra={
+            **dict(candidate.extra),
+            "mapping_uses": mapping.uses,
+            "confuses": mapping.confuses,
+            **dict(additional_extra or {}),
+        },
     )

@@ -1,4 +1,4 @@
-"""Duplicate and leakage audits for ECHO Data Foundry."""
+"""Duplicate, label-conflict and leakage audits for ECHO Data Foundry."""
 
 from __future__ import annotations
 
@@ -54,6 +54,29 @@ def find_near_duplicate_fingerprints(rows: Iterable[Mapping[str, Any]]) -> list[
     return _group_findings(rows, key_getter=fingerprint, key_type="near_duplicate_fingerprint")
 
 
+def find_exact_duplicate_label_conflicts(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, list[Mapping[str, Any]]] = {}
+    for row in rows:
+        digest = str(row.get("sha256") or "")
+        if digest:
+            grouped.setdefault(digest, []).append(row)
+    conflicts: list[dict[str, Any]] = []
+    for digest, items in grouped.items():
+        if len(items) < 2:
+            continue
+        variants = {
+            tuple(sorted(str(v) for v in (item.get("echo_labels") or [])))
+            for item in items
+        }
+        if len(variants) > 1:
+            conflicts.append({
+                "sha256": digest,
+                "asset_ids": sorted(str(item.get("asset_id") or "") for item in items),
+                "label_variants": [list(values) for values in sorted(variants)],
+            })
+    return sorted(conflicts, key=lambda row: row["sha256"])
+
+
 def audit_group_integrity(rows: Iterable[Mapping[str, Any]]) -> None:
     seen: dict[str, str] = {}
     for row in rows:
@@ -72,6 +95,10 @@ def audit_duplicate_leakage(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]
     audit_group_integrity(materialized)
     exact = find_exact_duplicates(materialized)
     near = find_near_duplicate_fingerprints(materialized)
+    conflicts = find_exact_duplicate_label_conflicts(materialized)
+    if conflicts:
+        details = "; ".join(item["sha256"] for item in conflicts[:10])
+        raise ValueError(f"exact duplicate label conflicts require review: {details}")
     cross = [item for item in exact + near if item.crosses_splits]
     if cross:
         details = "; ".join(f"{item.key_type}:{item.key}" for item in cross[:10])
@@ -79,7 +106,9 @@ def audit_duplicate_leakage(rows: Iterable[Mapping[str, Any]]) -> dict[str, Any]
     return {
         "exact_duplicate_groups": len(exact),
         "near_duplicate_groups": len(near),
+        "label_conflict_groups": 0,
         "cross_split_duplicate_groups": 0,
         "exact": [item.__dict__ for item in exact],
         "near": [item.__dict__ for item in near],
+        "label_conflicts": [],
     }

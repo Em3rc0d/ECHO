@@ -13,18 +13,18 @@ publisher/source release
   -> acquisition registry + checksum verification
   -> source-specific metadata intake
   -> RawAssetCandidate manifest
-  -> local asset SHA-256
+  -> technical audio probe + local asset SHA-256
   -> rights policy
   -> semantic mapping + manual review where required
-  -> technical quality
-  -> group identity + duplicate screening
+  -> quality + perceptual duplicate screening
+  -> group identity + duplicate/label-conflict audit
   -> protected split / field holdout
   -> frozen asset/split/report bundle
   -> dataset manifest hashes
-  -> benchmark handoff
+  -> validated benchmark-facing split view
 ```
 
-No mandatory link may be skipped. Missing rights, provenance, local file, group identity or required review produces quarantine/rejection rather than silent admission.
+No mandatory link may be skipped. Missing rights, provenance, local file, usable audio, group identity or required review produces quarantine/rejection rather than silent admission.
 
 ## Implemented code surface
 
@@ -34,15 +34,17 @@ src/echo/data_foundry/
   adapters.py        FSD50K/SONYC/SINGA:PURA/ESC-50/UrbanSound8K metadata adapters
   admission.py       per-asset rights + mapping + quality decision
   contracts.py       dataset-neutral typed contracts
-  dedup.py           group/exact/registered-near-duplicate leakage audits
+  dataset.py         validated benchmark-facing frozen-bundle reader
+  dedup.py           group/exact/registered-near-duplicate + label-conflict audits
   fingerprints.py    PCM-WAV normalized-envelope screening fingerprint
   hashing.py         canonical JSON + SHA-256 helpers
   intake.py          config-driven candidate-manifest production
   manifest.py        canonical asset/dataset manifests
   mapping.py         versioned semantic label mapping
-  pipeline.py        admission, split and freeze orchestration
+  pipeline.py        probe/admission/split/freeze orchestration
   policies.py        rights/use decisions
-  quality.py         candidate quality checks
+  probe.py           WAV/ffprobe technical audio evidence
+  quality.py         candidate metadata-quality checks
   registry.py        source registry validation
   reports.py         coverage/quarantine reports
   reviews.py         manual review evidence
@@ -64,7 +66,7 @@ STAGING
 QUARANTINE  ← rights / semantic / technical uncertainty
         ↓
 CURATED
-  hashed + mapped + reviewed + grouped assets
+  probed + hashed + mapped + reviewed + grouped assets
         ↓
 FROZEN
   train | validation | test | field_holdout
@@ -96,13 +98,17 @@ echo-data-foundry verify-acquisition fsd50k-1.0 /data/landing/fsd50k --stage met
 # 2. parse source metadata to deterministic candidate JSONL
 echo-data-foundry intake work/intake-sonyc.json work/sonyc-candidates.jsonl
 
-# 3. hash / rights / mapping / review admission
+# 3. probe / hash / rights / mapping / review admission
 echo-data-foundry admit work/candidates.jsonl work/records.jsonl \
   --profile release_safe --audio-root /data/curated --reviews work/reviews.json
 
 # 4. assign splits, audit leakage and freeze evidence
 echo-data-foundry freeze work/records.jsonl work/frozen/echo-mk1-data-001 \
   --manifest-id echo-mk1-data-001 --profile release_safe
+
+# 5. verify benchmark handoff; no arbitrary directory enumeration
+echo-data-foundry validate-bundle work/frozen/echo-mk1-data-001
+echo-data-foundry list-split work/frozen/echo-mk1-data-001 train --ids-only
 ```
 
 ## Freeze outputs
@@ -113,10 +119,10 @@ A benchmark without the exact frozen component hashes is non-certifiable.
 
 ## Stop-the-line rules
 
-Stop downstream execution on unknown/incompatible rights, release checksum mismatch, missing file/hash, broad positive mapping without review, group or duplicate leakage across protected splits, field-holdout contamination, mutable manual file selection, or a report that cannot reconstruct its asset population.
+Stop downstream execution on unknown/incompatible rights, release checksum mismatch, missing/unprobeable audio, missing hash, broad positive mapping without review, group/duplicate/label-conflict leakage across protected splits, field-holdout contamination, mutable manual file selection, frozen-bundle hash mismatch, or a report that cannot reconstruct its asset population.
 
 ## Certification boundary
 
 The complete Foundry software/toolchain can be tested and certified without downloading tens of gigabytes into CI. **A real corpus certificate cannot be fabricated**: `EMP-DATASET-001`, `EMP-DATA-QUALITY-001` and `CERT-MK1-DF-CORPUS-001` require the declared external source media to be acquired and the implemented pipeline to run against it.
 
-See `ACQUISITION.md`, `METADATA-INTAKE.md`, `SEMANTIC-REVIEW.md`, `CORPUS-FREEZE.md` and `FOUNDRY-GATES.md` for gate-level details.
+See `ACQUISITION.md`, `METADATA-INTAKE.md`, `SEMANTIC-REVIEW.md`, `TECHNICAL-QUALITY.md`, `CORPUS-FREEZE.md` and `FOUNDRY-GATES.md` for gate-level details.

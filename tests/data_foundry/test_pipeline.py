@@ -1,16 +1,27 @@
 from __future__ import annotations
 
 import json
+import struct
 import tempfile
 import unittest
+import wave
 from pathlib import Path
 
 from echo.data_foundry.contracts import AdmissionStatus, RawAssetCandidate
+from echo.data_foundry.dataset import load_benchmark_split, validate_frozen_bundle
 from echo.data_foundry.intake import read_candidate_manifest, write_candidate_manifest
 from echo.data_foundry.pipeline import admit_from_files, freeze_corpus, load_split_policy, read_record_manifest
 
 
 class FoundryPipelineTests(unittest.TestCase):
+    def _write_wav(self, path: Path, amplitude: int) -> None:
+        samples = [amplitude if i % 200 < 100 else -amplitude for i in range(1600)]
+        with wave.open(str(path), "wb") as wav:
+            wav.setnchannels(1)
+            wav.setsampwidth(2)
+            wav.setframerate(16000)
+            wav.writeframes(b"".join(struct.pack("<h", sample) for sample in samples))
+
     def test_candidate_manifest_round_trip_is_deterministic(self) -> None:
         candidates = [
             RawAssetCandidate(source_dataset="sonyc-ust-v2", source_release="2.3", source_asset_id="b.wav", local_relpath="b.wav", license_id="CC-BY-4.0", original_labels=("car-horn",), recording_group_id="g2"),
@@ -25,11 +36,11 @@ class FoundryPipelineTests(unittest.TestCase):
             loaded = read_candidate_manifest(p1)
             self.assertEqual([item.source_asset_id for item in loaded], ["a.wav", "b.wav"])
 
-    def test_release_safe_admit_and_freeze(self) -> None:
+    def test_release_safe_admit_freeze_and_benchmark_handoff(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "a.wav").write_bytes(b"audio-a")
-            (root / "b.wav").write_bytes(b"audio-b")
+            self._write_wav(root / "a.wav", 1000)
+            self._write_wav(root / "b.wav", 2000)
             candidates = [
                 RawAssetCandidate(source_dataset="sonyc-ust-v2", source_release="2.3", source_asset_id="a.wav", local_relpath="a.wav", license_id="CC-BY-4.0", original_labels=("siren",), recording_group_id="g1", original_split="train"),
                 RawAssetCandidate(source_dataset="sonyc-ust-v2", source_release="2.3", source_asset_id="b.wav", local_relpath="b.wav", license_id="CC-BY-4.0", original_labels=("car-horn",), recording_group_id="g2", original_split="test"),
@@ -48,14 +59,18 @@ class FoundryPipelineTests(unittest.TestCase):
             records = read_record_manifest(records_path)
             self.assertEqual(len(records), 2)
             self.assertTrue(all(record.admission_status is AdmissionStatus.ADMITTED_RELEASE_SAFE for record in records))
+            self.assertTrue(all(record.sample_rate_hz == 16000 for record in records))
+            self.assertTrue(all(record.channels == 1 for record in records))
+            self.assertTrue(all(record.extra.get("audio_probe", {}).get("ok") for record in records))
 
             source_registry = json.loads(Path("configs/data_foundry/source_registry.v1.json").read_text(encoding="utf-8"))
             license_policy = json.loads(Path("configs/data_foundry/license_policy.v1.json").read_text(encoding="utf-8"))
             mapping = json.loads(Path("configs/data_foundry/label_mapping.v1.json").read_text(encoding="utf-8"))
             split_policy = load_split_policy("configs/data_foundry/split_policy.v1.json")
+            bundle = root / "frozen"
             result = freeze_corpus(
                 records=records,
-                output_dir=root / "frozen",
+                output_dir=bundle,
                 manifest_id="test-manifest",
                 profile="release_safe",
                 taxonomy_version="echo.taxonomy.v1",
@@ -66,10 +81,36 @@ class FoundryPipelineTests(unittest.TestCase):
             )
             self.assertTrue(result["status"].startswith("PASS"))
             self.assertEqual(result["admitted_assets"], 2)
-            self.assertTrue((root / "frozen" / "dataset-manifest.json").exists())
-            split_manifest = json.loads((root / "frozen" / "split-manifest.json").read_text(encoding="utf-8"))
-            self.assertEqual(split_manifest["assignments"]["sonyc-ust-v2:a.wav"], "train")
-            self.assertEqual(split_manifest["assignments"]["sonyc-ust-v2:b.wav"], "test")
+            identity = validate_frozen_bundle(bundle)
+            self.assertEqual(identity["asset_count"], 2)
+            train = load_benchmark_split(bundle, "train")
+            test = load_benchmark_split(bundle, "test")
+            self.assertEqual([row["asset_id"] for row in train], ["sonyc-ust-v2:a.wav"])
+            self.assertEqual([row["asset_id"] for row in test], ["sonyc-ust-v2:b.wav"])
+
+    def test_corrupt_audio_is_quarantined(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "bad.wav").write_bytes(b"not-a-wave")
+            candidates = [RawAssetCandidate(
+                source_dataset="sonyc-ust-v2", source_release="2.3", source_asset_id="bad.wav",
+                local_relpath="bad.wav", license_id="CC-BY-4.0", original_labels=("siren",),
+                recording_group_id="g-bad",
+            )]
+            candidate_path = root / "candidates.jsonl"
+            records_path = root / "records.jsonl"
+            write_candidate_manifest(candidate_path, candidates)
+            admit_from_files(
+                candidate_manifest=candidate_path,
+                mapping_path="configs/data_foundry/label_mapping.v1.json",
+                license_policy_path="configs/data_foundry/license_policy.v1.json",
+                profile="release_safe",
+                output_path=records_path,
+                audio_root=root,
+            )
+            record = read_record_manifest(records_path)[0]
+            self.assertEqual(record.admission_status, AdmissionStatus.QUARANTINED)
+            self.assertIn("AUDIO_PROBE_FAILED", record.reason_codes)
 
 
 if __name__ == "__main__":

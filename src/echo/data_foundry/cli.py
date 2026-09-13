@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Sequence
 
 from .acquisition import files_for_stage, load_acquisition_registry, verification_summary, verify_source_release
+from .dataset import load_benchmark_split, validate_frozen_bundle
 from .hashing import canonical_json_sha256, sha256_file
 from .intake import load_intake_spec, run_intake_spec, write_candidate_manifest
 from .pipeline import admit_from_files, freeze_corpus, load_split_policy, read_record_manifest
@@ -128,6 +129,21 @@ def _cmd_freeze(args: argparse.Namespace) -> int:
     return 0 if result["status"].startswith("PASS") else 2
 
 
+def _cmd_validate_bundle(args: argparse.Namespace) -> int:
+    result = validate_frozen_bundle(args.bundle_dir)
+    print(json.dumps({"status": "PASS", **result}, indent=2, sort_keys=True))
+    return 0
+
+
+def _cmd_list_split(args: argparse.Namespace) -> int:
+    rows = load_benchmark_split(args.bundle_dir, args.split)
+    if args.ids_only:
+        print("\n".join(str(row["asset_id"]) for row in rows))
+    else:
+        print(json.dumps(rows, indent=2, sort_keys=True))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="echo-data-foundry", description="ECHO MK1 Data Foundry utilities")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -170,7 +186,7 @@ def build_parser() -> argparse.ArgumentParser:
     intake.add_argument("output")
     intake.set_defaults(func=_cmd_intake)
 
-    admit = sub.add_parser("admit", help="hash/license/map/review candidates into asset records")
+    admit = sub.add_parser("admit", help="probe/hash/license/map/review candidates into asset records")
     admit.add_argument("candidates")
     admit.add_argument("output")
     admit.add_argument("--profile", choices=["release_safe", "research_extended"], required=True)
@@ -191,6 +207,16 @@ def build_parser() -> argparse.ArgumentParser:
     freeze.add_argument("--mapping", default="configs/data_foundry/label_mapping.v1.json")
     freeze.add_argument("--split-policy", default="configs/data_foundry/split_policy.v1.json")
     freeze.set_defaults(func=_cmd_freeze)
+
+    bundle = sub.add_parser("validate-bundle", help="validate frozen manifest hashes and split identities")
+    bundle.add_argument("bundle_dir")
+    bundle.set_defaults(func=_cmd_validate_bundle)
+
+    view = sub.add_parser("list-split", help="enumerate benchmark assets exclusively from a frozen bundle")
+    view.add_argument("bundle_dir")
+    view.add_argument("split", choices=["train", "validation", "test", "field_holdout"])
+    view.add_argument("--ids-only", action="store_true")
+    view.set_defaults(func=_cmd_list_split)
 
     return parser
 
