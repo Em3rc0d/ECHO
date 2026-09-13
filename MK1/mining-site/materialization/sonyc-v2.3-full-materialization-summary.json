@@ -1,0 +1,208 @@
+{
+  "asset_count": 18510,
+  "certification_boundary": "Real SONYC bytes were fully materialized shard-by-shard under ECHO-FREE-TIER-001. This evidence does not by itself close CERT-MK1-DF-CORPUS-001; global source diversity, hard-negative, dedup, split and coverage gates remain authoritative.",
+  "confuser_candidate_count": 428,
+  "confuser_candidates_sha256": "3ee965966b95d65ae7116b98e38f767037d747b8cba0cd833c07430164c4f4dd",
+  "confuser_ground_truth_counts": {
+    "car-alarm": 1,
+    "machinery-impact": 58,
+    "non-machinery-impact": 348,
+    "reverse-beeper": 33
+  },
+  "exact_duplicate_examples": [
+    {
+      "assets": [
+        "40_001795.wav",
+        "40_002610.wav",
+        "40_003434.wav",
+        "40_004261.wav"
+      ],
+      "sha256": "000eaeb7f29b8a644b305f027d17fe48d5468591a8df5de37f0c575a4c748c2a"
+    },
+    {
+      "assets": [
+        "37_009375.wav",
+        "37_009994.wav"
+      ],
+      "sha256": "018426d3e821bac10cdc34885b36ac4c11b0499a01ea9909fcae36f36877d482"
+    },
+    {
+      "assets": [
+        "00_004139.wav",
+        "00_008072.wav"
+      ],
+      "sha256": "0299cc8e65a0f0a1e8aa0815d791e98e0678e8cb6ec252ed5deb432328444ec3"
+    },
+    {
+      "assets": [
+        "40_002220.wav",
+        "40_003023.wav",
+        "40_003843.wav",
+        "40_004694.wav"
+      ],
+      "sha256": "039c740fb49c198d6c1d59bff29e4c88e02cbb23b829c51692c30290357890d4"
+    },
+    {
+      "assets": [
+        "11_001684.wav",
+        "11_004157.wav"
+      ],
+      "sha256": "042312093657417b43f0b0f461303bb103e3e8918c721a719c9d90126e7c7aac"
+    },
+    {
+      "assets": [
+        "41_006720.wav",
+        "41_008309.wav"
+      ],
+      "sha256": "043481f988dcd98846b38a9e9734b466ed1cf559365fbf1f8444c4435f241215"
+    },
+    {
+      "assets": [
+        "38_003676.wav",
+        "38_004511.wav"
+      ],
+      "sha256": "0443684679985c9063d6a528eec3c333f7bca959da40c18e088bf897f5d3ccb1"
+    },
+    {
+      "assets": [
+        "04_004119.wav",
+        "04_006697.wav"
+      ],
+      "sha256": "04c04abaab099ac886a2d97e8847d8fcc84e0ca0d9a284c707027b59818ffe1d"
+    },
+    {
+      "assets": [
+        "40_002159.wav",
+        "40_002949.wav",
+        "40_003765.wav",
+        "40_004610.wav"
+      ],
+      "sha256": "04c877c5b796f28acdb140fa911c9fce1123410e329d1669d76d9ac470c872ba"
+    },
+    {
+      "assets": [
+        "40_002211.wav",
+        "40_003005.wav",
+        "40_003832.wav",
+        "40_004683.wav"
+      ],
+      "sha256": "05ad08d0b21e000a19a02ff750dc052403afec3bfc12a51a497b575299fe8a90"
+    },
+    {
+      "assets": [
+        "37_001986.wav",
+        "37_002778.wav",
+        "37_003610.wav",
+        "37_004452.wav"
+      ],
+      "sha256": "06c9d0633ec8ce0f158719f573519f224a27b10c08872261d57df1ff1a690a33"
+    },
+    {
+      "assets": [
+        "37_003553.wav",
+        "37_005348.wav"
+      ],
+      "sha256": "08448cd8ab48511b1554915ebd1de3104692bdc150069024413bdf14e06e4205"
+    },
+    {
+      "assets": [
+        "40_002197.wav",
+        "40_002994.wav",
+        "40_003821.wav",
+        "40_004669.wav"
+      ],
+      "sha256": "087b0b656651b58aeff582f7d0d6bb71953a47d0aff620a48d3bdb6059d8da3b"
+    },
+    {
+      "assets": [
+        "17_009680.wav",
+        "17_011445.wav"
+      ],
+      "sha256": "089f9d3023e2c3064813b7e28727d5d90abbaffaabc1b5bd7ef22ba1938f6607"
+    },
+    {
+      "assets": [
+        "29_003333.wav",
+        "29_005020.wav"
+      ],
+      "sha256": "0938887b78af57090d1e10de213792f06b99e8a460b68d9b7c1f020b36c21046"
+    },
+    {
+      "assets": [
+        "32_009305.wav",
+        "32_010672.wav"
+      ],
+      "sha256": "0aaa863fdf91a3431af89d76c1931ea5adea25e9abefde082e40532f71007917"
+    },
+    {
+      "assets": [
+        "31_006674.wav",
+        "31_008235.wav"
+      ],
+      "sha256": "0b11d19107253c05cdedfef8d8a8944162fad598a81265fb1ea28ee0ce47defd"
+    },
+    {
+      "assets": [
+        "40_001685.wav",
+        "40_002501.wav",
+        "40_003336.wav",
+        "40_004158.wav"
+      ],
+      "sha256": "0cf75154ab2899bf339013827f4fc00eec177fdee7adb147823bca3b2cb5ce65"
+    },
+    {
+      "assets": [
+        "40_001852.wav",
+        "40_002660.wav",
+        "40_003483.wav",
+        "40_004318.wav"
+      ],
+      "sha256": "0d170ddfbb4031246b8173dcca04a06cc26cc0a990598fbd7a4a15030d582f66"
+    },
+    {
+      "assets": [
+        "20_004982.wav",
+        "20_007338.wav"
+      ],
+      "sha256": "0d38abc2860b4e2d3703820654262f4130c2c5073e70909adbd6e865315158df"
+    }
+  ],
+  "exact_duplicate_sha256_group_count": 491,
+  "probe_failures": 0,
+  "schema_version": "echo.sonyc-full-materialization-summary.v1",
+  "shard_digests_sha256": "0ceb6e3a8b4037f3b74a89796c4d3643f3e63a27e62b800d7ff29656bb12ecc2",
+  "shards_expected": 19,
+  "shards_materialized": 19,
+  "source_id": "sonyc-ust-v2",
+  "source_release": "2.3",
+  "split_counts": {
+    "test": 664,
+    "train": 13538,
+    "validate": 4308
+  },
+  "status": "PASS_WITH_REVIEW_FLAGS",
+  "target_candidate_count": 236,
+  "target_candidates_sha256": "d37787141700b205f3849412b24b2543cefa8d379383527258cdac500cae4489",
+  "target_ground_truth_counts": {
+    "SIREN": 106,
+    "VEHICLE_HORN": 157
+  },
+  "target_independent_group_candidates": {
+    "SIREN": 106,
+    "VEHICLE_HORN": 157
+  },
+  "target_split_counts": {
+    "SIREN": {
+      "test": 32,
+      "train": 13,
+      "validate": 61
+    },
+    "VEHICLE_HORN": {
+      "test": 94,
+      "train": 19,
+      "validate": 44
+    }
+  },
+  "total_duration_seconds": 185100.0,
+  "unmatched_annotation_assets": 0
+}
