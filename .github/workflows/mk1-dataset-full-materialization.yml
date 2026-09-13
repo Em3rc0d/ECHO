@@ -1,0 +1,104 @@
+name: MK1 Dataset Full Materialization
+
+on:
+  workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Materialization stage'
+        required: true
+        default: 'full'
+        type: choice
+        options: [metadata, full]
+      extract:
+        description: 'Extract verified publisher archives'
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  materialize:
+    runs-on: [self-hosted, linux, x64, echo-data]
+    timeout-minutes: 1440
+    env:
+      PYTHONPATH: src
+      ECHO_DATA_ROOT: ${{ vars.ECHO_DATA_ROOT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Require persistent data root
+        run: |
+          if [ -z "$ECHO_DATA_ROOT" ]; then
+            echo 'Repository variable ECHO_DATA_ROOT must point to persistent storage.' >&2
+            exit 2
+          fi
+          mkdir -p "$ECHO_DATA_ROOT"
+      - name: Require minimum persistent free space
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from echo.data_foundry.materialization import ensure_free_space
+          plan = json.loads(Path('configs/data_foundry/materialization_plan.v1.json').read_text())
+          ensure_free_space(os.environ['ECHO_DATA_ROOT'], int(plan['persistent_storage']['minimum_free_bytes']))
+          print('persistent storage gate: PASS')
+          PY
+      - name: Require multipart archive extractor for full stage
+        if: ${{ inputs.stage == 'full' && inputs.extract }}
+        run: |
+          command -v 7zz >/dev/null || command -v 7z >/dev/null || {
+            echo '7z/7zz is required for FSD50K and SINGA:PURA multipart ZIP extraction.' >&2
+            exit 2
+          }
+      - name: Materialize verified Zenodo publisher bundles
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from echo.data_foundry.materialization import materialize_registered_source, write_materialization_report
+          registry = json.loads(Path('configs/data_foundry/acquisition_registry.v1.json').read_text())
+          root = os.environ['ECHO_DATA_ROOT']
+          stage = '${{ inputs.stage }}'
+          rows = []
+          for source_id in ('sonyc-ust-v2', 'fsd50k-1.0', 'singapura-v1.0a'):
+              rows.extend(materialize_registered_source(
+                  source_id=source_id,
+                  acquisition_registry=registry,
+                  root=root,
+                  stage=stage,
+                  allow_large_download=(stage == 'full'),
+              ))
+          digest = write_materialization_report(Path(root) / 'reports' / f'publisher-materialization-{stage}.json', rows)
+          print('publisher materialization report sha256:', digest)
+          PY
+      - name: Extract verified publisher bundles
+        if: ${{ inputs.stage == 'full' && inputs.extract }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from echo.data_foundry.materialization import extract_source_archives
+          root = Path(os.environ['ECHO_DATA_ROOT'])
+          for source_id in ('sonyc-ust-v2', 'fsd50k-1.0', 'singapura-v1.0a'):
+              raw = root / 'raw' / source_id
+              out = root / 'extracted' / source_id
+              extracted = extract_source_archives(raw, out)
+              print(source_id, 'archives extracted:', len(extracted))
+          PY
+      - name: Stop line for externally acquired sources
+        run: |
+          cat <<'EOF'
+          Automatic publisher materialization complete for registered Zenodo bundles.
+          The following source families remain intentionally external/manual and MUST be present
+          before CERT-MK1-DF-CORPUS-001 can close:
+            - UrbanSound8K official/manual distribution (research_extended)
+            - MIVIA Road AED provider access + license text (research_extended)
+            - Freesound exact-gap assets with current per-asset rights + manual semantic review
+            - BigSoundBank CC0 gap assets with real byte hashes + manual semantic review
+            - ECHO field holdout after external camera/privacy authorization
+          ESC-50 must be pinned to an exact repository/archive identity before empirical certification.
+          EOF

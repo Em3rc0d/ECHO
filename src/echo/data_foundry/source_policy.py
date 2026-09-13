@@ -20,6 +20,17 @@ _ALLOWED_PROFILE_STATES = {
     "EXTERNAL_GATE",
 }
 
+_CERTIFIED_RELEASE_EVIDENCE_STATES = {
+    "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
+}
+
+
+def _normalize_release(value: object) -> str:
+    text = str(value or "").strip().casefold()
+    if text.startswith("v") and len(text) > 1 and text[1].isdigit():
+        text = text[1:]
+    return text
+
 
 def load_dataset_certification(path: str | Path) -> dict[str, Any]:
     with Path(path).open("r", encoding="utf-8") as handle:
@@ -35,6 +46,10 @@ def load_dataset_certification(path: str | Path) -> dict[str, Any]:
         profiles = row.get("profiles")
         if not isinstance(profiles, Mapping) or not profiles:
             raise ValueError(f"dataset certification profiles missing: {source_id}")
+        if not str(row.get("release") or "").strip():
+            raise ValueError(f"dataset certification release missing: {source_id}")
+        if not str(row.get("source_release_status") or "").strip():
+            raise ValueError(f"dataset certification release evidence status missing: {source_id}")
         for profile, state in profiles.items():
             if str(state) not in _ALLOWED_PROFILE_STATES:
                 raise ValueError(
@@ -69,6 +84,45 @@ def assert_sources_allowed(
         raise ValueError(
             f"source certification stop-line for profile {profile!r}: {detail}. "
             "Resolve source-level conditions before freezing this corpus profile."
+        )
+
+
+def assert_source_records_allowed(
+    source_releases: Iterable[tuple[str, str]],
+    *,
+    profile: str,
+    policy: Mapping[str, Any],
+) -> None:
+    """Require source profile permission, certified release evidence and pin match."""
+    failures: list[str] = []
+    sources = policy.get("sources", {})
+    pairs = sorted({(str(source_id), str(release)) for source_id, release in source_releases})
+    for source_id, actual_release in pairs:
+        row = sources.get(source_id) if isinstance(sources, Mapping) else None
+        if not isinstance(row, Mapping):
+            failures.append(f"{source_id}=DENY_UNKNOWN_SOURCE")
+            continue
+
+        state = source_profile_state(policy, source_id=source_id, profile=profile)
+        if state != "ALLOW":
+            failures.append(f"{source_id}={state}")
+            continue
+
+        evidence_status = str(row.get("source_release_status") or "")
+        if evidence_status not in _CERTIFIED_RELEASE_EVIDENCE_STATES:
+            failures.append(f"{source_id}=RELEASE_EVIDENCE_NOT_CERTIFIED:{evidence_status or 'MISSING'}")
+            continue
+
+        expected_release = str(row.get("release") or "")
+        if _normalize_release(actual_release) != _normalize_release(expected_release):
+            failures.append(
+                f"{source_id}=RELEASE_MISMATCH:actual={actual_release},expected={expected_release}"
+            )
+
+    if failures:
+        raise ValueError(
+            f"source/release certification stop-line for profile {profile!r}: "
+            + "; ".join(failures)
         )
 
 
