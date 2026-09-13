@@ -1,0 +1,53 @@
+name: MK1 Public Gap Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/data_foundry/gap_source_candidates.v1.json'
+      - 'scripts/materialize_public_gap_assets.py'
+      - 'src/echo/data_foundry/probe.py'
+      - '.github/workflows/mk1-public-gap-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  public-gap-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Confirm ffprobe
+        run: ffprobe -version | head -n 1
+      - name: Materialize public real-media candidates
+        env:
+          PYTHONPATH: src
+          ECHO_GAP_ASSET_ROOT: ${{ runner.temp }}/echo-public-gap-assets
+        run: python scripts/materialize_public_gap_assets.py
+      - name: Validate evidence report
+        run: python -m json.tool MK1/mining-site/materialization/public-gap-assets-report.json >/dev/null
+      - name: Upload real media as ephemeral controlled artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: echo-public-gap-assets-${{ github.sha }}
+          path: ${{ runner.temp }}/echo-public-gap-assets/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
+      - name: Commit hashes/probes/license-page evidence only
+        run: |
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git add MK1/mining-site/materialization/public-gap-assets-report.json
+          if git diff --cached --quiet; then
+            echo 'No evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize public gap audio candidates [skip ci]'
+            git push origin HEAD:main
+          fi
