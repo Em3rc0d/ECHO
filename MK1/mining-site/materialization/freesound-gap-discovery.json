@@ -1,0 +1,331 @@
+{
+  "admission_status": "NOT_ADMITTED_MEDIA_NOT_ACQUIRED",
+  "schema_version": "echo.gap-candidate-discovery-evidence.v1",
+  "source_id": "echo-freesound-exact-gap-v1",
+  "targets": {
+    "FIRE_ALARM": {
+      "discovered_unique_asset_ids": [
+        17826,
+        22457,
+        25032,
+        34656,
+        40713,
+        53448,
+        55031,
+        64073,
+        66973,
+        74726,
+        82797,
+        87602,
+        93643,
+        101360,
+        124734,
+        128021,
+        136634,
+        163531,
+        164686,
+        165542,
+        168585,
+        168586,
+        171323,
+        182401,
+        201718,
+        201863,
+        204492,
+        207186,
+        210513,
+        215557,
+        233984,
+        239498,
+        253695,
+        255180,
+        255181,
+        260627,
+        270639,
+        270640,
+        270641,
+        270642,
+        270643,
+        277508,
+        316833,
+        316835,
+        316837,
+        316839,
+        316841,
+        316843,
+        316847,
+        316848,
+        319413,
+        323238,
+        323239,
+        324394,
+        324461,
+        324764,
+        325367,
+        326645,
+        336892,
+        336893,
+        336894,
+        336895,
+        336896,
+        336898,
+        337099,
+        337437,
+        337438,
+        337439,
+        337440,
+        337441,
+        338355,
+        345342,
+        372087,
+        383254,
+        384133,
+        386756,
+        387536,
+        393524,
+        404483,
+        405585,
+        405590,
+        405591,
+        405592,
+        415266,
+        418966,
+        428175,
+        432068
+      ],
+      "discovered_unique_count": 87,
+      "expected_candidate_count": 87,
+      "expected_ground_truth_count": 24,
+      "page_snapshots": [
+        {
+          "discovered_ids": [
+            53448,
+            128021,
+            136634,
+            165542,
+            207186,
+            324394,
+            345342,
+            405585,
+            405590,
+            405592
+          ],
+          "page": 1,
+          "sha256": "2ebae5174d7f9999d21802154d6758a15d725cc33a7d220e79a6747257926875",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=1"
+        },
+        {
+          "discovered_ids": [
+            40713,
+            164686,
+            201718,
+            210513,
+            253695,
+            316843,
+            316847,
+            323238,
+            325367,
+            336898
+          ],
+          "page": 2,
+          "sha256": "2dc17a63374b302413460ee2a04dece213cd94060d84439c32077957d29842c4",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=2"
+        },
+        {
+          "discovered_ids": [
+            64073,
+            66973,
+            168586,
+            201863,
+            204492,
+            239498,
+            316835,
+            337438,
+            372087,
+            415266
+          ],
+          "page": 3,
+          "sha256": "d5218a143bb7a47c1ef2aa0d2b3bc77e0b91691c6691c593e359f6d443954ca0",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=3"
+        },
+        {
+          "discovered_ids": [
+            17826,
+            22457,
+            270641,
+            277508,
+            316833,
+            316848,
+            324461,
+            326645,
+            337441,
+            384133
+          ],
+          "page": 4,
+          "sha256": "74f83cc52a57bdca25ab4440013d97714515a153dc06f720e9c8f471c8d5e8f1",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=4"
+        },
+        {
+          "discovered_ids": [
+            25032,
+            82797,
+            101360,
+            260627,
+            316837,
+            316841,
+            319413,
+            323239,
+            337440,
+            383254
+          ],
+          "page": 5,
+          "sha256": "e04eaa88f3d63196940bb1a04cb076866a110561d4a8d6cc451e115449b6b9c7",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=5"
+        },
+        {
+          "discovered_ids": [
+            34656,
+            55031,
+            124734,
+            163531,
+            316839,
+            324764,
+            336892,
+            336893,
+            336895,
+            337439
+          ],
+          "page": 6,
+          "sha256": "b12ac2f6add002cbcd785aeb1dae8e38a3279451eb458e3b026b5ca0d65ab75d",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=6"
+        },
+        {
+          "discovered_ids": [
+            74726,
+            215557,
+            233984,
+            270639,
+            270640,
+            270643,
+            336894,
+            336896,
+            337099,
+            338355
+          ],
+          "page": 7,
+          "sha256": "b97d61e5d3e18b554bd25431c3cff52e70a08dbef62e2fc5cb5f278e5f4c5c41",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=7"
+        },
+        {
+          "discovered_ids": [
+            87602,
+            93643,
+            168585,
+            171323,
+            270642,
+            337437,
+            387536,
+            404483,
+            418966,
+            428175
+          ],
+          "page": 8,
+          "sha256": "10975dd9cb838e66529a25cdfebfb9ee938245919977f6c0463e038b88d7acc7",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=8"
+        },
+        {
+          "discovered_ids": [
+            182401,
+            255180,
+            255181,
+            386756,
+            393524,
+            405591,
+            432068
+          ],
+          "page": 9,
+          "sha256": "a39aef886d7e9ce4540486a22c556bc7ffb568e6a03f6340bfab06c143545c80",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0c3f7m/?page=9"
+        }
+      ],
+      "status": "PASS_DISCOVERY"
+    },
+    "TIRE_SQUEAL": {
+      "discovered_unique_asset_ids": [
+        37789,
+        51054,
+        53806,
+        58549,
+        71736,
+        71737,
+        71738,
+        71739,
+        71740,
+        71741,
+        76804,
+        76805,
+        76806,
+        101347,
+        155526,
+        156640,
+        238228,
+        271337,
+        322131,
+        341556,
+        365760,
+        367439,
+        426021
+      ],
+      "discovered_unique_count": 23,
+      "expected_candidate_count": 23,
+      "expected_ground_truth_count": 10,
+      "page_snapshots": [
+        {
+          "discovered_ids": [
+            37789,
+            51054,
+            53806,
+            58549,
+            155526,
+            156640,
+            238228,
+            341556,
+            365760,
+            367439
+          ],
+          "page": 1,
+          "sha256": "56d6c3a656f8bcba3535668983a433cef038179f6f84b3dd3d365cbd73e36e15",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0h9mv/?page=1"
+        },
+        {
+          "discovered_ids": [
+            71738,
+            71739,
+            71740,
+            71741,
+            76804,
+            76805,
+            76806,
+            101347,
+            271337,
+            322131
+          ],
+          "page": 2,
+          "sha256": "004175487de81371ff5a0bb9b002d9b09ef556ba29fdd12d9df68c00525ed0b5",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0h9mv/?page=2"
+        },
+        {
+          "discovered_ids": [
+            71736,
+            71737,
+            426021
+          ],
+          "page": 3,
+          "sha256": "55d398d272c6bd8272fef0a6845e2dc0465dd832c52288f059567636e4c22a2d",
+          "url": "https://fsannotator.upf.edu/fsd/explore/%252Fm%252F0h9mv/?page=3"
+        }
+      ],
+      "status": "PASS_DISCOVERY"
+    }
+  }
+}

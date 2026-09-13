@@ -1,0 +1,171 @@
+{
+  "admission_status": "NOT_ADMITTED_MEDIA_NOT_ACQUIRED",
+  "schema_version": "echo.gap-page-evidence.v1",
+  "source_id": "echo-bigsoundbank-cc0-gap-v1",
+  "targets": {
+    "FIRE_ALARM": [
+      {
+        "asset_key": "bigsoundbank-268",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0268.mp3",
+        "page_sha256": "1a46190432272f379102995682dbcdc22421bdeaee4eb05f3021302715fc20a0",
+        "recording_family": "communities_alarm_family",
+        "semantic": "fire_alarm",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/fire-alarm-communities-1-s0268.html"
+      },
+      {
+        "asset_key": "bigsoundbank-269",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0269.mp3",
+        "page_sha256": "d045b3b9b9cfd9da34027695bc9f3f30028166819f0af1f7e7714bdc05fe2b8a",
+        "recording_family": "communities_alarm_family",
+        "semantic": "fire_alarm",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/fire-alarm-communities-2-s0269.html"
+      },
+      {
+        "asset_key": "bigsoundbank-2249",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2249.mp3",
+        "page_sha256": "7b8d8056f5d5acbed0461424d27bd48fa7efc3724c678d78b5f54a8ea0aaa79b",
+        "recording_family": "communities_alarm_family",
+        "semantic": "fire_alarm",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/fire-alarm-communities-3-s2249.html"
+      },
+      {
+        "asset_key": "bigsoundbank-2250",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2250.mp3",
+        "page_sha256": "716b4944c3edc6d9e40a78265a6c29fe585121c4e769ddf699cf80e22ef6c9fa",
+        "recording_family": "communities_alarm_family",
+        "semantic": "fire_alarm",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/fire-alarm-communities-4-s2250.html"
+      },
+      {
+        "asset_key": "bigsoundbank-800",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0800.mp3",
+        "page_sha256": "108101368b4b649c865c65a0cfcbf1eceb820f27652f15f51e0d7ec4f7b9381e",
+        "recording_family": "smoke_detector_800",
+        "semantic": "smoke_detector_alarm_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/smoke-detector-alarm-s0800.html"
+      },
+      {
+        "asset_key": "bigsoundbank-1151",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1151.mp3",
+        "page_sha256": "296f39750a82b7424c4eaa7ac87e26c76e80d26228d95140769a62b203287eb5",
+        "recording_family": "smoke_detector_1151",
+        "semantic": "smoke_detector_alarm_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/smoke-detector-alarm-2-s1151.html"
+      },
+      {
+        "asset_key": "bigsoundbank-1153",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1153.mp3",
+        "page_sha256": "5251788c5f2e18db520b062936616eacbc7fca77192f3ff2f8c5bf768191b455",
+        "recording_family": "smoke_detector_1153",
+        "semantic": "smoke_detector_alarm_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/smoke-detector-alarm-3-s1153.html"
+      },
+      {
+        "asset_key": "bigsoundbank-3411",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3411.mp3",
+        "page_sha256": "419b2b3c2c82465507c1fa68819ab2772403452611ef0fc48be1fb2d18936c70",
+        "recording_family": "evacuation_alarm_family",
+        "semantic": "evacuation_alarm_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/evacuation-alarm-1-s3411.html"
+      },
+      {
+        "asset_key": "bigsoundbank-3412",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3412.mp3",
+        "page_sha256": "95c4697d1ab2bfdb7b63e10242e0fb898f9014035131667f98f9b3d38bf7d8a5",
+        "recording_family": "evacuation_alarm_family",
+        "semantic": "evacuation_alarm_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/evacuation-alarm-2-s3412.html"
+      },
+      {
+        "asset_key": "bigsoundbank-3413",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3413.mp3",
+        "page_sha256": "3e2d3a07af7178c4e84f4d8acb41e5ace7d1f699c6a9cfe125c04bad17aa6c96",
+        "recording_family": "evacuation_alarm_family",
+        "semantic": "evacuation_alarm_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/evacuation-alarm-3-s3413.html"
+      }
+    ],
+    "TIRE_SQUEAL": [
+      {
+        "asset_key": "bigsoundbank-2368",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2368.mp3",
+        "page_sha256": "7ae5d1747418d57d08e30b51c363003e53bc9c88ff1cf7e0e8abc73df8a667c8",
+        "recording_family": "tire_2368",
+        "semantic": "tire_squeal",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/screeching-tires-1-s2368.html"
+      },
+      {
+        "asset_key": "bigsoundbank-2369",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2369.mp3",
+        "page_sha256": "d588e602c0ab2ac65498c630c18df6ba84a846472959d1a2c9a10214b32d8c4f",
+        "recording_family": "tire_2369",
+        "semantic": "tire_squeal",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/screeching-tires-2-s2369.html"
+      },
+      {
+        "asset_key": "bigsoundbank-2370",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2370.mp3",
+        "page_sha256": "27a6a9e746bbf051e194a05c3f4d039307da507e8ffa403d5f028c499622c674",
+        "recording_family": "tire_2370",
+        "semantic": "tire_squeal",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/screeching-tires-3-s2370.html"
+      },
+      {
+        "asset_key": "bigsoundbank-2371",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2371.mp3",
+        "page_sha256": "926c0ed6bb33ab8dc3208caaa3d044379d47c5454f7a6262e0a0d851eab49136",
+        "recording_family": "tire_2371",
+        "semantic": "tire_squeal",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/screeching-tires-4-s2371.html"
+      },
+      {
+        "asset_key": "bigsoundbank-500",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0500.mp3",
+        "page_sha256": "9b8c1cd48e5c61a982e84b34f8cc311d7a70e7452c31652fb69df63955ed1d25",
+        "recording_family": "tire_500",
+        "semantic": "tire_squeal",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/tire-squeal-s0500.html"
+      },
+      {
+        "asset_key": "bigsoundbank-604",
+        "cc0_marker_present": true,
+        "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0604.mp3",
+        "page_sha256": "eb393543ed0b2168130cc23cbf9120ede0502f10e59041600d5c0aae004423f6",
+        "recording_family": "underground_parking_604",
+        "semantic": "contains_tire_squeal_temporal_review_required",
+        "status": "PASS_PAGE_EVIDENCE",
+        "url": "https://bigsoundbank.com/underground-parking-s0604.html"
+      }
+    ]
+  }
+}

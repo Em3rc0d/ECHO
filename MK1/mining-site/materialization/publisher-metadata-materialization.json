@@ -1,0 +1,35 @@
+{
+  "mode": "CERTIFIED_PINNED_SNAPSHOT",
+  "note": "This evidence closes publisher metadata identity, not real-media acquisition. Full bundles are separately verified by EXEC-DATA-001.",
+  "schema_version": "echo.metadata-materialization-evidence.v2",
+  "sources": [
+    {
+      "estimated_total_display": "24.7 GB",
+      "publisher_file_count": 11,
+      "record_url": "https://zenodo.org/records/4060432",
+      "snapshot_path": "configs/data_foundry/publisher_snapshots/fsd50k-1.0.json",
+      "snapshot_sha256": "4a93ffc45ea2ee42607659c0bcb9f54b3678db21b0cbc9e2cc208c0b10561bb9",
+      "source_id": "fsd50k-1.0",
+      "status": "PASS_PINNED_PUBLISHER_SNAPSHOT"
+    },
+    {
+      "estimated_total_display": "4.5 GB",
+      "publisher_file_count": 9,
+      "record_url": "https://zenodo.org/records/5645825",
+      "snapshot_path": "configs/data_foundry/publisher_snapshots/singapura-v1.0a.json",
+      "snapshot_sha256": "d5df4b7524f313027c662ff9043c9937d766a4dc3f4eef6061db48f13feef92a",
+      "source_id": "singapura-v1.0a",
+      "status": "PASS_PINNED_PUBLISHER_SNAPSHOT"
+    },
+    {
+      "estimated_total_display": "13.3 GB",
+      "publisher_file_count": 23,
+      "record_url": "https://zenodo.org/records/3966543",
+      "snapshot_path": "configs/data_foundry/publisher_snapshots/sonyc-ust-v2.json",
+      "snapshot_sha256": "26c407f45fd95c54a4c9aa42d66f9065689c35a03640028a1fa0cf0ec9c75a21",
+      "source_id": "sonyc-ust-v2",
+      "status": "PASS_PINNED_PUBLISHER_SNAPSHOT"
+    }
+  ],
+  "status": "PASS"
+}
