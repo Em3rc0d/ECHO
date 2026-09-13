@@ -9,6 +9,7 @@ from typing import Any, Iterable, Mapping, Sequence
 
 from .admission import materialize_asset_record
 from .contracts import AdmissionStatus, AssetRecord, MappingStatus, RawAssetCandidate, UseDecision
+from .coverage_policy import evaluate_coverage
 from .dedup import audit_duplicate_leakage
 from .fingerprints import wav_envelope_fingerprint
 from .hashing import canonical_json_sha256
@@ -37,7 +38,9 @@ def _path_for_candidate(candidate: RawAssetCandidate, audio_root: str | Path | N
     return Path(audio_root) / rel
 
 
-def _enrich_candidate_from_probe(candidate: RawAssetCandidate, path: Path) -> tuple[RawAssetCandidate, tuple[str, ...], dict[str, Any]]:
+def _enrich_candidate_from_probe(
+    candidate: RawAssetCandidate, path: Path
+) -> tuple[RawAssetCandidate, tuple[str, ...], dict[str, Any]]:
     probe = probe_audio(path)
     issues: list[str] = []
     extra: dict[str, Any] = {"audio_probe": probe.to_dict()}
@@ -127,29 +130,39 @@ def read_record_manifest(path: str | Path) -> list[AssetRecord]:
                 row = json.loads(line)
             except json.JSONDecodeError as exc:
                 raise ValueError(f"invalid asset JSONL at line {line_number}") from exc
-            records.append(AssetRecord(
-                asset_id=str(row["asset_id"]),
-                source_dataset=str(row["source_dataset"]),
-                source_release=str(row["source_release"]),
-                source_asset_id=str(row["source_asset_id"]),
-                sha256=str(row["sha256"]),
-                license_id=str(row["license_id"]),
-                use_decision=UseDecision(str(row["use_decision"])),
-                original_labels=tuple(str(v) for v in row.get("original_labels", [])),
-                echo_labels=tuple(str(v) for v in row.get("echo_labels", [])),
-                mapping_status=MappingStatus(str(row["mapping_status"])),
-                recording_group_id=str(row["recording_group_id"]),
-                admission_status=AdmissionStatus(str(row["admission_status"])),
-                reason_codes=tuple(str(v) for v in row.get("reason_codes", [])),
-                origin_uri=row.get("origin_uri"), local_relpath=row.get("local_relpath"),
-                byte_size=row.get("byte_size"), duration_seconds=row.get("duration_seconds"),
-                sample_rate_hz=row.get("sample_rate_hz"), channels=row.get("channels"),
-                label_provenance=row.get("label_provenance"), uploader_or_source_id=row.get("uploader_or_source_id"),
-                site_id=row.get("site_id"), device_id=row.get("device_id"), original_split=row.get("original_split"),
-                echo_split=row.get("echo_split"), field_holdout=bool(row.get("field_holdout", False)),
-                parent_asset_ids=tuple(str(v) for v in row.get("parent_asset_ids", [])), extra=dict(row.get("extra") or {}),
-                schema_version=str(row.get("schema_version") or "echo.asset-record.v1"),
-            ))
+            records.append(
+                AssetRecord(
+                    asset_id=str(row["asset_id"]),
+                    source_dataset=str(row["source_dataset"]),
+                    source_release=str(row["source_release"]),
+                    source_asset_id=str(row["source_asset_id"]),
+                    sha256=str(row["sha256"]),
+                    license_id=str(row["license_id"]),
+                    use_decision=UseDecision(str(row["use_decision"])),
+                    original_labels=tuple(str(v) for v in row.get("original_labels", [])),
+                    echo_labels=tuple(str(v) for v in row.get("echo_labels", [])),
+                    mapping_status=MappingStatus(str(row["mapping_status"])),
+                    recording_group_id=str(row["recording_group_id"]),
+                    admission_status=AdmissionStatus(str(row["admission_status"])),
+                    reason_codes=tuple(str(v) for v in row.get("reason_codes", [])),
+                    origin_uri=row.get("origin_uri"),
+                    local_relpath=row.get("local_relpath"),
+                    byte_size=row.get("byte_size"),
+                    duration_seconds=row.get("duration_seconds"),
+                    sample_rate_hz=row.get("sample_rate_hz"),
+                    channels=row.get("channels"),
+                    label_provenance=row.get("label_provenance"),
+                    uploader_or_source_id=row.get("uploader_or_source_id"),
+                    site_id=row.get("site_id"),
+                    device_id=row.get("device_id"),
+                    original_split=row.get("original_split"),
+                    echo_split=row.get("echo_split"),
+                    field_holdout=bool(row.get("field_holdout", False)),
+                    parent_asset_ids=tuple(str(v) for v in row.get("parent_asset_ids", [])),
+                    extra=dict(row.get("extra") or {}),
+                    schema_version=str(row.get("schema_version") or "echo.asset-record.v1"),
+                )
+            )
     return records
 
 
@@ -204,6 +217,7 @@ def freeze_corpus(
     label_mapping: Mapping[str, Any],
     split_policy: Mapping[str, Any],
     source_certification: Mapping[str, Any] | None = None,
+    coverage_policy: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     assigned = assign_record_splits(records, policy=split_policy)
     admitted = [record for record in assigned if record.admission_status in _ADMITTED]
@@ -233,10 +247,29 @@ def freeze_corpus(
     coverage_hash = write_json(out / "coverage-report.json", coverage)
     quarantine_hash = write_json(out / "quarantine-report.json", quarantine)
 
-    known_gaps = coverage["coverage_gaps"]
-    source_certification_hash = (
-        canonical_json_sha256(dict(source_certification)) if source_certification is not None else None
-    )
+    coverage_gate_hash = None
+    coverage_policy_hash = None
+    if coverage_policy is not None:
+        gate = evaluate_coverage(rows, policy=coverage_policy, profile=profile)
+        coverage_gate_hash = write_json(out / "coverage-gate.json", gate)
+        coverage_policy_hash = canonical_json_sha256(dict(coverage_policy))
+        known_gaps = list(gate["gap_codes"])
+        freeze_status = "PASS" if gate["status"] == "PASS" else "FAIL_COVERAGE_GATE"
+    else:
+        known_gaps = list(coverage["coverage_gaps"])
+        freeze_status = "PASS" if not known_gaps else "PASS_WITH_COVERAGE_GAPS"
+
+    source_certification_hash = canonical_json_sha256(dict(source_certification)) if source_certification is not None else None
+    reports = {
+        "coverage_report_sha256": coverage_hash,
+        "dedup_report_sha256": dedup_hash,
+        "quarantine_report_sha256": quarantine_hash,
+    }
+    if coverage_gate_hash is not None:
+        reports["coverage_gate_sha256"] = coverage_gate_hash
+    if coverage_policy_hash is not None:
+        reports["coverage_policy_sha256"] = coverage_policy_hash
+
     manifest = build_dataset_manifest(
         manifest_id=manifest_id,
         profile=profile,
@@ -249,20 +282,18 @@ def freeze_corpus(
         source_certification_sha256=source_certification_hash,
         split_manifest_sha256=split_hash,
         known_gaps=known_gaps,
-        reports={
-            "coverage_report_sha256": coverage_hash,
-            "dedup_report_sha256": dedup_hash,
-            "quarantine_report_sha256": quarantine_hash,
-        },
+        reports=reports,
     )
     dataset_manifest_hash = write_json(out / "dataset-manifest.json", manifest)
     return {
-        "status": "PASS" if not known_gaps else "PASS_WITH_COVERAGE_GAPS",
+        "status": freeze_status,
         "admitted_assets": len(admitted),
         "asset_manifest_sha256": asset_hash,
         "split_manifest_sha256": split_hash,
         "dataset_manifest_sha256": dataset_manifest_hash,
         "source_certification_sha256": source_certification_hash,
+        "coverage_policy_sha256": coverage_policy_hash,
+        "coverage_gate_sha256": coverage_gate_hash,
         "coverage_gaps": known_gaps,
         "output_dir": str(out),
     }

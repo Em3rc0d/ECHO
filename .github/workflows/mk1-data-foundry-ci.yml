@@ -45,6 +45,7 @@ jobs:
           python -m json.tool configs/data_foundry/license_policy.v1.json >/dev/null
           python -m json.tool configs/data_foundry/split_policy.v1.json >/dev/null
           python -m json.tool configs/data_foundry/review_decisions.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/coverage_policy.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/asset-record.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/dataset-manifest.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/source-registry.schema.json >/dev/null
@@ -54,10 +55,21 @@ jobs:
           python -m json.tool schemas/data_foundry/review-decisions.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/split-policy.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/split-manifest.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/coverage-policy.schema.json >/dev/null
       - name: Validate Foundry source registry
         env:
           PYTHONPATH: src
         run: python -m echo.data_foundry.cli validate-source-registry configs/data_foundry/source_registry.v1.json
+      - name: Validate release-safe coverage policy
+        env:
+          PYTHONPATH: src
+        run: |
+          python - <<'PY'
+          from echo.data_foundry.coverage_policy import load_coverage_policy
+          p = load_coverage_policy("configs/data_foundry/coverage_policy.v1.json")
+          assert "release_safe" in p["profiles"]
+          print(p["policy_id"])
+          PY
       - name: Acquisition registry smoke test
         env:
           PYTHONPATH: src

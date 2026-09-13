@@ -67,6 +67,20 @@ def validate_frozen_bundle(bundle_dir: str | Path) -> dict[str, Any]:
         if row_split != assigned_split:
             raise ValueError(f"split mismatch for {asset_id}: {row_split!r} vs {assigned_split!r}")
 
+    reports = dataset.get("reports") or {}
+    known_gaps = list(dataset.get("known_gaps") or [])
+    coverage_gate_digest = reports.get("coverage_gate_sha256")
+    if coverage_gate_digest:
+        gate_path = root / "coverage-gate.json"
+        if not gate_path.is_file():
+            raise FileNotFoundError(gate_path)
+        gate = _read_json(gate_path)
+        actual_gate_digest = canonical_json_sha256(gate)
+        if actual_gate_digest != coverage_gate_digest:
+            raise ValueError("coverage-gate digest does not match dataset manifest")
+        if gate.get("status") != "PASS" or known_gaps:
+            raise ValueError("frozen bundle has unresolved corpus coverage/diversity gaps")
+
     return {
         "manifest_id": dataset.get("manifest_id"),
         "profile": dataset.get("profile"),
@@ -74,7 +88,8 @@ def validate_frozen_bundle(bundle_dir: str | Path) -> dict[str, Any]:
         "asset_count": len(rows),
         "asset_manifest_sha256": asset_digest,
         "split_manifest_sha256": split_digest,
-        "known_gaps": list(dataset.get("known_gaps") or []),
+        "coverage_gate_sha256": coverage_gate_digest,
+        "known_gaps": known_gaps,
     }
 
 

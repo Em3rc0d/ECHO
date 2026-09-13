@@ -1,0 +1,33 @@
+{
+  "schema_version": "echo.coverage-policy.v1",
+  "policy_id": "MK1-CORPUS-SOLIDITY-001",
+  "description": "Minimum fail-closed corpus coverage/diversity floor for an ECHO release-safe benchmark corpus. Passing this floor is necessary but not sufficient for model quality.",
+  "profiles": {
+    "release_safe": {
+      "target_labels": {
+        "GLASS_SHATTER": {"min_assets": 50, "min_independent_groups": 25, "min_sources": 2, "min_clip_duration_seconds": 180.0},
+        "SIREN": {"min_assets": 50, "min_independent_groups": 25, "min_sources": 2, "min_clip_duration_seconds": 180.0},
+        "FIRE_ALARM": {"min_assets": 50, "min_independent_groups": 25, "min_sources": 2, "min_clip_duration_seconds": 180.0},
+        "VEHICLE_HORN": {"min_assets": 50, "min_independent_groups": 25, "min_sources": 2, "min_clip_duration_seconds": 180.0},
+        "TIRE_SQUEAL": {"min_assets": 50, "min_independent_groups": 25, "min_sources": 2, "min_clip_duration_seconds": 180.0}
+      },
+      "per_split": {
+        "train": {"min_assets_per_class": 20, "min_groups_per_class": 10},
+        "validation": {"min_assets_per_class": 5, "min_groups_per_class": 3},
+        "test": {"min_assets_per_class": 5, "min_groups_per_class": 3}
+      },
+      "max_single_source_fraction_per_class": 0.80,
+      "background": {
+        "min_assets": 200,
+        "min_independent_groups": 50,
+        "min_sources": 3
+      }
+    }
+  },
+  "governance": {
+    "field_holdout_cannot_close_development_coverage": true,
+    "broad_or_ambiguous_labels_cannot_close_exact_target_gaps": true,
+    "synthetic_augmentation_cannot_be_counted_as_independent_source": true,
+    "threshold_changes_require_evidence_and_new_policy_version": true
+  }
+}

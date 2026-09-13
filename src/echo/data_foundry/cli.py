@@ -8,14 +8,17 @@ from pathlib import Path
 from typing import Sequence
 
 from .acquisition import files_for_stage, load_acquisition_registry, verification_summary, verify_source_release
+from .coverage_policy import load_coverage_policy
 from .dataset import load_benchmark_split, validate_frozen_bundle
 from .hashing import canonical_json_sha256, sha256_file
 from .intake import load_intake_spec, run_intake_spec, write_candidate_manifest
 from .pipeline import admit_from_files, freeze_corpus, load_split_policy, read_record_manifest
-from .publisher_snapshot import verify_snapshot_from_files
 from .registry import load_source_registry
 from .source_policy import load_dataset_certification, source_policy_summary
 from .splits import SplitRatios, assign_group
+
+
+_DEFAULT_COVERAGE_POLICY = "configs/data_foundry/coverage_policy.v1.json"
 
 
 def _load_json(path: str | Path) -> dict:
@@ -40,19 +43,6 @@ def _cmd_source_policy(args: argparse.Namespace) -> int:
         "profile": args.profile,
         "sources": source_policy_summary(payload, profile=args.profile),
     }, indent=2, sort_keys=True))
-    return 0
-
-
-def _cmd_verify_publisher_snapshot(args: argparse.Namespace) -> int:
-    snapshot = args.snapshot or f"configs/data_foundry/publisher_snapshots/{args.source_id}.json"
-    result = verify_snapshot_from_files(
-        source_id=args.source_id,
-        snapshot_path=snapshot,
-        acquisition_registry_path=args.acquisition_registry,
-        certification_path=args.certification,
-        source_registry_path=args.source_registry,
-    )
-    print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 
 
@@ -140,6 +130,12 @@ def _cmd_admit(args: argparse.Namespace) -> int:
 
 def _cmd_freeze(args: argparse.Namespace) -> int:
     records = read_record_manifest(args.records)
+    coverage_policy = None
+    if args.coverage_policy:
+        coverage_policy = load_coverage_policy(args.coverage_policy)
+    elif args.profile == "release_safe":
+        coverage_policy = load_coverage_policy(_DEFAULT_COVERAGE_POLICY)
+
     result = freeze_corpus(
         records=records,
         output_dir=args.output_dir,
@@ -151,6 +147,7 @@ def _cmd_freeze(args: argparse.Namespace) -> int:
         label_mapping=_load_json(args.mapping),
         split_policy=load_split_policy(args.split_policy),
         source_certification=load_dataset_certification(args.source_certification),
+        coverage_policy=coverage_policy,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["status"].startswith("PASS") else 2
@@ -183,14 +180,6 @@ def build_parser() -> argparse.ArgumentParser:
     source_policy.add_argument("--path", default="configs/data_foundry/dataset_certification.v1.json")
     source_policy.add_argument("--profile", choices=["release_safe", "research_extended", "field_holdout"], required=True)
     source_policy.set_defaults(func=_cmd_source_policy)
-
-    snapshot = sub.add_parser("verify-publisher-snapshot", help="verify pinned official publisher evidence against all source registries")
-    snapshot.add_argument("source_id")
-    snapshot.add_argument("--snapshot")
-    snapshot.add_argument("--acquisition-registry", default="configs/data_foundry/acquisition_registry.v1.json")
-    snapshot.add_argument("--certification", default="configs/data_foundry/dataset_certification.v1.json")
-    snapshot.add_argument("--source-registry", default="configs/data_foundry/source_registry.v1.json")
-    snapshot.set_defaults(func=_cmd_verify_publisher_snapshot)
 
     hash_file = sub.add_parser("hash-file", help="compute SHA-256 for one local asset")
     hash_file.add_argument("path")
@@ -236,7 +225,7 @@ def build_parser() -> argparse.ArgumentParser:
     admit.add_argument("--reviews")
     admit.set_defaults(func=_cmd_admit)
 
-    freeze = sub.add_parser("freeze", help="assign splits, enforce source policy, audit leakage and freeze corpus evidence")
+    freeze = sub.add_parser("freeze", help="assign splits, enforce source/coverage policy, audit leakage and freeze corpus evidence")
     freeze.add_argument("records")
     freeze.add_argument("output_dir")
     freeze.add_argument("--manifest-id", required=True)
@@ -244,6 +233,7 @@ def build_parser() -> argparse.ArgumentParser:
     freeze.add_argument("--taxonomy-version", default="echo.taxonomy.v1")
     freeze.add_argument("--source-registry", default="configs/data_foundry/source_registry.v1.json")
     freeze.add_argument("--source-certification", default="configs/data_foundry/dataset_certification.v1.json")
+    freeze.add_argument("--coverage-policy", default=None, help="coverage policy path; release_safe automatically uses configs/data_foundry/coverage_policy.v1.json when omitted")
     freeze.add_argument("--license-policy", default="configs/data_foundry/license_policy.v1.json")
     freeze.add_argument("--mapping", default="configs/data_foundry/label_mapping.v1.json")
     freeze.add_argument("--split-policy", default="configs/data_foundry/split_policy.v1.json")
