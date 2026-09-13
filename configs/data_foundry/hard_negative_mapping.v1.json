@@ -1,0 +1,71 @@
+{
+  "schema_version": "echo.hard-negative-mapping.v1",
+  "policy_id": "MK1-HARD-NEGATIVE-MAPPING-001",
+  "source_dataset": "FSD50K-v1.0-ground-truth-to-current-Freesound-media",
+  "selection_semantics": "These labels are never re-labeled as ECHO targets. They are acoustically plausible confusers used only as explicit negatives for the listed target. Current per-asset Freesound rights and bytes must independently pass the release-safe materializer.",
+  "max_candidates_per_source_label": 30,
+  "targets": {
+    "GLASS_SHATTER": {
+      "source_labels": [
+        "Crack",
+        "Crackle",
+        "Chink_and_clink",
+        "Cutlery_and_silverware",
+        "Dishes_and_pots_and_pans",
+        "Door",
+        "Crushing"
+      ],
+      "exclude_if_labels_include": ["Shatter", "Glass"]
+    },
+    "SIREN": {
+      "source_labels": [
+        "Alarm",
+        "Bell",
+        "Bicycle_bell",
+        "Chime",
+        "Church_bell",
+        "Doorbell",
+        "Telephone"
+      ],
+      "exclude_if_labels_include": ["Siren"]
+    },
+    "FIRE_ALARM": {
+      "source_labels": [
+        "Alarm",
+        "Bell",
+        "Bicycle_bell",
+        "Chime",
+        "Church_bell",
+        "Doorbell",
+        "Telephone"
+      ],
+      "exclude_if_labels_include": []
+    },
+    "VEHICLE_HORN": {
+      "source_labels": [
+        "Siren",
+        "Bicycle_bell",
+        "Car_passing_by",
+        "Car",
+        "Accelerating_and_revving_and_vroom"
+      ],
+      "exclude_if_labels_include": ["Vehicle_horn_and_car_horn_and_honking"]
+    },
+    "TIRE_SQUEAL": {
+      "source_labels": [
+        "Squeak",
+        "Accelerating_and_revving_and_vroom",
+        "Car_passing_by",
+        "Car"
+      ],
+      "exclude_if_labels_include": []
+    }
+  },
+  "governance": {
+    "generic_alarm_is_not_fire_alarm_positive": true,
+    "squeak_is_not_tire_squeal_positive": true,
+    "car_engine_or_passing_is_not_vehicle_horn_positive": true,
+    "glassware_or_crack_is_not_glass_shatter_positive": true,
+    "hard_negative_credit_requires_real_bytes_release_safe_rights_probe_group_and_dedup": true
+  }
+}
