@@ -23,23 +23,45 @@
       "admission": "Manual review + current Freesound asset license required; login/API availability may be needed for media download."
     },
     "echo-bigsoundbank-cc0-gap-v1": {
-      "kind": "explicit_pages",
+      "kind": "explicit_pages_and_public_previews",
       "license_model": "CC0",
       "targets": {
         "FIRE_ALARM": [
-          {"asset_key": "bigsoundbank-269", "url": "https://bigsoundbank.com/fire-alarm-communities-2-s0269.html", "semantic": "fire_alarm"},
-          {"asset_key": "bigsoundbank-2250", "url": "https://bigsoundbank.com/fire-alarm-communities-4-s2250.html", "semantic": "fire_alarm"},
-          {"asset_key": "bigsoundbank-800", "url": "https://bigsoundbank.com/smoke-detector-alarm-s0800.html", "semantic": "smoke_detector_alarm_review_required"},
-          {"asset_key": "bigsoundbank-1153", "url": "https://bigsoundbank.com/smoke-detector-alarm-3-s1153.html", "semantic": "smoke_detector_alarm_review_required"},
-          {"asset_key": "bigsoundbank-3412", "url": "https://bigsoundbank.com/evacuation-alarm-2-s3412.html", "semantic": "evacuation_alarm_review_required"}
+          {"asset_key": "bigsoundbank-268", "url": "https://bigsoundbank.com/fire-alarm-communities-1-s0268.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0268.mp3", "semantic": "fire_alarm", "recording_family": "communities_alarm_family"},
+          {"asset_key": "bigsoundbank-269", "url": "https://bigsoundbank.com/fire-alarm-communities-2-s0269.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0269.mp3", "semantic": "fire_alarm", "recording_family": "communities_alarm_family"},
+          {"asset_key": "bigsoundbank-2249", "url": "https://bigsoundbank.com/fire-alarm-communities-3-s2249.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2249.mp3", "semantic": "fire_alarm", "recording_family": "communities_alarm_family"},
+          {"asset_key": "bigsoundbank-2250", "url": "https://bigsoundbank.com/fire-alarm-communities-4-s2250.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2250.mp3", "semantic": "fire_alarm", "recording_family": "communities_alarm_family"},
+          {"asset_key": "bigsoundbank-800", "url": "https://bigsoundbank.com/smoke-detector-alarm-s0800.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0800.mp3", "semantic": "smoke_detector_alarm_review_required", "recording_family": "smoke_detector_800"},
+          {"asset_key": "bigsoundbank-1151", "url": "https://bigsoundbank.com/smoke-detector-alarm-2-s1151.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1151.mp3", "semantic": "smoke_detector_alarm_review_required", "recording_family": "smoke_detector_1151"},
+          {"asset_key": "bigsoundbank-1153", "url": "https://bigsoundbank.com/smoke-detector-alarm-3-s1153.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1153.mp3", "semantic": "smoke_detector_alarm_review_required", "recording_family": "smoke_detector_1153"},
+          {"asset_key": "bigsoundbank-3411", "url": "https://bigsoundbank.com/evacuation-alarm-1-s3411.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3411.mp3", "semantic": "evacuation_alarm_review_required", "recording_family": "evacuation_alarm_family"},
+          {"asset_key": "bigsoundbank-3412", "url": "https://bigsoundbank.com/evacuation-alarm-2-s3412.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3412.mp3", "semantic": "evacuation_alarm_review_required", "recording_family": "evacuation_alarm_family"},
+          {"asset_key": "bigsoundbank-3413", "url": "https://bigsoundbank.com/evacuation-alarm-3-s3413.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3413.mp3", "semantic": "evacuation_alarm_review_required", "recording_family": "evacuation_alarm_family"}
         ],
         "TIRE_SQUEAL": [
-          {"asset_key": "bigsoundbank-2368", "url": "https://bigsoundbank.com/screeching-tires-1-s2368.html", "semantic": "tire_squeal"},
-          {"asset_key": "bigsoundbank-2369", "url": "https://bigsoundbank.com/screeching-tires-2-s2369.html", "semantic": "tire_squeal"},
-          {"asset_key": "bigsoundbank-500", "url": "https://bigsoundbank.com/tire-squeal-s0500.html", "semantic": "tire_squeal"}
+          {"asset_key": "bigsoundbank-2368", "url": "https://bigsoundbank.com/screeching-tires-1-s2368.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2368.mp3", "semantic": "tire_squeal", "recording_family": "tire_2368"},
+          {"asset_key": "bigsoundbank-2369", "url": "https://bigsoundbank.com/screeching-tires-2-s2369.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2369.mp3", "semantic": "tire_squeal", "recording_family": "tire_2369"},
+          {"asset_key": "bigsoundbank-2370", "url": "https://bigsoundbank.com/screeching-tires-3-s2370.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2370.mp3", "semantic": "tire_squeal", "recording_family": "tire_2370"},
+          {"asset_key": "bigsoundbank-2371", "url": "https://bigsoundbank.com/screeching-tires-4-s2371.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2371.mp3", "semantic": "tire_squeal", "recording_family": "tire_2371"},
+          {"asset_key": "bigsoundbank-500", "url": "https://bigsoundbank.com/tire-squeal-s0500.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0500.mp3", "semantic": "tire_squeal", "recording_family": "tire_500"},
+          {"asset_key": "bigsoundbank-604", "url": "https://bigsoundbank.com/underground-parking-s0604.html", "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0604.mp3", "semantic": "contains_tire_squeal_temporal_review_required", "recording_family": "underground_parking_604"}
         ]
       },
-      "admission": "Page-level CC0 evidence is strong but real bytes and per-asset page snapshot hashes must be materialized before certification."
+      "admission": "Page-level CC0 evidence is strong but real bytes, technical probe and semantic review are still required. Variants from one recording family remain one independent recording group."
+    },
+    "echo-wikimedia-fire-alarm-v1": {
+      "kind": "explicit_public_media_pages",
+      "license_model": "per_asset_public_domain_or_cc",
+      "targets": {
+        "FIRE_ALARM": [
+          {"asset_key": "commons-smoke-alarm", "url": "https://commons.wikimedia.org/wiki/File:Smoke_alarm.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Smoke_alarm.ogg", "license": "Public-Domain", "semantic": "smoke_alarm_review_required", "recording_family": "pdsounds-695"},
+          {"asset_key": "commons-fire-alarm-voice", "url": "https://commons.wikimedia.org/wiki/File:Fire_alarm_activated_voice.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fire_alarm_activated_voice.ogg", "license": "Public-Domain", "semantic": "fire_alarm_with_voice_review_required", "recording_family": "drb400atx-fire-alarm"},
+          {"asset_key": "commons-nfpa-fire-alarm", "url": "https://commons.wikimedia.org/wiki/File:NFPA_Fire_Alarm.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/NFPA_Fire_Alarm.ogg", "license": "Public-Domain", "semantic": "synthetic_standard_pattern_augmentation_only", "recording_family": "nfpa-synth-family"},
+          {"asset_key": "commons-nfpa-fire-alarm-variant-1", "url": "https://commons.wikimedia.org/wiki/File:NFPA_Fire_Alarm_Variant_1.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/NFPA_Fire_Alarm_Variant_1.ogg", "license": "Public-Domain", "semantic": "synthetic_standard_pattern_augmentation_only", "recording_family": "nfpa-synth-family"},
+          {"asset_key": "commons-activated-fire-alarm", "url": "https://commons.wikimedia.org/wiki/File:Activated_fire_alarm_(sound).ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Activated_fire_alarm_(sound).ogg", "license": "CC-BY-SA-3.0-AU", "semantic": "fire_alarm", "recording_family": "bidgee-fire-alarm"}
+        ]
+      },
+      "admission": "Public-domain assets are release-safe candidates subject to probe/review/dedup. ShareAlike assets remain conditional until ECHO distribution-policy review. Synthetic NFPA tones are augmentation only and do not receive real-source/group credit."
     },
     "shantycam-smoke-synth": {
       "kind": "augmentation_only",
@@ -58,6 +80,15 @@
       "semantic_relation": "REVIEW_REQUIRED",
       "event_count_evidence": 200,
       "notes": "Tire skidding is not automatically tire squeal; only reviewed event segments may become target positives."
+    },
+    "nina-road-events": {
+      "kind": "research_candidate",
+      "url": "https://github.com/axa-rev-research/NINA-Dataset",
+      "target": "TIRE_SQUEAL",
+      "source_label": "tire skidding",
+      "semantic_relation": "REVIEW_REQUIRED",
+      "event_count_evidence": 186,
+      "notes": "Repository provides reconstruction scripts/YouTube identities. Underlying-media rights are not presumed; research evidence only until per-asset rights are defensible."
     }
   }
 }
