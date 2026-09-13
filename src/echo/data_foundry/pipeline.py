@@ -19,6 +19,7 @@ from .policies import load_policy
 from .probe import probe_audio
 from .reports import coverage_report, quarantine_report
 from .reviews import ReviewDecision, load_review_decisions, review_for
+from .source_policy import assert_sources_allowed
 from .splits import SplitRatios, assign_group
 
 
@@ -202,9 +203,18 @@ def freeze_corpus(
     license_policy: Mapping[str, Any],
     label_mapping: Mapping[str, Any],
     split_policy: Mapping[str, Any],
+    source_certification: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     assigned = assign_record_splits(records, policy=split_policy)
     admitted = [record for record in assigned if record.admission_status in _ADMITTED]
+
+    if source_certification is not None:
+        assert_sources_allowed(
+            (record.source_dataset for record in admitted),
+            profile=profile,
+            policy=source_certification,
+        )
+
     rows = [record.to_dict() for record in admitted]
     dedup = audit_duplicate_leakage(rows)
     out = Path(output_dir)
@@ -224,6 +234,9 @@ def freeze_corpus(
     quarantine_hash = write_json(out / "quarantine-report.json", quarantine)
 
     known_gaps = coverage["coverage_gaps"]
+    source_certification_hash = (
+        canonical_json_sha256(dict(source_certification)) if source_certification is not None else None
+    )
     manifest = build_dataset_manifest(
         manifest_id=manifest_id,
         profile=profile,
@@ -233,6 +246,7 @@ def freeze_corpus(
         license_policy_sha256=canonical_json_sha256(dict(license_policy)),
         label_mapping_sha256=canonical_json_sha256(dict(label_mapping)),
         split_policy_sha256=canonical_json_sha256(dict(split_policy)),
+        source_certification_sha256=source_certification_hash,
         split_manifest_sha256=split_hash,
         known_gaps=known_gaps,
         reports={
@@ -248,6 +262,7 @@ def freeze_corpus(
         "asset_manifest_sha256": asset_hash,
         "split_manifest_sha256": split_hash,
         "dataset_manifest_sha256": dataset_manifest_hash,
+        "source_certification_sha256": source_certification_hash,
         "coverage_gaps": known_gaps,
         "output_dir": str(out),
     }

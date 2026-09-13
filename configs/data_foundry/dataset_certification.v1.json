@@ -1,0 +1,134 @@
+{
+  "schema_version": "echo.dataset-certification.v1",
+  "checked_at": "2026-09-13",
+  "scope_note": "Source/release certification is not corpus certification. Concrete audio remains subject to acquisition checksums, per-asset rights where applicable, semantic mapping, technical probing, grouping, deduplication, split audit and frozen-manifest certification.",
+  "profile_semantics": {
+    "release_safe": "Only sources with an ALLOW source-level decision may enter a release-safe frozen corpus. Per-asset policy still applies.",
+    "research_extended": "Sources allowed for controlled research/benchmark use subject to their license obligations and asset-level policy.",
+    "field_holdout": "Field-only evidence; cannot close while required authorization/hardware gates remain open."
+  },
+  "sources": {
+    "sonyc-ust-v2": {
+      "release": "2.3",
+      "source_release_status": "CERTIFIED_SOURCE_RELEASE_CANDIDATE",
+      "profiles": {
+        "release_safe": "ALLOW",
+        "research_extended": "ALLOW",
+        "field_holdout": "DENY"
+      },
+      "license_conclusion": "Dataset-wide CC-BY-4.0 per official Zenodo record.",
+      "evidence_urls": [
+        "https://zenodo.org/records/3966543"
+      ],
+      "conditions": [
+        "Preserve attribution and source release identity.",
+        "Use source-provided split/context metadata and ECHO grouping rules.",
+        "Source certification becomes CERTIFIED only after publisher metadata files pass checksum verification in CI."
+      ]
+    },
+    "fsd50k-1.0": {
+      "release": "1.0",
+      "source_release_status": "CERTIFIED_SOURCE_RELEASE_CANDIDATE",
+      "profiles": {
+        "release_safe": "CONDITIONAL",
+        "research_extended": "ALLOW",
+        "field_holdout": "DENY"
+      },
+      "license_conclusion": "Mixed per-clip Creative Commons licenses plus dataset-level CC-BY. Official record explicitly distinguishes per-clip rights and asks commercial users to contact the authors.",
+      "evidence_urls": [
+        "https://zenodo.org/records/4060432",
+        "https://fsannotator.upf.edu/fsd/release/FSD50K/"
+      ],
+      "conditions": [
+        "No release-safe freeze until the intended-use review explicitly resolves the dataset-level commercial-use note.",
+        "Per-asset license metadata is mandatory; CC-BY-NC and Sampling+ assets cannot silently enter release-safe lineage.",
+        "Shatter is broader than ECHO GLASS_SHATTER and requires manual semantic review.",
+        "Source certification becomes CERTIFIED only after publisher metadata/doc/ground-truth bundles pass checksum verification in CI."
+      ]
+    },
+    "singapura-v1.0a": {
+      "release": "1.0a",
+      "source_release_status": "CERTIFIED_SOURCE_RELEASE_CANDIDATE",
+      "profiles": {
+        "release_safe": "CONDITIONAL",
+        "research_extended": "ALLOW",
+        "field_holdout": "DENY"
+      },
+      "license_conclusion": "CC-BY-SA-4.0 per official Zenodo record; release-safe model/distribution use requires explicit ShareAlike/intended-use review.",
+      "evidence_urls": [
+        "https://zenodo.org/records/5645825"
+      ],
+      "conditions": [
+        "Preserve attribution.",
+        "Do not convert generic screeching or friction-brake labels into TIRE_SQUEAL positives.",
+        "Source certification becomes CERTIFIED only after publisher metadata/labels/readme bundles pass checksum verification in CI."
+      ]
+    },
+    "esc50": {
+      "release": "official repository snapshot",
+      "source_release_status": "SOURCE_EVIDENCE_VERIFIED",
+      "profiles": {
+        "release_safe": "DENY",
+        "research_extended": "ALLOW",
+        "field_holdout": "DENY"
+      },
+      "license_conclusion": "Full ESC-50 is CC-BY-NC; ESC-10 subset is CC-BY. Current ECHO adapter treats the full ESC-50 source as research-only unless a separately pinned/permitted subset is defined.",
+      "evidence_urls": [
+        "https://github.com/karolpiczak/ESC-50"
+      ],
+      "conditions": [
+        "Pin an exact repository commit/archive and hash before empirical corpus certification.",
+        "Preserve source-file/take grouping and official folds."
+      ]
+    },
+    "urbansound8k-1.0": {
+      "release": "1.0",
+      "source_release_status": "SOURCE_EVIDENCE_VERIFIED",
+      "profiles": {
+        "release_safe": "DENY",
+        "research_extended": "ALLOW",
+        "field_holdout": "DENY"
+      },
+      "license_conclusion": "CC-BY-NC-3.0; research-only in ECHO default policy.",
+      "evidence_urls": [
+        "https://serv.cusp.nyu.edu/projects/urbansounddataset/urbansound8k.html"
+      ],
+      "conditions": [
+        "Manual/authorized acquisition must record the archive SHA-256.",
+        "Preserve official folds and fsID/occurrence grouping."
+      ]
+    },
+    "audioset-ontology": {
+      "release": "ontology/current research release",
+      "source_release_status": "REFERENCE_ONLY",
+      "profiles": {
+        "release_safe": "REFERENCE_ONLY",
+        "research_extended": "REFERENCE_ONLY",
+        "field_holdout": "DENY"
+      },
+      "license_conclusion": "Ontology/annotation evidence is separate from the rights of underlying third-party media.",
+      "evidence_urls": [
+        "https://research.google.com/audioset/ontology/"
+      ],
+      "conditions": [
+        "No automatic raw-media ingestion into a certified ECHO corpus.",
+        "May be used for ontology/pretraining provenance and coverage research only."
+      ]
+    },
+    "echo-field-v1": {
+      "release": "future-v1",
+      "source_release_status": "EXTERNAL_GATE_OPEN",
+      "profiles": {
+        "release_safe": "DENY",
+        "research_extended": "DENY",
+        "field_holdout": "EXTERNAL_GATE"
+      },
+      "license_conclusion": "Permission-specific; no capture or corpus admission before authorization/privacy/retention gates close.",
+      "evidence_urls": [],
+      "conditions": [
+        "Close EXT-CAMERA-001 and field authorization gates.",
+        "Keep initial field data untouched as holdout."
+      ]
+    }
+  }
+}

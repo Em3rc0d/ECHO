@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/dataset-certification.v1.json",
+  "title": "ECHO Dataset Certification Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "checked_at", "scope_note", "profile_semantics", "sources"],
+  "properties": {
+    "schema_version": {"const": "echo.dataset-certification.v1"},
+    "checked_at": {"type": "string", "format": "date"},
+    "scope_note": {"type": "string", "minLength": 1},
+    "profile_semantics": {"type": "object"},
+    "sources": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["release", "source_release_status", "profiles", "license_conclusion", "evidence_urls", "conditions"],
+        "properties": {
+          "release": {"type": "string", "minLength": 1},
+          "source_release_status": {"type": "string", "minLength": 1},
+          "profiles": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "enum": ["ALLOW", "CONDITIONAL", "DENY", "REFERENCE_ONLY", "EXTERNAL_GATE"]
+            }
+          },
+          "license_conclusion": {"type": "string", "minLength": 1},
+          "evidence_urls": {"type": "array", "items": {"type": "string"}},
+          "conditions": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

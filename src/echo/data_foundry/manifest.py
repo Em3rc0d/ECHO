@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -10,7 +9,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 from .contracts import AssetRecord
-from .hashing import canonical_json_bytes, canonical_json_sha256
+from .hashing import canonical_json_sha256
 
 
 def canonical_asset_rows(records: Iterable[AssetRecord | Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -29,7 +28,6 @@ def canonical_asset_rows(records: Iterable[AssetRecord | Mapping[str, Any]]) -> 
 
 def asset_manifest_text(records: Iterable[AssetRecord | Mapping[str, Any]]) -> str:
     rows = canonical_asset_rows(records)
-    # One canonical JSON object per line; stable sort makes digest input-order invariant.
     return "".join(
         json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n"
         for row in rows
@@ -58,6 +56,7 @@ def build_dataset_manifest(
     license_policy_sha256: str,
     label_mapping_sha256: str,
     split_policy_sha256: str,
+    source_certification_sha256: str | None = None,
     split_manifest_sha256: str | None = None,
     known_gaps: Sequence[str] = (),
     reports: Mapping[str, str] | None = None,
@@ -84,6 +83,7 @@ def build_dataset_manifest(
         "license_policy_sha256": license_policy_sha256,
         "label_mapping_sha256": label_mapping_sha256,
         "split_policy_sha256": split_policy_sha256,
+        "source_certification_sha256": source_certification_sha256,
         "asset_manifest_sha256": asset_manifest_sha256(rows),
         "split_manifest_sha256": split_manifest_sha256,
         "asset_count": len(rows),
@@ -95,12 +95,7 @@ def build_dataset_manifest(
 
 
 def dataset_manifest_digest(manifest: Mapping[str, Any]) -> str:
-    """Digest a dataset manifest exactly as represented, including timestamp.
-
-    The benchmark should primarily bind to the asset/split/policy hashes inside
-    the record. This digest additionally identifies the complete manifest file.
-    """
-
+    """Digest a dataset manifest exactly as represented, including timestamp."""
     return canonical_json_sha256(dict(manifest))
 
 
