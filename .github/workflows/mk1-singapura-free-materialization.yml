@@ -1,0 +1,72 @@
+name: MK1 SINGA PURA Free Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/data_foundry/materialize_singapura_bounded.py'
+      - 'configs/data_foundry/acquisition_registry.v1.json'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-singapura-free-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free system extraction and probe tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full ffmpeg
+          7z | head -n 3
+          ffprobe -version | head -n 1
+      - name: Materialize verified bounded SINGA PURA subset
+        env:
+          ECHO_WORK_ROOT: ${{ runner.temp }}/echo-singapura
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-singapura-report
+        run: |
+          python scripts/data_foundry/materialize_singapura_bounded.py \
+            --work-root "$ECHO_WORK_ROOT" \
+            --output-dir "$ECHO_REPORT_ROOT"
+      - name: Enforce durable evidence size budget
+        env:
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-singapura-report
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          root = Path(os.environ['ECHO_REPORT_ROOT'])
+          total = sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+          limit = 20_000_000
+          print('durable evidence bytes=', total, 'limit=', limit)
+          if total > limit:
+              raise SystemExit('SINGA:PURA evidence output too large for repository evidence boundary')
+          PY
+      - name: Copy and commit evidence only
+        env:
+          ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-singapura-report
+        run: |
+          cp "$ECHO_REPORT_ROOT/singapura-v1.0a-materialization-summary.json" MK1/mining-site/materialization/
+          cp "$ECHO_REPORT_ROOT/singapura-v1.0a-candidates.jsonl" MK1/mining-site/materialization/
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git pull --rebase origin main
+          git add \
+            MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json \
+            MK1/mining-site/materialization/singapura-v1.0a-candidates.jsonl
+          if git diff --cached --quiet; then
+            echo 'No SINGA:PURA evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize bounded SINGA:PURA v1.0a [skip ci]'
+            git push origin HEAD:main
+          fi
