@@ -1,14 +1,9 @@
 # MK1 / Quarries
 
-MK1 quarries are **empirical decision workstreams**. MK0 closed the architecture-changing research questions; MK1 now turns those protocols into measured evidence.
+**Status:** `EMPIRICAL_WORKSTREAMS_OPEN`
 
-```text
-Q-CLASS-MAPPING.md   semantic mapping into taxonomy v1
-Q-HARD-NEGATIVES.md iterative false-positive mining
-Q-LATENCY.md         latency decomposition/instrumentation
-Q-THRESHOLDS.md      calibration and Event Engine operating points
-```
+MK1 quarries are questions that cannot be truthfully closed by more reading alone: exact class mapping/admitted data, hard-negative families that actually trigger the model, numerical thresholds and measured latency. Each quarry consumes build/test evidence and produces a frozen configuration/decision or a reasoned escalation.
 
-Each quarry must follow `governance/DOCUMENTATION-STANDARD.md` and must produce versioned artifacts/hashes when its empirical work starts.
+`Q-CLASS-MAPPING` validates source labels/assets. `Q-HARD-NEGATIVES` drives false-positive mining. `Q-THRESHOLDS` calibrates model/EventEngine decisions. `Q-LATENCY` establishes the runtime timing budget.
 
-A quarry is not complete because a number was chosen; it is complete when the number/decision is tied to a frozen dataset/model/config and reproducible evidence.
+A quarry closes only with reproducible evidence tied to build/data/model identities. Failure may reopen MK0 assumptions when necessary.

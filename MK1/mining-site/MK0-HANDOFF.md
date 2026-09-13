@@ -1,19 +1,27 @@
-# MK0 -> MK1 Evidence Handoff
+# MK0 -> MK1 Handoff
 
-MK1 sólo consume evidencia certificada de MK0.
+**Status:** `CERTIFIED`
 
-## Inputs esperados
+## Inputs inherited
 
-- taxonomy decision + mapping;
-- dataset manifests/licensing;
-- model benchmark protocol;
-- source/audio contracts;
-- event lifecycle;
-- pub/sub decision;
-- privacy/security constraints;
-- risk register;
-- camera external gate status.
+Fixed promise/anti-scope; v1 taxonomy; multi-label semantics; data admission/group split/field-holdout rules; A/B/C benchmark; RTSP source abstraction; FFmpeg baseline; EventEngine lifecycle; MQTT/Mosquitto QoS1+idempotency; privacy/security baseline; risks and external camera gate.
 
-## Regla de invalidación
+## Empirical outputs MK1 must create
 
-Si un input cambia (por ejemplo taxonomía), se invalidan dataset mapping, model head, thresholds, acceptance metrics y cualquier build que dependa de ellos. El handoff no copia evidencia: referencia IDs/hashes del ledger.
+Model winner, per-class thresholds/calibration, source-hour false alarms, class misses, latency/resources, EventEngine parameters, logical multi-source capacity behavior, real-camera compatibility when accessible and first candidate SLOs.
+
+## Frozen assumptions
+
+MK1 implementation cannot silently change taxonomy, source identity, event semantics or test protocol simply to improve results. Such changes require version/re-audit.
+
+## External gates
+
+Camera model/audio/RTSP/codec/network/permission remain outside MK0 certification. Replay path exists so core build does not wait.
+
+## Acceptance of handoff
+
+`CERT-MK1-READY-001` confirms no architecture-changing OPEN item remains for replay build.
+
+## Invalidation
+
+If MK0 evidence is corrected materially, trace dependent MK1 artifacts through certification DAG.

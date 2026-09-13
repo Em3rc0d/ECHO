@@ -1,31 +1,36 @@
 # MK1 Build Gate
 
-**State:** `READY_NOT_STARTED`  
-**Authorization:** `CERT-MK1-READY-001`
+**Status:** `READY_FOR_REPLAY / CAMERA_BRANCH_EXTERNAL`
 
-## Allowed first build
+## Preconditions satisfied
 
-The first implementation may now execute the already-certified design in **offline/replay mode**:
+MK0 certified; v1 taxonomy frozen; source/audio/inference/event contracts defined; A/B/C benchmark frozen; data admission/split rules defined; EventEngine semantics defined; MQTT topics/QoS/idempotency frozen for MK1; privacy/security and test strategy exist.
 
-```text
-licensed/local test audio
-  -> source adapter
-  -> normalize 16 kHz mono contract
-  -> window/buffer
-  -> model A/B/C interface
-  -> RAW_INFERENCE
-  -> temporal Event Engine
-  -> CONFIRMED_EVENT
-  -> MQTT/Mosquitto publisher
-  -> persistence/test subscriber
-```
+## Prohibited implementation shortcuts
 
-This gate does **not** authorize pretending that camera compatibility, distance, model winner, thresholds or SLOs have been proven.
+- single global camera object with no `source_id` abstraction;
+- direct model-score -> notification path;
+- unbounded audio/inference queues;
+- threshold `0.5` or other numeric constants treated as product truth without validation;
+- random clip split that violates recording/source grouping;
+- test-set tuning;
+- credentials/raw dataset committed to Git;
+- silent media retention;
+- model-specific tensors leaking into public event contract.
 
-## Real camera branch
+## Required first build slices
 
-Blocked by `EXT-CAMERA-001` until brand/model, audio availability, stream URI/access, codec, network and permission facts are captured.
+1. deterministic replay/source/audio contract;
+2. model runner common interface;
+3. A/B/C experiment path;
+4. EventEngine deterministic state machine;
+5. MQTT event delivery + idempotent subscriber;
+6. multi-source replay and failure observability.
 
-## Build discipline
+## Camera condition
 
-Implementation must trace every module/config/schema to a certified design artifact. Any architecture-changing discovery during build must reopen the upstream decision and invalidate dependent certification instead of being patched silently.
+RTSP adapter can be scaffolded against the source interface, but device-specific success cannot be certified until actual model/stream/network access exists.
+
+## Build completion evidence
+
+Unit/integration tests, reproducible environment, benchmark artifacts, event logs and failure observations must exist before MK1 can move to certification.

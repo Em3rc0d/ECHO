@@ -1,12 +1,35 @@
-# Security & Privacy Tests — MK1
+# MK1 Security and Privacy Tests
 
-- logs no contienen RTSP/MQTT password;
-- schema event no acepta URI con credenciales;
-- invalid source config falla cerrado;
-- publisher no permite topic arbitrario derivado de input no validado;
-- artifacts/checkpoints se verifican por checksum;
-- retention de audio está deshabilitada por defecto;
-- cualquier modo de capture para dataset exige flag/config explícito y path dedicado;
-- crash dump/logging no serializa PCM accidentalmente.
+**Status:** `SPECIFIED`
 
-Estos tests no sustituyen pentest; son guardrails mínimos de PoC.
+## Secrets
+
+Repository secret scan; effective config/log inspection; RTSP/MQTT URLs must not reveal credentials. Invalid-secret errors should be actionable without echoing secret values.
+
+## Adapter injection
+
+Test malicious/invalid URL/path/config characters against structured FFmpeg invocation; no shell command injection or arbitrary path use.
+
+## Broker authorization
+
+In field-like config, unauthorized client cannot publish as another source or subscribe to restricted topics. Authentication failure is logged safely.
+
+## Model integrity
+
+Checkpoint hash mismatch fails closed before inference. Model provenance/version is included in result bundle.
+
+## Raw audio retention
+
+Run replay/live path and inspect configured output/temp/crash locations. No continuous PCM/WAV remains by default after normal operation. Any optional evidence clip feature is disabled unless explicit policy.
+
+## Data permissions
+
+Manifest prevents training use for assets marked holdout/research-only/incompatible. Field holdout remains excluded.
+
+## Resource/DoS baseline
+
+Malformed/stalled source and reconnect storm do not create unbounded queues/processes.
+
+## Scope
+
+These are MK1 controls, not a full penetration test. MK2 expands production network/IAM/supply-chain/incident security.

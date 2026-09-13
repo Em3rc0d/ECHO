@@ -1,28 +1,31 @@
 # MK1 Acceptance Criteria
 
-## No confundir targets con resultados
+**Status:** `DEFINED / NUMERIC SLOS TO FREEZE FROM EVIDENCE`
 
-Los siguientes son **TARGET_CANDIDATE**, pendientes de congelar después del baseline inicial:
+## Functional acceptance
 
-| Métrica | Target candidate | Estado |
-|---|---:|---|
-| Macro F1 offline | >= 0.85 | HYPOTHESIS/TARGET |
-| Recall de clases críticas | >= 0.90 | HYPOTHESIS/TARGET |
-| Precision de clases críticas | >= 0.85 | HYPOTHESIS/TARGET |
-| E2E latency p95 | <= 2.0 s | HYPOTHESIS/TARGET |
-| False alarms | <= 0.5/source-hour en test controlado | HYPOTHESIS/TARGET |
-| RTSP reconnect | automático | REQUIREMENT |
-| MQTT duplicate handling | idempotente | REQUIREMENT |
-| Source isolation | una caída no bloquea otras | REQUIREMENT |
-| Secrets in repo | 0 | REQUIREMENT |
+Replay -> inference -> EventEngine -> confirmed event -> MQTT -> subscriber/store works under versioned contracts. Multiple replay sources preserve source identity/state. Known target/no-target/unknown cases produce deterministic lifecycle behavior under frozen config.
 
-Estos valores no deben publicarse como performance de ECHO hasta tener evidencia.
+## Scientific acceptance
 
-## Certificación
+Valid group-aware splits, no known leakage, A/B/C result bundles comparable, thresholds chosen on validation, untouched test/field holdout, per-class + operational metrics and documented error analysis.
 
-MK1 pasa solo si:
+## Operational acceptance
 
-1. requisitos MUST están implementados/probados;
-2. métricas se calculan sobre un test válido;
-3. failures conocidos están documentados;
-4. cualquier target incumplido genera decisión explícita de redesign, scope o SLO; nunca se oculta.
+Queues/buffers bounded; overload visible; source failure isolated; broker failures observable; restart/reconnect behavior documented; runtime profile recorded on declared hardware.
+
+## Delivery acceptance
+
+QoS1 duplicate behavior does not create duplicate logical consumer actions when event_id idempotency is applied. Topic/schema versions validated.
+
+## Privacy/security acceptance
+
+No committed secrets, no plaintext credentials in normal logs, no continuous raw-audio files by default, checkpoint hashes verified, field capture gated by authorization.
+
+## Numeric quality
+
+MK0 intentionally did not invent exact recall/false-alarm/latency thresholds. Early MK1 measurements define candidate SLOs, which are frozen **before final test evaluation**. A candidate failing them is reported as failure rather than moving the line after seeing results.
+
+## Completion
+
+All blocking criteria PASS; camera-specific criteria may remain external only if MK1 certificate scope explicitly excludes real-camera claims.

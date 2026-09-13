@@ -1,125 +1,40 @@
 # Quarry — Latency
 
-**Status:** measurement model `CERTIFIED`; SLO values `EMPIRICAL`.
+**Status:** `MEASUREMENT_MODEL_CERTIFIED / VALUES_PENDING`
 
-## 1. Purpose
+## Purpose
 
-Define what ECHO means by near-real-time and where delay originates. Reporting only neural inference time would be misleading because streaming/window/event confirmation can dominate.
+Measure where time is spent and distinguish model inference speed from actual alert freshness.
 
-## 2. Latency decomposition
-
-For one detected physical event:
+## Latency decomposition
 
 ```text
-L_total =
-  L_camera_buffer
-+ L_network_rtsp
-+ L_decode_resample
-+ L_window_wait
-+ L_queue
-+ L_inference
-+ L_event_confirmation
-+ L_publish
-+ L_subscriber (outside core where applicable)
+L_source   capture/device/network buffering
+L_decode   demux/decode/resample
+L_window   waiting for enough samples/window hop
+L_queue    scheduler backlog
+L_model    inference
+L_event    temporal confirmation requirement
+L_publish  broker/client delivery
+L_total    acoustic onset -> confirmed/received alert
 ```
 
-Each component should be measured or marked `UNOBSERVABLE` rather than silently folded into “AI latency”.
+## Timestamps
 
-## 3. Reference timestamps
+Preserve media/capture time where trustworthy, receive, window boundaries, inference start/end, event confirmation, publication and subscriber receipt. Use monotonic clocks for local duration measurements and UTC for cross-system records where appropriate.
 
-Keep timestamps at critical boundaries:
+## Reporting
 
-```text
-acoustic_onset_ground_truth   # evaluation only
-source/media timestamp
-received_at
-decoded_at
-window_ready_at
-inference_started_at
-inference_completed_at
-candidate_at
-confirmed_at
-published_at
-subscriber_received_at        # integration test
-```
+p50/p95/p99 by component and total, under 1 source and increasing replay source counts. Include queue lag/drop rate and hardware/runtime profile.
 
-Use monotonic clocks for local duration measurement; wall-clock timestamps are for correlation/audit.
+## Trade-offs
 
-## 4. Windowing floor
+More overlap/temporal confirmation improves detection stability but adds compute/confirmation delay. Batching may improve throughput but harm per-event latency. Larger jitter buffers improve stream robustness but add delay.
 
-A model requiring ~0.96 s context cannot necessarily confirm an event at its onset. Overlapping hop reduces update interval, but confirmation logic adds further delay. Therefore the latency target must reflect acoustic context requirements, not promise zero-latency classification.
+## Field caveat
 
-## 5. Reported percentiles
+Replay excludes camera/network buffering; end-to-end field latency cannot close until `EXT-CAMERA-001`.
 
-At minimum:
+## Output
 
-```text
-p50
-p95
-p99
-max during bounded test
-sample/event count
-```
-
-Mean alone hides stalls.
-
-## 6. Two benchmark modes
-
-### Offline model latency
-Measures preprocessing + inference without RTSP and real-time waiting. Useful for comparing models.
-
-### Streaming end-to-end latency
-Measures event onset/availability through confirmation/publication. Required for product claims.
-
-Do not mix the two.
-
-## 7. Multi-source latency
-
-Repeat latency tests while increasing replay/source concurrency. A model that is fast with one source but produces queue lag with eight sources has a capacity problem.
-
-Metrics:
-
-```text
-queue_lag_ms/source
-window_age_at_inference
-end_to_end_latency/source
-stale_window_drop rate
-```
-
-## 8. Network/camera effects
-
-Camera internal buffering can dominate and is hardware-specific. Real camera integration therefore remains an external gate for field latency certification.
-
-## 9. Event Engine trade-off
-
-Stronger temporal confirmation may reduce false alarms while increasing latency. Benchmark thresholds/M-of-N/cooldown must therefore be evaluated jointly on a Pareto surface rather than optimized independently.
-
-## 10. Instrumentation requirement
-
-Tracing/event logs need correlation identifiers:
-
-```text
-source_id
-stream_generation
-window_id
-inference_id
-candidate_event_id
-event_id
-```
-
-This allows a slow alert to be traced back to the exact stage.
-
-## 11. Test scenarios
-
-- clean replay one source;
-- multiple concurrent replay sources;
-- CPU saturation boundary;
-- broker temporarily unavailable;
-- stream reconnect;
-- real camera once available;
-- event near window boundary;
-- short transient target.
-
-## 12. SLO freeze rule
-
-Final p95/p99 targets are not frozen until MK1 produces empirical distributions on intended hardware and real-camera data. Until then any numeric limit is labeled `TARGET_CANDIDATE`.
+Latency budget identifies bottleneck and informs MK2 SLO/capacity design rather than relying on one average number.

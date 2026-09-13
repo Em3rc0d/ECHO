@@ -1,107 +1,35 @@
-# Quarry — Thresholds, Calibration and Event Tuning
+# Quarry — Thresholds and Temporal Parameters
 
-**Status:** methodology `CERTIFIED`; threshold values `EMPIRICAL`.
+**Status:** `PROTOCOL_CERTIFIED / VALUES_PENDING`
 
-## 1. Purpose
+## Purpose
 
-Determine how model scores become candidate/confirmed acoustic events without inventing a universal `0.5` threshold.
+Derive numerical decision parameters from validation evidence instead of defaulting to 0.5 or tuning against test/demo examples.
 
-## 2. Why per-class thresholds
+## Parameters
 
-Different targets can have different class prevalence, score calibration, acoustic variability and cost of false positives. Therefore each class may require its own operating point.
+Per-class entry/exit score threshold, optional calibrator, temporal M-of-N/evidence duration, max gap, merge/dedup window and cooldown/rearm.
 
-Parameters potentially tuned per class:
+## Procedure
 
-```text
-enter_threshold
-exit_threshold
-confirmation M-of-N / aggregation rule
-min_duration
-max_gap
-merge_gap
-cooldown
-```
+Use validation predictions/stream replays to generate class PR curves and operational event curves. Choose candidate operating points according to frozen priorities such as critical recall and acceptable false alarms/source-hour. Fit calibrator only on validation if used.
 
-## 3. Data separation
+## EventEngine interaction
 
-```text
-train -> fit model
-validation -> calibration + threshold/Event Engine tuning
-frozen test -> unbiased evaluation
-field_holdout -> final domain check
-```
+Window threshold and temporal confirmation are coupled: lowering score threshold plus stronger temporal evidence may outperform a high score threshold. Tune/evaluate the pair as a configuration, not independently while peeking at test.
 
-Never tune thresholds on test/field holdout and then report those same sets as unbiased results.
+## Hysteresis
 
-## 4. Candidate threshold objectives
+Entry threshold may exceed exit threshold to avoid rapid state oscillation. Exact values are class-specific empirical outputs.
 
-Possible objectives include:
+## Final test
 
-- maximize F1 on validation;
-- satisfy minimum recall then minimize false positives;
-- satisfy maximum false alarms/source-hour on streaming validation;
-- class-specific operational constraints.
+Freeze model + calibrator + EventEngine config, then evaluate untouched test/field holdout once for certification. A failure leads to a new experiment/version, not silent retuning on the test result.
 
-ECHO should prefer explicit constraints over a one-size-fits-all metric.
+## Output
 
-## 5. Clip threshold vs event threshold
+Versioned threshold/EventEngine config with validation rationale and hash.
 
-A threshold that maximizes clip/window F1 may produce poor continuous-event behavior. Final tuning must include streaming replay through Event Engine.
+## Invalidation
 
-## 6. Calibration
-
-Evaluate reliability curves/Brier score and optionally ECE. If post-hoc calibration is used:
-
-```text
-fit on validation only
-version calibrator
-bundle with model artifact
-revalidate after model retraining
-```
-
-Calibration cannot repair a model that does not separate positives from negatives.
-
-## 7. Hysteresis
-
-Consider separate enter/exit thresholds to avoid event chatter. This interacts with temporal aggregation and must be tuned/evaluated as a profile.
-
-## 8. Search procedure
-
-For each class:
-
-1. generate frozen validation scores;
-2. sweep candidate score thresholds;
-3. combine with small, predeclared Event Engine parameter grid;
-4. compute recall/precision/F1 and streaming FP/hour/latency;
-5. reject unstable points across groups/noise strata;
-6. choose a candidate operating point from operational constraints;
-7. freeze profile before test evaluation.
-
-Avoid massive unconstrained hyperparameter search that overfits the validation set.
-
-## 9. Confidence intervals/stability
-
-Threshold decisions should be checked across independent validation groups and bootstrap intervals where practical. If a threshold changes drastically with small resampling, the model/validation evidence is unstable.
-
-## 10. Threshold profile artifact
-
-```yaml
-profile_version: echo.thresholds.v1
-model_version: ...
-class:
-  GLASS_SHATTER:
-    enter: ...
-    exit: ...
-    confirmation: ...
-    cooldown_ms: ...
-validation_manifest_sha256: ...
-selection_rule: ...
-```
-
-## 11. Drift
-
-Thresholds are tied to model/preprocessing/domain version. New model, major codec change or meaningful field drift invalidates the assumption that old thresholds remain calibrated.
-
-## 12. Non-negotiable rule
-
-No production-looking threshold value is written into the design as fact before validation evidence exists.
+Model, preprocessing, taxonomy or domain calibration change requires threshold re-evaluation.

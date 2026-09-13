@@ -1,17 +1,33 @@
-# Configuration Specification — MK1
+# MK1 Configuration Specification
 
-## Capas
+**Status:** `FROZEN_SCHEMA_INTENT`
 
-- `config/default.yaml`: valores no secretos;
-- `config/taxonomy.yaml`: clases/mappings versionados;
-- `config/event-engine.yaml`: thresholds/temporal policies;
-- environment/secret provider: URIs, users/passwords;
-- CLI overrides sólo para experimentos trazables.
+## Configuration domains
 
-## Validación
+`runtime`: mode replay/live, worker/scheduler settings.  
+`sources`: source IDs/types, non-secret adapter options, secret references.  
+`audio`: canonical rate/channels/window policy.  
+`model`: artifact ID/path/hash/preprocessing.  
+`event_engine`: per-class thresholds/temporal parameters/version.  
+`mqtt`: broker host, topic root, QoS/retain policy, auth secret refs.  
+`observability`: log/metric levels without sensitive data.
 
-Config inválida falla al inicio con mensaje claro. No aplicar defaults silenciosos a campos de seguridad o source URI.
+## Validation
 
-## Snapshot
+Unknown/invalid fields fail startup rather than falling back silently. Numeric ranges such as queue size, thresholds and durations are validated. Config schema/version is recorded in build manifest.
 
-Cada experimento guarda una copia sanitizada de config efectiva para reproducibilidad.
+## Secrets
+
+Use `${SECRET_REF}`/environment/secret-store indirection. Redacted config dumps may show key names but not values.
+
+## Modes
+
+Offline benchmark may choose no-drop/blocking scheduler while live mode uses bounded freshness policy. Mode differences are explicit and cannot silently alter benchmark results.
+
+## Overrides
+
+CLI/environment override precedence must be deterministic and documented. Final effective config (redacted) is hashable for evidence.
+
+## Invalidation
+
+Breaking config changes require schema/version bump and update of fixtures/deployment docs.

@@ -1,9 +1,27 @@
 # MK1 / Build
 
-**Estado: `GATED_NOT_STARTED`**
+**Status:** `READY_NOT_STARTED`
 
-No existe autorización de implementación hasta que `governance/DEFINITION-OF-READY.md` esté completamente satisfecho.
+## Purpose
 
-Esta carpeta contiene solo la especificación de cómo se organizará la implementación.
+Materialize the certified first vertical without reopening closed design choices in code. Build is execution of contracts and experiment protocols, not a new brainstorming phase.
 
-Al habilitarse, el build deberá seguir slices pequeños y certificables, no un monolito improvisado.
+## Entry gate
+
+`CERT-MK1-READY-001` authorizes replay/offline implementation. Real-camera code can be added when `EXT-CAMERA-001` provides enough hardware/access evidence.
+
+## Expected modules
+
+Source/replay adapters, audio normalization/windowing, model-runner interfaces and A/B/C implementations, EventEngine, MQTT publisher/subscriber, minimal structured persistence/query, observability and benchmark/test tooling.
+
+## Build evidence
+
+Every build/run records commit, dependency lock, config, model/checkpoint, data manifest and schema versions. Product code must not hardcode credentials, source count or model thresholds as unexplained constants.
+
+## Rule
+
+If implementation discovers a missing architecture-changing decision, stop and reopen the upstream artifact instead of hiding it in code.
+
+## Output
+
+A reproducible vertical ready for `MK1/test`, not a release claim.
