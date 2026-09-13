@@ -1,0 +1,30 @@
+{
+  "schema_version": "echo.publisher-snapshot.v1",
+  "source_id": "singapura-v1.0a",
+  "record_id": "5645825",
+  "record_url": "https://zenodo.org/records/5645825",
+  "doi": "10.5281/zenodo.5645825",
+  "release": "1.0a",
+  "dataset_license": "CC-BY-SA-4.0",
+  "license_model": "uniform_dataset",
+  "captured_at": "2026-09-13",
+  "publisher": "Zenodo",
+  "evidence_scope": "Official published record identity, release metadata, file inventory and publisher MD5 checksums. Does not assert that ECHO has downloaded or verified local audio bytes.",
+  "source_url": "https://zenodo.org/records/5645825",
+  "files": [
+    {"name":"APSIPA.pdf","md5":"4e0a5437b87d8db9c343adce8ef25cc8","size_display":"544.9 kB"},
+    {"name":"labelled.z01","md5":"98477daca861c6950cc8b620cecc286d","size_display":"1.0 GB"},
+    {"name":"labelled.z02","md5":"873b26cfe25bb3084e39e5af0dfebcad","size_display":"1.0 GB"},
+    {"name":"labelled.z03","md5":"71322a5c3ba33badfdd8e25c9ebf559a","size_display":"1.0 GB"},
+    {"name":"labelled.z04","md5":"a6d087babea1f797af99b81cb7c7ea4a","size_display":"1.0 GB"},
+    {"name":"labelled.zip","md5":"bdd46cc5e9187e97c37989b3b73e786e","size_display":"302.2 MB"},
+    {"name":"labelled_metadata_public.csv","md5":"c5beb6374e55abfe7cd50f4f498c8376","size_display":"903.8 kB"},
+    {"name":"labels_public.zip","md5":"535242cf1094d95d086fc574874e9ddf","size_display":"3.4 MB"},
+    {"name":"Readme.md","md5":"f9296e5a796daaf5e9452fb9fd8ddae4","size_display":"15.4 kB"}
+  ],
+  "license_evidence": {
+    "per_asset_license_required": false,
+    "dataset_license": "CC-BY-SA-4.0",
+    "release_safe_note": "Source remains CONDITIONAL for release-safe lineage pending explicit ShareAlike/intended-use review. Research-extended use is allowed under current project policy."
+  }
+}

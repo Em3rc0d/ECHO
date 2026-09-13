@@ -1,0 +1,32 @@
+{
+  "schema_version": "echo.publisher-snapshot.v1",
+  "source_id": "fsd50k-1.0",
+  "record_id": "4060432",
+  "record_url": "https://zenodo.org/records/4060432",
+  "doi": "10.5281/zenodo.4060432",
+  "release": "1.0",
+  "dataset_license": "CC-BY",
+  "license_model": "mixed_per_asset_plus_dataset_level",
+  "captured_at": "2026-09-13",
+  "publisher": "Zenodo",
+  "evidence_scope": "Official published record identity, release metadata, file inventory and publisher MD5 checksums. Does not assert that ECHO has downloaded or verified local audio bytes.",
+  "source_url": "https://zenodo.org/records/4060432",
+  "files": [
+    {"name":"FSD50K.dev_audio.z01","md5":"faa7cf4cc076fc34a44a479a5ed862a3","size_display":"3.2 GB"},
+    {"name":"FSD50K.dev_audio.z02","md5":"8f9b66153e68571164fb1315d00bc7bc","size_display":"3.2 GB"},
+    {"name":"FSD50K.dev_audio.z03","md5":"1196ef47d267a993d30fa98af54b7159","size_display":"3.2 GB"},
+    {"name":"FSD50K.dev_audio.z04","md5":"d088ac4e11ba53daf9f7574c11cccac9","size_display":"3.2 GB"},
+    {"name":"FSD50K.dev_audio.z05","md5":"81356521aa159accd3c35de22da28c7f","size_display":"3.2 GB"},
+    {"name":"FSD50K.dev_audio.zip","md5":"c480d119b8f7a7e32fdb58f3ea4d6c5a","size_display":"2.3 GB"},
+    {"name":"FSD50K.doc.zip","md5":"3516162b82dc2945d3e7feba0904e800","size_display":"7.0 kB"},
+    {"name":"FSD50K.eval_audio.z01","md5":"3090670eaeecc013ca1ff84fe4442aeb","size_display":"3.2 GB"},
+    {"name":"FSD50K.eval_audio.zip","md5":"6fa47636c3a3ad5c7dfeba99f2637982","size_display":"3.0 GB"},
+    {"name":"FSD50K.ground_truth.zip","md5":"ca27382c195e37d2269c4c866dd73485","size_display":"334.7 kB"},
+    {"name":"FSD50K.metadata.zip","md5":"b9ea0c829a411c1d42adb9da539ed237","size_display":"6.7 MB"}
+  ],
+  "license_evidence": {
+    "per_asset_license_required": true,
+    "allowed_license_families_present": ["CC0", "CC-BY", "CC-BY-NC", "CC-Sampling+"],
+    "release_safe_note": "Source remains CONDITIONAL for release-safe lineage. Asset-level rights filtering and intended-use review are mandatory."
+  }
+}

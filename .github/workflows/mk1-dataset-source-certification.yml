@@ -8,85 +8,75 @@ on:
       - 'configs/data_foundry/dataset_certification.v1.json'
       - 'configs/data_foundry/acquisition_registry.v1.json'
       - 'configs/data_foundry/source_registry.v1.json'
+      - 'configs/data_foundry/publisher_snapshots/**'
       - 'schemas/data_foundry/dataset-certification.schema.json'
       - 'schemas/data_foundry/dataset-manifest.schema.json'
+      - 'schemas/data_foundry/publisher-snapshot.schema.json'
       - 'src/echo/data_foundry/source_policy.py'
+      - 'src/echo/data_foundry/publisher_snapshot.py'
       - 'src/echo/data_foundry/pipeline.py'
       - 'src/echo/data_foundry/manifest.py'
       - 'src/echo/data_foundry/cli.py'
       - 'src/echo/data_foundry/adapters.py'
-      - 'scripts/data_foundry/verify_publisher_record.py'
       - 'tests/data_foundry/test_source_policy.py'
+      - 'tests/data_foundry/test_publisher_snapshot.py'
       - '.github/workflows/mk1-dataset-source-certification.yml'
   pull_request:
     paths:
       - 'configs/data_foundry/dataset_certification.v1.json'
       - 'configs/data_foundry/acquisition_registry.v1.json'
       - 'configs/data_foundry/source_registry.v1.json'
+      - 'configs/data_foundry/publisher_snapshots/**'
       - 'schemas/data_foundry/dataset-certification.schema.json'
       - 'schemas/data_foundry/dataset-manifest.schema.json'
+      - 'schemas/data_foundry/publisher-snapshot.schema.json'
       - 'src/echo/data_foundry/source_policy.py'
+      - 'src/echo/data_foundry/publisher_snapshot.py'
       - 'src/echo/data_foundry/pipeline.py'
       - 'src/echo/data_foundry/manifest.py'
       - 'src/echo/data_foundry/cli.py'
       - 'src/echo/data_foundry/adapters.py'
-      - 'scripts/data_foundry/verify_publisher_record.py'
       - 'tests/data_foundry/test_source_policy.py'
+      - 'tests/data_foundry/test_publisher_snapshot.py'
       - '.github/workflows/mk1-dataset-source-certification.yml'
 
 permissions:
   contents: read
 
 jobs:
-  policy-and-tests:
+  policy-snapshots-and-tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
+      - name: Compile source and tests
+        run: python -m compileall -q src tests
       - name: Validate certification JSON syntax
         run: |
           python -m json.tool configs/data_foundry/dataset_certification.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/dataset-certification.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/dataset-manifest.schema.json >/dev/null
-      - name: Validate source policy loader
+          python -m json.tool schemas/data_foundry/publisher-snapshot.schema.json >/dev/null
+          for f in configs/data_foundry/publisher_snapshots/*.json; do python -m json.tool "$f" >/dev/null; done
+      - name: Verify source policy
         env:
           PYTHONPATH: src
         run: |
           python -m echo.data_foundry.cli source-policy --profile release_safe >/dev/null
           python -m echo.data_foundry.cli source-policy --profile research_extended >/dev/null
+      - name: Verify pinned official publisher evidence
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m echo.data_foundry.cli verify-publisher-snapshot fsd50k-1.0
+          python -m echo.data_foundry.cli verify-publisher-snapshot sonyc-ust-v2
+          python -m echo.data_foundry.cli verify-publisher-snapshot singapura-v1.0a
       - name: Run Data Foundry tests
         env:
           PYTHONPATH: src
         run: python -m unittest discover -s tests -v
-
-  publisher-record:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        source_id:
-          - fsd50k-1.0
-          - sonyc-ust-v2
-          - singapura-v1.0a
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Verify immutable publisher release and full file inventory
-        env:
-          PYTHONPATH: src
-        run: |
-          mkdir -p evidence
-          python scripts/data_foundry/verify_publisher_record.py \
-            "${{ matrix.source_id }}" \
-            --report "evidence/${{ matrix.source_id }}.json"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: publisher-record-evidence-${{ matrix.source_id }}
-          path: evidence/${{ matrix.source_id }}.json
-          if-no-files-found: error
-          retention-days: 30
