@@ -6,7 +6,7 @@ El ledger registra qué evidencia/decisión ha sido certificada y de qué depend
 
 `OPEN` · `CANDIDATE` · `CERTIFIED` · `INVALIDATED` · `EXTERNAL_GATE_OPEN`
 
-## MK0 certificates
+## Certificates and empirical outputs
 
 | Certificate ID | Artefacto/claim | Estado | Inputs principales | Invalida si cambia |
 |---|---|---|---|---|
@@ -25,10 +25,13 @@ El ledger registra qué evidencia/decisión ha sido certificada y de qué depend
 | CERT-MK0-012 | Privacy-by-design requirement | CERTIFIED | project policy + Peru normative evidence | jurisdiction/policy |
 | CERT-MK0-013 | MK0 research gate | CERTIFIED | CERT-MK0-001..012 | any dependency above |
 | CERT-MK1-READY-001 | MK1 replay-build readiness | CERTIFIED | MK0 + DoR | any architecture-changing dependency |
+| CERT-DOC-001 | Global Markdown documentation depth/coverage | CERTIFIED | DOCUMENTATION-STANDARD + DOCUMENTATION-COVERAGE + DOCUMENTATION-AUDIT-2026-09-13 | audited `.md` corpus materially changes without re-audit |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | brand/model/audio/RTSP/codec/network/access | closes only with field evidence |
 | EMP-MODEL-001 | Model winner | OPEN | MK1 benchmark results | n/a |
 | EMP-DIST-001 | Distance/SNR envelope | OPEN | field tests | n/a |
 | EMP-SLO-001 | Final SLOs | OPEN | MK1 runtime/quality evidence | n/a |
+
+`CERT-DOC-001` certifica únicamente reconstructibilidad y cobertura documental. No convierte targets, hipótesis o resultados empíricos pendientes en hechos.
 
 ## Dependency DAG
 
@@ -45,6 +48,11 @@ CERT-MK0-002..012
   -> CERT-MK0-013
   -> CERT-MK1-READY-001
 
+DOCUMENTATION-STANDARD
+  -> DOCUMENTATION-COVERAGE
+      -> DOCUMENTATION-AUDIT-2026-09-13
+          -> CERT-DOC-001
+
 CERT-MK1-READY-001 -> MK1/build -> MK1/test
 EXT-CAMERA-001 -----> real-camera test branch
 MK1/test -----------> EMP-MODEL-001 / EMP-DIST-001 / EMP-SLO-001
@@ -53,5 +61,7 @@ MK1/test -----------> EMP-MODEL-001 / EMP-DIST-001 / EMP-SLO-001
 ## Invalidation
 
 Un cambio de taxonomy, schema, source contract, model benchmark set, delivery semantics o privacy policy obliga a recalcular el hash/versión del artefacto afectado y pasar sus dependientes a `INVALIDATED` hasta re-auditar.
+
+`CERT-DOC-001` pasa a `INVALIDATED` si se agrega o reemplaza Markdown sustantivo sin revisión de cobertura, si aparece un stub utilizado como input certificado o si el inventario del audit deja de representar el corpus real.
 
 No se usa blockchain: Git + hashes de assets + manifests + CI attestations dan la propiedad requerida sin consenso distribuido.
