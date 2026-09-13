@@ -1,6 +1,6 @@
 # MK1 — First Vertical Product
 
-**Status:** `READY_NOT_STARTED` for replay/offline build  
+**Status:** `BUILD_IN_PROGRESS — DATA FOUNDRY FOUNDATION CERTIFIED`  
 **Upstream:** `CERT-MK0-013`, `CERT-MK1-READY-001`
 
 ## Purpose
@@ -13,12 +13,33 @@ MK1 turns certified MK0 decisions into the first complete ECHO vertical and prod
 brainstorming -> design -> arch -> plan -> build -> test
 ```
 
-The build must follow frozen contracts rather than redesigning them opportunistically.
+The build follows frozen contracts rather than redesigning them opportunistically.
+
+## Current position
+
+```text
+brainstorming  CLOSED_FOR_BUILD
+     ↓
+design         CLOSED_FOR_BUILD
+     ↓
+arch           CLOSED_FOR_BUILD
+     ↓
+plan           CLOSED_FOR_BUILD
+     ↓
+build          IN_PROGRESS
+  ├── Data Foundry foundation     CERTIFIED
+  └── corpus execution            OPEN
+     ↓
+test           foundation evidence PASS; full MK1 test pending
+```
+
+The Data Foundry is the first build increment because model comparison is meaningless without a frozen, provenance/rights-aware and leakage-resistant data identity.
 
 ## First vertical
 
 ```text
-ReplaySource / later RTSP source
+Frozen Foundry manifest
+ -> ReplaySource / later RTSP source
  -> decode + normalize
  -> bounded source buffer
  -> windows
@@ -34,14 +55,18 @@ ReplaySource / later RTSP source
 
 MK1 targets the v1 acoustic taxonomy, multi-label scoring, deterministic replay, source identity, temporal aggregation, Pub/Sub and measurable quality/runtime. It does not need production-scale distributed workers, unlimited cameras, advanced OOD or final cloud operations.
 
+## Data Foundry status
+
+The foundation now includes versioned source registry, label mapping, rights/admission policy, JSON schemas, group-aware split primitives, manifest hashing, dataset metadata adapters, hard-negative plan, field-holdout design and CI-tested code. Actual source archives/admitted asset counts remain empirical and are not fabricated.
+
 ## Real-camera branch
 
 `EXT-CAMERA-001` remains external. Replay can certify the core architecture. Camera-specific codec, jitter, distance and field latency claims require separate field evidence.
 
 ## Completion
 
-MK1 is certified only after build/test evidence satisfies the Definition of Done, including benchmark, calibration, streaming replay, multi-source logical tests, delivery/failure tests and known-limitations report.
+MK1 is certified only after build/test evidence satisfies the Definition of Done, including data/corpus gates, benchmark, calibration, streaming replay, multi-source logical tests, delivery/failure tests and known-limitations report.
 
 ## Invalidation
 
-A material change to MK0 taxonomy, source/audio/event contracts or benchmark protocol invalidates the affected MK1 design/build evidence.
+A material change to MK0 taxonomy, source/audio/event contracts, benchmark protocol or Foundry corpus semantics invalidates the affected MK1 design/build evidence.

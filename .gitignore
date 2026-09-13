@@ -14,8 +14,12 @@ __pycache__/
 .ruff_cache/
 .venv/
 venv/
+build/
+dist/
+*.egg-info/
 
-# ML/data artifacts
+# MK1 Data Foundry / ML data artifacts
+/data/
 *.wav
 *.flac
 *.mp3
