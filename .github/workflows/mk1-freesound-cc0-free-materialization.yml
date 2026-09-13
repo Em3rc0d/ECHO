@@ -1,0 +1,70 @@
+name: MK1 Freesound CC0 Free Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/materialize_freesound_cc0_gap_assets.py'
+      - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
+      - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-freesound-cc0-free-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free media probe
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffprobe -version | head -n 1
+      - name: Materialize live CC0 previews for exact-gap candidates
+        env:
+          PYTHONPATH: src
+          ECHO_FREESOUND_CC0_ROOT: ${{ runner.temp }}/echo-freesound-cc0
+        run: python scripts/materialize_freesound_cc0_gap_assets.py
+      - name: Enforce scratch and evidence boundary
+        env:
+          ECHO_FREESOUND_CC0_ROOT: ${{ runner.temp }}/echo-freesound-cc0
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          policy = json.loads(Path('configs/data_foundry/free_tier_boundary.v1.json').read_text())
+          root = Path(os.environ['ECHO_FREESOUND_CC0_ROOT'])
+          scratch = sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) if root.exists() else 0
+          limit = int(policy['github_actions']['project_max_working_set_bytes'])
+          report = Path('MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json')
+          print('scratch bytes=', scratch, 'working-set limit=', limit, 'report bytes=', report.stat().st_size)
+          if scratch > limit:
+              raise SystemExit('Freesound CC0 scratch exceeded free-tier working-set boundary')
+          if report.stat().st_size > 10_000_000:
+              raise SystemExit('Freesound durable evidence report unexpectedly exceeds 10 MB')
+          PY
+      - name: Commit durable evidence only
+        run: |
+          cp MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json /tmp/freesound-cc0-gap-assets-report.json
+          git reset --hard HEAD
+          git pull --rebase origin main
+          cp /tmp/freesound-cc0-gap-assets-report.json MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git add MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json
+          if git diff --cached --quiet; then
+            echo 'No Freesound CC0 evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize Freesound CC0 gap candidates [skip ci]'
+            git push origin HEAD:main
+          fi
