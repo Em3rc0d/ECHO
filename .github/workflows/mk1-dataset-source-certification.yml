@@ -7,26 +7,30 @@ on:
     paths:
       - 'configs/data_foundry/dataset_certification.v1.json'
       - 'configs/data_foundry/acquisition_registry.v1.json'
+      - 'configs/data_foundry/source_registry.v1.json'
       - 'schemas/data_foundry/dataset-certification.schema.json'
       - 'schemas/data_foundry/dataset-manifest.schema.json'
       - 'src/echo/data_foundry/source_policy.py'
       - 'src/echo/data_foundry/pipeline.py'
       - 'src/echo/data_foundry/manifest.py'
       - 'src/echo/data_foundry/cli.py'
-      - 'scripts/data_foundry/fetch_release_stage.py'
+      - 'src/echo/data_foundry/adapters.py'
+      - 'scripts/data_foundry/verify_publisher_record.py'
       - 'tests/data_foundry/test_source_policy.py'
       - '.github/workflows/mk1-dataset-source-certification.yml'
   pull_request:
     paths:
       - 'configs/data_foundry/dataset_certification.v1.json'
       - 'configs/data_foundry/acquisition_registry.v1.json'
+      - 'configs/data_foundry/source_registry.v1.json'
       - 'schemas/data_foundry/dataset-certification.schema.json'
       - 'schemas/data_foundry/dataset-manifest.schema.json'
       - 'src/echo/data_foundry/source_policy.py'
       - 'src/echo/data_foundry/pipeline.py'
       - 'src/echo/data_foundry/manifest.py'
       - 'src/echo/data_foundry/cli.py'
-      - 'scripts/data_foundry/fetch_release_stage.py'
+      - 'src/echo/data_foundry/adapters.py'
+      - 'scripts/data_foundry/verify_publisher_record.py'
       - 'tests/data_foundry/test_source_policy.py'
       - '.github/workflows/mk1-dataset-source-certification.yml'
 
@@ -57,9 +61,9 @@ jobs:
           PYTHONPATH: src
         run: python -m unittest discover -s tests -v
 
-  publisher-metadata:
+  publisher-record:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -72,26 +76,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Fetch publisher metadata stage
+      - name: Verify immutable publisher release and full file inventory
         env:
           PYTHONPATH: src
         run: |
-          mkdir -p ".source-cache/${{ matrix.source_id }}" evidence
-          python scripts/data_foundry/fetch_release_stage.py \
+          mkdir -p evidence
+          python scripts/data_foundry/verify_publisher_record.py \
             "${{ matrix.source_id }}" \
-            ".source-cache/${{ matrix.source_id }}" \
             --report "evidence/${{ matrix.source_id }}.json"
-      - name: Verify publisher checksums independently
-        env:
-          PYTHONPATH: src
-        run: |
-          python -m echo.data_foundry.cli verify-acquisition \
-            "${{ matrix.source_id }}" \
-            ".source-cache/${{ matrix.source_id }}" \
-            --stage metadata
       - uses: actions/upload-artifact@v4
         with:
-          name: source-metadata-evidence-${{ matrix.source_id }}
+          name: publisher-record-evidence-${{ matrix.source_id }}
           path: evidence/${{ matrix.source_id }}.json
           if-no-files-found: error
           retention-days: 30
