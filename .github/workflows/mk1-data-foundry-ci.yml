@@ -1,0 +1,53 @@
+name: MK1 Data Foundry CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/echo/data_foundry/**'
+      - 'tests/data_foundry/**'
+      - 'configs/data_foundry/**'
+      - 'schemas/data_foundry/**'
+      - 'pyproject.toml'
+      - '.github/workflows/mk1-data-foundry-ci.yml'
+  pull_request:
+    paths:
+      - 'src/echo/data_foundry/**'
+      - 'tests/data_foundry/**'
+      - 'configs/data_foundry/**'
+      - 'schemas/data_foundry/**'
+      - 'pyproject.toml'
+      - '.github/workflows/mk1-data-foundry-ci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  foundry-foundation:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile source and tests
+        run: python -m compileall -q src tests
+      - name: Validate Foundry source registry
+        env:
+          PYTHONPATH: src
+        run: python -m echo.data_foundry.cli validate-source-registry configs/data_foundry/source_registry.v1.json
+      - name: Validate JSON policy and schema syntax
+        run: |
+          python -m json.tool configs/data_foundry/source_registry.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/label_mapping.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/license_policy.v1.json >/dev/null
+          python -m json.tool schemas/data_foundry/asset-record.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/dataset-manifest.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/source-registry.schema.json >/dev/null
+      - name: Run Foundry unit tests
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -v
