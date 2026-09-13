@@ -1,19 +1,23 @@
 # MK2 / Mining Site
 
-MK2 mining-site conserva evidencia operacional de la release candidata.
+**Status:** `EVIDENCE_DESTINATION / AWAITS MK2 EXECUTION`
 
-Ejemplos:
+## Purpose
 
-```text
-capacity reports
-soak reports
-field holdout metrics
-model card
-config hashes
-release manifest
-license inventory
-SBOM/provenance if adopted
-failure-injection evidence
-```
+Store production-stage evidence: capacity/benchmark history, field evidence across releases, incident learnings and exact third-party/license inventories.
 
-A diferencia de MK0/MK1, aquí la evidencia principal es **producida por ECHO** y debe poder vincularse al commit/model/config exactos.
+## Artifacts
+
+`BENCHMARK-HISTORY.md` tracks comparable release/model measurements. `FIELD-EVIDENCE.md` tracks real source/site operating evidence. `INCIDENT-EVIDENCE.md` converts incidents into regression/risk knowledge. `LICENSE-INVENTORY.md` records release-specific third-party assets.
+
+## Provenance
+
+Every record names release/model/config/hardware/time range and source of truth. Large logs/media remain outside Git under governed storage; this folder stores summaries/manifests/hashes.
+
+## Relationship to design
+
+Mining-site is evidence, not aspirational architecture. Findings can invalidate SLOs, scale decisions or model releases through the certification DAG.
+
+## Privacy
+
+Operational evidence must minimize raw audio/personal data and follow retention/access policy.

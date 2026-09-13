@@ -1,80 +1,31 @@
-# Quarry — Capacity and Scalability
+# Quarry — Capacity
 
-**Status:** methodology `CERTIFIED`; capacity numbers `EMPIRICAL_MK2`.
+**Status:** `PROTOCOL_READY / NUMBERS OPEN`
 
-## 1. Purpose
+## Question
 
-Determine how many concurrent sources a specific ECHO deployment can support while meeting latency, drop-rate and resource SLOs. Capacity is always expressed for a named hardware/model/configuration tuple.
+How many concurrent sources can a declared ECHO model/hardware/deployment profile sustain while meeting latency, quality, fairness and bounded-resource SLOs?
 
-## 2. Capacity tuple
+## Variables
 
-A claim is invalid without:
+Model/frontend, source cadence/window overlap, codecs/decoder CPU, batch/microbatch, worker count, accelerator, broker/store load, telemetry and target/background event rate.
 
-```text
-hardware CPU/GPU/RAM
-OS/runtime/container versions
-model + precision/quantization
-window/hop
-source codec/input rate
-worker count
-batching policy
-queue/buffer config
-Event Engine config
-broker/event-store config
-```
+## Measurement
 
-## 3. Load ladder
+Step/ramp/spike/soak; p95/p99 queue/event latency; drop/stale rate per source; throughput; CPU/GPU/RAM/VRAM; thermal; fairness; event-quality regression under load.
 
-Run increasing source counts, for example 1/2/4/8/... until a constraint is violated. These are test points, not promises.
+## Definition
 
-At each level measure:
+Capacity is the highest load that remains inside **all** frozen constraints with margin over soak. The crash/OOM point is not capacity.
 
-```text
-CPU/GPU/RAM
-windows/s
-queue lag p50/p95/p99
-stale/drop rate per source
-end-to-end latency p50/p95/p99
-reconnect/error rate
-broker publish latency
-thermal behavior
-```
+## Scale decision
 
-## 4. Saturation definition
+When SLO breaks, identify bottleneck before adding processes/hosts. A larger model may lose to a slightly weaker model if it materially reduces required source capacity.
 
-Saturation is not simply 100% CPU. It is the first load where one or more product SLOs fail or system behavior becomes unstable. Keep headroom instead of certifying at the absolute cliff.
+## Evidence output
 
-## 5. Fairness
+Capacity curves by profile, recommended operating envelope, headroom and bottleneck analysis.
 
-Report per-source distributions, not only aggregate throughput. One source must not remain healthy while others starve.
+## Invalidation
 
-## 6. Soak
-
-Short bursts can hide memory leaks, thermal throttling, reconnect churn and queue growth. Capacity certification therefore requires a soak duration appropriate to the target deployment.
-
-## 7. Failure injection under load
-
-At near-certified load test:
-
-- source reconnect;
-- broker restart;
-- worker restart;
-- burst of simultaneous acoustic events;
-- slow event-store/subscriber;
-- one malformed/noisy stream.
-
-## 8. Scale-out decision
-
-Only introduce external queues/distributed inference when single-node evidence shows it is necessary or operational requirements demand HA. Complexity is not a scalability metric.
-
-## 9. Output
-
-Publish a capacity envelope rather than “supports N cameras”:
-
-```text
-configuration X
-certified <= N sources
-under source profile Y
-meeting SLO profile Z
-with measured headroom H
-```
+Model, hardware, window cadence, topology or significant runtime version changes require remeasurement.

@@ -1,42 +1,33 @@
 # MK2 Release Gate
 
-**Estado:** `NOT_READY`
+**Status:** `GATED`
 
-## Quality
+## Required evidence
 
-- [ ] field holdout meets frozen ML SLOs
-- [ ] false alarms/source-hour within SLO
-- [ ] per-class recall within critical thresholds
-- [ ] calibration reviewed
+- valid MK1 upstream certificate;
+- frozen production deployment/SLO profile;
+- reproducible application/model/config release bundle;
+- capacity and load/soak PASS;
+- resilience/fault/chaos PASS for required scenarios;
+- model/field regression PASS;
+- schema/config/model migration and rollback tested;
+- security/privacy checks PASS;
+- dependency/SBOM/license/notices complete;
+- observability and incident runbooks validated;
+- required external hardware/network/authorization gates closed.
 
-## Realtime/capacity
+## Scope declaration
 
-- [ ] latency p95/p99 within SLO
-- [ ] certified source capacity established per hardware profile
-- [ ] bounded queues verified
-- [ ] no unbounded memory growth in soak
+The certificate names exact supported hardware/model/source range/environment assumptions. It does not certify every possible camera/site.
 
-## Resilience
+## Conditional failure
 
-- [ ] source reconnect automatic
-- [ ] broker failure policy passes
-- [ ] storage failure policy passes
-- [ ] duplicate delivery is idempotent
-- [ ] model rollback passes
+A non-blocking optional feature may be excluded from release scope with explicit documentation. A core promise/SLO failure cannot be waived silently.
 
-## Security/privacy
+## Evidence integrity
 
-- [ ] no secrets in repository/images/logs
-- [ ] retention policy enforced
-- [ ] evidence clips, if enabled, have TTL/ACL/encryption policy
-- [ ] no ASR/speaker identification introduced
+All reports reference release candidate digest. Rebuilding/reconfiguring after test creates a new candidate requiring the applicable subset of tests.
 
-## Reproducibility/provenance
+## Decision
 
-- [ ] code/model/config/schema hashes recorded
-- [ ] dataset manifest recorded
-- [ ] test report hashed
-- [ ] release attestation verifies
-- [ ] ancestor certificates valid
-
-Todos los checks deben pasar o tener waiver explícito y justificado. Un waiver no puede ocultar un requisito MUST de seguridad/integridad.
+Only test evidence and governance can move this gate to `CERTIFIED`; documentation completeness alone cannot.

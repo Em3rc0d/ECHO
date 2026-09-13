@@ -1,69 +1,31 @@
-# Quarry — Cost Model
+# Quarry — Cost
 
-**Status:** framework `CERTIFIED`; deployment costs `EMPIRICAL`.
+**Status:** `FRAMEWORK_READY / REAL COSTS PENDING DEPLOYMENT`
 
-## 1. Purpose
+## Purpose
 
-Keep ECHO PoC free/open-source where practical while making hidden operational costs visible. “Software license cost = 0” does not mean total cost is zero.
+Avoid treating open-source software as “free” when hardware, power, storage, network, operations and engineering time still exist.
 
-## 2. Cost dimensions
+## Cost dimensions
 
-```text
-compute hardware
-GPU/accelerator if used
-camera/NVR/microphone equipment
-network/switching
-storage for event metadata/evidence
-power
-operator/maintenance time
-cloud egress/compute if introduced
-backup/monitoring
-certificate/domain services if public-facing
-```
+Compute hardware/accelerators; energy/thermal; storage for events/logs/models/optional clips; network/VPN/cloud egress if used; broker/database/observability services; device/microphone upgrades; maintenance/incident/operator time; model retraining/evaluation; compliance/security tooling.
 
-## 3. Model-related cost
+## Profiles
 
-A heavier model can increase:
+Compare local CPU, local GPU/accelerator, centralized server and optional cloud. Use measured source capacity so cost can be normalized per supported source/site.
 
-- hardware acquisition;
-- power;
-- number of nodes;
-- deployment complexity;
-- warm-up/update time.
+## Hidden trade-offs
 
-Therefore model selection includes resource economics, not only F1.
+A heavier model can increase hardware cost; cloud can reduce local maintenance while increasing recurring/network/privacy dependencies; media retention can dominate storage/compliance cost.
 
-## 4. Storage model
+## Metric examples
 
-Default raw continuous audio retention is zero, substantially reducing storage and privacy exposure. If evidence clips are enabled, estimate:
+Cost/source/month, watts/source, storage GB/source/day for metadata/log policy, engineering/operator effort per release and incremental cost for redundancy.
 
-```text
-average clip size
-alerts/day/source
-retention days
-replication/backup factor
-```
+## Decision
 
-## 5. Network model
+PoC prioritizes free/open-source/local tools where practical. MK2 selects cost profile only after SLO/capacity evidence.
 
-If inference is local/edge, continuous camera audio stays LAN-local. Cloud centralization would create ongoing bandwidth/egress/privacy costs and must be justified separately.
+## Invalidation
 
-## 6. Open-source licensing vs cost
-
-Mosquitto/FFmpeg/model frameworks can be used without SaaS fees under their licenses, but compliance, integration and operations still cost time. Dataset/model licenses can also restrict intended use even when monetary price is zero.
-
-## 7. Cost profiles
-
-Maintain at least:
-
-```text
-PoC local profile
-single-site edge profile
-multi-site/centralized candidate profile
-```
-
-Do not extrapolate production TCO from a laptop demo.
-
-## 8. Decision output
-
-MK2 release should include a bill-of-materials and estimated cost per supported source/site for the certified hardware profile, with assumptions clearly listed.
+Pricing/hardware/topology/retention changes require refreshed cost model.

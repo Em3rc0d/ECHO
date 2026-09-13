@@ -1,70 +1,31 @@
-# Quarry — Event Replay, Delivery and Durability
+# Quarry — Replay and Event Delivery
 
-**Status:** MK1 semantics closed; MK2 durability profile `DECISION_BY_REQUIREMENT`.
+**Status:** `MQTT_BASELINE / PRODUCTION_DURABILITY OPEN`
 
-## 1. Problem
+## Question
 
-MQTT QoS1 provides at-least-once message delivery semantics but is not, by itself, a durable replayable event ledger for arbitrary offline consumers. MK2 must decide how much history/replay is actually required.
+What level of event durability/replay is required beyond MK1 MQTT QoS1, and which mechanism achieves it with least operational complexity?
 
-## 2. Distinguish concepts
+## Requirements to clarify
 
-```text
-broker delivery acknowledgement
-consumer idempotency
-event persistence
-consumer replay
-ordering
-exactly-once business effect
-```
+How long can consumers be offline? Must every confirmed event be recoverable? Is ordering per source required? Are multiple independent consumer groups needed? What duplicate tolerance exists? What is the event retention policy?
 
-These are separate properties.
+## Options
 
-## 3. Canonical event identity
+MQTT persistent/session/broker behavior; local event store/outbox + MQTT; NATS JetStream; RabbitMQ; Redis Streams; Kafka. Evaluate only against explicit requirements.
 
-`event_id` is immutable for one logical confirmed event. Re-delivery/republication uses the same ID so consumers can deduplicate.
+## Preferred evolution
 
-## 4. Durability profiles
+Retain MQTT for live notifications; add durable event store/outbox first if replay/audit is needed but throughput remains modest. Move to durable streaming broker only when consumer/scale requirements justify it.
 
-### Profile A — live-only
-MQTT distribution + observability; acceptable where missed history is not a requirement.
+## Idempotency
 
-### Profile B — durable event store subscriber
-Every confirmed event is persisted by an idempotent subscriber/database; consumers query/replay from the store.
+Exactly-once-like business behavior relies on stable `event_id` and consumer transaction/idempotency, not simply a broker QoS label.
 
-### Profile C — replayable streaming infrastructure
-Use a broker/log with persistent consumer offsets (e.g. NATS JetStream/Redis Streams/RabbitMQ/Kafka depending measured requirements).
+## Tests
 
-MK2 selects the lowest-complexity profile satisfying product requirements.
+Broker partition/restart, subscriber offline/rejoin, duplicate publish, outbox replay, retention expiry and schema migration.
 
-## 5. Ordering
+## Invalidation
 
-Require ordering primarily per `source_id`, not necessarily a total order across all cameras. Cross-source correlation may use timestamps but cannot assume perfectly synchronized camera clocks.
-
-## 6. Failure matrix
-
-Test event generation while:
-
-- broker unavailable;
-- broker restarts;
-- persistence subscriber unavailable;
-- subscriber restarts after acknowledgement boundary;
-- duplicate message delivered;
-- network partition occurs;
-- schema version changes.
-
-## 7. Exactly-once caution
-
-Even if transport offers stronger semantics, external side effects (push notification, database write) require idempotent business logic. ECHO should phrase guarantees precisely rather than marketing “exactly once” without end-to-end proof.
-
-## 8. Release output
-
-Document for each deployment profile:
-
-```text
-what can be lost
-what can duplicate
-retention duration
-replay method
-ordering guarantee
-recovery procedure
-```
+Final choice freezes per deployment SLO and can differ between lab and production profiles.

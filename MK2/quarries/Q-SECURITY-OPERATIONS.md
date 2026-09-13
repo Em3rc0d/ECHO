@@ -1,87 +1,31 @@
 # Quarry — Security Operations
 
-**Status:** operational control framework `CERTIFIED_FOR_MK2_DESIGN`; implementation evidence required before release.
+**Status:** `DESIGN_READY / DEPLOYMENT-SPECIFIC CONTROLS PENDING`
 
-## 1. Purpose
+## Objective
 
-Turn MK0 threat modeling into day-2 controls: credentials rotate, dependencies change, logs accumulate and incidents happen.
+Move from MK1 secure coding/config baseline to ongoing production security operations.
 
-## 2. Identity and secrets
+## Workstreams
 
-Production profile should provide:
+Credential issuance/rotation/revocation; broker/source ACL review; dependency/container/model vulnerability and provenance checks; patch/update process; audit/log retention; incident response; backup/recovery of non-audio state; access review for evidence clips/field data.
 
-```text
-unique service/client identities
-least-privilege broker/API ACLs
-secret store or protected environment injection
-rotation procedure
-revocation procedure
-no credentials in image/repo/logs
-```
+## Model supply chain
 
-## 3. Network operations
+Verify checkpoint digest/provenance before activation; control who may promote model/config; retain signed/hashable release manifest; rollback compromised artifact.
 
-Prefer segmentation between camera network, ECHO compute and user-facing services. Public exposure of RTSP/ONVIF management endpoints is not an ECHO requirement.
+## Device reality
 
-Document allowed flows explicitly.
+Some cameras have weak/legacy security. Compensating controls can include network segmentation, VPN/tunnel, restricted service accounts and preventing direct public exposure.
 
-## 4. Patch/dependency management
+## Detection
 
-Maintain software bill of materials where feasible and track:
+Monitor auth failures, unexpected source/publisher identities, configuration changes, repeated reconnect anomalies, checksum failures and unusual resource patterns without ingesting unnecessary personal data.
 
-```text
-OS/base image
-FFmpeg/runtime
-ML framework
-broker
-API dependencies
-model/checkpoint hashes
-```
+## Incident drills
 
-Security upgrades trigger regression tests when they can affect codec/inference behavior.
+Secret compromise, malicious/incorrect model artifact, unauthorized MQTT publisher and vulnerable dependency each need a response path.
 
-## 5. Logging and audit
+## Release gate
 
-Logs should contain enough identifiers for incident reconstruction without leaking secrets/raw conversations:
-
-```text
-source_id
-service/version
-connection/error category
-event_id
-model/config version
-auth/security outcome
-```
-
-Credentials and raw RTSP URLs are redacted.
-
-## 6. Abuse/spoof considerations
-
-A replayed sound can trigger an acoustic detector. ECHO should document this as spoofability of the sensor modality. High-consequence downstream actions should require corroboration or human confirmation according to product policy.
-
-## 7. Backup/recovery
-
-Back up configuration, schemas, certification manifests and event metadata according to deployment requirements. Raw continuous audio is not part of normal backup because it is not retained by default.
-
-## 8. Incident scenarios
-
-Playbooks should cover:
-
-- leaked camera/broker credential;
-- compromised source identity;
-- anomalous event flood;
-- repeated worker crash;
-- corrupted/tampered model artifact;
-- unauthorized subscriber;
-- event-store loss/corruption.
-
-## 9. Release security evidence
-
-Before MK2 release certification:
-
-- secrets scan clean;
-- dependency/SBOM inventory generated;
-- ACL/auth tests pass;
-- artifact hashes/signatures/provenance verified according to chosen tooling;
-- malformed input/failure isolation tests pass;
-- incident/rollback procedure tested.
+Security operations requirements are profile-specific but must be documented/tested before claiming production readiness.

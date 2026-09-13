@@ -1,43 +1,27 @@
 # MK2 / Test
 
-MK2/test certifica producto operacional, no solo funciones.
+**Status:** `SPECIFIED / EXECUTION GATED`
 
-## Suites
+## Purpose
 
-```text
-regression ML
-contract compatibility
-multi-source e2e
-load
-stress
-soak
-backpressure
-reconnect
-broker/storage failure
-model rollback
-config rollback
-privacy/retention
-provenance verification
-field holdout
-```
+Certify the declared production profile rather than merely re-running MK1 unit tests. MK2 test stresses capacity, time, faults, model regression, delivery, security and release reproducibility under sustained conditions.
 
-## Long-running
+## Test layers
 
-Soak test debe descubrir leaks, drift de latency, reconnect churn y acumulación de colas que un test corto no muestra.
+Regression -> load/capacity -> soak -> resilience/fault/chaos -> model/field regression -> security/privacy -> migration/rollback -> release certification.
 
-## Failure injection
+## Evidence identity
 
-Probar de forma controlada:
+Every run references release candidate digest, deployment profile, active model/config/schema, source/load generator manifest and hardware/environment.
 
-- kill/restart worker;
-- drop source network;
-- broker unavailable;
-- storage unavailable;
-- corrupt/invalid model metadata;
-- invalid config;
-- duplicate messages;
-- clock discontinuity simulation.
+## Failure discipline
 
-## Release test
+A failed SLO remains FAIL until corrected or governance explicitly versions the SLO/profile. Tests are not retroactively redefined to fit observed behavior.
 
-Un release solo es válido si puede instalarse/reproducirse desde manifests y los artifacts exactos.
+## External gates
+
+Production claims involving real cameras/sites require those hardware/privacy/network gates closed. Synthetic load can certify architecture capacity but not acoustic field quality.
+
+## Exit
+
+`MK2 RELEASE CERTIFIED` only after all blocking tests and release BOM/provenance gates pass.

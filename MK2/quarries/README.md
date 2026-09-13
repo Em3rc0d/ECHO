@@ -1,15 +1,19 @@
 # MK2 / Quarries
 
-MK2 quarries convert the working MK1 vertical into an operable, scalable and supportable product.
+**Status:** `PRODUCTION_EMPIRICAL_WORKSTREAMS`
 
-```text
-Q-CAPACITY.md             measured source-count envelope
-Q-COST.md                 total-cost model
-Q-DRIFT.md                field drift and revalidation
-Q-REPLAY-DELIVERY.md       durability/replay semantics
-Q-SECURITY-OPERATIONS.md   day-2 security controls
-```
+## Purpose
 
-These documents intentionally separate **framework decisions** from **measured release values**. A capacity/cost/SLO number cannot be certified until the MK2 build exists and the corresponding load/soak/operations tests have run.
+Investigate questions that remain after a working MK1 vertical: sustainable capacity, total cost, drift, durable replay/delivery and security operations.
 
-All substantive artifacts follow `governance/DOCUMENTATION-STANDARD.md`.
+## Workstreams
+
+`Q-CAPACITY`, `Q-COST`, `Q-DRIFT`, `Q-REPLAY-DELIVERY`, `Q-SECURITY-OPERATIONS`.
+
+## Closure
+
+Each quarry closes for a named deployment/release profile, not universally. Evidence includes load/soak, field history, incident/regression data and actual bills of materials.
+
+## Invalidation
+
+New model/hardware/site/scale/security requirement can reopen only the affected quarry and downstream release certificate.

@@ -1,59 +1,31 @@
-# Quarry — Data/Model Drift
+# Quarry — Data / Model Drift
 
-**Status:** monitoring design `CERTIFIED`; production thresholds `EMPIRICAL`.
+**Status:** `MONITORING_DESIGN_READY`
 
-## 1. Purpose
+## Drift types
 
-Detect when deployment audio no longer resembles the conditions under which ECHO was validated. Drift can occur without code/model changes.
+Source/device replacement or firmware/AGC changes; new seasonal/weather/background sound; site construction/traffic changes; new confuser class; event prevalence shift; model/config release interaction.
 
-## 2. Drift sources
+## Signals
 
-```text
-new camera/microphone
-firmware/audio codec changes
-season/weather
-construction/new machinery
-traffic pattern changes
-microphone degradation/obstruction
-site layout changes
-new recurring alarms/sounds
-class prevalence changes
-```
+Target score distributions, confirmed-event rate, high-confidence unknown/negative activations, source signal statistics, false-positive review, field-labeled sample performance and device/config metadata changes.
 
-## 3. Signals
+## Caution
 
-Monitor privacy-preserving aggregates where possible:
+Unlabeled score drift does not automatically prove quality degradation. It is a trigger for review/sampling, not an automatic retraining command.
 
-```text
-score distributions by class/source
-abstention rate
-confirmed event rate
-false-positive feedback rate
-RMS/dBFS/silence statistics
-embedding distribution summaries if justified
-codec/device metadata changes
-```
+## Response
 
-## 4. Ground-truth problem
+Collect authorized representative evidence -> label/review -> compare active model on regression/field set -> decide threshold/config adjustment or new training version -> full regression -> controlled release.
 
-Drift detectors alone cannot tell whether model quality actually fell. Maintain periodic labeled audits or reviewed event samples for real quality estimates.
+## No online self-training requirement
 
-## 5. Trigger hierarchy
+MK2 does not require the production model to learn automatically from its own outputs, which risks feedback loops and silent corruption.
 
-```text
-OBSERVE -> INVESTIGATE -> VALIDATE -> RECALIBRATE/RETRAIN -> SHADOW -> PROMOTE
-```
+## Governance
 
-Never auto-retrain/promote solely because an unsupervised drift score crosses a threshold.
+New data enters a versioned manifest with provenance/permission; historical holdout remains protected.
 
-## 6. Threshold recalibration
+## Invalidation
 
-If representation remains good but score calibration shifts, threshold/calibrator update may be sufficient. If error families change, retraining/data expansion may be necessary.
-
-## 7. Source-specific drift
-
-One camera can drift while fleet-wide aggregates look healthy. Monitoring keeps source-level views and can quarantine/degrade one source without invalidating all others.
-
-## 8. Model governance
-
-Any retrain/recalibration produces a new version with dataset/config hashes and regression tests against historical holdouts. Previous certified model remains rollback candidate until new release passes gates.
+Monitoring features evolve when field evidence reveals better drift indicators.
