@@ -1,39 +1,91 @@
-# Third-party Registry — research-stage
+# Third-Party Registry
 
-Este archivo separa la licencia de ECHO de la licencia de cada dependencia, checkpoint y dataset.
+**Status:** `GOVERNANCE_CERTIFIED / RELEASE_BOM_PENDING`
 
-## Software / standards candidates
+## 1. Objetivo
 
-| Component | Role | Audit finding | Policy |
+Registrar dependencias, modelos, datasets y herramientas externas de forma separada del código propio. Este archivo describe la política y el inventario conocido; el BOM final debe generarse sobre versiones exactas de una build real.
+
+## 2. Software y protocolos
+
+| Componente | Rol | Consideración | Acción obligatoria antes de release |
 |---|---|---|---|
-| TensorFlow / YAMNet code | baseline model stack | Apache-2.0 en TensorFlow Model Garden/source family | pin exact version before distribution |
-| PANNs repository | challenger | MIT source repository | verify exact checkpoint provenance separately |
-| HTS-AT repository | extended | MIT source repository | MK2/deferred |
-| PaSST repository | extended | Apache-2.0 source repository | MK2/deferred |
-| BEATs source | extended | MIT source repository | verify exact checkpoint before distribution |
-| FFmpeg | RTSP decode/normalization | LGPL 2.1+ by default; build options can introduce GPL obligations | prefer system/external binary initially; record exact build/config |
-| GStreamer | streaming fallback | core/plugins commonly LGPL; plugin dependency licenses vary | pin exact plugins if packaged |
-| go2rtc | optional relay | MIT project | optional, not core MK1 dependency |
-| Eclipse Mosquitto | MQTT broker | project site identifies open-source EPL/EDL licensing | prefer external service/package; pin version |
-| MQTT 5.0 | protocol | OASIS standard | specification, not an ECHO code dependency |
+| TensorFlow / YAMNet | baseline A | versionado de runtime y modelo | pin de versión + hash + notices |
+| PANNs/Cnn14 | challenger B | repo y checkpoint deben auditarse por separado | provenance del checkpoint |
+| custom ECHO CNN | control C | código propio + librerías numéricas | licencia ECHO + dependency BOM |
+| FFmpeg | ingest/decode baseline | obligaciones dependen del build/config | registrar binario/build exacto |
+| GStreamer | fallback/challenger streaming | plugins pueden introducir licencias distintas | listar plugins exactos |
+| go2rtc | relay opcional | no es dependencia core | pin solo si se incorpora |
+| Eclipse Mosquitto | broker MQTT | servicio/binary independiente | version + config + notices |
+| MQTT 5.0 | protocolo | estándar, no dependencia de código | documentar versión semántica |
+| ONVIF Profile T | discovery/profile | estándar/interoperabilidad | usar solo features necesarias |
 
-## Dataset/license policy
+## 3. Modelos y checkpoints
 
-| Dataset | Policy |
-|---|---|
-| AudioSet | use metadata/ontology/reference according to stated licenses; do not infer redistribution rights for underlying YouTube media |
-| FSD50K | inspect **each clip license**; asset registry must block incompatible use |
-| ESC-50 | full dataset is research/non-commercial constrained; do not silently use as unrestricted production corpus |
-| SONYC-UST | pin release and its stated license/terms in dataset manifest |
-| DCASE datasets | verify each task/release independently |
+Un modelo se admite únicamente con:
 
-## Mandatory before a distributable ECHO release
+```yaml
+model_id:
+upstream_repository:
+architecture_version:
+checkpoint_uri:
+checkpoint_sha256:
+code_license:
+checkpoint_license:
+pretraining_dataset:
+runtime_dependencies:
+permitted_use:
+```
 
-1. choose ECHO-owned source license explicitly;
-2. lock dependency versions;
-3. record repository/package/checkpoint license for exact artifacts;
-4. generate notices/attributions;
-5. ensure no restricted dataset/audio is bundled or redistributed incorrectly;
-6. record FFmpeg/GStreamer binary/build licensing if shipped.
+La ausencia de licencia explícita de un checkpoint impide asumir derechos de redistribución.
 
-**Status:** registry certified as a governance mechanism. Exact release bill-of-materials remains a build artifact.
+## 4. Datasets
+
+### AudioSet
+
+Usar como ontología/referencia y provenance de pretraining. No confundir las licencias publicadas para metadata/ontology con derechos de redistribución del media subyacente de YouTube.
+
+### FSD50K
+
+El release contiene licencias por clip. El manifest ECHO debe registrar el asset individual y filtrar por uso permitido.
+
+### ESC-50 / UrbanSound8K
+
+Útiles como benchmarks académicos y contraste de dominio; sus términos impiden tratarlos automáticamente como corpus de producción irrestricto.
+
+### SONYC / DCASE / DESED / MIMII
+
+Auditar por release/task exacto. No existe una política universal para todos los datasets alojados bajo una misma comunidad.
+
+## 5. Asset admission
+
+Ningún audio, checkpoint o binary entra a un artefacto reproducible sin:
+
+```text
+origin
+version/release
+hash
+license
+permitted_use
+attribution requirement
+redistribution flag
+```
+
+Estado desconocido = `QUARANTINED`.
+
+## 6. Supply-chain risks
+
+- checkpoint sustituido upstream sin versionado;
+- dependencia transitiva con licencia incompatible;
+- modelo descargado desde mirror no oficial;
+- binario FFmpeg diferente al documentado;
+- archivo de dataset modificado tras generar splits;
+- base image/container con paquetes no inventariados.
+
+## 7. Release outputs
+
+MK2 debe producir SBOM, model manifest, dataset/asset manifest, notices y hashes de artefactos. Estos outputs alimentan el certification DAG y deben poder compararse entre releases.
+
+## 8. Invalidation
+
+Actualizar el registro cuando cambie una dependencia, versión, checkpoint, dataset release, política de distribución o cuando un upstream modifique licencia/términos.

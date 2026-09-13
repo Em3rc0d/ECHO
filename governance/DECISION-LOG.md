@@ -4,11 +4,11 @@
 
 ## 1. Purpose
 
-This ledger records engineering decisions that affect ECHO's scope, architecture, scientific validity or operations. It intentionally separates decisions from empirical outputs. A model winner, numerical threshold or supported source count is not “decided” before measurement; it remains an empirical node.
+This ledger records engineering decisions that affect ECHO's scope, architecture, scientific validity or operations. It separates decisions from empirical outputs. A model winner, numerical threshold or supported source count is not decided before measurement; it remains an empirical node.
 
 ## 2. State semantics
 
-`OPEN` means a decision still requires evidence or owner action. `CANDIDATE` is plausible but not frozen. `CLOSED` means the choice is frozen within a stated scope. `CLOSED (REJECTED)` records an alternative deliberately not selected. `CLOSED (DEFERRED)` records a valid option intentionally moved to a later milestone. `EXTERNAL_GATE_OPEN` depends on hardware, permission or another external condition. `INVALIDATED` means an upstream dependency changed.
+`OPEN` requires evidence or owner action. `CANDIDATE` is plausible but not frozen. `CLOSED` is frozen within scope. `CLOSED (REJECTED)` records a deliberately rejected alternative. `CLOSED (DEFERRED)` preserves an option moved to a later milestone. `EXTERNAL_GATE_OPEN` depends on hardware, permission or another external condition. `INVALIDATED` means an upstream dependency changed.
 
 ## 3. Decisions
 
@@ -18,63 +18,61 @@ This ledger records engineering decisions that affect ECHO's scope, architecture
 | D-002 | classify acoustic observations, not crimes/social causes | CLOSED | semantic verifiability | taxonomy/event claims |
 | D-003 | logical multi-source from MK1 | CLOSED | avoids single-camera redesign | source contract/runtime |
 | D-004 | PoC may use one physical source | CLOSED | lowers external dependency without changing interfaces | demo/field plan |
-| D-005 | RTSP primary camera ingest interface | CLOSED | camera ecosystem + FFmpeg/GStreamer support; actual camera still external | adapters/deployment |
-| D-006 | ONVIF optional, not hard dependency | CLOSED | explicit RTSP must remain usable without discovery | source discovery |
-| D-007 | FFmpeg baseline decoder/normalizer | CLOSED | mature codec/RTSP support and simple PoC integration | MK1 ingest |
-| D-008 | GStreamer fallback/challenger; go2rtc optional relay | CLOSED | use only if reconnect/jitter/fan-out evidence justifies extra layer | deployment complexity |
-| D-009 | MQTT + Mosquitto bus for MK1 | CLOSED | lightweight pub/sub, QoS, self-hosted, comparable operational precedent | event delivery |
-| D-010 | YAMNet + ECHO head = benchmark A | CLOSED | official transfer-learning path and compact embeddings | benchmark |
-| D-011 | PANNs/Cnn14 = benchmark B | CLOSED | strong AudioSet-pretrained representation | benchmark |
-| D-012 | compact log-mel CNN = benchmark C | CLOSED | scientific control without large pretrained backbone | benchmark |
-| D-013 | AST/HTS-AT/PaSST/BEATs not mandatory in first benchmark | CLOSED (DEFERRED) | avoid expanding experiment before A/B/C evidence; retain as challengers | MK2/extended |
-| D-014 | target output is multi-label | CLOSED | concurrent acoustic events are plausible; polyphonic SED precedent | head/loss/metrics |
-| D-015 | no monolithic forced `OTHER` | CLOSED | use background, explicit hard negatives and abstention | data/decision layer |
-| D-016 | temporal Event Engine between inference and alerts | CLOSED | users need physical events, not overlapping-window scores | event lifecycle |
-| D-017 | per-class thresholds derived from validation | CLOSED | score distributions differ; no magic global threshold | calibration/test |
-| D-018 | continuous raw audio retention off by default | CLOSED | minimization; not needed by promise | privacy/storage |
-| D-019 | evidence DAG rather than blockchain | CLOSED | Git/hashes/manifests/CI satisfy provenance/invalidation needs | governance |
-| D-020 | code license | OPEN_OWNER_DECISION | Apache-2.0 preferred candidate; owner must explicitly choose | release only |
-| D-021 | exact camera/profile/codecs | EXTERNAL_GATE_OPEN | requires professor hardware/access | field branch |
-| D-022 | MK1 target classes v1 | CLOSED | `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL` | data/head/events |
-| D-023 | guaranteed distance | EXTERNAL_GATE_OPEN | cannot be known without device/site/SNR tests | field requirement |
-| D-024 | final SLO values | OPEN_EMPIRICAL | depend on MK1 measurements | MK2 design |
-| D-025 | common A/B/C benchmark protocol | CLOSED | same manifest/splits/hardware/calibration protocol | model selection |
-| D-026 | Redis Pub/Sub as alarm bus | CLOSED (REJECTED) | ephemeral Pub/Sub behavior mismatches desired disconnect/delivery reasoning | avoids wrong bus |
-| D-027 | MQTT QoS1 for confirmed events/alerts | CLOSED | at-least-once with explicit consumer idempotency | `event_id` required |
-| D-028 | PSDS/event metric secondary when strong labels exist | CLOSED | useful for polyphonic temporal evaluation but not replacement for operational metrics | evaluation |
-| D-029 | `VEHICLE_COLLISION` not in MK1 taxonomy | CLOSED (DEFERRED) | generic impact does not prove collision; requires specific corpus/definition | taxonomy |
-| D-030 | buffers/queues must be bounded | CLOSED | protects freshness/memory under overload | runtime |
-| D-031 | source state keyed by source_id + event_type | CLOSED | prevents cross-camera state leakage | Event Engine |
-| D-032 | field holdout untouched during model/threshold selection | CLOSED | domain validity | data/benchmark |
-| D-033 | asset-level provenance/license/hash | CLOSED | mixed licenses and reproducibility | data admission |
-| D-034 | live overload is observable and freshness-aware | CLOSED_FOR_ARCH | stale alerts are harmful; exact drop policy remains empirical | scheduler |
+| D-005 | RTSP primary camera ingest interface | CLOSED | ecosystem + FFmpeg/GStreamer support; actual camera external | adapters/deployment |
+| D-006 | ONVIF optional | CLOSED | explicit RTSP usable without discovery | discovery |
+| D-007 | FFmpeg baseline decoder | CLOSED | mature codec/RTSP support and simple PoC integration | MK1 ingest |
+| D-008 | GStreamer fallback; go2rtc optional relay | CLOSED | only add complexity when evidence justifies it | deployment |
+| D-009 | MQTT + Mosquitto bus for MK1 | CLOSED | lightweight QoS pub/sub and operational fit | event delivery |
+| D-010 | YAMNet + ECHO head = A | CLOSED | official transfer-learning path | benchmark |
+| D-011 | PANNs/Cnn14 = B | CLOSED | strong AudioSet representation | benchmark |
+| D-012 | compact log-mel CNN = C | CLOSED | scientific control | benchmark |
+| D-013 | transformers/SSL not mandatory in first benchmark | CLOSED (DEFERRED) | retain as challengers without exploding MK1 | extended/MK2 |
+| D-014 | target output multi-label | CLOSED | concurrent events/polyphonic SED | head/loss/metrics |
+| D-015 | no forced monolithic OTHER | CLOSED | background + hard negatives + abstention | data/decision layer |
+| D-016 | temporal Event Engine between model and alerts | CLOSED | window scores are not physical events | lifecycle |
+| D-017 | per-class thresholds from validation | CLOSED | score distributions differ | calibration |
+| D-018 | continuous raw audio retention off | CLOSED | minimization; not required by promise | privacy |
+| D-019 | evidence DAG, not blockchain | CLOSED | Git/hashes/manifests/CI are sufficient | governance |
+| D-020 | code license | OPEN_OWNER_DECISION | Apache-2.0 preferred candidate | release |
+| D-021 | exact camera/profile/codecs | EXTERNAL_GATE_OPEN | professor/hardware | field branch |
+| D-022 | MK1 taxonomy v1 | CLOSED | five observable targets | data/head/events |
+| D-023 | guaranteed distance | EXTERNAL_GATE_OPEN | device/site/SNR measurement | field requirement |
+| D-024 | final SLOs | OPEN_EMPIRICAL | require MK1 evidence | MK2 |
+| D-025 | common A/B/C protocol | CLOSED | same manifests/splits/hardware/calibration | model selection |
+| D-026 | Redis Pub/Sub as alarm bus | CLOSED (REJECTED) | ephemeral semantics not preferred for required delivery reasoning | delivery |
+| D-027 | MQTT QoS1 confirmed events/alerts | CLOSED | at-least-once + explicit idempotency | event_id |
+| D-028 | PSDS secondary with strong labels | CLOSED | temporal/polyphonic metric, not operational replacement | evaluation |
+| D-029 | vehicle collision label in MK1 | CLOSED (DEFERRED) | generic impact does not prove collision | taxonomy |
+| D-030 | queues/buffers bounded | CLOSED | prevents memory/latency spiral | runtime |
+| D-031 | Event Engine state keyed by source+event | CLOSED | prevents cross-source state leakage | runtime |
+| D-032 | field holdout untouched during selection | CLOSED | domain validity | benchmark |
+| D-033 | asset provenance/license/hash required | CLOSED | reproducibility + mixed license control | data admission |
+| D-034 | live overload observable/freshness-aware | CLOSED_FOR_ARCH | stale alerts are harmful; numeric policy empirical | scheduler |
 
-## 4. Empirical nodes, not architecture indecision
-
-The following remain open because the build/test phase must produce them:
+## 4. Empirical nodes
 
 ```text
 EMP-MODEL-001    model winner
-EMP-THRESH-001   numerical per-class thresholds
+EMP-THRESH-001   numerical thresholds
 EMP-CAP-001      supported N-source envelope
 EMP-DIST-001     distance/SNR envelope
-EMP-SLO-001      final service/quality objectives
+EMP-SLO-001      final SLOs
 ```
 
-They do not justify reopening upstream design unless their results show the architecture is infeasible.
+These are outputs of MK1/MK2 tests, not excuses to guess before build.
 
-## 5. Decision evidence rule
+## 5. Evidence rule
 
-A CLOSED decision must reference at least one of: project charter/owner constraint, primary source evidence, reproducible experiment, validated contract dependency or explicit trade-off. “Common practice” alone is not sufficient.
+A CLOSED decision must be supported by project authority, primary-source evidence, a reproducible experiment, validated dependency or an explicit trade-off. Popularity/common practice alone is insufficient.
 
-## 6. Alternatives and reversibility
+## 6. Reversibility
 
-Reversible choices such as FFmpeg vs GStreamer are deliberately abstracted behind contracts. Hard-to-reverse choices such as taxonomy semantics, source identity and event lifecycle receive stricter gates because they fan out into data, models and consumers.
+Reversible implementation choices are hidden behind contracts. Hard-to-reverse semantic choices such as taxonomy, source identity and event lifecycle receive stricter review because they fan out into data, models, APIs and consumers.
 
 ## 7. Invalidation examples
 
-Changing MK1 taxonomy invalidates label mappings, heads, manifests, benchmark comparability, thresholds and event-type consumers. Changing camera hardware does not invalidate the taxonomy but may invalidate field compatibility and distance evidence. Changing MQTT semantics can invalidate consumer delivery tests without invalidating acoustic model scores.
+Changing taxonomy invalidates label mappings, heads, manifests, benchmark comparability, thresholds and event consumers. Changing camera hardware may only invalidate field compatibility/distance claims. Changing MQTT semantics may invalidate delivery tests while leaving acoustic model evidence valid.
 
 ## 8. Maintenance
 
-Every new material decision receives a stable ID. Replaced decisions are not deleted; they remain historical and point to the successor/version that supersedes them.
+Every material new decision receives a stable ID. Superseded decisions remain historical and reference the new decision/version rather than being deleted.

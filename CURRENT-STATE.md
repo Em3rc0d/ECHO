@@ -1,50 +1,102 @@
 # Estado actual de ECHO
 
-**Fecha:** 2026-09-13
+**Fecha de corte:** 2026-09-13  
+**Documento:** estado operativo y de certificación  
+**Status:** `ACTIVE_SOURCE_OF_TRUTH`
 
-## Promise
+## 1. Promise
 
 > **Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.**
 
-## Certification state
+Esta promesa es inmutable dentro del proyecto. Toda arquitectura, contrato, integración o funcionalidad se evalúa en función de si contribuye a detectar o clasificar eventos acústicos mediante IA. Cámaras, RTSP, ONVIF, brokers, dashboards, bases de datos y alertas son infraestructura de soporte.
+
+## 2. Estado por milestone
 
 ```text
-MK0 research/design         = CERTIFIED
-MK1 DoR (offline/replay)    = CERTIFIED
-MK1 build                   = READY / NOT_STARTED
-MK1 real-camera branch      = EXTERNAL_GATE_OPEN
-MK1 overall                 = NOT_CERTIFIED (build/test pendiente)
-MK2 build                   = GATED
+MK0
+  brainstorming  = CERTIFIED
+  design         = CERTIFIED
+  arch           = CERTIFIED
+  plan           = CERTIFIED
+  build          = research-artifacts only
+  test           = CERTIFIED
+  milestone      = CERTIFIED
+
+MK1
+  brainstorming  = CLOSED_FOR_BUILD
+  design         = CLOSED_FOR_BUILD
+  arch           = CLOSED_FOR_BUILD
+  plan           = CLOSED_FOR_BUILD
+  build          = READY_NOT_STARTED
+  test           = NOT_STARTED
+  milestone      = NOT_CERTIFIED
+
+MK2
+  brainstorming  = SPECIFIED
+  design         = SPECIFIED
+  arch           = SPECIFIED
+  plan           = SPECIFIED
+  build          = GATED
+  test           = GATED
+  milestone      = GATED_BY_MK1
 ```
 
-## Decisiones técnicas cerradas para MK1
+## 3. Decisiones congeladas para MK1
 
-- multi-source contracts desde origen;
-- PoC físicamente unipunto permitida;
-- RTSP source abstraction;
-- ONVIF discovery/config opcional;
-- FFmpeg baseline, GStreamer fallback/challenger;
-- YAMNet A / PANNs Cnn14 B / custom log-mel CNN C;
-- multi-label probability contract;
-- targets v1: `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL`;
-- `BACKGROUND_NO_TARGET` + hard negatives + `UNKNOWN` decision state;
-- temporal Event Engine;
-- MQTT/Mosquitto;
-- QoS1 para confirmed events/alerts + idempotencia por `event_id`;
-- no retención de audio continuo por defecto;
-- evidence/certification DAG en Git/manifests/CI, no blockchain.
+`DECISION` ECHO nace lógicamente multi-source aunque la primera validación física pueda usar una sola cámara. Todas las unidades de audio, inferencia, estado y eventos llevan `source_id`.
 
-## OPEN / empirical / external
+`DECISION` La ruta primaria de cámara es RTSP; ONVIF se usa como discovery/config cuando esté disponible, sin convertirlo en dependencia obligatoria.
 
-Estos nodos no se pueden cerrar con más lectura de Internet:
+`DECISION` FFmpeg es el decoder/extractor baseline y GStreamer queda como alternativa cuando jitter/reconexión/transport requieran mayor control.
 
-- `EXT-CAMERA-001`: cámara real, audio, codec, stream, red y permisos;
-- modelo ganador: requiere benchmark;
-- thresholds: requiere validation;
-- distance/SNR envelope: requiere field test;
-- final SLOs: requiere MK1 measurement;
-- licencia jurídica del código propio ECHO: decisión explícita del propietario antes de release.
+`DECISION` El benchmark mínimo compara A = YAMNet + ECHO head, B = PANNs/Cnn14 + ECHO head y C = CNN compacta log-mel propia.
 
-## Qué significa la auditoría
+`DECISION` La taxonomía MK1 v1 usa `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL`; `BACKGROUND_NO_TARGET` es estado de datos y `UNKNOWN` es abstención del decision layer.
 
-La búsqueda quedó certificada **hasta el límite de lo demostrable documentalmente**. No se han inventado resultados de ML ni hardware. El siguiente nodo ejecutable es `MK1/build`, primero en replay/offline; después, cuando cierre `EXT-CAMERA-001`, se integra y valida la cámara real.
+`DECISION` La salida target es multi-label; un mismo intervalo puede contener más de un evento.
+
+`DECISION` El lifecycle es `RAW_INFERENCE -> CANDIDATE_EVENT -> CONFIRMED_EVENT -> ALERT/PUBSUB` y las ventanas de inferencia nunca se publican directamente como alarmas.
+
+`DECISION` MQTT/Mosquitto es el bus inicial; confirmed events/alerts usan QoS 1 con `event_id` idempotente porque QoS 1 permite duplicados.
+
+`DECISION` No se retiene audio continuo por defecto, no se incorpora ASR continuo ni identificación de hablantes.
+
+## 4. Nodos que siguen abiertos por evidencia empírica
+
+`EMP-MODEL-001` Modelo ganador: requiere ejecutar el benchmark común y comparar calidad, falsas alarmas, latencia y recursos.
+
+`EMP-THRESH-001` Thresholds: deben derivarse del validation set y streaming replay por clase.
+
+`EMP-DIST-001` Distancia/SNR: necesita ensayos reales por distancia, ruido, codec, orientación y dispositivo.
+
+`EMP-CAP-001` Capacidad multi-source: requiere load/soak sobre hardware objetivo; no se promete un número N antes de medir.
+
+`EMP-SLO-001` SLOs finales: se congelan después de obtener evidencia de MK1.
+
+## 5. Gates externos
+
+`EXT-CAMERA-001 = EXTERNAL_GATE_OPEN`. Falta marca/modelo, confirmación de audio, perfil RTSP, posible ONVIF, codec/sample-rate, red, credenciales autorizadas, permisos de prueba y condiciones de captura. Este gate no impide iniciar MK1 con dataset/replay, pero bloquea cualquier claim de campo.
+
+## 6. Qué ya NO necesita nueva investigación para habilitar MK1 build
+
+El límite semántico, contratos principales, taxonomía v1, estrategia de datos, benchmark, lifecycle, source abstraction, Pub/Sub, privacy baseline y test strategy están suficientemente cerrados. Reabrirlos requiere nueva evidencia material, no preferencia subjetiva.
+
+## 7. Siguiente transición autorizada
+
+```text
+CERT-MK1-READY-001
+        ↓
+MK1/build — offline/replay vertical
+        ↓
+MK1/test — metrics + error analysis
+        ↓
+real-camera branch cuando cierre EXT-CAMERA-001
+        ↓
+MK1 certification
+```
+
+`READY_NOT_STARTED` significa que la implementación está autorizada, no que sus resultados estén certificados.
+
+## 8. Invalidation
+
+Si cambia la promesa, taxonomía, event schema, source/audio contract, benchmark set, delivery semantics o privacy policy, revisar `governance/CERTIFICATION-DAG.md` y marcar downstream dependiente como `INVALIDATED` hasta revalidación.

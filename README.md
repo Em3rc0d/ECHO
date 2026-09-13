@@ -148,7 +148,7 @@ A public dataset is not treated as a proxy for production. ECHO maintains an unt
 
 ## 9. Pub/Sub semantics
 
-MK1 uses MQTT/Mosquitto as the initial event bus. Confirmed events and alerts use QoS 1 as a candidate/frozen build contract, which means consumers must tolerate duplicate delivery. `event_id` is the idempotency key. State and telemetry topics have separate retention/QoS semantics documented in the Pub/Sub artifacts.
+MK1 uses MQTT/Mosquitto as the initial event bus. Confirmed events and alerts use QoS 1 as a frozen build contract, which means consumers must tolerate duplicate delivery. `event_id` is the idempotency key. State and telemetry topics have separate retention/QoS semantics documented in the Pub/Sub artifacts.
 
 ## 10. Privacy and security baseline
 

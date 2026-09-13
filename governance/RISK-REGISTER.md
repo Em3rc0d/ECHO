@@ -46,34 +46,22 @@ A risk is not closed because a mitigation is written down. It is closed or reduc
 | R-31 | checkpoint supply-chain substitution | L/M | H | unexpected model/artifact | hash + official provenance | checksum/manifest |
 | R-32 | one noisy source starves others | M | H | unfair multi-source latency | per-source bounded queue + fair scheduling | adversarial load test |
 | R-33 | logging high-cardinality/raw media | M | M/H | resource/privacy issue | telemetry schema + sampling/redaction | observability review |
-| R-34 | test set used for tuning | M | Critical scientific | optimistic metrics | frozen test governance | run history audit |
-| R-35 | field holdout contaminates training | M | Critical scientific | invalid domain claim | manifest permissions/split immutability | manifest diff audit |
+| R-34 | test set used for tuning | M | Critical | optimistic metrics | frozen test governance | run history audit |
+| R-35 | field holdout contaminates training | M | Critical | invalid domain claim | manifest permissions/split immutability | manifest diff audit |
 
 ## 3. Risk clusters
 
-### Scientific validity
-
-R-05, R-08, R-09, R-24, R-28, R-34 and R-35 can produce a convincing demo with invalid scientific conclusions. These have stop-the-line priority.
-
-### Continuous operation
-
-R-04, R-06, R-12, R-13, R-14, R-22, R-27 and R-32 determine whether the system remains useful outside short clips.
-
-### Security/privacy
-
-R-16, R-20, R-21, R-31 and R-33 require controls independent of classifier accuracy.
+Scientific validity risks such as domain shift, leakage, label ambiguity, aggregate-only metrics, poor calibration and test contamination can create a convincing demo with invalid conclusions. Continuous-operation risks determine whether the system remains useful outside short clips. Security/privacy risks require controls independent of classifier quality.
 
 ## 4. Review cadence
 
-Review at: end of MK0 test; before MK1 build; after first benchmark; after streaming E2E; after camera integration; before MK1 certification; during MK2 capacity/security design; before release.
+Review at end of MK0 test, before MK1 build, after the first benchmark, after streaming E2E, after camera integration, before MK1 certification, during MK2 capacity/security design and before release.
 
 ## 5. Escalation rule
 
-Any new `Critical` risk that can invalidate architecture or scientific evidence blocks the dependent gate until it is mitigated, converted into a controlled experiment, or explicitly accepted with rationale.
+Any new `Critical` risk that can invalidate architecture or scientific evidence blocks the dependent gate until mitigated, converted into a controlled experiment, or explicitly accepted with rationale.
 
 ## 6. Evidence format
-
-Risk reduction records should include:
 
 ```yaml
 risk_id: R-xx
@@ -88,4 +76,4 @@ owner_or_gate: ...
 
 ## 7. Invalidation
 
-Model, taxonomy, deployment, source hardware, data policy, broker semantics or privacy changes may introduce new risks or increase previously reduced ones. The register is therefore versioned and never treated as a one-time checklist.
+Model, taxonomy, deployment, source hardware, data policy, broker semantics or privacy changes may introduce new risks or increase previously reduced ones. The register is versioned and never treated as a one-time checklist.

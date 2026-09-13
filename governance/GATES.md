@@ -1,85 +1,85 @@
 # Gates de ECHO
 
-## Regla global
+**Status:** `NORMATIVE`
 
-Ningún gate se certifica por intención. Requiere artefacto, evidencia verificable y dependencias válidas.
+## 1. Regla global
+
+Ningún gate pasa por intención, antigüedad del documento o cantidad de código. Cada transición requiere inputs válidos, criterios explícitos y evidencia. Los gates siguen el pipeline interno obligatorio:
 
 ```text
-MK0.BRAINSTORMING
-      ↓
-MK0.DESIGN
-      ↓
-MK0.ARCH
-      ↓
-MK0.PLAN
-      ↓
-MK0.BUILD (research tooling only, gated)
-      ↓
-MK0.TEST
-      ↓
-MK0 CERTIFIED
-      ↓
-MK1.BRAINSTORMING -> DESIGN -> ARCH -> PLAN -> BUILD -> TEST
-      ↓
-MK1 CERTIFIED
-      ↓
-MK2.BRAINSTORMING -> DESIGN -> ARCH -> PLAN -> BUILD -> TEST
-      ↓
-MK2 RELEASE CERTIFIED
+brainstorming -> design -> arch -> plan -> build -> test
 ```
 
-## Estados
+## 2. Estados
 
-- `OPEN`: faltan decisiones/evidencia.
-- `CANDIDATE`: propuesta plausible, todavía no certificada.
-- `CERTIFIED`: criterios y dependencias satisfechos.
-- `INVALIDATED`: cambió un input/dependencia.
-- `EXTERNAL_GATE_OPEN`: depende de humano, hardware, red o credencial externa.
+`OPEN`: falta evidencia o decisión.  
+`CANDIDATE`: propuesta razonable aún no certificada.  
+`CERTIFIED`: criterios satisfechos y upstream válido.  
+`INVALIDATED`: un input material cambió.  
+`EXTERNAL_GATE_OPEN`: depende de factor externo.  
+`READY_NOT_STARTED`: gate de entrada satisfecho, ejecución aún no iniciada.
 
-## Gate MK0 -> MK1
+## 3. Regla de dependencia
 
-Debe existir y estar versionado:
+```text
+input evidence
+   -> artifact
+      -> gate certificate
+         -> downstream artifact
+```
 
-- promesa/alcance IN/OUT;
-- source catalog;
-- matrices de proyectos/datasets/modelos;
-- arquitectura target y PoC;
-- contracts preliminares;
-- taxonomía candidata y negativos;
-- benchmark protocol;
-- risk register;
-- licensing registry;
-- external gates explícitos;
-- Definition of Ready MK1.
+Si un input cambia, no se borra el certificado histórico; su versión activa pasa a invalidada y los dependientes deben reevaluarse.
 
-## Gate MK1 build
+## 4. MK0 -> MK1
 
-Además de MK0 certificado:
+Requiere: promise/boundary, source catalog, related-project matrix, model/dataset landscape, PoC/target architecture, preliminary contracts, taxonomy, data policy, benchmark protocol, risk register, privacy/security policy, license registry y external gates.
 
-- clases MK1 congeladas;
-- cámara/simulador definido;
-- dataset manifest y splits definidos;
-- baseline/challengers fijados;
-- event lifecycle congelado;
-- Pub/Sub contract congelado;
-- test plan listo antes de implementar;
-- secretos fuera de Git;
-- criterios de aceptación marcados como TARGET/SLO/HYPOTHESIS según corresponda.
+Resultado actual: `CERT-MK0-013 = CERTIFIED`.
 
-## Gate MK1 -> MK2
+## 5. MK1 build gate
 
-Requiere evidencia real de:
+Requiere MK0 válido, DoR, test plan, source/audio/event contracts, taxonomía congelada, benchmark A/B/C, dataset manifest policy, event lifecycle, MQTT contract y secrets/observability strategy.
 
-- ingestión estable;
-- inferencia end-to-end;
-- event aggregation;
-- publicación Pub/Sub;
-- métricas offline + streaming;
-- error analysis;
-- distance/SNR tests cuando hardware esté disponible;
-- reconexión/failure behavior;
-- decisión del modelo ganador o reasoned deferral.
+Resultado actual para replay: `CERT-MK1-READY-001 = CERTIFIED`, `MK1/build = READY_NOT_STARTED`.
 
-## Gate MK2 release
+## 6. MK1 test/certification gate
 
-Requiere multipunto real o carga equivalente reproducible, observabilidad, rollback, versionado de modelo/config/schema, tests de resiliencia, trazabilidad de artefactos y DoD cumplida.
+Debe producir evidencia real de:
+
+```text
+dataset manifest + split audit
+benchmark results
+model selection
+threshold calibration
+streaming replay
+false alarms/source-hour
+misses + per-class metrics
+latency/resources
+Event Engine behavior
+Pub/Sub idempotency
+failure/reconnect behavior
+security/privacy checks
+error analysis
+```
+
+La rama de cámara real añade codec, RTSP jitter/reconnect, distance/SNR y field latency.
+
+## 7. MK1 -> MK2
+
+No basta con completar features. Deben estar congelados el modelo o reasoned deferral, operating envelope inicial, known failure modes, benchmark artifacts, schemas y migration path. MK2 recibe evidencia, no supuestos.
+
+## 8. MK2 release gate
+
+Requiere capacidad N certificada, load/soak, backpressure, resilience/chaos, observability, rollback, security, model governance, drift/regression, release reproducibility, SBOM/licensing y cierre de external gates necesarios para el deployment declarado.
+
+## 9. Regla anti-auto-certification
+
+Un documento que describe cómo debería funcionar una prueba no certifica que la prueba pasó. Protocolo y resultado son artefactos diferentes.
+
+## 10. Invalidation examples
+
+- cambiar taxonomy invalida mappings, heads, thresholds y model comparison;
+- cambiar preprocessing invalida benchmark comparable;
+- cambiar event schema puede invalidar consumers y replay evidence;
+- cambiar broker semantics invalida delivery tests;
+- cambiar camera hardware invalida field compatibility/capacity claims.

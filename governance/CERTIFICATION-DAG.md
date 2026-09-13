@@ -1,102 +1,104 @@
 # Certification / Evidence DAG
 
-## Objetivo
+**Status:** `ARCHITECTURAL_POLICY_CERTIFIED`
 
-Implementar la propiedad conceptual solicitada de “cada paso valida/certifica al anterior” sin introducir blockchain innecesaria.
+## 1. Objetivo
 
-La unidad de confianza es un **artefacto certificado** con inputs, outputs, versión, hash, provenance, criterios y evidencia.
+ECHO necesita que cada decisión pueda reconstruirse y que una modificación upstream invalide automáticamente aquello que dependía de ella. La propiedad buscada se parece a una cadena de certificación, pero no necesita blockchain ni consenso distribuido.
 
-## Modelo
+## 2. Unidad de confianza
+
+Cada nodo certificado representa un artefacto o claim con identidad, versión, inputs, outputs, criterios, evidence refs y hash. El commit Git conserva el estado histórico; manifests/CI podrán calcular hashes de archivos y artefactos externos.
+
+## 3. Estado del nodo
 
 ```text
-Evidence/Inputs
-    ↓
-[artifact A]
-    ↓ cert A
-[artifact B references cert A]
-    ↓ cert B
-[artifact C references cert B]
-    ↓ cert C
-...
+OPEN
+CANDIDATE
+CERTIFIED
+INVALIDATED
+EXTERNAL_GATE_OPEN
 ```
 
-Un certificado downstream solo es válido si todos sus ancestros están válidos.
+`CERTIFIED` siempre está acotado por scope. Por ejemplo, MK0 puede certificar el benchmark **protocol**, pero no el model winner que todavía no existe.
 
-## Manifest mínimo
+## 4. Manifest conceptual
 
 ```yaml
 schema_version: echo.cert.v1
 artifact_id: MK1-ARCH-001
 artifact_version: 1.0.0
 status: CERTIFIED
-stage: arch
-milestone: MK1
+scope: replay-build architecture
 inputs:
   - id: MK1-DESIGN-001
-    sha256: <sha256>
+    version: 1.0.0
+    sha256: ...
 outputs:
   - path: MK1/arch/ARCHITECTURE.md
-    sha256: <sha256>
-provenance:
-  git_commit: <sha>
-  generated_at_utc: <timestamp>
+    sha256: ...
 criteria:
-  - id: AC-01
+  - id: ARCH-BOUNDARIES
     result: PASS
+provenance:
+  git_commit: ...
+  generated_at_utc: ...
 evidence:
-  - id: EV-001
-    uri: <repo path or external source>
-previous_certificate_sha256: <sha256-or-null>
-certificate_sha256: <sha256>
+  - id: EV-RTSP-001
+    uri: ...
+invalidates_if:
+  - source_contract changes
+  - event_schema changes
+certificate_sha256: ...
 ```
 
-## Invalidation
-
-Si cambia `MK1-DESIGN-001`:
+## 5. Dependency graph
 
 ```text
-MK1-DESIGN-001 v2
-       ↓
-MK1-ARCH-001 v1 -> INVALIDATED
-       ↓
-MK1-PLAN-001 v1 -> INVALIDATED
-       ↓
-MK1-BUILD-*       -> INVALIDATED
-       ↓
-MK1-TEST-*        -> INVALIDATED
+Promise
+  -> problem boundary
+  -> data/model/source evidence
+  -> design contracts
+  -> architecture
+  -> plan/protocols
+  -> build artifacts
+  -> test evidence
+  -> milestone certificate
 ```
 
-No se borra el historial; se crea una nueva versión y se re-certifica el subgrafo afectado.
+Los quarries y mining-site proveen evidence nodes; las seis fases consumen y transforman esa evidencia.
 
-## Hash chain vs blockchain
+## 6. Invalidation propagation
 
-ECHO necesita:
+Si `taxonomy.v1` cambia a `taxonomy.v2`, se invalidan mappings, model heads, dataset manifests que dependan de labels, benchmark comparability, thresholds y event consumers que dependan de esos event types. No necesariamente se invalida RTSP ingest porque no depende de taxonomy.
 
-- integridad;
-- provenance;
-- reproducibilidad;
-- firmas/attestations;
-- invalidez transitiva.
+La invalidación es **selectiva por dependencia**, no “todo el repositorio vuelve a cero”.
 
-No necesita:
+## 7. Git vs blockchain
 
-- consenso distribuido;
-- minería;
-- token;
-- red peer-to-peer de validadores.
+Git ya provee content-addressed history para los archivos versionados. Para ECHO se necesitan además hashes de datasets/checkpoints/builds y attestations CI. No se necesitan minería, tokens, consenso BFT ni una red de validators.
 
-Herramientas candidatas para MK2: in-toto attestations, Sigstore/Cosign y SLSA provenance. La decisión de implementación queda OPEN hasta MK2/plan.
+## 8. Automatización futura
 
-## CI futura
+CI deberá:
 
-La CI deberá poder:
+```text
+validate schemas
+hash inputs/outputs
+verify upstream certificates
+reject INVALIDATED dependencies
+produce build provenance
+attach test result refs
+sign release/model/container artifacts
+update certification ledger
+```
 
-1. calcular hashes de inputs/outputs;
-2. validar JSON/YAML schemas;
-3. verificar que dependencias estén `CERTIFIED`;
-4. fallar si existe `INVALIDATED` upstream;
-5. generar provenance del build;
-6. firmar release/model/container;
-7. bloquear activación de un modelo sin manifest válido.
+Herramientas como in-toto/SLSA/Sigstore pueden evaluarse en MK2, pero la arquitectura no depende de ellas hasta decidirlo.
 
-No se implementa esta automatización mientras `build` permanezca gated.
+## 9. Human review boundary
+
+Claims científicos, licencias, privacy gates y cambios de scope pueden requerir revisión humana incluso si hashes/CI pasan. La automatización prueba integridad y reglas; no reemplaza juicio técnico.
+
+## 10. Invalidation of the DAG itself
+
+Reabrir este diseño si ECHO requiere múltiples repositorios no confiables, firmas externas obligatorias, compliance formal con un framework supply-chain específico o una organización distribuida que cambie el modelo de confianza.
