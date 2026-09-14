@@ -1,8 +1,10 @@
 # MK1 Dataset Materialization
 
-**Status:** `EXECUTION_PREPARED / FULL_MEDIA_REQUIRES_PERSISTENT_STORAGE`
+**Status:** `ACTIVE_BOUNDED_EXECUTION / CORPUS_CERTIFICATE_OPEN`  
+**Global invariant:** `ECHO-FREE-TIER-001`  
+**Profile target:** `release_safe`
 
-ECHO does not call a dataset “materialized” merely because a source URL or class count exists. A source is materialized only when its real bytes are present on controlled storage, publisher identity/checksums are verified where available, and every admitted asset passes the Data Foundry chain.
+ECHO does not call a dataset “materialized” merely because a source URL, metadata row or class count exists. Materialization credit requires real bytes to have been observed and bound to durable evidence. Corpus admission additionally requires the complete Data Foundry chain.
 
 ## Corpus objective
 
@@ -28,91 +30,168 @@ Exact-gap candidate discovery lives in:
 configs/data_foundry/gap_source_candidates.v1.json
 ```
 
+The closure runbook is:
+
+```text
+MK1/build/data-foundry/CORPUS-FOUNDRY-CLOSURE-PLAN.md
+```
+
 ## Source families
 
 ```text
 Publisher corpora
   SONYC-UST v2.3
-  FSD50K v1.0
-  SINGA:PURA v1.0a
-  ESC-50
-  UrbanSound8K 1.0
+  FSD50K v1.0 metadata / defensible per-asset path
+  SINGA:PURA v1.0a bounded path
+  ESC-50 research-only pinned path
+  UrbanSound8K research-only/manual-free-access path
 
 Gap-closing sources
-  FreesoundDataset exact Fire alarm / Tire squeal candidate pools
-  BigSoundBank CC0 exact alarm / tire-squeal recordings
-  MIVIA Road AED (research-only semantic candidate for tire-skidding -> reviewed TIRE_SQUEAL)
+  Freesound exact-category/current per-asset candidates
+  BigSoundBank CC0 exact candidates
+  Wikimedia-compatible public candidates when policy-compatible
+  other individually licensed public assets only after provenance review
 
 Augmentation/reference only
-  ShantyCam synthetic smoke alarms
+  synthetic alarm material where explicitly marked augmentation
   AudioSet ontology/annotations
 
 Field
   ECHO Field Dataset — untouched holdout after authorization
 ```
 
-No synthetic dataset receives independent-real-source credit. AudioSet raw media is not auto-ingested. Broad labels such as generic alarm, generic screeching or friction brake cannot silently close an exact target gap.
+No synthetic dataset receives independent-real-source credit. AudioSet raw media is not auto-ingested. Broad labels such as generic alarm, generic screeching or generic friction sounds cannot silently close an exact target gap.
 
-## Hosted CI vs full-media execution
+## Zero-cost execution boundary
 
-Ordinary hosted CI materializes only small publisher metadata, checksum evidence and exact-gap candidate identities. This is deliberate: the selected publisher archives are tens of gigabytes and full extraction needs persistent storage substantially larger than hosted-runner scratch space.
+This document inherits `governance/FREE-TIER-BOUNDARY.md`.
 
-`MK1 Dataset Metadata Materialization` therefore produces committed evidence snapshots under:
+The old monolithic assumption “download all corpora to a large persistent node” is **not** the ECHO default path. ECHO must remain under the project working-set ceiling and may not introduce a paid/self-hosted capacity dependency merely to close corpus execution.
+
+Canonical execution pattern:
 
 ```text
-MK1/mining-site/materialization/
+bounded shard / asset batch
+        ↓
+download within standard public runner boundary
+        ↓
+verify publisher/source evidence
+        ↓
+probe + SHA-256 + semantic/rights evidence
+        ↓
+emit compact durable manifest/report/checkpoint
+        ↓
+delete raw/extracted bytes
+        ↓
+next shard / asset batch
 ```
 
-Full-media execution requires a persistent self-hosted data node with at least **120 GiB free** before starting. The raw bytes stay outside Git. Only manifests, hashes, reports, reviews and certification evidence belong in the repository.
+No workflow may require a working set above the project ceiling defined by `ECHO-FREE-TIER-001`. Raw corpora are not GitHub artifacts or Git history.
 
-## Full-media stop line
+### Current source execution posture
 
-A source is not corpus-ready until:
+- `SONYC-UST`: shard-by-shard execution is the canonical path.
+- `SINGA:PURA`: bounded/selective extraction only.
+- `FSD50K`: full multipart audio materialization is not a mandatory release-safe dependency. Official metadata/ground truth may identify exact underlying Freesound assets, which are then handled under current per-asset rights/provenance.
+- `ESC-50`: research-only; only pinned/free execution that fits the boundary.
+- `UrbanSound8K`: research-only/manual free-access path; never purchase access.
+- public gap sources: incremental per-asset execution is preferred.
+- `ECHO Field Dataset`: external authorized capture; excluded from development coverage.
+
+If a source cannot be executed inside the boundary without weakening quality, the source/node remains `OPEN` or is replaced by another defensible zero-cost source. Payment is not a fallback.
+
+## Durable materialization evidence
+
+Repository evidence may include:
 
 ```text
-publisher bundle / upstream asset
+publisher/source snapshot
+source asset ID / origin URI
+publisher checksum when available
+local media SHA-256 observed during execution
+byte size
+audio probe metadata
+license/use evidence
+semantic label provenance
+recording-family/group evidence
+materialization status/reason codes
+```
+
+The raw audio may be transient. The evidence must be sufficient to reconstruct exactly what bytes/source identity received or did not receive corpus credit.
+
+## Corpus admission stop line
+
+A source asset is not corpus-ready until:
+
+```text
+publisher/source identity
         ↓
-real bytes acquired
+real bytes observed
         ↓
-publisher checksum where available
+publisher checksum where applicable
         ↓
-SHA-256 per local asset
+SHA-256 per local representation
         ↓
 audio probe
         ↓
 license/use decision
         ↓
-exact semantic mapping/manual review
+exact semantic mapping/manual review where required
         ↓
-recording/uploader/site grouping
+recording/uploader/site/family grouping
         ↓
-exact + near duplicate audit
+exact + canonical near-duplicate audit
         ↓
-deterministic group-aware split
+group-aware split
         ↓
 coverage/diversity/hard-negative gate
 ```
 
-The only accepted terminal condition for a release-safe corpus is:
+Materialization success is therefore necessary but never sufficient for corpus certification.
+
+## FIRE_ALARM and TIRE_SQUEAL
+
+These classes are no longer “unknown source” research problems. Public candidate pools have been identified and real public assets have begun to be materialized. They remain **rights + semantic + diversity + grouping + dedup + split + coverage** closure problems.
+
+Historical FreesoundDataset explorer counts are discovery evidence only. Additional public candidates from independently governed sources can improve source diversity only when the underlying recording is genuinely independent.
+
+Candidate or downloaded counts are never admitted counts.
+
+## Full closure predicate
+
+The accepted terminal condition for a release-safe corpus remains:
 
 ```text
-coverage-gate.json.status == PASS
-coverage-gate.json.gap_codes == []
-CERT-MK1-DF-CORPUS-001 == CERTIFIED
+rights / semantics / technical quality     PASS
+hard-negative requirements                 PASS
+exact duplicate leakage                    0
+near-duplicate leakage                     0
+recording-family cross-split leakage       0
+field holdout contamination                0
+coverage-gate.json.status                  PASS
+coverage-gate.json.gap_codes               []
+bundle validation                          PASS
+second clean freeze reproducibility        PASS
+ECHO-FREE-TIER-001                          PASS
+CERT-MK1-DF-CORPUS-001                     CERTIFIED
 ```
 
 Anything else remains open.
 
-## FIRE_ALARM and TIRE_SQUEAL
-
-These classes are no longer treated as “unknown source” problems. Public exact-label candidate pools have been identified. They remain **media-execution and review** problems:
-
-- FreesoundDataset exposes 87 Fire alarm candidates / 24 ground-truth examples and 23 Tire squeal candidates / 10 ground-truth examples.
-- Additional CC0 recordings are tracked from BigSoundBank to provide a second independently governed source family.
-- MIVIA Road AED contributes a research candidate pool for tire-skidding, but only event segments that audibly satisfy ECHO `TIRE_SQUEAL` may pass manual review.
-
-Candidate counts are never admitted counts.
-
 ## Operational next step
 
-`EXEC-DATA-001` now means running the versioned materializer on persistent storage, completing all manual/authorized source acquisitions, and feeding every resulting asset through the existing Foundry. No model benchmark may bypass this corpus certificate.
+`EXEC-DATA-001` now means **bounded corpus closure execution**, not monolithic dataset residency:
+
+```text
+consume existing materialization evidence
++ continue bounded zero-cost acquisition where gaps remain
++ build canonical global asset ledger
++ close per-asset rights/semantics
++ materialize hard negatives
++ harden cross-format near-duplicate screening
++ run global grouping/dedup/split/coverage
++ freeze twice and compare identities
++ certify only if every required gate passes
+```
+
+No model benchmark may bypass `CERT-MK1-DF-CORPUS-001`.
