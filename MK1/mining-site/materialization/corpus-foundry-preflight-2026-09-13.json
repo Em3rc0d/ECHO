@@ -1,0 +1,72 @@
+{
+  "schema_version": "echo.corpus-foundry-preflight.v1",
+  "evidence_id": "EMP-MK1-CORPUS-PREFLIGHT-001",
+  "date_local": "2026-09-13",
+  "status": "PASS",
+  "profile": "release_safe",
+  "baseline_commit": "388a0fa0687dcc08846b8636051796276f50148e",
+  "global_invariant": "ECHO-FREE-TIER-001",
+  "documentation_certificate": "CERT-DOC-004",
+  "foundry_toolchain_certificate": "CERT-MK1-DF-TOOLCHAIN-002",
+  "corpus_certificate": {
+    "id": "CERT-MK1-DF-CORPUS-001",
+    "status": "OPEN"
+  },
+  "checks": [
+    {
+      "name": "free_tier_boundary",
+      "workflow": "ECHO Free-Tier Boundary",
+      "run_id": 34802439863,
+      "result": "PASS",
+      "required": true
+    },
+    {
+      "name": "documentation_governance",
+      "workflow": "ECHO Documentation Governance",
+      "run_id": 34802439862,
+      "result": "PASS",
+      "required": true
+    },
+    {
+      "name": "data_foundry_ci",
+      "workflow": "MK1 Data Foundry CI",
+      "run_id": 34802440177,
+      "result": "PASS",
+      "matrix": {
+        "python_3_10": "PASS",
+        "python_3_11": "PASS",
+        "python_3_12": "PASS"
+      },
+      "required": true
+    },
+    {
+      "name": "dataset_source_certification",
+      "workflow": "MK1 Dataset Source Certification",
+      "run_id": 34802439934,
+      "result": "PASS",
+      "matrix": {
+        "python_3_10": "PASS",
+        "python_3_11": "PASS",
+        "python_3_12": "PASS"
+      },
+      "validated_surfaces": [
+        "dataset certification JSON syntax",
+        "release_safe and research_extended source policy",
+        "pinned official publisher evidence for FSD50K, SONYC-UST and SINGA:PURA",
+        "Data Foundry tests"
+      ],
+      "required": true
+    }
+  ],
+  "semantic_workflow_change": false,
+  "preflight_trigger_note": "The baseline commit only adds inert workflow comments so the four required preflight workflows execute against one identical HEAD; workflow behavior is unchanged.",
+  "closure_decision": {
+    "preflight_gate": "PASS",
+    "authorizes_next_node": "REFRESH_AND_CONSUME_DURABLE_SOURCE_MATERIALIZATION_EVIDENCE",
+    "does_not_authorize": [
+      "CERT-MK1-DF-CORPUS-001 promotion",
+      "model benchmark winner claim",
+      "production threshold tuning"
+    ]
+  }
+}
