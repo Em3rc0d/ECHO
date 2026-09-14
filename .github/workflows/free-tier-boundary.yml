@@ -1,3 +1,4 @@
+# Corpus Foundry Closure preflight trigger. Semantic workflow behavior unchanged.
 name: ECHO Free-Tier Boundary
 
 on:

@@ -1,3 +1,4 @@
+# Corpus Foundry Closure preflight trigger. Semantic workflow behavior unchanged.
 name: MK1 Dataset Source Certification
 
 on:

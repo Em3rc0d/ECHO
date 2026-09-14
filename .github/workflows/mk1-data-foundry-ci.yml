@@ -1,3 +1,4 @@
+# Corpus Foundry Closure preflight trigger. Semantic workflow behavior unchanged.
 name: MK1 Data Foundry CI
 
 on:
