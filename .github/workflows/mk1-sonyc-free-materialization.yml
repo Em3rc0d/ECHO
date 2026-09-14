@@ -29,15 +29,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Enforce zero-cost boundary and fingerprint runtime
+      - name: Enforce zero-cost boundary
+        env:
+          PYTHONPATH: src
+        run: python scripts/check_free_tier_boundary.py
+      - name: Install canonical decode runtime from Ubuntu repositories
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -n 1
+      - name: Validate fingerprint runtime
         env:
           PYTHONPATH: src
         run: |
-          python scripts/check_free_tier_boundary.py
-          ffmpeg -version | head -n 1
           python - <<'PY'
-          from echo.data_foundry.canonical_fingerprints import ALGORITHM
-          print('canonical fingerprint algorithm=', ALGORITHM)
+          from echo.data_foundry.canonical_fingerprints import FINGERPRINT_ALGORITHM
+          print('canonical fingerprint algorithm=', FINGERPRINT_ALGORITHM)
           PY
       - name: Materialize one verified SONYC shard
         env:
