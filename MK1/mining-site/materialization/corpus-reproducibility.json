@@ -1,0 +1,11 @@
+{
+  "freeze_1_identity": "bb3a1e2864d003fd3c49b6cb3a864f3bdf02011835a1cfa4de41fd48f9f67104",
+  "freeze_2_identity": "bb3a1e2864d003fd3c49b6cb3a864f3bdf02011835a1cfa4de41fd48f9f67104",
+  "gap_codes": [
+    "UPSTREAM_FREEZE_NOT_ELIGIBLE"
+  ],
+  "identity_match": true,
+  "note": "Workflow performs a second process-level deterministic rebuild before persistence; certificate review still binds identities to the exact evidence commit.",
+  "schema_version": "echo.corpus-reproducibility.v1",
+  "status": "FAIL"
+}

@@ -1,0 +1,20 @@
+{
+  "assignment_sha256": "b0685a657b5c641ea1f7b20c760c9cadfe653d39c26fa9cdb2920581805b075d",
+  "eligible_asset_count": 33,
+  "gap_codes": [
+    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
+    "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS"
+  ],
+  "ledger_sha256": "61bdd68fa96669c3191b930508d86484988a10fca48c96c611f684f9dad06a84",
+  "original_split_conflict_count": 0,
+  "original_split_conflict_sample": [],
+  "recording_family_assignment_count": 28,
+  "schema_version": "echo.split-integrity.v1",
+  "split_asset_counts": {
+    "test": 3,
+    "train": 28,
+    "validation": 2
+  },
+  "split_policy_sha256": "e1b05b687248b509f1f3c2868f5e16ade87987efb9e8db9d739c13c4b3ce34a2",
+  "status": "FAIL"
+}

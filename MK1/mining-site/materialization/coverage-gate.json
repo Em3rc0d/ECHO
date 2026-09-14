@@ -1,0 +1,744 @@
+{
+  "asset_quality": {
+    "assets_with_unknown_license": 0,
+    "assets_without_label_provenance": 0,
+    "assets_without_positive_duration": 0,
+    "assets_without_valid_audio_probe": 0,
+    "exact_duplicate_groups": 0,
+    "near_duplicate_groups": 0
+  },
+  "background": {
+    "asset_count": 0,
+    "independent_group_count": 0,
+    "source_count": 0,
+    "sources": []
+  },
+  "classes": {
+    "FIRE_ALARM": {
+      "asset_count": 9,
+      "clip_duration_seconds": 190.182749,
+      "hard_negatives": {
+        "asset_count": 0,
+        "independent_group_count": 0,
+        "source_count": 0,
+        "sources": []
+      },
+      "independent_group_count": 6,
+      "max_single_source_fraction": 0.555556,
+      "source_asset_counts": {
+        "BIGSOUNDBANK": 4,
+        "FREESOUND": 5
+      },
+      "source_count": 2,
+      "sources": [
+        "BIGSOUNDBANK",
+        "FREESOUND"
+      ],
+      "split_assets": {
+        "test": 0,
+        "train": 7,
+        "validation": 2
+      },
+      "split_groups": {
+        "test": 0,
+        "train": 4,
+        "validation": 2
+      }
+    },
+    "GLASS_SHATTER": {
+      "asset_count": 7,
+      "clip_duration_seconds": 111.722047,
+      "hard_negatives": {
+        "asset_count": 0,
+        "independent_group_count": 0,
+        "source_count": 0,
+        "sources": []
+      },
+      "independent_group_count": 5,
+      "max_single_source_fraction": 1.0,
+      "source_asset_counts": {
+        "BIGSOUNDBANK": 7
+      },
+      "source_count": 1,
+      "sources": [
+        "BIGSOUNDBANK"
+      ],
+      "split_assets": {
+        "test": 0,
+        "train": 7,
+        "validation": 0
+      },
+      "split_groups": {
+        "test": 0,
+        "train": 5,
+        "validation": 0
+      }
+    },
+    "SIREN": {
+      "asset_count": 4,
+      "clip_duration_seconds": 180.581333,
+      "hard_negatives": {
+        "asset_count": 0,
+        "independent_group_count": 0,
+        "source_count": 0,
+        "sources": []
+      },
+      "independent_group_count": 4,
+      "max_single_source_fraction": 1.0,
+      "source_asset_counts": {
+        "BIGSOUNDBANK": 4
+      },
+      "source_count": 1,
+      "sources": [
+        "BIGSOUNDBANK"
+      ],
+      "split_assets": {
+        "test": 1,
+        "train": 3,
+        "validation": 0
+      },
+      "split_groups": {
+        "test": 1,
+        "train": 3,
+        "validation": 0
+      }
+    },
+    "TIRE_SQUEAL": {
+      "asset_count": 11,
+      "clip_duration_seconds": 280.544098,
+      "hard_negatives": {
+        "asset_count": 0,
+        "independent_group_count": 0,
+        "source_count": 0,
+        "sources": []
+      },
+      "independent_group_count": 11,
+      "max_single_source_fraction": 0.545455,
+      "source_asset_counts": {
+        "BIGSOUNDBANK": 5,
+        "FREESOUND": 6
+      },
+      "source_count": 2,
+      "sources": [
+        "BIGSOUNDBANK",
+        "FREESOUND"
+      ],
+      "split_assets": {
+        "test": 2,
+        "train": 9,
+        "validation": 0
+      },
+      "split_groups": {
+        "test": 2,
+        "train": 9,
+        "validation": 0
+      }
+    },
+    "VEHICLE_HORN": {
+      "asset_count": 2,
+      "clip_duration_seconds": 7.703775,
+      "hard_negatives": {
+        "asset_count": 0,
+        "independent_group_count": 0,
+        "source_count": 0,
+        "sources": []
+      },
+      "independent_group_count": 2,
+      "max_single_source_fraction": 1.0,
+      "source_asset_counts": {
+        "BIGSOUNDBANK": 2
+      },
+      "source_count": 1,
+      "sources": [
+        "BIGSOUNDBANK"
+      ],
+      "split_assets": {
+        "test": 0,
+        "train": 2,
+        "validation": 0
+      },
+      "split_groups": {
+        "test": 0,
+        "train": 2,
+        "validation": 0
+      }
+    }
+  },
+  "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
+  "development_asset_count": 33,
+  "failures": [
+    {
+      "actual": 7,
+      "code": "GLASS_SHATTER_ASSETS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "ASSETS",
+      "required": 50
+    },
+    {
+      "actual": 5,
+      "code": "GLASS_SHATTER_GROUPS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "GROUPS",
+      "required": 25
+    },
+    {
+      "actual": 1,
+      "code": "GLASS_SHATTER_SOURCES_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 111.722047,
+      "code": "GLASS_SHATTER_DURATION_SECONDS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "DURATION_SECONDS",
+      "required": 180.0
+    },
+    {
+      "actual": 1.0,
+      "code": "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
+      "label": "GLASS_SHATTER",
+      "metric": "MAX_SINGLE_SOURCE_FRACTION",
+      "required_max": 0.8
+    },
+    {
+      "actual": 4,
+      "code": "SIREN_ASSETS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "ASSETS",
+      "required": 50
+    },
+    {
+      "actual": 4,
+      "code": "SIREN_GROUPS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "GROUPS",
+      "required": 25
+    },
+    {
+      "actual": 1,
+      "code": "SIREN_SOURCES_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 1.0,
+      "code": "SIREN_SOURCE_CONCENTRATION_TOO_HIGH",
+      "label": "SIREN",
+      "metric": "MAX_SINGLE_SOURCE_FRACTION",
+      "required_max": 0.8
+    },
+    {
+      "actual": 9,
+      "code": "FIRE_ALARM_ASSETS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "ASSETS",
+      "required": 50
+    },
+    {
+      "actual": 6,
+      "code": "FIRE_ALARM_GROUPS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "GROUPS",
+      "required": 25
+    },
+    {
+      "actual": 2,
+      "code": "VEHICLE_HORN_ASSETS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "ASSETS",
+      "required": 50
+    },
+    {
+      "actual": 2,
+      "code": "VEHICLE_HORN_GROUPS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "GROUPS",
+      "required": 25
+    },
+    {
+      "actual": 1,
+      "code": "VEHICLE_HORN_SOURCES_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 7.703775,
+      "code": "VEHICLE_HORN_DURATION_SECONDS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "DURATION_SECONDS",
+      "required": 180.0
+    },
+    {
+      "actual": 1.0,
+      "code": "VEHICLE_HORN_SOURCE_CONCENTRATION_TOO_HIGH",
+      "label": "VEHICLE_HORN",
+      "metric": "MAX_SINGLE_SOURCE_FRACTION",
+      "required_max": 0.8
+    },
+    {
+      "actual": 11,
+      "code": "TIRE_SQUEAL_ASSETS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "ASSETS",
+      "required": 50
+    },
+    {
+      "actual": 11,
+      "code": "TIRE_SQUEAL_GROUPS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "GROUPS",
+      "required": 25
+    },
+    {
+      "actual": 7,
+      "code": "GLASS_SHATTER_TRAIN_ASSETS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "ASSETS",
+      "required": 20,
+      "split": "train"
+    },
+    {
+      "actual": 5,
+      "code": "GLASS_SHATTER_TRAIN_GROUPS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "GROUPS",
+      "required": 10,
+      "split": "train"
+    },
+    {
+      "actual": 3,
+      "code": "SIREN_TRAIN_ASSETS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "ASSETS",
+      "required": 20,
+      "split": "train"
+    },
+    {
+      "actual": 3,
+      "code": "SIREN_TRAIN_GROUPS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "GROUPS",
+      "required": 10,
+      "split": "train"
+    },
+    {
+      "actual": 7,
+      "code": "FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "ASSETS",
+      "required": 20,
+      "split": "train"
+    },
+    {
+      "actual": 4,
+      "code": "FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "GROUPS",
+      "required": 10,
+      "split": "train"
+    },
+    {
+      "actual": 2,
+      "code": "VEHICLE_HORN_TRAIN_ASSETS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "ASSETS",
+      "required": 20,
+      "split": "train"
+    },
+    {
+      "actual": 2,
+      "code": "VEHICLE_HORN_TRAIN_GROUPS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "GROUPS",
+      "required": 10,
+      "split": "train"
+    },
+    {
+      "actual": 9,
+      "code": "TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "ASSETS",
+      "required": 20,
+      "split": "train"
+    },
+    {
+      "actual": 9,
+      "code": "TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "GROUPS",
+      "required": 10,
+      "split": "train"
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_VALIDATION_ASSETS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_VALIDATION_GROUPS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "SIREN_VALIDATION_ASSETS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "SIREN_VALIDATION_GROUPS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "validation"
+    },
+    {
+      "actual": 2,
+      "code": "FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "validation"
+    },
+    {
+      "actual": 2,
+      "code": "FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_VALIDATION_ASSETS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_VALIDATION_GROUPS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "validation"
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_TEST_ASSETS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "test"
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_TEST_GROUPS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "test"
+    },
+    {
+      "actual": 1,
+      "code": "SIREN_TEST_ASSETS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "test"
+    },
+    {
+      "actual": 1,
+      "code": "SIREN_TEST_GROUPS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "test"
+    },
+    {
+      "actual": 0,
+      "code": "FIRE_ALARM_TEST_ASSETS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "test"
+    },
+    {
+      "actual": 0,
+      "code": "FIRE_ALARM_TEST_GROUPS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "test"
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_TEST_ASSETS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "test"
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_TEST_GROUPS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "test"
+    },
+    {
+      "actual": 2,
+      "code": "TIRE_SQUEAL_TEST_ASSETS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "ASSETS",
+      "required": 5,
+      "split": "test"
+    },
+    {
+      "actual": 2,
+      "code": "TIRE_SQUEAL_TEST_GROUPS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "GROUPS",
+      "required": 3,
+      "split": "test"
+    },
+    {
+      "actual": 0,
+      "code": "BACKGROUND_ASSETS_BELOW_MIN",
+      "required": 200
+    },
+    {
+      "actual": 0,
+      "code": "BACKGROUND_GROUPS_BELOW_MIN",
+      "required": 50
+    },
+    {
+      "actual": 0,
+      "code": "BACKGROUND_SOURCES_BELOW_MIN",
+      "required": 3
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "HARD_NEGATIVE_ASSETS",
+      "required": 20
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "HARD_NEGATIVE_GROUPS",
+      "required": 10
+    },
+    {
+      "actual": 0,
+      "code": "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+      "label": "GLASS_SHATTER",
+      "metric": "HARD_NEGATIVE_SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 0,
+      "code": "SIREN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "HARD_NEGATIVE_ASSETS",
+      "required": 20
+    },
+    {
+      "actual": 0,
+      "code": "SIREN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "HARD_NEGATIVE_GROUPS",
+      "required": 10
+    },
+    {
+      "actual": 0,
+      "code": "SIREN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+      "label": "SIREN",
+      "metric": "HARD_NEGATIVE_SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 0,
+      "code": "FIRE_ALARM_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "HARD_NEGATIVE_ASSETS",
+      "required": 20
+    },
+    {
+      "actual": 0,
+      "code": "FIRE_ALARM_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "HARD_NEGATIVE_GROUPS",
+      "required": 10
+    },
+    {
+      "actual": 0,
+      "code": "FIRE_ALARM_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+      "label": "FIRE_ALARM",
+      "metric": "HARD_NEGATIVE_SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "HARD_NEGATIVE_ASSETS",
+      "required": 20
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "HARD_NEGATIVE_GROUPS",
+      "required": 10
+    },
+    {
+      "actual": 0,
+      "code": "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+      "label": "VEHICLE_HORN",
+      "metric": "HARD_NEGATIVE_SOURCES",
+      "required": 2
+    },
+    {
+      "actual": 0,
+      "code": "TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "HARD_NEGATIVE_ASSETS",
+      "required": 20
+    },
+    {
+      "actual": 0,
+      "code": "TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "HARD_NEGATIVE_GROUPS",
+      "required": 10
+    },
+    {
+      "actual": 0,
+      "code": "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+      "label": "TIRE_SQUEAL",
+      "metric": "HARD_NEGATIVE_SOURCES",
+      "required": 2
+    },
+    {
+      "code": "UPSTREAM_GLOBAL_DEDUP_NOT_PASS"
+    },
+    {
+      "code": "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS"
+    },
+    {
+      "code": "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS"
+    }
+  ],
+  "field_holdout_excluded_count": 0,
+  "gap_codes": [
+    "BACKGROUND_ASSETS_BELOW_MIN",
+    "BACKGROUND_GROUPS_BELOW_MIN",
+    "BACKGROUND_SOURCES_BELOW_MIN",
+    "FIRE_ALARM_ASSETS_BELOW_MIN",
+    "FIRE_ALARM_GROUPS_BELOW_MIN",
+    "FIRE_ALARM_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+    "FIRE_ALARM_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+    "FIRE_ALARM_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+    "FIRE_ALARM_TEST_ASSETS_BELOW_MIN",
+    "FIRE_ALARM_TEST_GROUPS_BELOW_MIN",
+    "FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN",
+    "FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN",
+    "FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN",
+    "FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN",
+    "GLASS_SHATTER_ASSETS_BELOW_MIN",
+    "GLASS_SHATTER_DURATION_SECONDS_BELOW_MIN",
+    "GLASS_SHATTER_GROUPS_BELOW_MIN",
+    "GLASS_SHATTER_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+    "GLASS_SHATTER_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+    "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+    "GLASS_SHATTER_SOURCES_BELOW_MIN",
+    "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
+    "GLASS_SHATTER_TEST_ASSETS_BELOW_MIN",
+    "GLASS_SHATTER_TEST_GROUPS_BELOW_MIN",
+    "GLASS_SHATTER_TRAIN_ASSETS_BELOW_MIN",
+    "GLASS_SHATTER_TRAIN_GROUPS_BELOW_MIN",
+    "GLASS_SHATTER_VALIDATION_ASSETS_BELOW_MIN",
+    "GLASS_SHATTER_VALIDATION_GROUPS_BELOW_MIN",
+    "SIREN_ASSETS_BELOW_MIN",
+    "SIREN_GROUPS_BELOW_MIN",
+    "SIREN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+    "SIREN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+    "SIREN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+    "SIREN_SOURCES_BELOW_MIN",
+    "SIREN_SOURCE_CONCENTRATION_TOO_HIGH",
+    "SIREN_TEST_ASSETS_BELOW_MIN",
+    "SIREN_TEST_GROUPS_BELOW_MIN",
+    "SIREN_TRAIN_ASSETS_BELOW_MIN",
+    "SIREN_TRAIN_GROUPS_BELOW_MIN",
+    "SIREN_VALIDATION_ASSETS_BELOW_MIN",
+    "SIREN_VALIDATION_GROUPS_BELOW_MIN",
+    "TIRE_SQUEAL_ASSETS_BELOW_MIN",
+    "TIRE_SQUEAL_GROUPS_BELOW_MIN",
+    "TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+    "TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+    "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+    "TIRE_SQUEAL_TEST_ASSETS_BELOW_MIN",
+    "TIRE_SQUEAL_TEST_GROUPS_BELOW_MIN",
+    "TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN",
+    "TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN",
+    "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
+    "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN",
+    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
+    "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS",
+    "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS",
+    "VEHICLE_HORN_ASSETS_BELOW_MIN",
+    "VEHICLE_HORN_DURATION_SECONDS_BELOW_MIN",
+    "VEHICLE_HORN_GROUPS_BELOW_MIN",
+    "VEHICLE_HORN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
+    "VEHICLE_HORN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
+    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
+    "VEHICLE_HORN_SOURCES_BELOW_MIN",
+    "VEHICLE_HORN_SOURCE_CONCENTRATION_TOO_HIGH",
+    "VEHICLE_HORN_TEST_ASSETS_BELOW_MIN",
+    "VEHICLE_HORN_TEST_GROUPS_BELOW_MIN",
+    "VEHICLE_HORN_TRAIN_ASSETS_BELOW_MIN",
+    "VEHICLE_HORN_TRAIN_GROUPS_BELOW_MIN",
+    "VEHICLE_HORN_VALIDATION_ASSETS_BELOW_MIN",
+    "VEHICLE_HORN_VALIDATION_GROUPS_BELOW_MIN"
+  ],
+  "ledger_sha256": "61bdd68fa96669c3191b930508d86484988a10fca48c96c611f684f9dad06a84",
+  "note": "Coverage uses only release-safe READY_FOR_GLOBAL_DEDUP rows and underlying acoustic source families, never dataset wrappers.",
+  "policy_id": "MK1-CORPUS-SOLIDITY-001",
+  "profile": "release_safe",
+  "schema_version": "echo.coverage-gate.v1",
+  "status": "FAIL"
+}
