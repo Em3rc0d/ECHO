@@ -3,7 +3,9 @@ name: MK1 Canonical Corpus Ledger
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ['MK1 Freesound CC0 Free Materialization']
+    workflows:
+      - 'MK1 Freesound Release Safe Materialization'
+      - 'MK1 Freesound CC0 Free Materialization'
     types: [completed]
   push:
     branches: [main]
@@ -39,7 +41,7 @@ concurrency:
 
 jobs:
   build-ledger:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
