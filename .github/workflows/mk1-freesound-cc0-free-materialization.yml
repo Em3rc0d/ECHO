@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/materialize_freesound_cc0_gap_assets.py'
+      - 'scripts/data_foundry/enrich_freesound_cc0_fingerprints.py'
+      - 'src/echo/data_foundry/canonical_fingerprints.py'
       - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
@@ -25,16 +27,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install free media probe
+      - name: Enforce ECHO-FREE-TIER-001
+        run: python scripts/check_free_tier_boundary.py
+      - name: Install free media probe and canonical decoder
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
           ffprobe -version | head -n 1
+          ffmpeg -version | head -n 1
       - name: Materialize live CC0 previews for exact-gap candidates
         env:
           PYTHONPATH: src
           ECHO_FREESOUND_CC0_ROOT: ${{ runner.temp }}/echo-freesound-cc0
         run: python scripts/materialize_freesound_cc0_gap_assets.py
+      - name: Bind codec-independent fingerprints while bytes exist
+        env:
+          PYTHONPATH: src
+          ECHO_FREESOUND_CC0_ROOT: ${{ runner.temp }}/echo-freesound-cc0
+        run: python scripts/data_foundry/enrich_freesound_cc0_fingerprints.py
       - name: Enforce scratch and evidence boundary
         env:
           ECHO_FREESOUND_CC0_ROOT: ${{ runner.temp }}/echo-freesound-cc0
@@ -47,11 +57,16 @@ jobs:
           scratch = sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) if root.exists() else 0
           limit = int(policy['github_actions']['project_max_working_set_bytes'])
           report = Path('MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json')
+          payload = json.loads(report.read_text())
+          fp = payload.get('canonical_fingerprint_enrichment') or {}
           print('scratch bytes=', scratch, 'working-set limit=', limit, 'report bytes=', report.stat().st_size)
+          print('fingerprint enrichment=', fp)
           if scratch > limit:
               raise SystemExit('Freesound CC0 scratch exceeded free-tier working-set boundary')
           if report.stat().st_size > 10_000_000:
               raise SystemExit('Freesound durable evidence report unexpectedly exceeds 10 MB')
+          if fp.get('status') != 'PASS' or fp.get('materialized_count') != fp.get('fingerprinted_count'):
+              raise SystemExit('Freesound CC0 fingerprint evidence incomplete')
           PY
       - name: Commit durable evidence only
         run: |
@@ -65,6 +80,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No Freesound CC0 evidence changes.'
           else
-            git commit -m 'evidence(mk1): materialize Freesound CC0 gap candidates [skip ci]'
+            git commit -m 'evidence(mk1): materialize fingerprinted Freesound CC0 gap candidates'
             git push origin HEAD:main
           fi
