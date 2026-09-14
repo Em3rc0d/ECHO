@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Materialize release-safe Freesound previews for exact ECHO candidates.
+"""Materialize release-safe Freesound previews for ECHO corpus candidates.
 
 Eligible rights are deliberately narrow: CC0/public-domain or attribution-only
-CC-BY. NC, Sampling+, ShareAlike and unknown terms fail closed. Candidate
-semantics come from FSD50K exact ground truth, FreesoundDataset exact-category
-evidence, or explicitly curated supplemental records. Real previews are hashed
-and probed but remain pre-admission evidence until global Foundry gates pass.
+CC-BY. NC, Sampling+, ShareAlike and unknown terms fail closed. Positive
+semantics come from exact FSD50K evidence or curated records. Hard-negative
+roles come only from MK1-HARD-NEGATIVE-MAPPING-001 as embedded in the pinned
+FSD50K candidate manifest. Every successful media observation is hashed,
+probed and codec-independently fingerprinted before raw bytes are discarded.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
+from echo.data_foundry.canonical_fingerprints import canonical_audio_fingerprint
 from echo.data_foundry.probe import probe_audio
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -34,6 +36,7 @@ BOUNDARY = ROOT / "configs/data_foundry/free_tier_boundary.v1.json"
 OUTPUT_ROOT = Path(os.environ.get("ECHO_FREESOUND_RELEASE_SAFE_ROOT", ROOT / ".materialized-freesound-release-safe"))
 REPORT = ROOT / "MK1/mining-site/materialization/freesound-release-safe-materialization.json"
 USER_AGENT = "ECHO-Data-Foundry/1.0 (+https://github.com/Em3rc0d/ECHO)"
+TARGETS = ("GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL")
 _LOCK = threading.Lock()
 _WRITTEN_BYTES = 0
 
@@ -101,17 +104,28 @@ def page_title(text: str) -> str | None:
     return re.sub(r"\s+", " ", html.unescape(match.group(1))).strip() if match else None
 
 
-def merge_candidate(result: dict[int, dict[str, Any]], sound_id: int, *, target: str, provenance: str, semantic_status: str, semantic: str | None = None, recording_family: str | None = None, fsd_labels: list[str] | None = None, fsd_split: str | None = None) -> None:
+def ensure_candidate(result: dict[int, dict[str, Any]], sound_id: int, *, fsd_labels: list[str] | None = None, fsd_split: str | None = None) -> dict[str, Any]:
     row = result.setdefault(sound_id, {
         "sound_id": sound_id,
         "targets": [],
+        "hard_negative_for": [],
         "provenance": [],
         "semantic_status_by_target": {},
         "semantic_by_target": {},
         "recording_family_by_target": {},
+        "hard_negative_source_labels_by_target": {},
         "fsd50k_labels": fsd_labels or [],
         "fsd50k_split": fsd_split,
     })
+    if fsd_labels:
+        row["fsd50k_labels"] = sorted(set(row.get("fsd50k_labels") or []) | set(fsd_labels))
+    if fsd_split:
+        row["fsd50k_split"] = fsd_split
+    return row
+
+
+def merge_candidate(result: dict[int, dict[str, Any]], sound_id: int, *, target: str, provenance: str, semantic_status: str, semantic: str | None = None, recording_family: str | None = None, fsd_labels: list[str] | None = None, fsd_split: str | None = None) -> None:
+    row = ensure_candidate(result, sound_id, fsd_labels=fsd_labels, fsd_split=fsd_split)
     row["targets"] = sorted(set(row["targets"]) | {target})
     row["provenance"] = sorted(set(row["provenance"]) | {provenance})
     row["semantic_status_by_target"][target] = semantic_status
@@ -119,26 +133,43 @@ def merge_candidate(result: dict[int, dict[str, Any]], sound_id: int, *, target:
         row["semantic_by_target"][target] = semantic
     if recording_family:
         row["recording_family_by_target"][target] = recording_family
-    if fsd_labels:
-        row["fsd50k_labels"] = sorted(set(row.get("fsd50k_labels") or []) | set(fsd_labels))
-    if fsd_split:
-        row["fsd50k_split"] = fsd_split
 
 
 def candidate_map() -> dict[int, dict[str, Any]]:
     result: dict[int, dict[str, Any]] = {}
     if FSD.is_file():
         payload = json.loads(FSD.read_text(encoding="utf-8"))
-        for row in payload.get("candidates", []):
-            sid = int(row["sound_id"])
-            for target in row.get("targets", []):
+        for source_row in payload.get("candidates", []):
+            sid = int(source_row["sound_id"])
+            row = ensure_candidate(
+                result,
+                sid,
+                fsd_labels=list(source_row.get("fsd50k_labels") or []),
+                fsd_split=source_row.get("fsd50k_split"),
+            )
+            for target in source_row.get("targets", []):
                 merge_candidate(
                     result, sid, target=str(target),
                     provenance="FSD50K_v1.0_exact_ground_truth",
                     semantic_status="EXACT_FSD50K_GROUND_TRUTH",
-                    fsd_labels=list(row.get("fsd50k_labels") or []),
-                    fsd_split=row.get("fsd50k_split"),
+                    fsd_labels=list(source_row.get("fsd50k_labels") or []),
+                    fsd_split=source_row.get("fsd50k_split"),
                 )
+            hard_negative_for = {
+                str(value) for value in source_row.get("hard_negative_for") or []
+                if str(value) in TARGETS
+            }
+            # Positive precedence is re-enforced here, even though the FSD
+            # extractor already guarantees it.
+            hard_negative_for -= set(row.get("targets") or [])
+            row["hard_negative_for"] = sorted(set(row.get("hard_negative_for") or []) | hard_negative_for)
+            for target in hard_negative_for:
+                source_labels = (source_row.get("hard_negative_source_labels_by_target") or {}).get(target) or []
+                row["hard_negative_source_labels_by_target"][target] = sorted(
+                    set(row["hard_negative_source_labels_by_target"].get(target) or []) | {str(v) for v in source_labels}
+                )
+            if hard_negative_for:
+                row["provenance"] = sorted(set(row["provenance"]) | {"FSD50K_v1.0_hard_negative_mapping_001"})
 
     discovery = json.loads(DISCOVERY.read_text(encoding="utf-8"))
     for target, cfg in discovery.get("targets", {}).items():
@@ -152,12 +183,12 @@ def candidate_map() -> dict[int, dict[str, Any]]:
 
     supplemental = json.loads(SUPPLEMENTAL.read_text(encoding="utf-8"))
     for target, rows in supplemental.get("targets", {}).items():
-        for row in rows:
+        for supplemental_row in rows:
             merge_candidate(
-                result, int(row["sound_id"]), target=str(target),
+                result, int(supplemental_row["sound_id"]), target=str(target),
                 provenance="ECHO_curated_supplemental",
-                semantic_status=("EXACT_CURATED" if str(row.get("semantic")) in {"fire_alarm", "tire_squeal"} else "REVIEW_REQUIRED"),
-                semantic=row.get("semantic"), recording_family=row.get("recording_family"),
+                semantic_status=("EXACT_CURATED" if str(supplemental_row.get("semantic")) in {"fire_alarm", "tire_squeal"} else "REVIEW_REQUIRED"),
+                semantic=supplemental_row.get("semantic"), recording_family=supplemental_row.get("recording_family"),
             )
     return result
 
@@ -206,6 +237,7 @@ def materialize_one(candidate: dict[str, Any], limit: int) -> dict[str, Any]:
                 path.unlink(missing_ok=True)
                 last_error = f"AUDIO_PROBE_FAILED:{probe.reason}"
                 continue
+            fingerprint = canonical_audio_fingerprint(path)
             return {
                 **base,
                 "status": "RELEASE_SAFE_REAL_PREVIEW_MATERIALIZED",
@@ -216,6 +248,7 @@ def materialize_one(candidate: dict[str, Any], limit: int) -> dict[str, Any]:
                 "content_type": content_type,
                 "local_relpath": path.name,
                 "audio_probe": probe.to_dict(),
+                "canonical_fingerprint": fingerprint,
             }
         except Exception as exc:
             last_error = f"{type(exc).__name__}:{exc}"
@@ -239,34 +272,38 @@ def main() -> int:
 
     materialized = [row for row in rows if row.get("status") == "RELEASE_SAFE_REAL_PREVIEW_MATERIALIZED"]
     target_summary = {}
-    for target in ("GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"):
+    for target in TARGETS:
         all_target = [row for row in rows if target in (row.get("targets") or [])]
         target_media = [row for row in materialized if target in (row.get("targets") or [])]
         exact_fsd = [row for row in target_media if row.get("semantic_status_by_target", {}).get(target) == "EXACT_FSD50K_GROUND_TRUTH"]
         exact_curated = [row for row in target_media if row.get("semantic_status_by_target", {}).get(target) == "EXACT_CURATED"]
+        hn_media = [row for row in materialized if target in (row.get("hard_negative_for") or [])]
         target_summary[target] = {
             "candidate_count": len(all_target),
             "release_safe_real_preview_count": len(target_media),
             "exact_fsd50k_ground_truth_real_preview_count": len(exact_fsd),
             "exact_curated_real_preview_count": len(exact_curated),
+            "hard_negative_release_safe_real_preview_count": len(hn_media),
             "materialized_duration_seconds": round(sum(float((row.get("audio_probe") or {}).get("duration_seconds") or 0.0) for row in target_media), 6),
+            "hard_negative_duration_seconds": round(sum(float((row.get("audio_probe") or {}).get("duration_seconds") or 0.0) for row in hn_media), 6),
             "license_counts": {license_id: sum(1 for row in target_media if row.get("license_id") == license_id) for license_id in sorted({str(row.get("license_id")) for row in target_media})},
         }
 
     payload = {
-        "schema_version": "echo.freesound-release-safe-materialization.v1",
+        "schema_version": "echo.freesound-release-safe-materialization.v2",
         "status": "PASS" if materialized else "FAIL_NO_RELEASE_SAFE_MEDIA",
         "candidate_count": len(rows),
         "materialized_count": len(materialized),
+        "fingerprinted_count": sum(1 for row in materialized if row.get("canonical_fingerprint")),
         "materialized_bytes": sum(int(row.get("size_bytes") or 0) for row in materialized),
         "working_set_limit_bytes": limit,
         "targets": target_summary,
         "assets": sorted(rows, key=lambda row: int(row.get("sound_id", 0))),
-        "certification_boundary": "Current Freesound page rights and real public preview bytes were verified. Exact FSD50K ground-truth candidates have strong label provenance; category/supplemental candidates retain their explicit review status. Final admission, uploader/recording grouping, dedup, split and corpus coverage remain Foundry responsibilities.",
+        "certification_boundary": "Current Freesound page rights and real public preview bytes were verified, probed and canonical-fingerprinted. Positive and hard-negative roles retain explicit FSD50K/curated provenance. Final admission, recording-family review, global near-duplicate audit, split and corpus coverage remain Foundry responsibilities.",
     }
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps({"status": payload["status"], "candidate_count": len(rows), "materialized_count": len(materialized), "targets": target_summary}, sort_keys=True))
+    print(json.dumps({"status": payload["status"], "candidate_count": len(rows), "materialized_count": len(materialized), "fingerprinted_count": payload["fingerprinted_count"], "targets": target_summary}, sort_keys=True))
     return 0 if materialized else 2
 
 
