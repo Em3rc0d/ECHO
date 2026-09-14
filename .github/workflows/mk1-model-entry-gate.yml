@@ -1,0 +1,23 @@
+name: MK1 Model Entry Gate
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  require-certified-corpus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce ECHO-FREE-TIER-001
+        run: python scripts/check_free_tier_boundary.py
+      - name: Require current certified corpus before model work
+        env:
+          PYTHONPATH: src
+        run: python scripts/data_foundry/build_corpus_closure_readiness.py --require-modeling-ready

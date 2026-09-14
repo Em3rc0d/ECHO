@@ -8,18 +8,26 @@ on:
       - 'tests/data_foundry/**'
       - 'configs/data_foundry/**'
       - 'schemas/data_foundry/**'
+      - 'scripts/data_foundry/**'
+      - 'scripts/check_modeling_gate_wiring.py'
       - 'MK1/build/data-foundry/**'
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
+      - '.github/workflows/mk1-corpus-readiness.yml'
+      - '.github/workflows/mk1-model-entry-gate.yml'
   pull_request:
     paths:
       - 'src/echo/data_foundry/**'
       - 'tests/data_foundry/**'
       - 'configs/data_foundry/**'
       - 'schemas/data_foundry/**'
+      - 'scripts/data_foundry/**'
+      - 'scripts/check_modeling_gate_wiring.py'
       - 'MK1/build/data-foundry/**'
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
+      - '.github/workflows/mk1-corpus-readiness.yml'
+      - '.github/workflows/mk1-model-entry-gate.yml'
 
 permissions:
   contents: read
@@ -36,7 +44,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile source and tests
-        run: python -m compileall -q src tests
+        run: python -m compileall -q src tests scripts/data_foundry
       - name: Validate registries, policies and schemas
         run: |
           python -m json.tool configs/data_foundry/source_registry.v1.json >/dev/null
@@ -59,6 +67,7 @@ jobs:
           python -m json.tool schemas/data_foundry/split-manifest.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/coverage-policy.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/corpus-closure-readiness.schema.json >/dev/null
       - name: Validate Foundry source registry
         env:
           PYTHONPATH: src
@@ -83,6 +92,14 @@ jobs:
           python -m echo.data_foundry.cli acquisition-plan fsd50k-1.0 --stage metadata >/dev/null
           python -m echo.data_foundry.cli acquisition-plan sonyc-ust-v2 --stage metadata >/dev/null
           python -m echo.data_foundry.cli acquisition-plan singapura-v1.0a --stage metadata >/dev/null
+      - name: Corpus closure readiness smoke test
+        env:
+          PYTHONPATH: src
+        run: |
+          python scripts/data_foundry/build_corpus_closure_readiness.py --output /tmp/corpus-closure-readiness.json
+          python -m json.tool /tmp/corpus-closure-readiness.json >/dev/null
+      - name: Validate model-entry guard wiring
+        run: python scripts/check_modeling_gate_wiring.py
       - name: Run Foundry unit and synthetic E2E tests
         env:
           PYTHONPATH: src

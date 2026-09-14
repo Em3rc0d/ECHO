@@ -1,0 +1,137 @@
+{
+  "$id": "https://github.com/Em3rc0d/ECHO/schemas/data_foundry/corpus-closure-readiness.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "READY"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "corpus_certificate": {
+            "properties": {
+              "status": {
+                "const": "CERTIFIED"
+              }
+            }
+          },
+          "gap_codes": {
+            "maxItems": 0
+          },
+          "modeling_allowed": {
+            "const": true
+          },
+          "next_authorized_stage": {
+            "const": "BENCHMARK_A_B_C"
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "closure_evidence_nodes": {
+      "type": "object"
+    },
+    "corpus_certificate": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "const": "CERT-MK1-DF-CORPUS-001"
+        },
+        "status": {
+          "enum": [
+            "OPEN",
+            "CANDIDATE",
+            "CERTIFIED",
+            "INVALIDATED"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "status"
+      ],
+      "type": "object"
+    },
+    "eligible_for_certificate_review": {
+      "type": "boolean"
+    },
+    "evidence_identity_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "gap_codes": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "ledger_blocking_reason_counts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "modeling_allowed": {
+      "type": "boolean"
+    },
+    "next_authorized_stage": {
+      "enum": [
+        "CORPUS_FOUNDRY_CLOSURE",
+        "BENCHMARK_A_B_C"
+      ]
+    },
+    "profile": {
+      "const": "release_safe"
+    },
+    "readiness_id": {
+      "const": "EMP-MK1-CORPUS-READINESS-001"
+    },
+    "release_law": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "echo.corpus-closure-readiness.v1"
+    },
+    "status": {
+      "enum": [
+        "BLOCKED",
+        "READY"
+      ]
+    },
+    "target_readiness": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "readiness_id",
+    "profile",
+    "status",
+    "modeling_allowed",
+    "eligible_for_certificate_review",
+    "release_law",
+    "corpus_certificate",
+    "evidence_identity_sha256",
+    "inputs",
+    "target_readiness",
+    "ledger_blocking_reason_counts",
+    "closure_evidence_nodes",
+    "gap_codes",
+    "next_authorized_stage"
+  ],
+  "title": "ECHO MK1 Corpus Closure Readiness",
+  "type": "object"
+}
