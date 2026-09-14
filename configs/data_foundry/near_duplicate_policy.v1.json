@@ -1,0 +1,36 @@
+{
+  "schema_version": "echo.near-duplicate-policy.v1",
+  "policy_id": "MK1-NEAR-DUP-001",
+  "status": "CANDIDATE_PENDING_CI_FIXTURE_GATE",
+  "canonical_decode": {
+    "backend": "ffmpeg-local",
+    "audio_stream": "first",
+    "channels": 1,
+    "sample_rate_hz": 16000,
+    "sample_format": "s16le",
+    "persist_decoded_audio": false
+  },
+  "fingerprint": {
+    "algorithm": "normalized-rms-envelope-v1",
+    "bins": 128,
+    "levels": 255
+  },
+  "comparison": {
+    "metric": "mean-absolute-quantized-distance-normalized",
+    "candidate_max_distance": 0.02,
+    "automatic_merge": false,
+    "action": "FLAG_AND_GROUP_OR_REVIEW"
+  },
+  "fixture_gate": {
+    "expected_duplicates": [
+      "lossy_mp3_reencode",
+      "gain_scaled_copy",
+      "sample_rate_and_channel_conversion"
+    ],
+    "expected_independent": [
+      "different_frequency_and_temporal_envelope"
+    ],
+    "pass_rule": "all transformed-copy fixtures <= candidate_max_distance AND all known-independent fixtures > candidate_max_distance"
+  },
+  "certification_boundary": "This policy is a leakage-screening mechanism, not acoustic identity truth. Exact SHA-256 remains byte identity. Candidate near-duplicates are conservatively grouped/reviewed before protected split assignment."
+}
