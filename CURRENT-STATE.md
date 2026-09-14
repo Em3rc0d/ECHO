@@ -2,7 +2,8 @@
 
 **Fecha de corte:** 2026-09-13  
 **Documento:** estado operativo y de certificación  
-**Status:** `ACTIVE_SOURCE_OF_TRUTH`
+**Status:** `ACTIVE_SOURCE_OF_TRUTH`  
+**Global execution invariant:** `ECHO-FREE-TIER-001`
 
 ## 1. Promise
 
@@ -10,7 +11,21 @@
 
 Esta promesa es inmutable dentro del proyecto. Toda arquitectura, contrato, integración o funcionalidad se evalúa en función de si contribuye a detectar o clasificar eventos acústicos mediante IA. Cámaras, RTSP, ONVIF, brokers, dashboards, bases de datos y alertas son infraestructura de soporte.
 
-## 2. Estado por milestone
+## 2. Principio de desarrollo
+
+ECHO es documentation-first y evidence-first:
+
+```text
+brainstorming -> design -> arch -> plan -> build -> test
+```
+
+con `mining-site/` y `quarries/` como capas de investigación/evidencia.
+
+Un nodo no se certifica porque “parece terminado”. Debe tener documentación coherente, criterios de aceptación previos, implementación/evidencia cuando aplique, trazabilidad de inputs/outputs e invalidation rules.
+
+Todos los MK heredan `ECHO-FREE-TIER-001`: $0 required path, sin overages, servicios/APIs/storage/GPU/runners pagados y sin degradar los gates para caber gratis.
+
+## 3. Estado por milestone
 
 ```text
 MK0
@@ -28,10 +43,10 @@ MK1
   arch           = CLOSED_FOR_BUILD
   plan           = CLOSED_FOR_BUILD
   build          = IN_PROGRESS
-    data_foundry_spec        = CERTIFIED
-    data_foundry_toolchain   = CERTIFIED
-    data_corpus_execution    = OPEN_EXTERNAL_MEDIA_EXECUTION
-    replay_audio_vertical    = BLOCKED_BY_CERTIFIED_CORPUS
+    data_foundry_spec             = CERTIFIED
+    data_foundry_toolchain        = CERTIFIED_CURRENT_BASELINE
+    corpus_foundry_closure        = IN_PROGRESS
+    replay_audio_vertical         = BLOCKED_BY_CERTIFIED_CORPUS
   test           = DATA_FOUNDRY_TOOLCHAIN_PASS / FULL_MK1_PENDING
   milestone      = NOT_CERTIFIED
 
@@ -45,113 +60,170 @@ MK2
   milestone      = GATED_BY_MK1
 ```
 
-## 3. Data Foundry — ingeniería cerrada hasta ejecución con media real
+## 4. Data Foundry certification state
 
-La transición `READY_NOT_STARTED -> IN_PROGRESS` ya ocurrió. El Data Foundry constituye el primer build real de MK1 y ahora tiene dos certificados distintos:
-
-- `CERT-MK1-DF-SPEC-001 = CERTIFIED`: arquitectura, contratos, políticas y foundation.
-- `CERT-MK1-DF-TOOLCHAIN-001 = CERTIFIED`: cadena ejecutable completa desde adquisición hasta handoff de benchmark.
-
-### Cadena implementada
+Current certificates:
 
 ```text
-source/acquisition registry
-        ↓
-publisher checksum verification
-        ↓
-source-specific metadata intake
-        ↓
-RawAssetCandidate JSONL
-        ↓
-technical audio probe + SHA-256
-        ↓
-license/use admission
-        ↓
-semantic mapping + manual review
-        ↓
-quality/quarantine
-        ↓
-group + exact/perceptual duplicate + label-conflict audit
-        ↓
-protected split / field holdout
-        ↓
-frozen asset/split/report bundle
-        ↓
-dataset manifest identities
-        ↓
-validated benchmark-facing split reader
+CERT-MK1-DF-SPEC-001       = CERTIFIED
+CERT-MK1-DF-TOOLCHAIN-001  = historical / superseded for current baseline
+CERT-MK1-DF-TOOLCHAIN-002  = CERTIFIED
+CERT-MK1-DF-CORPUS-001     = OPEN
 ```
 
-### Toolchain verification
+`CERT-MK1-DF-TOOLCHAIN-002` binds the current engineering baseline `be75a4323ec67f7c9528cbdbf6a06a8524494501` to GitHub Actions run `34800084225`. The matrix passed Python 3.10/3.11/3.12; the Python 3.11 job ran **67 tests** successfully.
 
-Certified engineering baseline: `2c4d4c2aae3e13de84680f65a79d5bb69301e18c`.
+This certifies the executable Foundry foundation, not the final real corpus.
 
-GitHub Actions run `34742947903` completed `success` on:
+## 5. Corpus Foundry Closure — active critical path
+
+Deep research after the earlier toolchain certification exposed final-corpus requirements that must remain visible. Therefore it is no longer correct to describe DF-G0..DF-G8 as having no remaining implementation/integration work.
+
+The authoritative closure runbook is:
 
 ```text
-Python 3.10 ✅
-Python 3.11 ✅
-Python 3.12 ✅
+MK1/build/data-foundry/CORPUS-FOUNDRY-CLOSURE-PLAN.md
 ```
 
-The Python 3.11 job ran **42 tests** and ended `OK`. Coverage includes acquisition, source adapters, rights admission, semantic mapping/review, technical audio probe, SHA-256/manifests, exact/perceptual duplicate guards, exact-byte label conflicts, deterministic splits, corrupt-audio quarantine and synthetic admission→freeze→benchmark-handoff E2E.
-
-Two earlier CI runs failed because synthetic fixtures correctly triggered the near-duplicate guard. The gate was not disabled; test evidence was corrected and the complete matrix was rerun successfully. This is an intentional stop-the-line success, not hidden history.
-
-## 4. What remains for the Data Foundry
-
-There is **no remaining hidden Foundry implementation point** in DF-G0..DF-G8. The remaining node is execution against actual external source media:
+The remaining internal closure nodes are:
 
 ```text
-EXEC-DATA-001
-  controlled storage + selected profile
-        ↓
-acquire/verify real releases
-        ↓
-run intake/admission/review/probe/dedup/split/freeze
-        ↓
-EMP-DATASET-001
-        ↓
-EMP-DATA-QUALITY-001
-        ↓
-CERT-MK1-DF-CORPUS-001
+1. canonical global asset ledger
+2. per-asset rights + semantic closure for admitted release_safe assets
+3. bounded hard-negative materialization + admission evidence
+4. cross-format/transcode-aware near-duplicate hardening
+5. near-duplicate positive/negative fixture validation
+6. global recording-family/source-independence audit
+7. group-aware split feasibility against all class/split floors
+8. coverage/diversity/hard-negative PASS on real admitted corpus
+9. frozen bundle validation
+10. second clean freeze + identity comparison
+11. final corpus certificate emission only if every ancestor gate passes
 ```
 
-This is intentionally not marked complete without the real dataset bytes. Certifying exact counts, durations, diversity, duplicates or coverage before acquisition would be fabricated evidence.
+These are real closure requirements, not optional enhancements.
 
-### Known sourcing gaps carried forward
+## 6. Dataset materialization state
 
-`FIRE_ALARM` and `TIRE_SQUEAL` still require defensible direct real assets for a release-safe corpus if the real Foundry execution confirms the current research landscape. Generic `Alarm`, `Screech`, `Friction brake` or similarly broad labels will not be coerced into those targets.
+Materialization is executed under the global zero-cost boundary, not through a monolithic paid/persistent data lake.
 
-## 5. Foundry outputs and benchmark boundary
-
-A real freeze must produce:
+Canonical pattern:
 
 ```text
-asset-manifest.jsonl
-split-manifest.json
-dataset-manifest.json
-coverage-report.json
-dedup-report.json
-quarantine-report.json
+bounded shard / public asset batch
+  -> verify
+  -> observe real bytes
+  -> hash + probe + provenance
+  -> emit compact evidence
+  -> delete raw bytes
+  -> next batch
 ```
 
-Benchmark code must validate the frozen bundle and enumerate train/validation/test only from its manifest. Arbitrary directory scanning or manual post-freeze file selection is non-certifiable.
+Current evidence includes bounded/sharded publisher execution and public per-asset gap materialization. Downloaded/candidate counts do not equal admitted corpus counts.
 
-## 6. Estado documental
+`FSD50K` full multipart audio is not a mandatory release-safe dependency. Official metadata/ground truth plus defensible current per-asset acquisition may be used without treating the same underlying recording as two independent sources.
 
-The latest toolchain documentation expansion triggered a new audit by policy. Documentation certificate lineage is now:
+## 7. Frozen semantic boundary
+
+MK1 targets:
 
 ```text
-CERT-DOC-001  historical / INVALIDATED for later corpus
-CERT-DOC-002  historical / INVALIDATED-SUPERSEDED
-CERT-DOC-003  current / CERTIFIED
-Markdown corpus under CERT-DOC-003 = 197 files
+GLASS_SHATTER
+SIREN
+FIRE_ALARM
+VEHICLE_HORN
+TIRE_SQUEAL
 ```
 
-Root, Governance, Research, MK0, MK1 and MK2 remain depth-pass `PASS`. The current audit is `governance/DOCUMENTATION-AUDIT-2026-09-13-MK1-FOUNDRY-TOOLCHAIN.md`.
+`BACKGROUND_NO_TARGET` is a training/evaluation state. `UNKNOWN` is decision-layer abstention.
 
-## 7. Decisiones congeladas para MK1
+Semantic stop-lines remain:
+
+```text
+Alarm      != FIRE_ALARM
+Squeak     != TIRE_SQUEAL
+Car        != VEHICLE_HORN
+Glassware  != GLASS_SHATTER
+```
+
+`FIRE_ALARM` and `TIRE_SQUEAL` remain the highest-risk data nodes until the actual admitted/diverse corpus evidence passes.
+
+## 8. Corpus solidity floor
+
+`MK1-CORPUS-SOLIDITY-001` is an engineering certification floor, not a guarantee of model performance.
+
+Per target:
+
+```text
+assets >= 50
+groups >= 25
+independent underlying sources >= 2
+duration >= 180 s
+largest source fraction <= 0.80
+train      >= 20 assets / 10 groups
+validation >= 5 assets / 3 groups
+test       >= 5 assets / 3 groups
+```
+
+Global negative pool:
+
+```text
+assets >= 200
+groups >= 50
+sources >= 3
+```
+
+Per-target hard negatives:
+
+```text
+assets >= 20
+groups >= 10
+sources >= 2
+```
+
+No field-holdout, synthetic inflation, duplicate recording, metadata wrapper or broad semantic mapping may be used to fake those floors.
+
+## 9. Corpus certificate predicate
+
+`CERT-MK1-DF-CORPUS-001` remains `OPEN` until the real named `release_safe` corpus provides:
+
+```text
+source/provenance PASS
+rights PASS
+semantic/review PASS
+real-byte/hash/probe PASS
+hard-negative PASS
+exact duplicate leakage = 0
+near-duplicate leakage = 0
+recording-family cross-split leakage = 0
+field holdout contamination = 0
+coverage/diversity PASS
+gap_codes = []
+bundle validation PASS
+second-freeze reproducibility PASS
+ECHO-FREE-TIER-001 PASS
+```
+
+Exact real counts, durations, diversity and duplicate findings belong to empirical evidence nodes and are not inferred from source metadata.
+
+## 10. Documentation state
+
+Documentation remains an upstream certification gate.
+
+The previous documentation certificate `CERT-DOC-003` covered the 197-file corpus at commit `7ef9c1d52b12396e6e73f00f0a3a442d49061fe3`. Substantive corpus-closure/free-tier documents were added afterward, so `CERT-DOC-003` is historical/stale for current HEAD by its own invalidation rule.
+
+A new delta/full coherence audit is being recorded as `CERT-DOC-004`. Until that audit is finalized in governance, current documentation state is:
+
+```text
+CERT-DOC-001  historical
+CERT-DOC-002  historical
+CERT-DOC-003  historical / superseded for current HEAD
+CERT-DOC-004  CANDIDATE_PENDING_AUDIT
+```
+
+No engineering certificate is allowed to hide a documentation contradiction.
+
+## 11. Other frozen MK1 decisions
 
 `DECISION` ECHO nace lógicamente multi-source aunque la primera validación física pueda usar una sola cámara. Todas las unidades de audio, inferencia, estado y eventos llevan `source_id`.
 
@@ -160,8 +232,6 @@ Root, Governance, Research, MK0, MK1 and MK2 remain depth-pass `PASS`. The curre
 `DECISION` FFmpeg es el decoder/extractor baseline y GStreamer queda como alternativa cuando jitter/reconexión/transport requieran mayor control.
 
 `DECISION` El benchmark mínimo compara A = YAMNet + ECHO head, B = PANNs/Cnn14 + ECHO head y C = CNN compacta log-mel propia.
-
-`DECISION` La taxonomía MK1 v1 usa `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL`; `BACKGROUND_NO_TARGET` es estado de datos y `UNKNOWN` es abstención del decision layer.
 
 `DECISION` La salida target es multi-label; un mismo intervalo puede contener más de un evento.
 
@@ -173,50 +243,53 @@ Root, Governance, Research, MK0, MK1 and MK2 remain depth-pass `PASS`. The curre
 
 `DECISION` El corpus del benchmark se selecciona únicamente mediante manifests Foundry versionados y validados; no existe selección manual silenciosa de archivos.
 
-## 8. Nodos abiertos por evidencia empírica
-
-`EMP-DATASET-001` Corpus real admitido: counts/durations/groups/license distribution y manifest identity producidos por `EXEC-DATA-001`.
-
-`EMP-DATA-QUALITY-001` Calidad/duplicates/diversidad del corpus real: hashes, probes, dedup y source-diversity evidence.
-
-`CERT-MK1-DF-CORPUS-001` Foundry corpus certificate: requires DF-G0..DF-G8 PASS against a named real profile/manifest.
-
-`EMP-MODEL-001` Modelo ganador: requiere ejecutar benchmark A/B/C sobre el corpus certificado.
-
-`EMP-THRESH-001` Thresholds: derivados del validation set y streaming replay por clase.
-
-`EMP-DIST-001` Distancia/SNR: necesita ensayos reales autorizados por distancia, ruido, codec, orientación y dispositivo.
-
-`EMP-CAP-001` Capacidad multi-source: requiere load/soak sobre hardware objetivo; no se promete N antes de medir.
-
-`EMP-SLO-001` SLOs finales: se congelan después de evidencia MK1.
-
-## 9. Gates externos
-
-`EXT-CAMERA-001 = EXTERNAL_GATE_OPEN`. Falta marca/modelo, confirmación de audio, perfil RTSP, posible ONVIF, codec/sample-rate, red, credenciales autorizadas, permisos de prueba y condiciones de captura. No bloquea `EXEC-DATA-001` ni replay, pero bloquea claims de campo.
-
-La ejecución de datasets públicos no depende de la cámara, pero sí necesita almacenamiento controlado y adquisición real de los bundles declarados; esta dependencia operacional está registrada como ejecución, no como un supuesto resuelto.
-
-## 10. Siguiente transición autorizada
+## 12. Nodos empíricos abiertos
 
 ```text
-CERT-MK1-DF-SPEC-001       ✅
-CERT-MK1-DF-TOOLCHAIN-001  ✅
+EMP-DATASET-001      = OPEN
+EMP-DATA-QUALITY-001 = OPEN
+CERT-MK1-DF-CORPUS-001 = OPEN
+EMP-MODEL-001        = OPEN
+EMP-THRESH-001       = OPEN
+EMP-DIST-001         = OPEN
+EMP-CAP-001          = OPEN
+EMP-SLO-001          = OPEN
+```
+
+Model winner, thresholds, latency/capacity envelope and field performance cannot be certified before their required empirical execution.
+
+## 13. External gates
+
+`EXT-CAMERA-001 = EXTERNAL_GATE_OPEN`.
+
+Real-camera claims require authorized device/site evidence. This does not block corpus closure or offline replay, but it does block field certification.
+
+## 14. Next authorized transition
+
+```text
+DOCUMENTATION COHERENCE / CERT-DOC-004
         ↓
-EXEC-DATA-001              ← NEXT
+CERT-MK1-DF-TOOLCHAIN-002 ✅
         ↓
-EMP-DATASET-001
-EMP-DATA-QUALITY-001
+MK1 CORPUS FOUNDRY CLOSURE
+        ↓
+EMP-DATASET-001 + EMP-DATA-QUALITY-001
         ↓
 CERT-MK1-DF-CORPUS-001
         ↓
-ReplaySource + canonical audio pipeline
+benchmark A/B/C
         ↓
-A/B/C benchmark
+EMP-MODEL-001 + calibration/threshold evidence
         ↓
-EMP-MODEL-001 + EMP-THRESH-001
+Temporal Event Engine
+        ↓
+offline + multi-source replay/resource tests
+        ↓
+real capture external gate
+        ↓
+MK1 end-to-end certification decision
 ```
 
-## 11. Invalidation
+## 15. Invalidation
 
-Si cambia la promesa, taxonomía, source/audio/event contract, benchmark set, Foundry source/acquisition registry semantics, mapping/admission/review/probe/dedup/split/manifest/handoff semantics, delivery semantics, privacy policy or audited Markdown corpus, revisar `governance/CERTIFICATION-DAG.md` y marcar los dependientes como `INVALIDATED` hasta revalidación.
+Si cambia la promesa, taxonomía, source/audio/event contract, benchmark set, Foundry source/acquisition registry semantics, mapping/admission/review/probe/dedup/split/manifest/handoff semantics, delivery semantics, privacy policy, free-tier boundary or audited documentation corpus, revisar `governance/CERTIFICATION-DAG.md` y marcar los dependientes afectados como `INVALIDATED` hasta revalidación.
