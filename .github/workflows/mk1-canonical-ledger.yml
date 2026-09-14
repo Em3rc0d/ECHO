@@ -1,0 +1,80 @@
+name: MK1 Canonical Corpus Ledger
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'MK1/mining-site/materialization/sonyc-v2.3-full-materialization-summary.json'
+      - 'MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl'
+      - 'MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl'
+      - 'MK1/mining-site/materialization/freesound-release-safe-materialization.json'
+      - 'MK1/mining-site/materialization/public-gap-assets-report.json'
+      - 'MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json'
+      - 'MK1/mining-site/materialization/esc50-pinned-materialization-summary.json'
+      - 'MK1/mining-site/materialization/fsd50k-metadata-inspection.json'
+      - 'MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json'
+      - 'configs/data_foundry/dataset_certification.v1.json'
+      - 'configs/data_foundry/underlying_source_families.v1.json'
+      - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
+      - 'src/echo/data_foundry/ledger.py'
+      - 'scripts/data_foundry/build_canonical_asset_ledger.py'
+      - 'scripts/check_free_tier_boundary.py'
+      - '.github/workflows/mk1-canonical-ledger.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mk1-canonical-corpus-ledger-main
+  cancel-in-progress: false
+
+jobs:
+  build-ledger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce global zero-cost boundary
+        run: python scripts/check_free_tier_boundary.py
+      - name: Validate ledger contracts
+        run: |
+          python -m json.tool configs/data_foundry/dataset_certification.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/underlying_source_families.v1.json >/dev/null
+          python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
+      - name: Build canonical release-safe evidence ledger
+        env:
+          PYTHONPATH: src
+        run: python scripts/data_foundry/build_canonical_asset_ledger.py
+      - name: Verify deterministic rebuild
+        env:
+          PYTHONPATH: src
+        run: |
+          cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl /tmp/ledger.first.jsonl
+          cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json /tmp/ledger.first.summary.json
+          python scripts/data_foundry/build_canonical_asset_ledger.py
+          cmp /tmp/ledger.first.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl
+          cmp /tmp/ledger.first.summary.json MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
+      - name: Enforce compact durable output
+        run: |
+          test "$(stat -c%s MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl)" -le 25000000
+          test "$(stat -c%s MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json)" -le 1000000
+      - name: Fail if baseline moved before evidence commit
+        run: |
+          git fetch origin main --depth=1
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+      - name: Commit durable ledger evidence
+        run: |
+          if git diff --quiet -- MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json; then
+            echo "Canonical ledger already current"
+            exit 0
+          fi
+          git config user.name "echo-data-foundry-bot"
+          git config user.email "123134857+Em3rc0d@users.noreply.github.com"
+          git add MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
+          git commit -m "evidence(mk1): consolidate canonical corpus ledger [skip ci]"
+          git push origin HEAD:main
