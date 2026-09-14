@@ -69,12 +69,13 @@ jobs:
           test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
       - name: Commit durable ledger evidence
         run: |
-          if git diff --quiet -- MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json; then
+          if [ -z "$(git status --porcelain -- MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json)" ]; then
             echo "Canonical ledger already current"
             exit 0
           fi
           git config user.name "echo-data-foundry-bot"
           git config user.email "123134857+Em3rc0d@users.noreply.github.com"
           git add MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
+          git diff --cached --quiet && { echo "No staged ledger evidence changes"; exit 0; }
           git commit -m "evidence(mk1): consolidate canonical corpus ledger [skip ci]"
           git push origin HEAD:main
