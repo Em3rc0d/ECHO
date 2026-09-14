@@ -1,171 +1,111 @@
 # Documentation Coverage Audit
 
 **Status:** `PASS_CURRENT_HEAD`  
-**Current certificate:** `CERT-DOC-004`  
-**Purpose:** impedir que ECHO acumule documentación profunda pero inconsistente, o Markdown stubs que parezcan decisiones terminadas.  
-**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-13-CORPUS-CLOSURE.md`
+**Current certificate:** `CERT-DOC-005`  
+**Current Markdown corpus:** `208 files`  
+**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-14-CORPUS-READINESS.md`
 
-## 1. Rule
+## Rule
 
-Todo `.md` presente se clasifica conceptualmente como uno de:
+ECHO is documentation-first and evidence-first. Any substantive `KNOWLEDGE`, `DECISION`, `PLAN`, `BUILD_SPEC`, `TEST_SPEC` or `LEDGER` artifact must be reconstructible without consulting the original chat. Applicable content includes purpose/scope, upstream dependencies, definitions, evidence, alternatives/trade-offs, current decision, rationale, risks, validation, downstream consumers, open nodes, invalidation and provenance.
 
-```text
-INDEX       navegación/README
-KNOWLEDGE   investigación/evidencia
-DECISION    diseño/arquitectura/política
-PLAN        protocolo/secuencia
-BUILD_SPEC  especificación de artefactos
-TEST_SPEC   protocolo/criterios/resultados
-LEDGER      trazabilidad/certificación
-```
+Compact README/index/schema files may be short when their role is narrow. A small file is not acceptable when it hides an undeveloped substantive decision.
 
-Ningún archivo sustantivo puede consistir únicamente en preguntas, TODOs, nombres o bullets sin síntesis.
+## Epistemic separation
 
-La cobertura actual también exige **coherencia entre documentos**: un archivo individual puede ser profundo y aun así fallar si contradice una política superior o presenta estado histórico como current truth.
-
-## 2. Minimum semantic content
-
-Para `KNOWLEDGE`, `DECISION`, `PLAN`, `BUILD_SPEC` y `TEST_SPEC`, el reviewer debe poder reconstruir el subconjunto aplicable de:
+Use and preserve the distinction:
 
 ```text
-purpose / question
-scope / non-scope
-status / epistemic state
-upstream dependencies
-definitions
-facts / evidence
-alternatives / trade-offs
-current decision
-rationale
-risks / failure modes
-validation / measurement plan
-downstream consumers
-invalidation / closure conditions
-provenance / references
-ECHO-FREE-TIER-001 compatibility when execution is involved
+FACT/EVIDENCE
+INFERENCE
+HYPOTHESIS
+DECISION
+TARGET
 ```
 
-No existe mínimo rígido de palabras. La condición es **reconstructibilidad**.
+A target or planned threshold is never presented as a measured result. A green software CI does not certify real-world data/model behavior.
 
-## 3. Evidence tags
+## Coherence checks
 
-Usar cuando aclaren el estatus epistemológico:
+Documentation fails if it:
 
-- `FACT/EVIDENCE`
-- `INFERENCE`
-- `HYPOTHESIS`
-- `DECISION`
-- `TARGET`
+- contradicts `PROJECT-CHARTER.md` or `ECHO-FREE-TIER-001`;
+- presents a historical certificate as current;
+- hides an empirical gap behind a status label;
+- lets prose disagree materially with machine-readable policy/evidence;
+- reintroduces paid/self-hosted execution as a required path;
+- allows model work before `CERT-MK1-DF-CORPUS-001`;
+- claims `CERTIFIED` when required downstream evidence remains missing.
 
-Un `TARGET` nunca se presenta como resultado medido.
-
-## 4. README policy
-
-Un README puede ser más corto porque su rol es `INDEX`, pero debe explicar responsabilidad de la carpeta, estado, artefactos/workstreams, inputs relevantes y salida hacia la siguiente fase. Un README de una frase no es aceptable.
-
-## 5. Templates and future evidence
-
-Un documento de evidencia futura puede ser compacto únicamente si declara explícitamente `TEMPLATE`, `NOT_CERTIFIED`, `PENDING_*`, `OPEN` o estado equivalente y define qué campos/evidencia deben existir para cerrarlo. Un template nunca demuestra por sí mismo un resultado empírico.
-
-## 6. Stub / contradiction detector
-
-Considerar fallo cualquier `.md` que tenga solamente:
+## Certificate lineage
 
 ```text
-preguntas
-TODOs
-una lista de nombres
-un diagrama sin explicación
-un status sin significado o evidencia
-claims empíricos sin medición
+CERT-DOC-001  historical / invalidated
+CERT-DOC-002  historical / invalidated
+CERT-DOC-003  historical / 197 files / invalidated
+CERT-DOC-004  historical / 206 files / invalidated by readiness/toolchain delta
+CERT-DOC-005  current / 208 files / CERTIFIED
 ```
 
-También es fallo:
+`CERT-DOC-005` adds two new substantive Markdown records relative to the 206-file corpus:
 
 ```text
-current-state contradicts newer frozen policy
-paid/self-hosted execution shown as required path under ECHO-FREE-TIER-001
-historical certificate presented as current after invalidating changes
-empirical node labelled complete without evidence
-machine-readable policy and prose disagree materially
+MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-003.md
+governance/DOCUMENTATION-AUDIT-2026-09-14-CORPUS-READINESS.md
 ```
 
-Los stubs legítimos deben decir `STUB / NOT_CERTIFIED` o equivalente y no pueden ser usados como input de un certificado.
+All other documentation changes in the same recertification update existing files in place.
 
-## 7. Certificate lineage and corpus accounting
+## Current audited truth
+
+The current documentation must consistently show:
 
 ```text
-CERT-DOC-001  historical / INVALIDATED for later corpus
-CERT-DOC-002  historical / INVALIDATED-SUPERSEDED
-CERT-DOC-003  historical / superseded for current HEAD
-CERT-DOC-004  current / CERTIFIED
+CERT-DOC-005                    = CERTIFIED
+CERT-MK1-DF-TOOLCHAIN-003       = CERTIFIED
+EMP-MK1-CORPUS-READINESS-001    = BLOCKED
+CERT-MK1-DF-CORPUS-001          = OPEN
+modeling_allowed                = false
+Benchmark A/B/C                 = LOCKED
+ECHO-FREE-TIER-001              = PASS / global invariant
 ```
 
-`CERT-DOC-003` covered **197 Markdown files** at commit `7ef9c1d52b12396e6e73f00f0a3a442d49061fe3`.
+The authoritative empirical readiness state is machine-readable at:
 
-Since that certificate, the Corpus Foundry closure/free-tier work added seven substantive Markdown artifacts. The current governance pass also adds:
+`MK1/mining-site/materialization/corpus-closure-readiness.json`.
 
-```text
-+1 MK1 toolchain recertification record
-+1 current documentation audit record
-```
+Documentation may summarize that file but may not weaken or override its gap semantics.
 
-Therefore the current Markdown corpus represented by `CERT-DOC-004` is:
+## Current audit result
 
-```text
-197 + 7 + 1 + 1 = 206 Markdown files
-```
+`CERT-DOC-005` reviewed the delta introduced by canonical-ledger consolidation, readiness/guard implementation and Data Foundry toolchain recertification 003. The audit verified that current state, certificate ledger, Foundry gates and automated governance all preserve the fail-closed release law.
 
-Existing Markdown updated in place does not change the count.
+The current audit does **not** certify final admitted corpus counts/groups/duration, duplicate absence, model quality, thresholds, capacity or field performance.
 
-The exact delta/coherence review is recorded in:
+## Automated governance
 
-`governance/DOCUMENTATION-AUDIT-2026-09-13-CORPUS-CLOSURE.md`.
+`scripts/check_documentation_governance.py` enforces high-authority invariants including:
 
-## 8. Current audit result
+- immutable promise presence;
+- current documentation/toolchain certificate IDs;
+- current 208-file Markdown inventory;
+- corpus certificate remains OPEN until empirical closure;
+- readiness status/model lock visibility;
+- free-tier invariant;
+- absence of stale self-hosted/120 GiB required-path guidance;
+- closure-critical markers and unresolved merge conflicts.
 
-The current audit specifically reviewed the documentation changes caused by:
+Automated checks complement, not replace, substantive human/agent review.
 
-- Corpus Foundry Closure deep research;
-- Corpus Solidity Gate;
-- dataset source certification/materialization guidance;
-- global `ECHO-FREE-TIER-001` governance;
-- Foundry gate hardening;
-- new toolchain recertification evidence;
-- current-state and certification-DAG coherence.
+## Invalidation
 
-Two meaningful coherence problems were corrected before promotion:
+`CERT-DOC-005` becomes stale if:
 
-1. monolithic/self-hosted 120 GiB materialization guidance conflicted with the frozen global zero-cost boundary;
-2. `CURRENT-STATE.md` still implied there were no remaining Foundry implementation/integration nodes although the new closure research had identified cross-format near-duplicate, hard-negative and final closure-integration work.
+- the Markdown inventory changes from 208 without audit;
+- substantive Markdown/policy truth changes without dependency review;
+- an authoritative document becomes a stub or contradiction;
+- toolchain/corpus/model certificate state changes without synchronization;
+- machine-readable readiness and prose disagree materially;
+- the promise or free-tier boundary changes.
 
-After correction, current documentation result is `PASS` for depth/reconstructibility/coherence.
-
-This does **not** certify open empirical nodes such as `CERT-MK1-DF-CORPUS-001`, model winner, thresholds, capacity or field behavior.
-
-## 9. Review cycle
-
-Cada depth pass recorre root, governance, research, MK0, MK1 y MK2 as needed. Cualquier `.md` nuevo o materialmente reescrito entra nuevamente al audit. Los artefactos demasiado superficiales o contradictorios se corrigen antes de usarse para un gate o decisión downstream.
-
-The preferred future mechanism is delta audit from the last documentation certificate, with full audit when dependency impact cannot be bounded confidently.
-
-## 10. Certification interaction
-
-Documentation is now a hard ancestor gate under `governance/CERTIFICATION-DAG.md`.
-
-A certificate may close only when its governing documentation is current and its required technical/empirical evidence passes. Documentation and test evidence are complementary, not substitutes.
-
-## 11. Invalidation
-
-`CERT-DOC-004` becomes stale/invalid for current HEAD if:
-
-- substantive Markdown is added or materially rewritten without review;
-- an authoritative artifact regresses into a stub;
-- a current document contradicts `PROJECT-CHARTER`, `ECHO-FREE-TIER-001`, machine-readable policy or another higher-precedence contract;
-- a document certified as current loses provenance/rationale;
-- a decision changes and dependent documentation is not updated;
-- the 206-file inventory no longer represents the actual Markdown corpus.
-
-## 12. Completion criterion
-
-The documentation gate remains PASS only while another engineer/agent can reconstruct the current decision graph without consulting the original chat and without encountering unresolved contradictions presented as authoritative truth.
+The documentation gate remains PASS only while a future engineer/agent can reconstruct current scope, evidence, decisions, blockers and authorized next transition from the repository itself.

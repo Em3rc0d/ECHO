@@ -1,253 +1,198 @@
 # MK1 Data Foundry — Gates and Closure Criteria
 
-**Status:** `TOOLCHAIN_IMPLEMENTED / REAL_CORPUS_CLOSURE_ACTIVE`  
-**Global invariant:** `ECHO-FREE-TIER-001`  
-**Closure plan:** `CORPUS-FOUNDRY-CLOSURE-PLAN.md`
+**Status:** `TOOLCHAIN_CERTIFIED / REAL_CORPUS_CLOSURE_ACTIVE`  
+**Current toolchain certificate:** `CERT-MK1-DF-TOOLCHAIN-003`  
+**Current corpus readiness:** `EMP-MK1-CORPUS-READINESS-001 = BLOCKED`  
+**Global invariant:** `ECHO-FREE-TIER-001`
 
-## 1. Gate chain
-
-```text
-DF-G0 source registry frozen
-  -> DF-G1 source release/provenance verified
-  -> DF-G2 rights profile classified
-  -> DF-G3 semantic mapping/review complete
-  -> DF-G4 content integrity + quality checked
-  -> DF-G5 grouping + duplicate audit complete
-  -> DF-G6 split/holdout audit complete
-  -> DF-G7 manifest/report bundle frozen
-  -> DF-G8 benchmark handoff accepted
-```
-
-A downstream gate cannot certify around a failed upstream gate. The baseline software path for G0-G8 is implemented; a named real corpus instance is certified only after actual release-safe asset evidence and the stricter closure requirements in this document pass the full chain.
-
-All gates inherit `ECHO-FREE-TIER-001`. Capacity or source constraints never authorize a paid fallback, quality-threshold reduction or fabricated closure.
-
-## 2. DF-G0 — Source registry
-
-PASS when each selected source has stable ID/release/canonical evidence URL, license model, intended role and target-coverage limitations.
-
-`configs/data_foundry/source_registry.v1.json` is the semantic registry; `acquisition_registry.v1.json` records release bundles/checksums where publishers expose them.
-
-Underlying-source independence is stricter than dataset-wrapper identity. If an FSD50K asset and a direct Freesound asset resolve to the same underlying Freesound sound, they belong to one acoustic source/recording family for diversity accounting.
-
-## 3. DF-G1 — Acquisition / provenance
-
-PASS per source when acquired files correspond to the declared release and upstream checksums/metadata are retained where available.
-
-`echo-data-foundry acquisition-plan` exposes expected bundles and `verify-acquisition` checks local copies. Local audio identity is calculated independently with SHA-256.
-
-Metadata-only knowledge does not count as release-safe real-byte corpus coverage.
-
-## 4. DF-G2 — Rights
-
-PASS when every admitted asset has a policy decision compatible with the requested profile.
-
-`release_safe` contains no silent `RESEARCH_ONLY`, `REVIEW_REQUIRED` or unknown-license assets. Unknown or incompatible terms fail closed.
-
-Rights uncertainty can never be solved by semantic review.
-
-## 5. DF-G3 — Mapping and review
-
-PASS when all positive labels are supported by `EXACT`/approved narrower mapping or documented asset-level review.
-
-`BROADER`/`AMBIGUOUS` positive candidates cannot bypass versioned review evidence. Review cannot override rights or provenance gates.
-
-Frozen semantic stop-lines include:
+## Gate chain
 
 ```text
-Alarm     != FIRE_ALARM
-Squeak    != TIRE_SQUEAL
-Car       != VEHICLE_HORN
-Glassware != GLASS_SHATTER
+DF-G0 source registry
+  -> DF-G1 release/provenance
+  -> DF-G2 rights
+  -> DF-G3 semantics/review
+  -> DF-G4 real-byte integrity/quality
+  -> DF-G5 exact + near-duplicate/group audit
+  -> DF-G6 group-aware split/holdout audit
+  -> coverage/diversity/hard-negative solidity
+  -> DF-G7 frozen bundle
+  -> second clean freeze/reproducibility
+  -> corpus certificate
+  -> DF-G8 benchmark handoff/model-entry gate
 ```
 
-Target-level gaps remain visible until direct evidence closes them.
+A downstream gate cannot compensate for an upstream failure. All execution inherits `ECHO-FREE-TIER-001`; paid fallbacks and lowered quality floors are forbidden.
 
-Hard-negative mappings are never re-labelled as target positives.
+## DF-G0 — Source identity
 
-## 6. DF-G4 — Integrity / technical quality
+Every selected source requires a stable source ID/release/evidence URL, license model and intended role. Dataset wrapper identity is not automatically an independent acoustic source. If FSD50K and direct Freesound records resolve to the same underlying recording, they share source/recording-family credit.
 
-PASS when all admitted assets:
+## DF-G1 — Provenance/acquisition
+
+Real coverage requires observed media bytes or a source-specific path that yields them during bounded materialization. Metadata-only rows remain evidence but do not create release-safe positive/hard-negative credit. Upstream checksums are retained when publishers expose them; local asset identity uses SHA-256.
+
+## DF-G2 — Rights
+
+Every admitted `release_safe` asset needs a compatible rights decision. `UNKNOWN`, `REVIEW_REQUIRED`, incompatible/non-commercial-only rights or unresolved redistribution/use terms fail closed. Rights cannot be overridden by a strong label.
+
+## DF-G3 — Semantics
+
+Positive admission requires exact/narrow evidence or explicit asset-level review. Frozen stop-lines:
 
 ```text
-exist as real observed bytes during materialization/admission
-hash successfully
-have positive byte size
-contain a valid audio stream
-have positive duration
-carry source + label provenance
-satisfy enabled technical checks
+Alarm      != FIRE_ALARM
+Squeak     != TIRE_SQUEAL
+Car        != VEHICLE_HORN
+Glassware  != GLASS_SHATTER
 ```
 
-Missing/corrupt/unprobeable files do not enter the admitted manifest.
+Hard-negative labels never become positives by convenience.
 
-Candidate/asset identities are deterministic and source-specific parser behavior is unit-tested.
+## DF-G4 — Technical evidence
 
-## 7. DF-G5 — Groups / dedup
-
-PASS when every protected-evaluation asset has a defensible recording-family identity, one family maps to one protected split, exact duplicate SHA-256 content does not cross boundaries and registered near-duplicates do not cross boundaries.
-
-The strongest known grouping relationship wins:
+Every admitted row must have:
 
 ```text
-physical event / continuous session
-  > original recording
-  > source/uploader + occurrence
-  > sensor/site/time block
-  > clip id only when no stronger relationship exists
+real bytes observed
+positive byte size
+SHA-256
+valid audio probe
+positive duration
+source provenance
+label provenance
+canonical fingerprint where required
 ```
 
-### Near-duplicate hardening requirement
+The current canonical ledger still reports 599 assets without canonical fingerprints and additional missing asset-level probe/byte-size evidence; therefore final closure is not eligible yet.
 
-The existing lightweight fingerprint implementation is not sufficient by itself for final corpus certification because format/transcode coverage can be incomplete.
+## DF-G5 — Global duplicate/group audit
 
-Before `CERT-MK1-DF-CORPUS-001`, all admitted audio formats must be canonical-decoded locally into a deterministic mono 16 kHz signed-16-bit PCM stream for fingerprint/vector generation. The canonical PCM does not need to persist.
-
-The final proximity threshold must be validated by deterministic transformed-copy and known-independent fixtures before its policy version is frozen.
-
-PASS requires:
+Final certification requires canonical mono 16 kHz signed-16-bit PCM fingerprinting sufficient for transcode-aware comparisons, validated transformed-copy/known-independent fixtures, and global grouping using the strongest available relationship:
 
 ```text
-expected transformed duplicates detected
-AND
-known-independent fixtures not declared duplicates
+same physical event/session
+> same original recording
+> source/uploader occurrence family
+> sensor/site/time block
+> clip ID fallback
 ```
 
-## 8. DF-G6 — Splits / holdout
+Required output: `global-dedup-audit.json` and `recording-family-audit.json`, both PASS, with no protected-split leakage.
 
-PASS when:
+## DF-G6 — Split integrity
+
+Group-aware splitting must produce:
 
 ```text
 group overlap = 0
 exact duplicate overlap = 0
-registered near-duplicate overlap = 0
+near-duplicate overlap = 0
 field holdout overlap = 0
 ```
 
-Recognized upstream train/validation/test semantics are preserved where required; otherwise the versioned split policy uses deterministic group assignment.
+and satisfy all class/split floors. Seed shopping/manual clip movement is forbidden. If policy v1 cannot satisfy constraints, a new deterministic whole-group allocator must be versioned and re-audited.
 
-Current `split_policy.v1` remains valid if the resulting real corpus also passes per-class split floors.
+Required output: `split-integrity.json = PASS`.
 
-If v1 fails those floors, do not move clips manually and do not seed-shop. Design a versioned deterministic whole-group constrained allocator (`split_policy.v2`) and rerun the full split evidence.
+## Corpus solidity
 
-## 9. Coverage and diversity gate
+`MK1-CORPUS-SOLIDITY-001` remains the engineering floor.
 
-`MK1-CORPUS-SOLIDITY-001` is an engineering certification floor, not a model-performance guarantee.
-
-A release-safe corpus must meet the configured floors for:
+Per target:
 
 ```text
-positive assets / class
-independent recording groups / class
-underlying independent sources / class
-positive duration / class
-train / validation / test floors
-largest-source fraction
-background / hard-negative population
-hard negatives per target
-technical quality
-license provenance
-label provenance
-exact/near-duplicate violations
+>=50 assets
+>=25 independent groups
+>=2 underlying source families
+>=180 s
+largest source <=80%
+train >=20 assets / 10 groups
+validation >=5 / 3
+test >=5 / 3
 ```
 
-Field holdout, synthetic augmentation, broad labels and repeated segments of one recording cannot be used to manufacture independent coverage.
+Global negatives: >=200 assets / >=50 groups / >=3 sources. Per-target hard negatives: >=20 assets / >=10 groups / >=2 sources.
 
-## 10. Hard-negative execution gate
+Field holdout, synthetic augmentation, broad labels and repeated segments cannot manufacture independent coverage.
 
-A hard-negative mapping is policy input, not materialized evidence.
-
-Hard-negative coverage receives credit only after:
+Current pre-final canonical counts identify critical gaps:
 
 ```text
-real bytes
-+ source provenance
-+ release-safe rights
-+ valid probe
-+ recording family
-+ exact dedup
-+ near-duplicate screening
-+ explicit hard_negative_for
+FIRE_ALARM positives   5 / 50
+TIRE_SQUEAL positives  5 / 50
+TIRE_SQUEAL positive source families 1 / 2
+VEHICLE_HORN hard negatives 0 / 20, sources 0 / 2
+TIRE_SQUEAL hard negatives  0 / 20, sources 0 / 2
+FIRE_ALARM hard-negative sources     1 / 2
+GLASS_SHATTER hard-negative sources  1 / 2
+SIREN hard-negative sources          1 / 2
 ```
 
-A dedicated bounded execution/reporting surface must close this node before corpus certification.
+These floors are never lowered to obtain certification.
 
-## 11. DF-G7 — Frozen bundle
+Required output: `coverage-gate.json` with `status=PASS` and `gap_codes=[]`.
 
-PASS when the following exist and are mutually consistent:
+## DF-G7 — Freeze and reproducibility
+
+Freeze #1 must bind asset membership, SHA-256, recording families, splits, rights/mapping policy, source policy, coverage and dedup/quarantine evidence. It is then validated.
+
+A second clean freeze over unchanged inputs must reproduce semantic identity:
 
 ```text
-asset-manifest.jsonl
-split-manifest.json
-dataset-manifest.json
-coverage-report.json
-coverage-gate.json
-dedup-report.json
-quarantine-report.json
+same assets
+same hashes
+same recording families
+same splits
+same duplicate decisions
+same coverage/gaps
 ```
 
-The dataset manifest binds source registry, rights policy, label mapping, split policy, asset manifest and split manifest identities.
-
-## 12. Reproducibility sub-gate
-
-A second clean freeze over unchanged admitted data/policies must reproduce the semantic corpus identity:
+Required outputs:
 
 ```text
-same asset membership
-same asset SHA-256 identities
-same recording-family assignments
-same split membership
-same dedup decisions
-same coverage result
-same gap_codes
+corpus-freeze-1.validation.json = PASS
+corpus-freeze-2.validation.json = PASS
+corpus-reproducibility.json = PASS
 ```
 
-Volatile timestamps may differ only when explicitly excluded from corpus identity.
+## Readiness and certificate review
 
-## 13. DF-G8 — Benchmark handoff
+`EMP-MK1-CORPUS-READINESS-001` is generated deterministically from the canonical ledger, coverage policy and named closure evidence. It distinguishes:
 
-PASS when MK1 benchmark configuration references the exact validated Foundry bundle identity and enumerates train/validation/test exclusively from that bundle.
+- `eligible_for_certificate_review`: all prerequisite closure evidence passes;
+- `modeling_allowed`: certificate review has also promoted `CERT-MK1-DF-CORPUS-001` to `CERTIFIED` and no gap remains.
 
-Manual directory selection is a FAIL.
+Current state is `BLOCKED / modeling_allowed=false`.
 
-## 14. Implemented execution surface
+## DF-G8 — Benchmark handoff
+
+Manual directory selection is forbidden. Benchmark configuration must consume an exact validated Foundry bundle identity.
+
+The reusable `MK1 Model Entry Gate` runs:
 
 ```text
-acquisition-plan / verify-acquisition
-        ↓
-intake spec -> candidate JSONL
-        ↓
-admit -> hash + license + mapping + review -> record JSONL
-        ↓
-freeze -> split + duplicate audit + reports + dataset manifest
-        ↓
-validate-bundle / list-split
-        ↓
-benchmark handoff
+python scripts/data_foundry/build_corpus_closure_readiness.py --require-modeling-ready
 ```
 
-Real materialization is already active through bounded source-specific workflows. Raw multi-gigabyte corpora remain outside Git/artifact persistence by design.
+and fails non-zero until the certified corpus predicate is satisfied. Future model/benchmark/train workflows are checked for bypass wiring.
 
-## 15. Explicit open nodes before corpus certification
-
-At the time of this update, the following remain closure-critical and must not be hidden:
+## Certificate lineage
 
 ```text
-OPEN: canonical cross-format near-duplicate hardening + fixture validation
-OPEN: dedicated hard-negative materialization/evidence integration
-OPEN: final global corpus-closure integration workflow/evidence packet
-OPEN until empirical PASS: final global rights/semantic/dedup/group/split/coverage audit
+CERT-MK1-DF-SPEC-001       CERTIFIED
+CERT-MK1-DF-TOOLCHAIN-001  historical
+CERT-MK1-DF-TOOLCHAIN-002  historical / superseded
+CERT-MK1-DF-TOOLCHAIN-003  CERTIFIED / current
+EMP-DATASET-001             OPEN
+EMP-DATA-QUALITY-001        OPEN
+CERT-MK1-DF-CORPUS-001     OPEN
 ```
 
-These are implementation/evidence gaps, not reasons to reopen the frozen taxonomy or project promise.
+`CERT-MK1-DF-TOOLCHAIN-003` is tied to implementation baseline `dc225803b5c066b365779fdc2b4b2f0984bb7e19`, Data Foundry CI run `34904125873`, Corpus Closure Readiness run `34904125899`, and Free-Tier run `34904125820`. Durable readiness evidence is persisted at commit `aac662b770669bf633dd58a582514abcb39c30a1`.
 
-## 16. Certificate plan
+The toolchain certificate proves the fail-closed machinery works; it does not certify the corpus.
 
-- `CERT-MK1-DF-SPEC-001`: Foundry architecture/contracts/policies/code foundation — `CERTIFIED`.
-- `CERT-MK1-DF-TOOLCHAIN-001`: historical toolchain certificate for baseline `2c4d4c2...` — superseded for the current engineering baseline.
-- `CERT-MK1-DF-TOOLCHAIN-002`: current executable Foundry toolchain — `CERTIFIED` against baseline `be75a432...`, CI run `34800084225`, 67-test Python 3.11 evidence plus green 3.10/3.12 matrix.
-- `EMP-DATASET-001`: actual admitted corpus identity/counts — real source execution only.
-- `EMP-DATA-QUALITY-001`: real duplicate/quality/source-diversity findings — real source execution only.
-- `CERT-MK1-DF-CORPUS-001`: emitted only after G0..G8 plus reproducibility and free-tier boundary PASS for a named real profile/manifest.
+## Invalidation
 
-Changes to taxonomy, mapping, rights policy, grouping/split rules, adapters, source release, certified toolchain code/config/schema/test surface or free-tier execution policy invalidate dependent Foundry/benchmark evidence and require rerun rather than silent patching.
+Changes to taxonomy, source/acquisition semantics, rights/mapping/review, technical probing/fingerprints, grouping/dedup, split/coverage/freeze/handoff logic, readiness/model-entry guard, certified tests/schemas/workflows, or `ECHO-FREE-TIER-001` invalidate dependent evidence until rerun/review.

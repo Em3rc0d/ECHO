@@ -2,168 +2,162 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-004`
+**Documentation ancestor:** `CERT-DOC-005`
 
-El ledger registra qué evidencia/decisión ha sido certificada, de qué depende, qué no certifica y qué la invalida. El Git commit que contiene este documento funciona como envelope inmutable de esa versión del ledger.
+`CERTIFIED` is always scope-bounded. Documentation never fabricates empirical evidence; green CI never compensates for stale governance; no certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
-## Estados
+## States
 
-`OPEN` · `CANDIDATE` · `CERTIFIED` · `INVALIDATED` · `EXTERNAL_GATE_OPEN`
+`OPEN` · `BLOCKED` · `CANDIDATE` · `CERTIFIED` · `INVALIDATED` · `EXTERNAL_GATE_OPEN`
 
-`CERTIFIED` siempre está acotado por scope. Un certificado documental no fabrica evidencia empírica; un CI verde no compensa documentación contradictoria; y ningún certificado puede depender de una ruta que viole `ECHO-FREE-TIER-001`.
+## Current certificates and empirical outputs
 
-## Certificates and empirical outputs
-
-| Certificate ID | Artefacto/claim | Estado | Inputs principales | Invalida si cambia |
+| ID | Claim / artifact | State | Current evidence / dependency | Invalidates when |
 |---|---|---|---|---|
-| CERT-ECHO-000 | Promesa inmutable | CERTIFIED | PROJECT-CHARTER | promesa del propietario |
-| CERT-MK0-001 | Boundary: eventos acústicos observables | CERTIFIED | charter + anti-scope | promise/boundary |
-| CERT-MK0-002 | Landscape de modelos | CERTIFIED | TensorFlow, PANNs, AST, HTS-AT, PaSST, BEATs | source/version material |
-| CERT-MK0-003 | Landscape de datasets | CERTIFIED | AudioSet, FSD50K, SONYC, ESC-50, DCASE | license/release facts |
-| CERT-MK0-004 | RTSP source abstraction | CERTIFIED | ONVIF + FFmpeg/GStreamer docs | source contract |
-| CERT-MK0-005 | FFmpeg baseline MK1 | CERTIFIED | FFmpeg docs + codec abstraction | incompatible required codec |
-| CERT-MK0-006 | Multi-label inference contract | CERTIFIED | YAMNet + SONYC + polyphonic SED | taxonomy semantics |
-| CERT-MK0-007 | Event lifecycle separation | CERTIFIED | SED/event-system design | event contract |
-| CERT-MK0-008 | MQTT/Mosquitto MK1 bus | CERTIFIED | OASIS MQTT + Mosquitto + Frigate precedent | delivery requirements |
-| CERT-MK0-009 | QoS1 + idempotency | CERTIFIED | MQTT 5.0 semantics | delivery semantics |
-| CERT-MK0-010 | MK1 target taxonomy v1 | CERTIFIED | AudioSet evidence + domain relevance | label/data evidence |
-| CERT-MK0-011 | Benchmark protocol v1 | CERTIFIED | model/data/metrics research | target taxonomy/model set |
-| CERT-MK0-012 | Privacy-by-design requirement | CERTIFIED | project policy + Peru normative evidence | jurisdiction/policy |
-| CERT-MK0-013 | MK0 research gate | CERTIFIED | CERT-MK0-001..012 | any dependency above |
-| CERT-MK1-READY-001 | MK1 replay-build readiness | CERTIFIED | MK0 + DoR | architecture-changing dependency |
-| CERT-MK1-DF-SPEC-001 | MK1 Data Foundry architecture/contracts/policies/core foundation | CERTIFIED | Foundry docs/config/schema/code + CI evidence | taxonomy, source-registry semantics, mapping, admission/rights, split/manifest semantics or foundation tests |
-| CERT-MK1-DF-TOOLCHAIN-001 | Historical Data Foundry toolchain baseline `2c4d4c2...` | INVALIDATED | CI run 34742947903 + 42-test suite | superseded by material current-baseline changes and CERT-MK1-DF-TOOLCHAIN-002 |
-| CERT-MK1-DF-TOOLCHAIN-002 | Current acquisition→intake→probe/admission→review→coverage/dedup/split→freeze→benchmark-handoff toolchain | CERTIFIED | baseline `be75a432...` + CI run 34800084225 + 67-test Python 3.11 evidence + green 3.10/3.12 matrix | certified code/config/schema/test/workflow surface or zero-cost execution contract |
-| EMP-DATASET-001 | Exact admitted MK1 corpus identity/counts/durations/groups | OPEN | real admitted release-safe assets + closure execution | n/a until produced |
-| EMP-DATA-QUALITY-001 | Corpus duplicate/quality/diversity evidence | OPEN | real hashes/probes/group/dedup/near-dup reports | n/a until produced |
-| CERT-MK1-DF-CORPUS-001 | Named release-safe Foundry corpus/profile manifest | OPEN | DF-G0..DF-G8 + hard-negative + near-dup + reproducibility + free-tier PASS + EMP-DATASET-001 + EMP-DATA-QUALITY-001 | any source/asset/policy/mapping/group/split/fingerprint change |
-| CERT-DOC-001 | Global Markdown documentation depth/coverage — first historical audit | INVALIDATED | original audited corpus | superseded when corpus changed |
-| CERT-DOC-002 | Documentation including initial MK1 Data Foundry | INVALIDATED | 189-file Foundry audit corpus | superseded by later toolchain docs |
-| CERT-DOC-003 | Documentation including completed original MK1 Foundry toolchain | INVALIDATED | 197-file corpus at commit `7ef9c1d...` | superseded after corpus-closure/free-tier documentation expansion |
-| CERT-DOC-004 | Current documentation depth/reconstructibility/coherence for corpus-closure baseline | CERTIFIED | DOCUMENTATION-STANDARD + DOCUMENTATION-COVERAGE + corpus-closure audit + 206-file Markdown corpus | substantive Markdown/policy truth changes without re-audit, contradiction, authoritative stub |
-| EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | brand/model/audio/RTSP/codec/network/access/site authorization | closes only with field evidence |
-| EMP-MODEL-001 | Model winner | OPEN | A/B/C benchmark results on certified Foundry corpus | n/a |
-| EMP-THRESH-001 | Per-class classifier/Event Engine thresholds | OPEN | validation + streaming replay evidence | n/a |
-| EMP-DIST-001 | Distance/SNR envelope | OPEN | authorized field tests | n/a |
-| EMP-CAP-001 | Multi-source capacity envelope | OPEN | load/soak on target hardware | n/a |
-| EMP-SLO-001 | Final MK1/MK2 SLO evidence | OPEN | runtime/quality/field evidence | n/a |
+| CERT-ECHO-000 | Immutable ECHO promise | CERTIFIED | PROJECT-CHARTER | owner changes promise |
+| CERT-MK0-001..012 | MK0 scoped research/design decisions | CERTIFIED | MK0 evidence corpus | material upstream fact/decision changes |
+| CERT-MK0-013 | MK0 research gate | CERTIFIED | CERT-MK0-001..012 | any MK0 ancestor invalidates |
+| CERT-MK1-READY-001 | MK1 replay-build readiness | CERTIFIED | MK0 + Definition of Ready | architecture-changing dependency |
+| CERT-MK1-DF-SPEC-001 | Data Foundry architecture/contracts/policies | CERTIFIED | Foundry docs/config/schema/foundation | semantic contract changes |
+| CERT-MK1-DF-TOOLCHAIN-001 | Historical 42-test toolchain | INVALIDATED | old baseline `2c4d4c2...` | superseded |
+| CERT-MK1-DF-TOOLCHAIN-002 | Historical 67-test toolchain | INVALIDATED | baseline `be75a432...`, run `34800084225` | superseded by readiness/guard changes |
+| CERT-MK1-DF-TOOLCHAIN-003 | Current Foundry toolchain + fail-closed readiness/model-entry guard | CERTIFIED | baseline `dc225803...`, Data Foundry CI `34904125873`, readiness run `34904125899`, free-tier run `34904125820` | governed Foundry/readiness/guard surface changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | durable `corpus-closure-readiness.json` at `aac662b...` | recomputed whenever input evidence/policy changes |
+| EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | real release-safe closure | produced only from closed corpus |
+| EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | global dedup/group/split/coverage evidence | produced only from real closure |
+| CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | EMP-DATASET-001 + EMP-DATA-QUALITY-001 + all DF closure gates + reproducibility + free-tier PASS | any source/asset/policy/mapping/group/split/fingerprint/freeze change |
+| CERT-DOC-001 | Historical initial documentation audit | INVALIDATED | historical corpus | superseded |
+| CERT-DOC-002 | Historical Foundry documentation audit | INVALIDATED | historical corpus | superseded |
+| CERT-DOC-003 | Historical 197-file corpus | INVALIDATED | commit `7ef9c1d...` | superseded |
+| CERT-DOC-004 | Historical 206-file Corpus Closure baseline | INVALIDATED | 2026-09-13 audit | superseded by readiness/toolchain delta |
+| CERT-DOC-005 | Current 208-file documentation corpus | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-14-CORPUS-READINESS.md` | Markdown/policy truth changes without audit |
+| EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized camera/site evidence | closes only with field evidence and upstream authorization |
+| EMP-MODEL-001 | Model winner | BLOCKED | certified corpus + Benchmark A/B/C | cannot run before corpus cert |
+| EMP-THRESH-001 | Classifier/Event Engine thresholds | BLOCKED | certified corpus + validation/replay | cannot run before corpus/model gates |
+| EMP-DIST-001 | Distance/SNR envelope | BLOCKED | authorized field tests | external + upstream gates |
+| EMP-CAP-001 | Multi-source capacity envelope | OPEN | future runtime load/soak | runtime evidence changes |
+| EMP-SLO-001 | Final MK1/MK2 SLO evidence | OPEN | runtime/quality/field evidence | evidence changes |
 
-## Universal certificate ancestors
+## Current Data Foundry recertification
 
-Every new certificate must satisfy the applicable chain:
+`CERT-MK1-DF-TOOLCHAIN-003` supersedes toolchain-002 because code governed by the Foundry certificate changed materially. The new certificate adds deterministic closure-readiness computation and a reusable model-entry guard.
+
+Exact evidence:
 
 ```text
-CERT-ECHO-000 / scope boundary
-        +
-current documentation certificate
-        +
-ECHO-FREE-TIER-001 = PASS
-        +
-required upstream technical/empirical certificates
+implementation baseline   dc225803b5c066b365779fdc2b4b2f0984bb7e19
+Data Foundry CI            34904125873  PASS on Python 3.10 / 3.11 / 3.12
+Free-Tier Boundary         34904125820  PASS
+Corpus Closure Readiness   34904125899  PASS as deterministic evidence generation
+durable readiness commit   aac662b770669bf633dd58a582514abcb39c30a1
+```
+
+The readiness result being `BLOCKED` is not a CI failure. It is the correct empirical state: evidence generation itself is valid, while downstream model authorization remains false.
+
+## Corpus readiness truth
+
+The current readiness artifact states:
+
+```text
+EMP-MK1-CORPUS-READINESS-001 = BLOCKED
+modeling_allowed              = false
+eligible_for_certificate_review = false
+CERT-MK1-DF-CORPUS-001       = OPEN
+next_authorized_stage         = CORPUS_FOUNDRY_CLOSURE
+```
+
+Important current gaps include:
+
+```text
+FIRE_ALARM_ASSETS_5_LT_50
+TIRE_SQUEAL_ASSETS_5_LT_50
+TIRE_SQUEAL_UNDERLYING_SOURCES_1_LT_2
+VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
+TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
+FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2
+GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
+SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
+CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE
+```
+
+The final global-dedup, recording-family, split-integrity, coverage, two freeze-validation and reproducibility artifacts also remain unpassed/missing.
+
+## Release law
+
+The following dependency is mandatory and executable:
+
+```text
+CERT-MK1-DF-CORPUS-001 = CERTIFIED
+AND gap_codes=[]
+AND reproducibility PASS
+AND ECHO-FREE-TIER-001 PASS
         ↓
-certificate eligibility
+model-entry gate PASS
+        ↓
+Benchmark A/B/C authorized
 ```
 
-A documentation certificate certifies reconstructibility/coherence for its scope; it does not turn an `OPEN` empirical result into evidence. Likewise, strong empirical results cannot be promoted while governing documentation is stale or contradictory.
-
-## Current Foundry certification scope
-
-`CERT-MK1-DF-SPEC-001` certifies the versioned architecture/contracts/policy foundation.
-
-`CERT-MK1-DF-TOOLCHAIN-002` supersedes the original toolchain certificate for the current engineering baseline. GitHub Actions run `34800084225` checked out exact SHA `be75a4323ec67f7c9528cbdbf6a06a8524494501` and passed Python 3.10, 3.11 and 3.12. The Python 3.11 job executed 67 tests successfully, including source/publisher policy, release-safe coverage enforcement, rights/semantic gates, field-holdout protection, hard-negative requirements, duplicate/group leakage, deterministic splits and synthetic freeze/handoff coverage.
-
-The deep-research closure pass intentionally leaves stricter final-corpus nodes open:
+Without it:
 
 ```text
-canonical global admitted asset ledger
-hard-negative materialization/admission evidence
-cross-format/transcode-aware near-duplicate policy + fixture validation
-global recording-family/source-independence audit
-real class/split/source coverage PASS
-freeze validation
-second clean freeze reproducibility
+NO Benchmark A/B/C
+NO YAMNet/PANNs/CNN model work
+NO EMP-MODEL-001
+NO threshold calibration
+NO replay pipeline
+NO real-camera progression
 ```
 
-Therefore `CERT-MK1-DF-CORPUS-001` remains `OPEN` until actual evidence closes them. No real counts/diversity/license distribution/duplicate absence/model metric is inferred from the toolchain certificate.
+No floor reduction, broad-label coercion, synthetic source inflation, duplicate-family inflation or paid infrastructure is an accepted route around this law.
 
-## Documentation certificate lineage
+## Documentation lineage
 
 ```text
-CERT-DOC-001  historical -> INVALIDATED for later corpus
-CERT-DOC-002  historical -> INVALIDATED/SUPERSEDED
-CERT-DOC-003  historical -> INVALIDATED for current HEAD; certified 197-file corpus at its own baseline
-CERT-DOC-004  current    -> CERTIFIED; 206-file Markdown corpus + coherence audit
+CERT-DOC-001  historical / invalidated
+CERT-DOC-002  historical / invalidated
+CERT-DOC-003  historical / invalidated
+CERT-DOC-004  historical / invalidated by readiness/toolchain delta
+CERT-DOC-005  current / CERTIFIED / 208 Markdown files
 ```
 
-`CERT-DOC-004` incorporates the corpus-closure research and zero-cost governance delta. The audit corrected, before promotion, two material contradictions: old 120 GiB/self-hosted materialization guidance versus `ECHO-FREE-TIER-001`, and stale current-state language that hid newly identified closure-critical implementation/integration nodes.
-
-Historical audits remain immutable evidence for the repository states they covered.
+`CERT-DOC-005` synchronizes current state, Foundry gates, toolchain recertification 003, machine-readable readiness and this ledger. It does not close any empirical gap.
 
 ## Dependency DAG
 
 ```text
 CERT-ECHO-000
-  + CERT-DOC-004
+  + CERT-DOC-005
   + ECHO-FREE-TIER-001
-          |
-          v
-CERT-MK0-001..012
-          |
-          v
+          ↓
 CERT-MK0-013
-          |
-          v
+          ↓
 CERT-MK1-READY-001
-          |
-          v
+          ↓
 CERT-MK1-DF-SPEC-001
-          |
-          v
-CERT-MK1-DF-TOOLCHAIN-002
-          |
-          v
-MK1 CORPUS FOUNDRY CLOSURE / EXEC-DATA-001
-       |                  |
-       v                  v
-EMP-DATASET-001    EMP-DATA-QUALITY-001
-       \                  /
-        \                /
-         v              v
-        CERT-MK1-DF-CORPUS-001
-                 |
-                 +----------------------+
-                 |                      |
-                 v                      v
-        MK1 replay/audio          A/B/C benchmark
-                                        |
-                                        v
-                                EMP-MODEL-001
-                                        |
-                                        v
-                                EMP-THRESH-001
-
-EXT-CAMERA-001 -----------------> real-camera test branch -> EMP-DIST-001
-MK1 load/soak ------------------> EMP-CAP-001
-MK1 quality/runtime/field ------> EMP-SLO-001
+          ↓
+CERT-MK1-DF-TOOLCHAIN-003
+          ↓
+EMP-MK1-CORPUS-READINESS-001 = BLOCKED
+          ↓
+close corpus gaps + global audits + split + coverage + freeze×2
+          ↓
+EMP-DATASET-001 + EMP-DATA-QUALITY-001
+          ↓
+CERT-MK1-DF-CORPUS-001
+          ↓
+model-entry gate
+          ↓
+Benchmark A/B/C
+          ↓
+EMP-MODEL-001
+          ↓
+EMP-THRESH-001
 ```
 
-Documentation lineage is transversal rather than a seventh MK phase:
-
-```text
-DOCUMENTATION-STANDARD
-  -> DOCUMENTATION-COVERAGE
-      -> CERT-DOC-001 [historical]
-      -> CERT-DOC-002 [historical]
-      -> CERT-DOC-003 [historical]
-      -> CERT-DOC-004 [current]
-```
+`EXT-CAMERA-001` remains external and cannot authorize field progression before the corpus/model chain permits it.
 
 ## Invalidation
 
-A material change to promise, taxonomy, schema, source/audio/event contract, source/acquisition registry semantics, mapping/admission/review/probe/coverage/dedup/split/manifest/handoff semantics, benchmark set, delivery semantics, privacy policy, zero-cost execution boundary or governing documentation requires dependency review and selective invalidation/re-certification.
+A material change to promise, taxonomy, schema, source/audio/event contract, source/acquisition registry, rights/mapping/review/probe/fingerprint/coverage/dedup/group/split/manifest/freeze/handoff semantics, model-entry guard, benchmark set, delivery/privacy policy, zero-cost execution boundary or governing documentation requires dependency review and selective invalidation/re-certification.
 
-`CERT-MK1-DF-TOOLCHAIN-002` becomes invalid if its certified code/config/schema/test/workflow surface changes materially without rerun.
-
-`CERT-DOC-004` becomes invalid/stale for current HEAD if substantive Markdown or policy truth changes without review, a certified input regresses into a stub, prose contradicts machine-readable authority, or the 206-file inventory no longer represents the documentation corpus.
-
-No blockchain is used: Git history + content hashes + manifests + CI evidence provide the required traceability without distributed consensus.
+Git history + content hashes + manifests + CI evidence are the traceability mechanism; ECHO does not claim blockchain consensus.
