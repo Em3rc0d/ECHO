@@ -4,9 +4,9 @@
     "RECORDING_FAMILY_GLOBAL_AUDIT_PENDING"
   ],
   "largest_recording_family_asset_count": 4,
-  "ledger_sha256": "61bdd68fa96669c3191b930508d86484988a10fca48c96c611f684f9dad06a84",
+  "ledger_sha256": "540f246db641531304235d94e89002b198f202c2c0370c675c8a716ec3aac671",
   "missing_recording_group_count": 0,
-  "pending_global_group_audit_count": 452,
+  "pending_global_group_audit_count": 503,
   "pending_global_group_audit_sample": [
     "echo-freesound-release-safe-v1:100265",
     "echo-freesound-release-safe-v1:100647",
@@ -59,8 +59,8 @@
     "echo-freesound-release-safe-v1:145558",
     "echo-freesound-release-safe-v1:145559"
   ],
-  "recording_family_count": 1103,
+  "recording_family_count": 1154,
   "schema_version": "echo.recording-family-audit.v1",
-  "scope_asset_count": 1112,
+  "scope_asset_count": 1163,
   "status": "FAIL"
 }

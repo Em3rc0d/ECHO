@@ -735,7 +735,7 @@
     "VEHICLE_HORN_VALIDATION_ASSETS_BELOW_MIN",
     "VEHICLE_HORN_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "61bdd68fa96669c3191b930508d86484988a10fca48c96c611f684f9dad06a84",
+  "ledger_sha256": "540f246db641531304235d94e89002b198f202c2c0370c675c8a716ec3aac671",
   "note": "Coverage uses only release-safe READY_FOR_GLOBAL_DEDUP rows and underlying acoustic source families, never dataset wrappers.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",

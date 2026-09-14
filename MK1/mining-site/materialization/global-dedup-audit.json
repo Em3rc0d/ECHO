@@ -2,12 +2,12 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 513,
+  "fingerprinted_asset_count": 564,
   "gap_codes": [
     "CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE",
     "NEAR_DUPLICATE_CANDIDATES_REQUIRE_GROUP_OR_REVIEW"
   ],
-  "ledger_sha256": "61bdd68fa96669c3191b930508d86484988a10fca48c96c611f684f9dad06a84",
+  "ledger_sha256": "540f246db641531304235d94e89002b198f202c2c0370c675c8a716ec3aac671",
   "missing_fingerprint_count": 599,
   "missing_fingerprint_sample": [
     "sonyc-ust-v2:00_000277.wav",
@@ -100,6 +100,12 @@
       "same_recording_group": false
     },
     {
+      "distance": 0.01369485,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2249",
+      "right": "echo-freesound-release-safe-v1:258169",
+      "same_recording_group": false
+    },
+    {
       "distance": 0.01194853,
       "left": "echo-freesound-release-safe-v1:126878",
       "right": "echo-freesound-release-safe-v1:98378",
@@ -109,6 +115,18 @@
       "distance": 0.01896446,
       "left": "echo-freesound-release-safe-v1:148073",
       "right": "echo-freesound-release-safe-v1:219837",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01626838,
+      "left": "echo-freesound-release-safe-v1:148073",
+      "right": "echo-freesound-release-safe-v1:219845",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01583946,
+      "left": "echo-freesound-release-safe-v1:148073",
+      "right": "echo-freesound-release-safe-v1:219847",
       "same_recording_group": false
     },
     {
@@ -454,6 +472,12 @@
       "same_recording_group": false
     },
     {
+      "distance": 0.01421569,
+      "left": "echo-freesound-release-safe-v1:201718",
+      "right": "echo-freesound-release-safe-v1:258169",
+      "same_recording_group": false
+    },
+    {
       "distance": 0.00055147,
       "left": "echo-freesound-release-safe-v1:204119",
       "right": "echo-freesound-release-safe-v1:204120",
@@ -529,6 +553,24 @@
       "distance": 0.01531863,
       "left": "echo-freesound-release-safe-v1:216298",
       "right": "echo-freesound-release-safe-v1:89901",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01862745,
+      "left": "echo-freesound-release-safe-v1:219837",
+      "right": "echo-freesound-release-safe-v1:219845",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01721814,
+      "left": "echo-freesound-release-safe-v1:219837",
+      "right": "echo-freesound-release-safe-v1:219846",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01360294,
+      "left": "echo-freesound-release-safe-v1:219837",
+      "right": "echo-freesound-release-safe-v1:219847",
       "same_recording_group": false
     },
     {
@@ -655,6 +697,84 @@
       "distance": 0.01507353,
       "left": "echo-freesound-release-safe-v1:219837",
       "right": "echo-freesound-release-safe-v1:980",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01415441,
+      "left": "echo-freesound-release-safe-v1:219845",
+      "right": "echo-freesound-release-safe-v1:219847",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01715686,
+      "left": "echo-freesound-release-safe-v1:219846",
+      "right": "echo-freesound-release-safe-v1:219847",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01948529,
+      "left": "echo-freesound-release-safe-v1:219846",
+      "right": "echo-freesound-release-safe-v1:88923",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01985294,
+      "left": "echo-freesound-release-safe-v1:219846",
+      "right": "echo-freesound-release-safe-v1:88932",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01786152,
+      "left": "echo-freesound-release-safe-v1:219846",
+      "right": "echo-freesound-release-safe-v1:89887",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01920956,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:85168",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01911765,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:88923",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01875,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:88932",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01908701,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:88933",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.0189951,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:88936",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01948529,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:980",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.01969975,
+      "left": "echo-freesound-release-safe-v1:219847",
+      "right": "echo-freesound-release-safe-v1:981",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.00318627,
+      "left": "echo-freesound-release-safe-v1:239030",
+      "right": "echo-freesound-release-safe-v1:239031",
       "same_recording_group": false
     },
     {
@@ -2942,133 +3062,13 @@
       "left": "echo-freesound-release-safe-v1:88927",
       "right": "echo-freesound-release-safe-v1:88942",
       "same_recording_group": false
-    },
-    {
-      "distance": 0.01783088,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88945",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00465686,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88948",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.0120098,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88949",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00802696,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88950",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01393995,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89887",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00585172,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89888",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00462623,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89889",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00952819,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89890",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01798407,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89891",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00481005,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89894",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00530025,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89895",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.00496324,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89900",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.0067402,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89902",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01810662,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89903",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01032475,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89904",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01188725,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:89905",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01571691,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:977",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.0060049,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:979",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01158088,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:980",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01213235,
-      "left": "echo-freesound-release-safe-v1:88928",
-      "right": "echo-freesound-release-safe-v1:88932",
-      "same_recording_group": false
     }
   ],
   "near_duplicate_threshold": 0.02,
-  "near_duplicate_unresolved_cross_group_count": 813,
+  "near_duplicate_unresolved_cross_group_count": 833,
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1112,
+  "scope_asset_count": 1163,
   "status": "FAIL"
 }
