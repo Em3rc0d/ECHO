@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Materialize small public FIRE_ALARM/TIRE_SQUEAL gap assets.
 
-Raw media is written to a CI artifact directory, never committed to Git. The
-repository receives only hashes/probes/license-page evidence. Admission into a
-frozen corpus still requires semantic review, grouping and deduplication.
+Raw media is written to a CI scratch/artifact directory, never committed to Git.
+The repository receives hashes, probes, canonical fingerprints and license-page
+evidence. Admission into a frozen corpus still requires semantic review,
+grouping, global deduplication and the corpus solidity gate.
 """
 
 from __future__ import annotations
@@ -18,6 +19,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
+from echo.data_foundry.canonical_fingerprints import canonical_audio_fingerprint
 from echo.data_foundry.probe import probe_audio
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,7 +39,7 @@ def fetch(url: str, *, attempts: int = 6) -> tuple[bytes, str | None, str]:
             },
         )
         try:
-            with urlopen(request, timeout=120) as response:  # nosec B310 - URLs are versioned public source evidence
+            with urlopen(request, timeout=120) as response:  # nosec B310 - versioned public source evidence
                 return response.read(), response.headers.get_content_type(), response.geturl()
         except HTTPError as exc:
             last_error = exc
@@ -54,8 +56,7 @@ def extension_for(url: str, content_type: str | None) -> str:
     suffix = Path(urlparse(url).path).suffix.lower()
     if suffix in {".wav", ".mp3", ".ogg", ".flac", ".m4a", ".aac", ".aiff", ".aif"}:
         return suffix
-    guessed = mimetypes.guess_extension(content_type or "") or ".bin"
-    return guessed
+    return mimetypes.guess_extension(content_type or "") or ".bin"
 
 
 def license_marker_ok(source_id: str, expected_license: str, page_text: str) -> bool:
@@ -102,6 +103,7 @@ def main() -> int:
             probe = probe_audio(path)
             if not probe.ok:
                 raise RuntimeError(f"audio probe failed for {asset_key}: {probe.reason}")
+            fingerprint = canonical_audio_fingerprint(path)
 
             rows.append({
                 "asset_key": asset_key,
@@ -120,9 +122,10 @@ def main() -> int:
                 "content_type": content_type,
                 "local_relpath": str(path.relative_to(OUTPUT_ROOT)),
                 "audio_probe": probe.to_dict(),
+                "canonical_fingerprint": fingerprint,
                 "admission_status": "CANDIDATE_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED",
             })
-        except Exception as exc:  # evidence report must preserve individual failures
+        except Exception as exc:
             failures.append({
                 "asset_key": asset_key,
                 "source_dataset": source_id,
@@ -131,17 +134,18 @@ def main() -> int:
             })
 
     payload = {
-        "schema_version": "echo.public-gap-materialization-report.v1",
+        "schema_version": "echo.public-gap-materialization-report.v2",
         "status": "PASS" if not failures else "PARTIAL",
         "materialized_count": len(rows),
+        "fingerprinted_count": sum(1 for row in rows if row.get("canonical_fingerprint")),
         "failure_count": len(failures),
         "assets": sorted(rows, key=lambda value: (value["source_dataset"], value["target"], value["asset_key"])),
         "failures": failures,
-        "certification_note": "Materialized bytes are candidates only. Semantic review/group/dedup/rights gates still control admission.",
+        "certification_note": "Materialized bytes are candidates only. Fingerprinting closes codec-normalized evidence capture, but semantic review/group/global dedup/rights/coverage gates still control admission.",
     }
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps({"status": payload["status"], "materialized": len(rows), "failures": len(failures)}, sort_keys=True))
+    print(json.dumps({"status": payload["status"], "materialized": len(rows), "fingerprinted": payload["fingerprinted_count"], "failures": len(failures)}, sort_keys=True))
     return 0 if not failures else 2
 
 
