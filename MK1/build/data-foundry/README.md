@@ -1,10 +1,19 @@
 # MK1 Data Foundry
 
-**Status:** `TOOLCHAIN_IMPLEMENTED / REAL_CORPUS_INSTANCE_NOT_YET_CERTIFIED`
+**Status:** `TOOLCHAIN_IMPLEMENTED / REAL_CORPUS_CLOSURE_ACTIVE / CORPUS_NOT_YET_CERTIFIED`  
+**Global execution invariant:** `ECHO-FREE-TIER-001`
 
 ## Purpose
 
 The MK1 Data Foundry converts heterogeneous public, sensor-network and future ECHO field audio into a traceable, versioned, license-aware and leakage-resistant corpus. It is part of `MK1/build` and implements the data path required before model A/B/C benchmarking.
+
+The active closure runbook is:
+
+`MK1/build/data-foundry/CORPUS-FOUNDRY-CLOSURE-PLAN.md`
+
+The research synthesis that motivated the latest closure hardening is:
+
+`MK1/mining-site/CORPUS-CLOSURE-DEEP-RESEARCH-2026-09-13.md`
 
 ## End-to-end contract
 
@@ -16,31 +25,35 @@ publisher/source release
   -> technical audio probe + local asset SHA-256
   -> rights policy
   -> semantic mapping + manual review where required
-  -> quality + perceptual duplicate screening
-  -> group identity + duplicate/label-conflict audit
-  -> protected split / field holdout
+  -> hard-negative evidence where required
+  -> exact + canonical near-duplicate screening
+  -> recording-family identity + duplicate/label-conflict audit
+  -> protected group-aware split / field holdout
+  -> coverage + diversity gate
   -> frozen asset/split/report bundle
   -> dataset manifest hashes
+  -> second clean freeze / reproducibility check
   -> validated benchmark-facing split view
 ```
 
-No mandatory link may be skipped. Missing rights, provenance, local file, usable audio, group identity or required review produces quarantine/rejection rather than silent admission.
+No mandatory link may be skipped. Missing rights, provenance, local/observed real bytes, usable audio, group identity, required review or leakage evidence produces quarantine/rejection/open state rather than silent admission.
 
 ## Implemented code surface
 
 ```text
 src/echo/data_foundry/
   acquisition.py     publisher bundle verification
-  adapters.py        FSD50K/SONYC/SINGA:PURA/ESC-50/UrbanSound8K metadata adapters
+  adapters.py        source metadata adapters
   admission.py       per-asset rights + mapping + quality decision
   contracts.py       dataset-neutral typed contracts
   dataset.py         validated benchmark-facing frozen-bundle reader
   dedup.py           group/exact/registered-near-duplicate + label-conflict audits
-  fingerprints.py    PCM-WAV normalized-envelope screening fingerprint
+  fingerprints.py    current lightweight screening fingerprint
   hashing.py         canonical JSON + SHA-256 helpers
   intake.py          config-driven candidate-manifest production
   manifest.py        canonical asset/dataset manifests
   mapping.py         versioned semantic label mapping
+  materialization.py bounded source materialization helpers
   pipeline.py        probe/admission/split/freeze orchestration
   policies.py        rights/use decisions
   probe.py           WAV/ffprobe technical audio evidence
@@ -74,6 +87,8 @@ FROZEN
 
 Large audio is not committed to Git. Git stores source/policy registries, schemas, code, manifests, hashes, reports and certification evidence.
 
+The certified execution path must remain under `ECHO-FREE-TIER-001`: bounded working sets, standard public runners only, no paid fallback and no raw-corpus artifact lake.
+
 ## Frozen MK1 taxonomy
 
 `GLASS_SHATTER`, `SIREN`, `FIRE_ALARM`, `VEHICLE_HORN`, `TIRE_SQUEAL`.
@@ -82,11 +97,28 @@ Large audio is not committed to Git. Git stores source/policy registries, schema
 
 ## Source roles
 
-FSD50K supplies broad/mixed-license environmental candidates and requires asset-level rights filtering. SONYC-UST supplies urban sensor-domain multilabel data. SINGA:PURA supplies strongly labelled urban sensor examples but ShareAlike use requires the chosen profile to respect policy. ESC-50 and UrbanSound8K are research-only in the default policy. AudioSet is ontology/pretraining/reference evidence rather than a default raw-media source. ECHO Field Dataset remains gated by authorized device/site collection.
+FSD50K supplies broad environmental metadata/ground-truth candidates and requires asset-level rights filtering of underlying Freesound media. SONYC-UST supplies urban sensor-domain multilabel data. SINGA:PURA supplies strongly labelled urban sensor examples but policy/profile compatibility must remain explicit. ESC-50 and UrbanSound8K are research-only in the default policy. AudioSet is ontology/pretraining/reference evidence rather than a default raw-media source. ECHO Field Dataset remains gated by authorized device/site collection.
 
-## Known sourcing gaps
+### Underlying-source rule
 
-The Foundry never fabricates `FIRE_ALARM` or `TIRE_SQUEAL` from generic alarm/screech/friction labels. If a frozen real manifest lacks direct valid evidence, the generated coverage report keeps the gap visible and the model benchmark cannot pretend the class is certified.
+Dataset wrappers do not create new acoustic independence.
+
+If FSD50K and a direct Freesound materialization refer to the same underlying sound, they share one recording/source family for diversity accounting.
+
+## Known closure-critical nodes
+
+The Foundry never fabricates `FIRE_ALARM` or `TIRE_SQUEAL` from generic alarm/screech/friction labels. If a frozen real manifest lacks direct valid evidence, the generated coverage report keeps the gap visible.
+
+Before `CERT-MK1-DF-CORPUS-001`, the current closure plan additionally requires:
+
+```text
+canonical cross-format near-duplicate hardening + fixture validation
+hard-negative materialization/evidence integration
+one global corpus ledger and global dedup/group audit
+final group-aware split + coverage gate
+two-pass freeze/reproducibility evidence
+final corpus-closure integration evidence
+```
 
 ## CLI execution
 
@@ -113,16 +145,33 @@ echo-data-foundry list-split work/frozen/echo-mk1-data-001 train --ids-only
 
 ## Freeze outputs
 
-`asset-manifest.jsonl`, `split-manifest.json`, `dataset-manifest.json`, `coverage-report.json`, `dedup-report.json`, `quarantine-report.json`.
+The release-safe closure target contains at least:
 
-A benchmark without the exact frozen component hashes is non-certifiable.
+`asset-manifest.jsonl`, `split-manifest.json`, `dataset-manifest.json`, `coverage-report.json`, `coverage-gate.json`, `dedup-report.json`, `quarantine-report.json`.
+
+A benchmark without the exact frozen component identities is non-certifiable.
 
 ## Stop-the-line rules
 
-Stop downstream execution on unknown/incompatible rights, release checksum mismatch, missing/unprobeable audio, missing hash, broad positive mapping without review, group/duplicate/label-conflict leakage across protected splits, field-holdout contamination, mutable manual file selection, frozen-bundle hash mismatch, or a report that cannot reconstruct its asset population.
+Stop downstream execution on unknown/incompatible rights, release checksum mismatch, missing/unprobeable audio, missing hash, broad positive mapping without review, unresolved hard-negative evidence, group/duplicate/label-conflict leakage across protected splits, field-holdout contamination, mutable manual file selection, frozen-bundle hash mismatch, free-tier boundary failure or a report that cannot reconstruct its asset population.
+
+Do not lower quality/coverage gates to fit infrastructure. If the zero-cost boundary prevents closure, keep the node open.
 
 ## Certification boundary
 
-The complete Foundry software/toolchain can be tested and certified without downloading tens of gigabytes into CI. **A real corpus certificate cannot be fabricated**: `EMP-DATASET-001`, `EMP-DATA-QUALITY-001` and `CERT-MK1-DF-CORPUS-001` require the declared external source media to be acquired and the implemented pipeline to run against it.
+The Foundry software/toolchain can be tested without persisting tens of gigabytes in CI. **A real corpus certificate cannot be fabricated**: `EMP-DATASET-001`, `EMP-DATA-QUALITY-001` and `CERT-MK1-DF-CORPUS-001` require real release-safe source execution and the complete closure chain.
 
-See `ACQUISITION.md`, `METADATA-INTAKE.md`, `SEMANTIC-REVIEW.md`, `TECHNICAL-QUALITY.md`, `CORPUS-FREEZE.md` and `FOUNDRY-GATES.md` for gate-level details.
+The authoritative benchmark remains blocked until:
+
+```text
+coverage-gate.status = PASS
+coverage-gate.gap_codes = []
+exact duplicate leakage = 0
+near-duplicate leakage = 0
+recording-family leakage = 0
+bundle validation = PASS
+reproducibility = PASS
+free-tier boundary = PASS
+```
+
+See `ACQUISITION.md`, `METADATA-INTAKE.md`, `SEMANTIC-REVIEW.md`, `TECHNICAL-QUALITY.md`, `CORPUS-FREEZE.md`, `CORPUS-SOLIDITY-GATE.md`, `FOUNDRY-GATES.md` and `CORPUS-FOUNDRY-CLOSURE-PLAN.md` for gate-level details.
