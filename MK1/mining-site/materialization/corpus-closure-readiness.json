@@ -3,51 +3,51 @@
     "coverage_gate": {
       "filename": "coverage-gate.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "a1a4d9723eb20bb0c9ac68fb5321425985bd48baef12bb21d6e58675d84e9581",
+      "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "2244eb406446fc98958c7271088db80620a539aa5ca56075e869be3d3d52d1ad",
+      "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "a68301a8d750f909cd4549e8672d23977ef2967f2490c5be8e1fac021a9b1431",
+      "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "897f0be134acc2e7998ad8a68684d0f25000a948430364beb642d6e31a4009f4",
+      "status": "FAIL"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "52375132de871720b938a680aff9ddb02b21d091f8e4e6fb4708d277ed085f71",
+      "status": "FAIL"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "706dac57491cdc4780c335c0941f05981245e7d9a65090d6c6a2356514e4271b",
+      "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": false,
-      "present": false,
-      "sha256": null,
-      "status": "MISSING"
+      "present": true,
+      "sha256": "ffe9baad5794c67b68a42b0d7f698e3382d54ad77e395ff9afb5c2e591056982",
+      "status": "FAIL"
     }
   },
   "corpus_certificate": {
@@ -55,42 +55,44 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "1074cf91f3225933c30a4d79cd8a55aaf5682426194696afc68d357e63a4ce7a",
+  "evidence_identity_sha256": "b7d49c10208d28de195244ee17d20ffdd34ce40fa166d70b9cdb2c9da5513584",
   "gap_codes": [
     "CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE",
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
-    "COVERAGE_GATE_MISSING",
+    "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
-    "FIRE_ALARM_ASSETS_5_LT_50",
+    "COVERAGE_GATE_STATUS_NOT_PASS",
+    "FIRE_ALARM_ASSETS_10_LT_50",
     "FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
     "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2",
     "GLOBAL_DEDUP_AUDIT_NOT_PASS",
-    "LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_2",
-    "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_415",
+    "LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4",
+    "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_452",
     "LEDGER_LICENSE_NOT_RELEASE_SAFE_1",
     "LEDGER_MISSING_ASSET_LEVEL_AUDIO_PROBE_363",
     "LEDGER_MISSING_ASSET_LEVEL_BYTE_SIZE_363",
     "LEDGER_MISSING_CANONICAL_FINGERPRINT_599",
-    "LEDGER_NO_EXACT_SEMANTIC_ROLE_11",
+    "LEDGER_NO_EXACT_SEMANTIC_ROLE_84",
+    "LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1",
+    "LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1",
     "RECORDING_FAMILY_AUDIT_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
     "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
     "SPLIT_INTEGRITY_NOT_PASS",
-    "TIRE_SQUEAL_ASSETS_5_LT_50",
+    "TIRE_SQUEAL_ASSETS_11_LT_50",
     "TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20",
     "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2",
-    "TIRE_SQUEAL_UNDERLYING_SOURCES_1_LT_2",
     "VEHICLE_HORN_HARD_NEGATIVES_0_LT_20",
     "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2"
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "459eb5d7231156f9101ff1dbc24181887a64d3be",
-      "entry_count": 1048,
-      "ledger_sha256": "4c3872c639246e29d8bf1fcce4b884f4a0cd0bde1dc325efd7888ba0fc9b30da",
-      "sha256": "13ba33374145686de42b6db8081eda702e6e92cb2a3f5d68ceaa7139d5ccb0b1"
+      "baseline_commit": "13d13a2d86731059930603bc2f07ffd668d6671c",
+      "entry_count": 1113,
+      "ledger_sha256": "319aae04f43f298e0d6a7a8d7b2c23b49d86ae893f621a1ef0c6fe06101428e0",
+      "sha256": "546bd9c22363f67ed6f7a49fb222bc3f017bfb6ce5dbc960cf68153582b96963"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -99,13 +101,15 @@
     }
   },
   "ledger_blocking_reason_counts": {
-    "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 2,
-    "GROUPING_GLOBAL_AUDIT_REQUIRED": 415,
+    "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
+    "GROUPING_GLOBAL_AUDIT_REQUIRED": 452,
     "LICENSE_NOT_RELEASE_SAFE": 1,
     "MISSING_ASSET_LEVEL_AUDIO_PROBE": 363,
     "MISSING_ASSET_LEVEL_BYTE_SIZE": 363,
     "MISSING_CANONICAL_FINGERPRINT": 599,
-    "NO_EXACT_SEMANTIC_ROLE": 11
+    "NO_EXACT_SEMANTIC_ROLE": 84,
+    "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
+    "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1
   },
   "modeling_allowed": false,
   "next_authorized_stage": "CORPUS_FOUNDRY_CLOSURE",
@@ -121,9 +125,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 1,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 5,
+      "positive_assets_pre_final_dedup": 10,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 2,
+      "positive_underlying_source_families": 3,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
@@ -133,7 +137,7 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 1,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 286,
+      "positive_assets_pre_final_dedup": 270,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 2,
       "precheck_status": "FAIL",
@@ -145,7 +149,7 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 1,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 170,
+      "positive_assets_pre_final_dedup": 169,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
       "precheck_status": "FAIL",
@@ -157,9 +161,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 0,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 5,
+      "positive_assets_pre_final_dedup": 11,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 1,
+      "positive_underlying_source_families": 2,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
@@ -169,7 +173,7 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 0,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 235,
+      "positive_assets_pre_final_dedup": 233,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
       "precheck_status": "FAIL",
