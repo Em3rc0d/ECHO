@@ -208,20 +208,28 @@ Exact real counts, durations, diversity and duplicate findings belong to empiric
 
 ## 10. Documentation state
 
-Documentation remains an upstream certification gate.
+Documentation is a hard upstream certification gate under `governance/DOCUMENTATION-STANDARD.md` and `governance/CERTIFICATION-DAG.md`.
 
-The previous documentation certificate `CERT-DOC-003` covered the 197-file corpus at commit `7ef9c1d52b12396e6e73f00f0a3a442d49061fe3`. Substantive corpus-closure/free-tier documents were added afterward, so `CERT-DOC-003` is historical/stale for current HEAD by its own invalidation rule.
-
-A new delta/full coherence audit is being recorded as `CERT-DOC-004`. Until that audit is finalized in governance, current documentation state is:
+Certificate lineage:
 
 ```text
 CERT-DOC-001  historical
 CERT-DOC-002  historical
 CERT-DOC-003  historical / superseded for current HEAD
-CERT-DOC-004  CANDIDATE_PENDING_AUDIT
+CERT-DOC-004  CERTIFIED / current
 ```
 
-No engineering certificate is allowed to hide a documentation contradiction.
+`CERT-DOC-003` covered the 197-file corpus at commit `7ef9c1d52b12396e6e73f00f0a3a442d49061fe3`. `CERT-DOC-004` covers the current 206-file Markdown corpus after the Corpus Foundry Closure/free-tier coherence pass.
+
+The current audit is:
+
+```text
+governance/DOCUMENTATION-AUDIT-2026-09-13-CORPUS-CLOSURE.md
+```
+
+The pass corrected two material contradictions before certification: legacy 120 GiB/self-hosted materialization guidance that violated `ECHO-FREE-TIER-001`, and stale current-state language that hid newly identified Corpus Foundry closure nodes.
+
+No engineering certificate may hide a documentation contradiction, and documentation certification does not fabricate open empirical results.
 
 ## 11. Other frozen MK1 decisions
 
@@ -246,14 +254,14 @@ No engineering certificate is allowed to hide a documentation contradiction.
 ## 12. Nodos empíricos abiertos
 
 ```text
-EMP-DATASET-001      = OPEN
-EMP-DATA-QUALITY-001 = OPEN
+EMP-DATASET-001         = OPEN
+EMP-DATA-QUALITY-001    = OPEN
 CERT-MK1-DF-CORPUS-001 = OPEN
-EMP-MODEL-001        = OPEN
-EMP-THRESH-001       = OPEN
-EMP-DIST-001         = OPEN
-EMP-CAP-001          = OPEN
-EMP-SLO-001          = OPEN
+EMP-MODEL-001           = OPEN
+EMP-THRESH-001          = OPEN
+EMP-DIST-001            = OPEN
+EMP-CAP-001             = OPEN
+EMP-SLO-001             = OPEN
 ```
 
 Model winner, thresholds, latency/capacity envelope and field performance cannot be certified before their required empirical execution.
@@ -267,11 +275,10 @@ Real-camera claims require authorized device/site evidence. This does not block 
 ## 14. Next authorized transition
 
 ```text
-DOCUMENTATION COHERENCE / CERT-DOC-004
+CERT-DOC-004                    ✅
+CERT-MK1-DF-TOOLCHAIN-002       ✅
         ↓
-CERT-MK1-DF-TOOLCHAIN-002 ✅
-        ↓
-MK1 CORPUS FOUNDRY CLOSURE
+MK1 CORPUS FOUNDRY CLOSURE      ← ACTIVE
         ↓
 EMP-DATASET-001 + EMP-DATA-QUALITY-001
         ↓
