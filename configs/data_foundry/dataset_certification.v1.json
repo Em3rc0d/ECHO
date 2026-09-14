@@ -11,15 +11,9 @@
     "sonyc-ust-v2": {
       "release": "2.3",
       "source_release_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
-      "profiles": {
-        "release_safe": "ALLOW",
-        "research_extended": "ALLOW",
-        "field_holdout": "DENY"
-      },
+      "profiles": {"release_safe": "ALLOW", "research_extended": "ALLOW", "field_holdout": "DENY"},
       "license_conclusion": "Dataset-wide CC-BY-4.0 per official Zenodo record.",
-      "evidence_urls": [
-        "https://zenodo.org/records/3966543"
-      ],
+      "evidence_urls": ["https://zenodo.org/records/3966543"],
       "conditions": [
         "Preserve attribution and source release identity.",
         "Use source-provided split/context metadata and ECHO grouping rules.",
@@ -29,35 +23,22 @@
     "fsd50k-1.0": {
       "release": "1.0",
       "source_release_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
-      "profiles": {
-        "release_safe": "CONDITIONAL",
-        "research_extended": "ALLOW",
-        "field_holdout": "DENY"
-      },
+      "profiles": {"release_safe": "CONDITIONAL", "research_extended": "ALLOW", "field_holdout": "DENY"},
       "license_conclusion": "Mixed per-clip Creative Commons licenses plus dataset-level CC-BY. Official record explicitly distinguishes per-clip rights and asks commercial users to contact the authors.",
-      "evidence_urls": [
-        "https://zenodo.org/records/4060432",
-        "https://fsannotator.upf.edu/fsd/release/FSD50K/"
-      ],
+      "evidence_urls": ["https://zenodo.org/records/4060432", "https://fsannotator.upf.edu/fsd/release/FSD50K/"],
       "conditions": [
-        "No release-safe freeze until the intended-use review explicitly resolves the dataset-level commercial-use note.",
+        "No release-safe freeze of the monolithic FSD50K wrapper until the intended-use review explicitly resolves the dataset-level commercial-use note.",
         "Per-asset license metadata is mandatory; CC-BY-NC and Sampling+ assets cannot silently enter release-safe lineage.",
         "Shatter is broader than ECHO GLASS_SHATTER and requires manual semantic review.",
-        "Publisher metadata/doc/ground-truth checksum snapshot is pinned and verified; full real-media bundle checksum verification remains part of EXEC-DATA-001."
+        "Publisher metadata/doc/ground-truth checksum snapshot is pinned and verified; current per-asset Freesound re-acquisition can be certified separately without treating the same underlying sound as a second source family."
       ]
     },
     "singapura-v1.0a": {
       "release": "1.0a",
       "source_release_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED",
-      "profiles": {
-        "release_safe": "CONDITIONAL",
-        "research_extended": "ALLOW",
-        "field_holdout": "DENY"
-      },
+      "profiles": {"release_safe": "CONDITIONAL", "research_extended": "ALLOW", "field_holdout": "DENY"},
       "license_conclusion": "CC-BY-SA-4.0 per official Zenodo record; release-safe model/distribution use requires explicit ShareAlike/intended-use review.",
-      "evidence_urls": [
-        "https://zenodo.org/records/5645825"
-      ],
+      "evidence_urls": ["https://zenodo.org/records/5645825"],
       "conditions": [
         "Preserve attribution.",
         "Do not convert generic screeching or friction-brake labels into TIRE_SQUEAL positives.",
@@ -67,67 +48,73 @@
     "esc50": {
       "release": "official repository snapshot",
       "source_release_status": "SOURCE_EVIDENCE_VERIFIED",
-      "profiles": {
-        "release_safe": "DENY",
-        "research_extended": "ALLOW",
-        "field_holdout": "DENY"
-      },
+      "profiles": {"release_safe": "DENY", "research_extended": "ALLOW", "field_holdout": "DENY"},
       "license_conclusion": "Full ESC-50 is CC-BY-NC; ESC-10 subset is CC-BY. Current ECHO adapter treats the full ESC-50 source as research-only unless a separately pinned/permitted subset is defined.",
-      "evidence_urls": [
-        "https://github.com/karolpiczak/ESC-50"
-      ],
-      "conditions": [
-        "Pin an exact repository commit/archive and hash before empirical corpus certification.",
-        "Preserve source-file/take grouping and official folds."
-      ]
+      "evidence_urls": ["https://github.com/karolpiczak/ESC-50"],
+      "conditions": ["Pin an exact repository commit/archive and hash before empirical corpus certification.", "Preserve source-file/take grouping and official folds."]
     },
     "urbansound8k-1.0": {
       "release": "1.0",
       "source_release_status": "SOURCE_EVIDENCE_VERIFIED",
-      "profiles": {
-        "release_safe": "DENY",
-        "research_extended": "ALLOW",
-        "field_holdout": "DENY"
-      },
+      "profiles": {"release_safe": "DENY", "research_extended": "ALLOW", "field_holdout": "DENY"},
       "license_conclusion": "CC-BY-NC-3.0; research-only in ECHO default policy.",
-      "evidence_urls": [
-        "https://serv.cusp.nyu.edu/projects/urbansounddataset/urbansound8k.html"
-      ],
-      "conditions": [
-        "Manual/authorized acquisition must record the archive SHA-256.",
-        "Preserve official folds and fsID/occurrence grouping."
-      ]
+      "evidence_urls": ["https://serv.cusp.nyu.edu/projects/urbansounddataset/urbansound8k.html"],
+      "conditions": ["Manual/authorized acquisition must record the archive SHA-256.", "Preserve official folds and fsID/occurrence grouping."]
     },
     "audioset-ontology": {
       "release": "ontology/current research release",
       "source_release_status": "REFERENCE_ONLY",
-      "profiles": {
-        "release_safe": "REFERENCE_ONLY",
-        "research_extended": "REFERENCE_ONLY",
-        "field_holdout": "DENY"
-      },
+      "profiles": {"release_safe": "REFERENCE_ONLY", "research_extended": "REFERENCE_ONLY", "field_holdout": "DENY"},
       "license_conclusion": "Ontology/annotation evidence is separate from the rights of underlying third-party media.",
-      "evidence_urls": [
-        "https://research.google.com/audioset/ontology/"
-      ],
-      "conditions": [
-        "No automatic raw-media ingestion into a certified ECHO corpus.",
-        "May be used for ontology/pretraining provenance and coverage research only."
-      ]
+      "evidence_urls": ["https://research.google.com/audioset/ontology/"],
+      "conditions": ["No automatic raw-media ingestion into a certified ECHO corpus.", "May be used for ontology/pretraining provenance and coverage research only."]
     },
     "echo-field-v1": {
       "release": "future-v1",
       "source_release_status": "EXTERNAL_GATE_OPEN",
-      "profiles": {
-        "release_safe": "DENY",
-        "research_extended": "DENY",
-        "field_holdout": "EXTERNAL_GATE"
-      },
+      "profiles": {"release_safe": "DENY", "research_extended": "DENY", "field_holdout": "EXTERNAL_GATE"},
       "license_conclusion": "Permission-specific; no capture or corpus admission before authorization/privacy/retention gates close.",
       "evidence_urls": [],
+      "conditions": ["Close EXT-CAMERA-001 and field authorization gates.", "Keep initial field data untouched as holdout."]
+    },
+    "echo-freesound-release-safe-v1": {
+      "release": "curation-2026-09-13-v1",
+      "source_release_status": "CURATED_PER_ASSET_EVIDENCE_CERTIFIED",
+      "profiles": {"release_safe": "ALLOW", "research_extended": "ALLOW", "field_holdout": "DENY"},
+      "license_conclusion": "The curation itself carries no blanket media license. Every selected Freesound asset must independently resolve current page rights to CC0/public-domain or attribution-only CC-BY before release-safe use.",
+      "evidence_urls": ["https://freesound.org/", "https://zenodo.org/records/4060432"],
       "conditions": [
-        "Close EXT-CAMERA-001 and field authorization gates.",
-        "Keep initial field data untouched as holdout."
+        "Per-asset current rights, page provenance, real-byte SHA-256 and technical probe are mandatory.",
+        "CC-BY-NC, Sampling+, ShareAlike and unknown/unconfirmed rights are excluded from release_safe.",
+        "Only exact FSD50K ground-truth or exact curated semantics can become positives without further semantic review.",
+        "FSD50K and direct Freesound representations of the same sound share underlying source family FREESOUND and never receive duplicate source-diversity credit.",
+        "Uploader/session/recording-family identity and global exact/near dedup remain final-corpus gates."
+      ]
+    },
+    "echo-bigsoundbank-cc0-gap-v1": {
+      "release": "curation-2026-09-13-v1",
+      "source_release_status": "CURATED_PER_ASSET_EVIDENCE_CERTIFIED",
+      "profiles": {"release_safe": "ALLOW", "research_extended": "ALLOW", "field_holdout": "DENY"},
+      "license_conclusion": "Curated assets are only release-safe when the exact asset page confirms CC0/public-domain status and the fetched bytes match the durable evidence record.",
+      "evidence_urls": ["https://bigsoundbank.com/"],
+      "conditions": [
+        "Page-level license evidence, resolved media URL, page hash, media SHA-256 and valid probe are mandatory.",
+        "Explicit recording_family is mandatory for independent-group credit.",
+        "Smoke-detector, evacuation-alarm and mixed-context rows retain review-required semantics unless explicitly closed.",
+        "No candidate count is admitted count; global near-dedup/split/coverage gates still apply."
+      ]
+    },
+    "echo-wikimedia-fire-alarm-v1": {
+      "release": "curation-2026-09-13-v1",
+      "source_release_status": "CURATED_PER_ASSET_EVIDENCE_CERTIFIED",
+      "profiles": {"release_safe": "ALLOW", "research_extended": "ALLOW", "field_holdout": "DENY"},
+      "license_conclusion": "Per-asset rights vary. Public-domain rows may be release-safe candidates; ShareAlike rows remain excluded by current default release-safe policy; synthetic pattern assets are augmentation-only.",
+      "evidence_urls": ["https://commons.wikimedia.org/"],
+      "conditions": [
+        "Per-asset page/license evidence and media SHA-256/probe are mandatory.",
+        "Public-domain status does not bypass semantic review.",
+        "CC-BY-SA assets are research-only under current release-safe policy.",
+        "Synthetic standard-pattern assets receive no independent real-source or recording-group credit."
       ]
     }
   }
