@@ -302,6 +302,26 @@ def add_entry(entries: dict[str, dict[str, Any]], row: dict[str, Any], source_po
         entries[key] = row
 
 
+def confuser_targets_for_asset(
+    entries: Mapping[str, Mapping[str, Any]],
+    *,
+    source_dataset: str,
+    source_asset_id: str,
+    confuses: list[str],
+) -> list[str]:
+    """Return valid hard-negative roles after positive-label precedence.
+
+    Polyphonic source clips may contain both an ECHO target and a known confuser.
+    Such a clip remains a valid positive for the target, but cannot simultaneously
+    be credited as a hard negative for that same target. We preserve the strict
+    ledger validator and remove only the contradictory hard-negative role.
+    """
+    key = f"{source_dataset}:{source_asset_id}"
+    existing_positive = set(entries.get(key, {}).get("echo_labels") or [])
+    requested = {str(target) for target in confuses if str(target) in TARGET_LABELS}
+    return sorted(requested - existing_positive)
+
+
 def ingest_sonyc(entries: dict[str, dict[str, Any]], source_policy: Mapping[str, Any], family_policy: Mapping[str, Any]) -> dict[str, int]:
     stats = Counter()
     for row in read_jsonl(INPUTS["sonyc_targets"]):
@@ -330,19 +350,34 @@ def ingest_sonyc(entries: dict[str, dict[str, Any]], source_policy: Mapping[str,
         stats["target_rows"] += 1
 
     for row in read_jsonl(INPUTS["sonyc_confusers"]):
+        source_asset_id = str(row["source_asset_id"])
+        requested_confuses = [str(value) for value in (row.get("confuses") or [])]
+        confuses = confuser_targets_for_asset(
+            entries,
+            source_dataset="sonyc-ust-v2",
+            source_asset_id=source_asset_id,
+            confuses=requested_confuses,
+        )
+        stats["confuser_target_roles_requested"] += len(set(requested_confuses) & set(TARGET_LABELS))
+        stats["confuser_target_roles_shadowed_by_positive"] += len(
+            (set(requested_confuses) & set(TARGET_LABELS)) - set(confuses)
+        )
+        if not confuses:
+            stats["confuser_rows_fully_shadowed_by_positive"] += 1
+            continue
         entry = make_entry(
             source_policy=source_policy,
             family_policy=family_policy,
             source_dataset="sonyc-ust-v2",
-            source_asset_id=str(row["source_asset_id"]),
+            source_asset_id=source_asset_id,
             media_sha256=str(row["sha256"]),
             byte_size=None,
             audio_probe=None,
             license_id=str(row.get("license_id") or "UNKNOWN"),
-            candidate_targets=list(row.get("confuses") or []),
+            candidate_targets=confuses,
             echo_labels=[],
-            hard_negative_for=list(row.get("confuses") or []),
-            semantic_status_by_target={str(target): "EXPLICIT_SOURCE_CONFUSER" for target in row.get("confuses") or []},
+            hard_negative_for=confuses,
+            semantic_status_by_target={str(target): "EXPLICIT_SOURCE_CONFUSER" for target in confuses},
             label_provenance=["SONYC-UST v2.3 source confuser annotations"],
             recording_group_id=str(row.get("recording_group_candidate") or ""),
             grouping_status="SOURCE_TIME_SENSOR_GROUP",
