@@ -9,6 +9,7 @@ on:
       - 'MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl'
       - 'MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl'
       - 'MK1/mining-site/materialization/freesound-release-safe-materialization.json'
+      - 'MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json'
       - 'MK1/mining-site/materialization/public-gap-assets-report.json'
       - 'MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json'
       - 'MK1/mining-site/materialization/esc50-pinned-materialization-summary.json'
@@ -16,9 +17,11 @@ on:
       - 'MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json'
       - 'configs/data_foundry/dataset_certification.v1.json'
       - 'configs/data_foundry/underlying_source_families.v1.json'
+      - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
       - 'src/echo/data_foundry/ledger.py'
       - 'scripts/data_foundry/build_canonical_asset_ledger.py'
+      - 'scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py'
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
       - 'scripts/check_free_tier_boundary.py'
       - '.github/workflows/mk1-canonical-ledger.yml'
@@ -46,12 +49,14 @@ jobs:
         run: |
           python -m json.tool configs/data_foundry/dataset_certification.v1.json >/dev/null
           python -m json.tool configs/data_foundry/underlying_source_families.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/freesound_cc0_supplemental.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
-      - name: Build and enrich canonical release-safe evidence ledger
+      - name: Build, augment and enrich canonical release-safe evidence ledger
         env:
           PYTHONPATH: src:.
         run: |
           python scripts/data_foundry/build_canonical_asset_ledger.py
+          python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
       - name: Verify deterministic rebuild
         env:
@@ -60,6 +65,7 @@ jobs:
           cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl /tmp/ledger.first.jsonl
           cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json /tmp/ledger.first.summary.json
           python scripts/data_foundry/build_canonical_asset_ledger.py
+          python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           cmp /tmp/ledger.first.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl
           cmp /tmp/ledger.first.summary.json MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
@@ -81,5 +87,5 @@ jobs:
           git config user.email "123134857+Em3rc0d@users.noreply.github.com"
           git add MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
           git diff --cached --quiet && { echo "No staged ledger evidence changes"; exit 0; }
-          git commit -m "evidence(mk1): consolidate canonical corpus ledger [skip ci]"
+          git commit -m "evidence(mk1): consolidate canonical corpus ledger"
           git push origin HEAD:main
