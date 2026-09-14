@@ -26,6 +26,15 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def compact_technical_evidence(row: dict) -> dict:
+    return {
+        "byte_size": row["byte_size"],
+        "audio_probe": row["audio_probe"],
+        "canonical_fingerprint": row.get("canonical_fingerprint"),
+        "fingerprint_error": row.get("fingerprint_error"),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-root", required=True)
@@ -54,6 +63,8 @@ def main() -> int:
     total_assets = 0
     total_duration = 0.0
     probe_failures = 0
+    fingerprinted_assets = 0
+    fingerprint_failures = 0
     unmatched_annotations = 0
     target_counts = Counter()
     confuser_counts = Counter()
@@ -82,11 +93,15 @@ def main() -> int:
             "archive_size_bytes": summary["shard_evidence"]["size_bytes"],
             "asset_count": summary["asset_count"],
             "inventory_sha256": summary["inventory_sha256"],
+            "fingerprinted_ledger_relevant_assets": int(summary.get("fingerprinted_ledger_relevant_assets") or 0),
+            "fingerprint_failures": int(summary.get("fingerprint_failures") or 0),
             "status": summary["status"],
         })
         total_assets += int(summary["asset_count"])
         total_duration += float(summary["total_duration_seconds"])
         probe_failures += int(summary["probe_failures"])
+        fingerprinted_assets += int(summary.get("fingerprinted_ledger_relevant_assets") or 0)
+        fingerprint_failures += int(summary.get("fingerprint_failures") or 0)
         unmatched_annotations += int(summary["unmatched_annotation_assets"])
         target_counts.update(summary["target_ground_truth_counts"])
         confuser_counts.update(summary["confuser_ground_truth_counts"])
@@ -105,20 +120,20 @@ def main() -> int:
 
                 labels = list(row.get("echo_labels_ground_truth") or [])
                 confuses = list(row.get("confuses_ground_truth") or [])
+                technical = compact_technical_evidence(row)
                 if labels:
                     compact = {
                         "source_dataset": row["source_dataset"],
                         "source_release": row["source_release"],
                         "source_asset_id": row["source_asset_id"],
                         "sha256": row["sha256"],
-                        "byte_size": row["byte_size"],
+                        **technical,
                         "license_id": row["license_id"],
                         "label_provenance": row["label_provenance"],
                         "echo_labels": labels,
                         "split": row["split"],
                         "sensor_id": row.get("sensor_id"),
                         "recording_group_candidate": row["recording_group_candidate"],
-                        "audio_probe": row["audio_probe"],
                         "archive": row["archive"],
                         "archive_member": row["archive_member"],
                     }
@@ -132,6 +147,7 @@ def main() -> int:
                         "source_release": row["source_release"],
                         "source_asset_id": row["source_asset_id"],
                         "sha256": row["sha256"],
+                        **technical,
                         "license_id": row["license_id"],
                         "confuses": confuses,
                         "source_confusers": row.get("source_confusers_ground_truth", []),
@@ -156,15 +172,15 @@ def main() -> int:
 
     shard_digest_path = output_dir / "sonyc-v2.3-shard-digests.json"
     shard_digest_path.write_text(json.dumps({
-        "schema_version": "echo.sonyc-shard-digests.v1",
+        "schema_version": "echo.sonyc-shard-digests.v2",
         "source_id": "sonyc-ust-v2",
         "source_release": "2.3",
         "shards": shard_rows,
     }, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
-    status = "PASS" if not duplicate_sha and probe_failures == 0 and unmatched_annotations == 0 else "PASS_WITH_REVIEW_FLAGS"
+    status = "PASS" if not duplicate_sha and probe_failures == 0 and fingerprint_failures == 0 and unmatched_annotations == 0 else "PASS_WITH_REVIEW_FLAGS"
     summary = {
-        "schema_version": "echo.sonyc-full-materialization-summary.v1",
+        "schema_version": "echo.sonyc-full-materialization-summary.v2",
         "status": status,
         "source_id": "sonyc-ust-v2",
         "source_release": "2.3",
@@ -173,6 +189,8 @@ def main() -> int:
         "asset_count": total_assets,
         "total_duration_seconds": round(total_duration, 6),
         "probe_failures": probe_failures,
+        "fingerprinted_ledger_relevant_assets": fingerprinted_assets,
+        "fingerprint_failures": fingerprint_failures,
         "unmatched_annotation_assets": unmatched_annotations,
         "exact_duplicate_sha256_group_count": len(duplicate_sha),
         "exact_duplicate_examples": [
@@ -189,7 +207,7 @@ def main() -> int:
         "target_candidates_sha256": sha256_file(target_path),
         "confuser_candidates_sha256": sha256_file(confuser_path),
         "shard_digests_sha256": sha256_file(shard_digest_path),
-        "certification_boundary": "Real SONYC bytes were fully materialized shard-by-shard under ECHO-FREE-TIER-001. This evidence does not by itself close CERT-MK1-DF-CORPUS-001; global source diversity, hard-negative, dedup, split and coverage gates remain authoritative.",
+        "certification_boundary": "Real SONYC bytes were fully materialized shard-by-shard under ECHO-FREE-TIER-001. Ledger-relevant target/confuser records retain asset-level size, probe and canonical fingerprint evidence. Global source diversity, hard-negative, near-duplicate, split and coverage gates remain authoritative.",
     }
     summary_path = output_dir / "sonyc-v2.3-full-materialization-summary.json"
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
