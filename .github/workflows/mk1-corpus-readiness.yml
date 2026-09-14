@@ -2,6 +2,9 @@ name: MK1 Corpus Closure Readiness
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ['MK1 Corpus Closure Evidence']
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -30,10 +33,12 @@ concurrency:
 
 jobs:
   readiness:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
