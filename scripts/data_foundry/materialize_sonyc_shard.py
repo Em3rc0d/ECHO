@@ -3,8 +3,9 @@
 
 The job downloads exactly one publisher shard plus annotations, verifies MD5,
 extracts only that shard, probes/hash-inventories every WAV, derives conservative
-exact target/confuser evidence from ground-truth rows when available, writes
-small evidence files, then the workflow discards raw audio.
+exact target/confuser evidence from ground-truth rows when available, and
+canonical-fingerprints only ledger-relevant target/confuser assets while the
+real bytes still exist. Raw audio is discarded after compact evidence is emitted.
 """
 
 from __future__ import annotations
@@ -21,6 +22,9 @@ import time
 import wave
 from urllib.parse import quote, urlparse
 from urllib.request import Request, urlopen
+
+from echo.data_foundry.canonical_fingerprints import ALGORITHM as FINGERPRINT_ALGORITHM
+from echo.data_foundry.canonical_fingerprints import canonical_audio_fingerprint
 
 ROOT = Path(__file__).resolve().parents[2]
 REGISTRY = ROOT / "configs/data_foundry/acquisition_registry.v1.json"
@@ -210,6 +214,8 @@ def materialize(shard: int, work_root: Path, output_dir: Path) -> dict:
     inventory_path = output_dir / f"sonyc-shard-{shard:02d}.jsonl.gz"
     asset_count = 0
     probe_failures = 0
+    fingerprinted_assets = 0
+    fingerprint_failures = 0
     unmatched_annotations = 0
     ground_truth_assets = 0
     target_counts = {key: 0 for key in TARGET_COLUMNS}
@@ -249,6 +255,16 @@ def materialize(shard: int, work_root: Path, output_dir: Path) -> dict:
             else:
                 total_duration += float(probe["duration_seconds"])
 
+            canonical_fingerprint = None
+            fingerprint_error = None
+            if (echo_labels or confuses) and probe.get("ok") is True:
+                try:
+                    canonical_fingerprint = canonical_audio_fingerprint(wav_path)
+                    fingerprinted_assets += 1
+                except Exception as exc:
+                    fingerprint_failures += 1
+                    fingerprint_error = f"{type(exc).__name__}: {exc}"
+
             crowd_votes: dict[str, dict[str, int]] = {}
             for target in TARGET_COLUMNS:
                 col = presence_columns.get(target)
@@ -261,7 +277,7 @@ def materialize(shard: int, work_root: Path, output_dir: Path) -> dict:
 
             rel = wav_path.relative_to(extracted).as_posix()
             record = {
-                "schema_version": "echo.sonyc-materialized-asset.v1",
+                "schema_version": "echo.sonyc-materialized-asset.v2",
                 "source_dataset": SOURCE_ID,
                 "source_release": "2.3",
                 "source_asset_id": filename_only,
@@ -282,14 +298,16 @@ def materialize(shard: int, work_root: Path, output_dir: Path) -> dict:
                 "sensor_id": (chosen or {}).get("sensor_id"),
                 "recording_group_candidate": group_candidate(chosen, filename_only),
                 "audio_probe": probe,
+                "canonical_fingerprint": canonical_fingerprint,
+                "fingerprint_error": fingerprint_error,
             }
             out.write(json.dumps(record, sort_keys=True, separators=(",", ":")) + "\n")
             asset_count += 1
 
     inventory_sha256 = sha256_file(inventory_path)
     summary = {
-        "schema_version": "echo.sonyc-shard-materialization.v1",
-        "status": "PASS" if probe_failures == 0 and unmatched_annotations == 0 else "PASS_WITH_REVIEW_FLAGS",
+        "schema_version": "echo.sonyc-shard-materialization.v2",
+        "status": "PASS" if probe_failures == 0 and fingerprint_failures == 0 and unmatched_annotations == 0 else "PASS_WITH_REVIEW_FLAGS",
         "source_id": SOURCE_ID,
         "source_release": "2.3",
         "shard_index": shard,
@@ -302,6 +320,9 @@ def materialize(shard: int, work_root: Path, output_dir: Path) -> dict:
         "ground_truth_asset_count": ground_truth_assets,
         "unmatched_annotation_assets": unmatched_annotations,
         "probe_failures": probe_failures,
+        "fingerprint_algorithm": FINGERPRINT_ALGORITHM,
+        "fingerprinted_ledger_relevant_assets": fingerprinted_assets,
+        "fingerprint_failures": fingerprint_failures,
         "total_duration_seconds": round(total_duration, 6),
         "target_ground_truth_counts": target_counts,
         "confuser_ground_truth_counts": confuser_counts,
@@ -310,7 +331,7 @@ def materialize(shard: int, work_root: Path, output_dir: Path) -> dict:
         "inventory_sha256": inventory_sha256,
         "working_set_peak_guard_bytes": limit,
         "working_set_final_bytes": dir_size(work_root),
-        "certification_note": "Real bytes verified/probed; final corpus admission still requires global dedup/group/split/coverage gates.",
+        "certification_note": "Real bytes verified/probed; ledger-relevant target/confuser assets were canonical-fingerprinted before raw bytes were discarded. Final corpus admission still requires global dedup/group/split/coverage gates.",
     }
     summary_path = output_dir / f"sonyc-shard-{shard:02d}.json"
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
