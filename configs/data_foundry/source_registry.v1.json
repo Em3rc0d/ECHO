@@ -135,6 +135,62 @@
         "TIRE_SQUEAL": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"}
       },
       "notes": "Field capture requires authorization/privacy/retention metadata and remains untouched holdout initially."
+    },
+    {
+      "source_id": "echo-freesound-release-safe-v1",
+      "name": "ECHO curated current-rights Freesound pool",
+      "release": "curation-2026-09-13-v1",
+      "canonical_url": "https://freesound.org/",
+      "role": ["curated_per_asset_positive_pool", "hard_negative_candidate_pool", "gap_closure"],
+      "license_model": "per_asset_current_page_rights",
+      "dataset_license": null,
+      "default_profile": "release_safe_filtered",
+      "asset_license_required": true,
+      "target_coverage": {
+        "GLASS_SHATTER": {"relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED", "review_required": false},
+        "SIREN": {"relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED", "review_required": false},
+        "FIRE_ALARM": {"relation": "EXACT_CURATED_OR_REVIEW_REQUIRED_CATEGORY_CANDIDATE", "review_required": true},
+        "VEHICLE_HORN": {"relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED", "review_required": false},
+        "TIRE_SQUEAL": {"relation": "EXACT_CURATED_OR_REVIEW_REQUIRED_CATEGORY_CANDIDATE", "review_required": true}
+      },
+      "group_keys": ["sound_id", "uploader", "curated_recording_family"],
+      "notes": "The curation version is source-certified, but every concrete asset still requires current page rights, real-byte hash/probe, semantic status, grouping and global dedup. FSD50K and direct Freesound views share underlying source family FREESOUND."
+    },
+    {
+      "source_id": "echo-bigsoundbank-cc0-gap-v1",
+      "name": "ECHO curated BigSoundBank CC0 gap pool",
+      "release": "curation-2026-09-13-v1",
+      "canonical_url": "https://bigsoundbank.com/",
+      "role": ["curated_per_asset_positive_pool", "gap_closure", "hard_negative_candidate_pool"],
+      "license_model": "per_asset_page_cc0_verification",
+      "dataset_license": "CC0 candidates only",
+      "default_profile": "release_safe_filtered",
+      "asset_license_required": true,
+      "target_coverage": {
+        "GLASS_SHATTER": {"relation": "EXACT_CURATED", "review_required": false},
+        "SIREN": {"relation": "EXACT_CURATED", "review_required": false},
+        "FIRE_ALARM": {"relation": "MIXED_EXACT_AND_REVIEW_REQUIRED", "review_required": true},
+        "VEHICLE_HORN": {"relation": "EXACT_CURATED", "review_required": false},
+        "TIRE_SQUEAL": {"relation": "MIXED_EXACT_AND_REVIEW_REQUIRED", "review_required": true}
+      },
+      "group_keys": ["recording_family", "asset_key"],
+      "notes": "Only rows with verified CC0 page evidence, real bytes, exact semantics and defensible recording-family identity can advance to global dedup."
+    },
+    {
+      "source_id": "echo-wikimedia-fire-alarm-v1",
+      "name": "ECHO curated Wikimedia Commons fire-alarm pool",
+      "release": "curation-2026-09-13-v1",
+      "canonical_url": "https://commons.wikimedia.org/",
+      "role": ["curated_per_asset_positive_candidate_pool", "gap_closure", "augmentation_candidate_pool"],
+      "license_model": "per_asset_public_domain_or_creative_commons",
+      "dataset_license": null,
+      "default_profile": "release_safe_filtered",
+      "asset_license_required": true,
+      "target_coverage": {
+        "FIRE_ALARM": {"relation": "MIXED_REVIEW_REQUIRED_EXACT_AND_AUGMENTATION_ONLY", "review_required": true}
+      },
+      "group_keys": ["recording_family", "asset_key"],
+      "notes": "Public-domain rows can be release-safe candidates after semantic review; ShareAlike rows remain non-release-safe under current default policy; synthetic pattern assets never receive independent real-source credit."
     }
   ]
 }
