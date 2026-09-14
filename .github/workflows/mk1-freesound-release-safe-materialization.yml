@@ -15,6 +15,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: mk1-freesound-release-safe-main
+  cancel-in-progress: false
+
 jobs:
   materialize:
     runs-on: ubuntu-latest
@@ -22,10 +26,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Enforce global zero-cost boundary
+        run: python scripts/check_free_tier_boundary.py
       - name: Install free media probe
         run: |
           sudo apt-get update -qq
