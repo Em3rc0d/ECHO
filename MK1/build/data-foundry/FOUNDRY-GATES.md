@@ -18,7 +18,7 @@ DF-G0 source registry frozen
   -> DF-G8 benchmark handoff accepted
 ```
 
-A downstream gate cannot certify around a failed upstream gate. The software path for G0-G8 is implemented; a named real corpus instance is certified only after actual release-safe asset evidence passes the full chain.
+A downstream gate cannot certify around a failed upstream gate. The baseline software path for G0-G8 is implemented; a named real corpus instance is certified only after actual release-safe asset evidence and the stricter closure requirements in this document pass the full chain.
 
 All gates inherit `ECHO-FREE-TIER-001`. Capacity or source constraints never authorize a paid fallback, quality-threshold reduction or fabricated closure.
 
@@ -243,10 +243,11 @@ These are implementation/evidence gaps, not reasons to reopen the frozen taxonom
 
 ## 16. Certificate plan
 
-- `CERT-MK1-DF-SPEC-001`: Foundry architecture/contracts/policies/code foundation — certified.
-- `CERT-MK1-DF-TOOLCHAIN-001`: acquisition→intake→admission→review→split/dedup→freeze toolchain — toolchain evidence.
+- `CERT-MK1-DF-SPEC-001`: Foundry architecture/contracts/policies/code foundation — `CERTIFIED`.
+- `CERT-MK1-DF-TOOLCHAIN-001`: historical toolchain certificate for baseline `2c4d4c2...` — superseded for the current engineering baseline.
+- `CERT-MK1-DF-TOOLCHAIN-002`: current executable Foundry toolchain — `CERTIFIED` against baseline `be75a432...`, CI run `34800084225`, 67-test Python 3.11 evidence plus green 3.10/3.12 matrix.
 - `EMP-DATASET-001`: actual admitted corpus identity/counts — real source execution only.
 - `EMP-DATA-QUALITY-001`: real duplicate/quality/source-diversity findings — real source execution only.
 - `CERT-MK1-DF-CORPUS-001`: emitted only after G0..G8 plus reproducibility and free-tier boundary PASS for a named real profile/manifest.
 
-Changes to taxonomy, mapping, rights policy, grouping/split rules, adapters, source release or free-tier execution policy invalidate dependent Foundry/benchmark evidence and require rerun rather than silent patching.
+Changes to taxonomy, mapping, rights policy, grouping/split rules, adapters, source release, certified toolchain code/config/schema/test surface or free-tier execution policy invalidate dependent Foundry/benchmark evidence and require rerun rather than silent patching.
