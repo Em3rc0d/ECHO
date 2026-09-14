@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data-foundry/canonical-asset-ledger-entry.v1.json",
+  "title": "ECHO Canonical Corpus Foundry Asset Ledger Entry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "ledger_asset_id",
+    "source_dataset",
+    "source_release",
+    "source_asset_id",
+    "underlying_source_family",
+    "media_sha256",
+    "byte_size",
+    "audio_probe",
+    "license_id",
+    "rights_status",
+    "candidate_targets",
+    "echo_labels",
+    "hard_negative_for",
+    "semantic_status_by_target",
+    "label_provenance",
+    "recording_group_id",
+    "grouping_status",
+    "field_holdout",
+    "canonical_fingerprint",
+    "materialization_evidence",
+    "stage_status",
+    "blocking_reasons"
+  ],
+  "properties": {
+    "schema_version": {"const": "echo.canonical-asset-ledger-entry.v1"},
+    "ledger_asset_id": {"type": "string", "minLength": 1},
+    "source_dataset": {"type": "string", "minLength": 1},
+    "source_release": {"type": "string", "minLength": 1},
+    "source_asset_id": {"type": "string", "minLength": 1},
+    "underlying_source_family": {"type": "string", "minLength": 1},
+    "origin_uri": {"type": ["string", "null"]},
+    "media_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "byte_size": {"type": ["integer", "null"], "minimum": 0},
+    "audio_probe": {"type": ["object", "null"]},
+    "license_id": {"type": "string", "minLength": 1},
+    "rights_status": {"enum": ["ALLOW_RELEASE_SAFE", "REVIEW_REQUIRED", "RESEARCH_ONLY", "DENY"]},
+    "candidate_targets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"]}
+    },
+    "echo_labels": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"]}
+    },
+    "hard_negative_for": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["GLASS_SHATTER", "SIREN", "FIRE_ALARM", "VEHICLE_HORN", "TIRE_SQUEAL"]}
+    },
+    "semantic_status_by_target": {"type": "object", "additionalProperties": {"type": "string"}},
+    "label_provenance": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "recording_group_id": {"type": "string"},
+    "grouping_status": {"type": "string", "minLength": 1},
+    "original_split": {"type": ["string", "null"]},
+    "field_holdout": {"type": "boolean"},
+    "canonical_fingerprint": {"type": ["object", "null"]},
+    "materialization_evidence": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "stage_status": {"enum": ["READY_FOR_GLOBAL_DEDUP", "REVIEW_REQUIRED", "BLOCKED"]},
+    "blocking_reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  }
+}
