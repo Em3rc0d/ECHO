@@ -55,7 +55,7 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "b7d49c10208d28de195244ee17d20ffdd34ce40fa166d70b9cdb2c9da5513584",
+  "evidence_identity_sha256": "8fdd8359725d8551f0ace700b0b7e27deb3f72aa5652321ba78cda1bc6814e8a",
   "gap_codes": [
     "CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE",
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
@@ -89,10 +89,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "13d13a2d86731059930603bc2f07ffd668d6671c",
+      "baseline_commit": "13e9e89b3757d01ad933a01b94de07c961f43878",
       "entry_count": 1113,
       "ledger_sha256": "319aae04f43f298e0d6a7a8d7b2c23b49d86ae893f621a1ef0c6fe06101428e0",
-      "sha256": "546bd9c22363f67ed6f7a49fb222bc3f017bfb6ce5dbc960cf68153582b96963"
+      "sha256": "84da3c3e9be05906e814d4e9925a57fc8a734a079d39cfec43215207e8208162"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
