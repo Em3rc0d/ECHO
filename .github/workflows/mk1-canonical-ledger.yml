@@ -24,6 +24,7 @@ on:
       - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
       - 'src/echo/data_foundry/ledger.py'
       - 'scripts/data_foundry/build_canonical_asset_ledger.py'
+      - 'scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py'
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
       - 'scripts/check_free_tier_boundary.py'
@@ -61,6 +62,7 @@ jobs:
           PYTHONPATH: src:.
         run: |
           python scripts/data_foundry/build_canonical_asset_ledger.py
+          python scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
       - name: Verify deterministic rebuild
@@ -70,6 +72,7 @@ jobs:
           cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl /tmp/ledger.first.jsonl
           cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json /tmp/ledger.first.summary.json
           python scripts/data_foundry/build_canonical_asset_ledger.py
+          python scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           cmp /tmp/ledger.first.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl
