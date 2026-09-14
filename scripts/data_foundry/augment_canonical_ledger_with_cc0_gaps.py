@@ -107,6 +107,7 @@ def semantic_decision(
         curated_target = str(curated.get("target") or "")
         if curated_target != report_target:
             blockers.append("CURATED_TARGET_CONFLICT")
+            return semantic, False, family, blockers
         else:
             semantic = str(curated.get("semantic") or semantic)
             family = str(curated.get("recording_family") or "")
