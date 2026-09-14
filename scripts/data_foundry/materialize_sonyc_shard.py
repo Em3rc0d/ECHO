@@ -23,7 +23,7 @@ import wave
 from urllib.parse import quote, urlparse
 from urllib.request import Request, urlopen
 
-from echo.data_foundry.canonical_fingerprints import ALGORITHM as FINGERPRINT_ALGORITHM
+from echo.data_foundry.canonical_fingerprints import FINGERPRINT_ALGORITHM
 from echo.data_foundry.canonical_fingerprints import canonical_audio_fingerprint
 
 ROOT = Path(__file__).resolve().parents[2]
