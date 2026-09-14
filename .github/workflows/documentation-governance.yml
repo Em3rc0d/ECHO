@@ -1,0 +1,37 @@
+name: ECHO Documentation Governance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.md'
+      - 'configs/data_foundry/**'
+      - 'scripts/check_documentation_governance.py'
+      - 'scripts/check_free_tier_boundary.py'
+      - '.github/workflows/documentation-governance.yml'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - '**/*.md'
+      - 'configs/data_foundry/**'
+      - 'scripts/check_documentation_governance.py'
+      - 'scripts/check_free_tier_boundary.py'
+      - '.github/workflows/documentation-governance.yml'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate documentation and certification truth
+        run: python scripts/check_documentation_governance.py
+      - name: Re-validate global zero-cost boundary
+        run: python scripts/check_free_tier_boundary.py
