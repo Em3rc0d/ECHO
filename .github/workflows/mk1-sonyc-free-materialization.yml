@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/data_foundry/materialize_sonyc_shard.py'
       - 'scripts/data_foundry/merge_sonyc_reports.py'
+      - 'src/echo/data_foundry/canonical_fingerprints.py'
       - 'configs/data_foundry/acquisition_registry.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
       - '.github/workflows/mk1-sonyc-free-materialization.yml'
@@ -28,8 +29,19 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Enforce zero-cost boundary and fingerprint runtime
+        env:
+          PYTHONPATH: src
+        run: |
+          python scripts/check_free_tier_boundary.py
+          ffmpeg -version | head -n 1
+          python - <<'PY'
+          from echo.data_foundry.canonical_fingerprints import ALGORITHM
+          print('canonical fingerprint algorithm=', ALGORITHM)
+          PY
       - name: Materialize one verified SONYC shard
         env:
+          PYTHONPATH: src
           ECHO_WORK_ROOT: ${{ runner.temp }}/echo-sonyc-${{ matrix.shard }}
           ECHO_REPORT_ROOT: ${{ runner.temp }}/echo-sonyc-report-${{ matrix.shard }}
         run: |
@@ -76,6 +88,8 @@ jobs:
           pattern: sonyc-shard-*
           path: ${{ runner.temp }}/sonyc-shard-evidence
       - name: Merge and validate all 19 shards
+        env:
+          PYTHONPATH: src
         run: |
           python scripts/data_foundry/merge_sonyc_reports.py \
             --input-root '${{ runner.temp }}/sonyc-shard-evidence' \
