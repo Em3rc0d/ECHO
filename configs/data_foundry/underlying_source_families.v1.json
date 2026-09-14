@@ -1,0 +1,25 @@
+{
+  "schema_version": "echo.underlying-source-families.v1",
+  "policy_id": "MK1-UNDERLYING-SOURCE-FAMILY-001",
+  "status": "FROZEN_FOR_CORPUS_CLOSURE",
+  "purpose": "Prevent metadata wrappers or re-hosted views of the same acoustic origin from inflating source-diversity credit.",
+  "sources": {
+    "sonyc-ust-v2": {"family": "SONYC_UST", "diversity_credit": true},
+    "fsd50k-1.0": {"family": "FREESOUND", "diversity_credit": true, "note": "FSD50K clips originate from Freesound; direct Freesound acquisition of the same sound is not a second source family."},
+    "echo-freesound-release-safe-v1": {"family": "FREESOUND", "diversity_credit": true},
+    "echo-freesound-exact-gap-v1": {"family": "FREESOUND", "diversity_credit": true},
+    "echo-bigsoundbank-cc0-gap-v1": {"family": "BIGSOUNDBANK", "diversity_credit": true},
+    "echo-wikimedia-fire-alarm-v1": {"family": "WIKIMEDIA_COMMONS", "diversity_credit": true},
+    "singapura-v1.0a": {"family": "SINGAPURA", "diversity_credit": true},
+    "esc50": {"family": "ESC50", "diversity_credit": true},
+    "urbansound8k-1.0": {"family": "URBANSOUND8K", "diversity_credit": true},
+    "audioset-ontology": {"family": "AUDIOSET_REFERENCE", "diversity_credit": false},
+    "echo-field-v1": {"family": "ECHO_FIELD", "diversity_credit": false}
+  },
+  "rules": [
+    "Source diversity is counted by underlying acoustic-origin family, not wrapper/dataset name.",
+    "The same SHA-256 or same upstream sound identity can never receive multiple source-family credits.",
+    "Synthetic/reference-only sources never receive independent real-source credit.",
+    "When a stronger recording/session relationship becomes known, grouping must be upgraded and downstream evidence rerun."
+  ]
+}
