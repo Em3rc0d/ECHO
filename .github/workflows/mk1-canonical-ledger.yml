@@ -41,7 +41,6 @@ on:
       - 'scripts/data_foundry/enforce_canonical_ledger_role_boundary.py'
       - 'scripts/data_foundry/resolve_global_recording_groups.py'
       - 'scripts/check_free_tier_boundary.py'
-      - '.github/workflows/mk1-canonical-ledger.yml'
 
 permissions:
   contents: write
