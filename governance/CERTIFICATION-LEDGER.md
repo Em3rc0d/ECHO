@@ -2,9 +2,9 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-006`
+**Documentation ancestor:** `CERT-DOC-007`
 
-`CERTIFIED` is always scope-bounded. Documentation never fabricates empirical evidence; green CI never compensates for stale governance; no certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
+`CERTIFIED` is scope-bounded. Documentation never fabricates empirical evidence; green CI never compensates for stale governance; no certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
 ## States
 
@@ -15,79 +15,63 @@
 | ID | Claim / artifact | State | Current evidence / dependency | Invalidates when |
 |---|---|---|---|---|
 | CERT-ECHO-000 | Immutable ECHO promise | CERTIFIED | PROJECT-CHARTER | owner changes promise |
-| CERT-MK0-001..012 | MK0 scoped research/design decisions | CERTIFIED | MK0 evidence corpus | material upstream fact/decision changes |
-| CERT-MK0-013 | MK0 research gate | CERTIFIED | CERT-MK0-001..012 | any MK0 ancestor invalidates |
+| CERT-MK0-001..013 | MK0 decisions + research gate | CERTIFIED | MK0 evidence corpus | material ancestor changes |
 | CERT-MK1-READY-001 | MK1 replay-build readiness | CERTIFIED | MK0 + Definition of Ready | architecture-changing dependency |
 | CERT-MK1-DF-SPEC-001 | Data Foundry architecture/contracts/policies | CERTIFIED | Foundry docs/config/schema/foundation | semantic contract changes |
-| CERT-MK1-DF-TOOLCHAIN-001 | Historical toolchain | INVALIDATED | old baseline `2c4d4c2...` | superseded |
-| CERT-MK1-DF-TOOLCHAIN-002 | Historical toolchain | INVALIDATED | baseline `be75a432...`, run `34800084225` | superseded |
-| CERT-MK1-DF-TOOLCHAIN-003 | Historical readiness/model-entry toolchain | INVALIDATED | baseline `dc225803...`, run `34904125873` | superseded by SONYC fingerprint/persistence changes |
-| CERT-MK1-DF-TOOLCHAIN-004 | Current Data Foundry + SONYC persistence/fingerprint toolchain | CERTIFIED | baseline `ab8c47ba...`; Foundry CI `34922010529`; Free-Tier `34922010518`; SONYC `34922010537` | governed Foundry/workflow/test semantics change |
-| CERT-MK1-DF-SONYC-001 | SONYC v2.3 full real-media materialization + canonical fingerprint closure | CERTIFIED | run `34922010537`; durable evidence `78fc0198...`; machine-readable certificate | SONYC evidence/materialization/fingerprint/free-tier contract changes |
-| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `de1d31b2...` | recomputed whenever input evidence/policy changes |
-| EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | real release-safe closure | produced only from closed corpus |
-| EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | global dedup/group/split/coverage evidence | produced only from real closure |
-| CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | EMP-DATASET-001 + EMP-DATA-QUALITY-001 + all DF closure gates + reproducibility + free-tier PASS | source/asset/policy/mapping/group/split/fingerprint/freeze change |
-| CERT-DOC-001..004 | Historical documentation certificates | INVALIDATED | historical corpora | superseded |
-| CERT-DOC-005 | Historical 208-file documentation corpus | INVALIDATED | corpus-readiness audit | superseded by SONYC/toolchain recertification delta |
-| CERT-DOC-006 | Current 210-file documentation corpus | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-14-SONYC-RECERTIFICATION.md` | Markdown/policy/certification truth changes without audit |
-| EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized camera/site evidence | closes only with field evidence and upstream authorization |
+| CERT-MK1-DF-TOOLCHAIN-001..003 | Historical toolchains | INVALIDATED | historical evidence | superseded |
+| CERT-MK1-DF-TOOLCHAIN-004 | SONYC persistence/fingerprint Foundry baseline | INVALIDATED | baseline `ab8c47ba...`; runs `34922010529`, `34922010518`, `34922010537` | invalidated by corpus-role-boundary semantics in PR #10 |
+| CERT-MK1-DF-TOOLCHAIN-005 | Current closure-era Foundry toolchain candidate | CANDIDATE | PR #10 + PR #11 and subsequent exact CI/free-tier/cascade evidence | certify only after closure implementation stabilizes |
+| CERT-MK1-DF-SONYC-001 | SONYC v2.3 full real-media materialization + fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...`; machine-readable certificate | SONYC evidence/materialization/fingerprint/free-tier changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | durable readiness `ed069c64...` | recomputed whenever evidence/policy changes |
+| EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | release-safe closure | produced only from closed corpus |
+| EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | global dedup/group/split/coverage | produced only from real closure |
+| CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | dataset + quality + all closure gates + reproducibility + free-tier | source/asset/policy/mapping/group/split/fingerprint/freeze change |
+| CERT-DOC-001..005 | Historical documentation certificates | INVALIDATED | historical corpora | superseded |
+| CERT-DOC-006 | SONYC recertification documentation corpus | INVALIDATED | 210-file audit | superseded by corpus-role-boundary/readiness delta |
+| CERT-DOC-007 | Current corpus-closure iteration documentation corpus | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-14-CORPUS-CLOSURE-ITERATION-007.md` | Markdown/readiness/policy/certification truth changes |
+| EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized field evidence | field evidence + upstream authorization |
 | EMP-MODEL-001 | Model winner | BLOCKED | certified corpus + Benchmark A/B/C | cannot run before corpus cert |
-| EMP-THRESH-001 | Classifier/Event Engine thresholds | BLOCKED | certified corpus + validation/replay | cannot run before corpus/model gates |
-| EMP-DIST-001 | Distance/SNR envelope | BLOCKED | authorized field tests | external + upstream gates |
-| EMP-CAP-001 | Multi-source capacity envelope | OPEN | future runtime load/soak | runtime evidence changes |
-| EMP-SLO-001 | Final MK1/MK2 SLO evidence | OPEN | runtime/quality/field evidence | evidence changes |
-
-## Current Data Foundry recertification
-
-```text
-implementation baseline  ab8c47ba6aabb25390644954a2a06945ca7a81bb
-Data Foundry CI           34922010529  PASS / Python 3.10, 3.11, 3.12
-Free-Tier Boundary        34922010518  PASS
-Documentation Governance  34922010525  PASS on pre-recertification docs
-real SONYC run            34922010537  PASS
-```
-
-The real SONYC run passed 19/19 shards, merge, canonical fingerprint contract and durable persistence. Evidence was committed at `78fc019839f1c9dad1a58a70d439605d887361d7`, then propagated through canonical ledger `c93ddb97902b3650921426aaf841473245c7908d`, closure audits `311cc2001931d4cceedb90ab5d21f06e15fdf881`, and readiness `de1d31b280e9fad4a3764537aa75d7d72802adb7`.
+| EMP-THRESH-001 | Event thresholds | BLOCKED | certified corpus + model/replay | cannot run before corpus/model gates |
 
 ## SONYC scoped certificate
 
-Authoritative record: `MK1/mining-site/materialization/sonyc-v2.3-materialization-certificate.json`.
+`CERT-MK1-DF-SONYC-001` remains independently valid:
 
 ```text
-source release assets              18510
-source release duration seconds    185100.0
-verified shards                    19 / 19
-target candidate rows              236
-confuser candidate rows            428
-fingerprinted ledger assets        599
-probe failures                       0
-fingerprint failures                 0
+implementation baseline  ab8c47ba6aabb25390644954a2a06945ca7a81bb
+real SONYC run            34922010537
+verified shards           19 / 19 PASS
+probe failures            0
+fingerprint failures      0
+durable SONYC evidence    78fc019839f1c9dad1a58a70d439605d887361d7
 ```
 
-`CERT-MK1-DF-SONYC-001` does not imply final corpus admission or model authorization.
+Its scope does not certify the final corpus.
 
-## Current corpus readiness truth
+## Current closure evidence
 
-Authoritative readiness is `BLOCKED`:
+The corpus-role boundary was merged at `b2fc09b1c98c4c8adcb2fe9dc4db7e1dadc61107` and propagated through:
 
 ```text
-eligible_for_certificate_review = false
-modeling_allowed = false
-CERT-MK1-DF-CORPUS-001 = OPEN
-next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
+canonical ledger evidence  3ba3f3141a24013abf8f3cbf68f46043a149ae12
+closure audits              4ebbe3f042181ec789d26d1ff4d6ede4ba656ef9
+closure readiness           ed069c64d8b5efc855157531a6a59aadff363f40
 ```
 
-The canonical ledger summary now has complete canonical fingerprint coverage:
+Current corpus-facing canonical ledger:
 
 ```text
-entry_count = 1164
-canonical_fingerprint_count = 1164
-canonical_fingerprint_missing_count = 0
-status = PASS_CONSOLIDATED_WITH_OPEN_GATES
+entry_count                         1081
+canonical_fingerprint_count         1081
+canonical_fingerprint_missing_count    0
+role-boundary input_rows            1164
+review-only rows removed              83
+GROUPING_GLOBAL_AUDIT_REQUIRED       448
 ```
 
-Pre-final positive assets / underlying source families:
+The 83 removed rows remain source materialization/review evidence. No content was deleted and no label/source-family/coverage credit was invented.
+
+Positive assets / underlying source families remain:
 
 ```text
 FIRE_ALARM       10 / 3
@@ -97,7 +81,7 @@ TIRE_SQUEAL      11 / 2
 VEHICLE_HORN    245 / 3
 ```
 
-Hard-negative assets / underlying source families:
+Hard-negative assets / underlying source families remain:
 
 ```text
 FIRE_ALARM       34 / 1
@@ -107,7 +91,7 @@ TIRE_SQUEAL       0 / 0
 VEHICLE_HORN      0 / 0
 ```
 
-Exact readiness gap codes:
+Exact readiness gap codes at `ed069c64...`:
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -120,11 +104,8 @@ FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
 GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
 GLOBAL_DEDUP_AUDIT_NOT_PASS
-LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4
-LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_503
+LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_448
 LEDGER_LICENSE_NOT_RELEASE_SAFE_1
-LEDGER_NO_EXACT_SEMANTIC_ROLE_83
-LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1
 LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1
 LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1
 RECORDING_FAMILY_AUDIT_NOT_PASS
@@ -137,6 +118,10 @@ TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
 VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
 VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
+
+## Active grouping change
+
+PR #11 conservatively strengthens split protection: existing groups, exact identity and governed near-duplicate relations are unioned into deterministic global acoustic components. It performs no content merge/deletion and does not claim new independent source families. Split conflicts, if exposed, remain fail-closed.
 
 ## Release law
 
@@ -152,39 +137,32 @@ model-entry gate PASS
 Benchmark A/B/C authorized
 ```
 
-Without it there is no model training, threshold calibration, replay progression or real-camera progression.
-
-## Documentation lineage
-
-```text
-CERT-DOC-001..005  historical / invalidated
-CERT-DOC-006       current / CERTIFIED / 210 Markdown files
-```
+Until then: no model training, threshold calibration, replay progression or real-camera progression.
 
 ## Dependency DAG
 
 ```text
-CERT-ECHO-000
-  + CERT-DOC-006
-  + ECHO-FREE-TIER-001
-          ↓
+CERT-ECHO-000 + CERT-DOC-007 + ECHO-FREE-TIER-001
+        ↓
 CERT-MK1-DF-SPEC-001
-          ↓
-CERT-MK1-DF-TOOLCHAIN-004
-          +
-CERT-MK1-DF-SONYC-001
-          ↓
+        ↓
+TOOLCHAIN-005 = CANDIDATE
+        +
+CERT-MK1-DF-SONYC-001 = CERTIFIED
+        ↓
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
-          ↓
-close ledger blockers + global audits + split + coverage + freeze×2 + reproducibility
-          ↓
+        ↓
+close dedup/group + rights/semantic conflicts + real coverage/HN deficits
+        ↓
+split + coverage + freeze #1/#2 + reproducibility
+        ↓
 EMP-DATASET-001 + EMP-DATA-QUALITY-001
-          ↓
+        ↓
 CERT-MK1-DF-CORPUS-001
-          ↓
-model-entry gate → Benchmark A/B/C → EMP-MODEL-001
+        ↓
+model-entry → Benchmark A/B/C
 ```
 
 ## Invalidation
 
-A material change to promise, taxonomy, schemas, source/audio/event contracts, source/acquisition registry, rights/mapping/review/probe/fingerprint/coverage/dedup/group/split/freeze/handoff semantics, SONYC persistence, model-entry guard, benchmark set, delivery/privacy policy, zero-cost execution boundary or governing documentation requires dependency review and selective recertification.
+Material changes to promise, taxonomy, source/audio/event contracts, acquisition, rights/mapping/review/probe/fingerprint/coverage/dedup/group/split/freeze/handoff semantics, model-entry wiring, free-tier boundary or governing documentation require dependency review and selective recertification.
