@@ -206,7 +206,7 @@ def main() -> int:
             "repository": config["acquisition_transport"]["repository"],
             "commit": config["acquisition_transport"]["commit"],
             "directory": config["acquisition_transport"]["directory"],
-            "source_credit": false,
+            "source_credit": False,
         },
         "materialized_count": len(rows),
         "fingerprinted_count": sum(1 for row in rows if (row.get("canonical_fingerprint") or {}).get("vector_sha256")),
