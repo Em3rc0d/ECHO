@@ -45,6 +45,45 @@ def require_markdown_certificate(path: Path, certificate_id: str) -> str:
     return sha256_file(path)
 
 
+def existing_certificate_is_current(
+    certificate: dict,
+    *,
+    evidence_identity_sha256: str,
+    free_tier_sha256: str,
+    toolchain_sha256: str,
+    documentation_sha256: str,
+) -> bool:
+    if validate_corpus_certificate(
+        certificate, evidence_identity_sha256=evidence_identity_sha256
+    ):
+        return False
+
+    boundary = certificate.get("free_tier_boundary")
+    if not isinstance(boundary, dict) or boundary.get("policy_sha256") != free_tier_sha256:
+        return False
+
+    inputs = certificate.get("inputs")
+    if not isinstance(inputs, dict):
+        return False
+    toolchain = inputs.get("toolchain_certificate")
+    if not isinstance(toolchain, dict) or toolchain.get("sha256") != toolchain_sha256:
+        return False
+
+    documentation = certificate.get("documentation")
+    if not isinstance(documentation, list):
+        return False
+    doc_row = next(
+        (
+            row
+            for row in documentation
+            if isinstance(row, dict)
+            and row.get("certificate") == DOCUMENTATION_CERTIFICATE_ID
+        ),
+        None,
+    )
+    return isinstance(doc_row, dict) and doc_row.get("sha256") == documentation_sha256
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--readiness", type=Path, default=DEFAULT_READINESS)
@@ -57,6 +96,7 @@ def main() -> int:
         check=True,
     )
 
+    free_tier_sha = sha256_file(FREE_TIER_POLICY)
     toolchain_sha = require_markdown_certificate(
         TOOLCHAIN_CERTIFICATE, TOOLCHAIN_CERTIFICATE_ID
     )
@@ -69,10 +109,13 @@ def main() -> int:
 
     if args.output.is_file():
         existing = json.loads(args.output.read_text(encoding="utf-8"))
-        failures = validate_corpus_certificate(
-            existing, evidence_identity_sha256=identity
-        )
-        if not failures:
+        if existing_certificate_is_current(
+            existing,
+            evidence_identity_sha256=identity,
+            free_tier_sha256=free_tier_sha,
+            toolchain_sha256=toolchain_sha,
+            documentation_sha256=documentation_sha,
+        ):
             print("CORPUS CERTIFICATE: CURRENT")
             print(existing["certificate_sha256"])
             return 0
@@ -81,7 +124,7 @@ def main() -> int:
         readiness=readiness,
         git_commit=git_head(),
         generated_at_utc=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
-        free_tier_policy_sha256=sha256_file(FREE_TIER_POLICY),
+        free_tier_policy_sha256=free_tier_sha,
         toolchain_certificate_sha256=toolchain_sha,
         documentation_certificate_sha256=documentation_sha,
         github_run_id=os.getenv("GITHUB_RUN_ID"),
