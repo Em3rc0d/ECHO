@@ -1,0 +1,62 @@
+{
+  "schema_version": "echo.cert.v1",
+  "artifact_id": "CERT-MK1-DF-SONYC-001",
+  "status": "CERTIFIED",
+  "scope": "SONYC-UST-V2.3 full real-media materialization and canonical fingerprint closure under the MK1 Data Foundry",
+  "implementation_baseline": "ab8c47ba6aabb25390644954a2a06945ca7a81bb",
+  "materialization_run_id": 34922010537,
+  "durable_evidence_commit": "78fc019839f1c9dad1a58a70d439605d887361d7",
+  "downstream_integration_commits": {
+    "canonical_ledger": "c93ddb97902b3650921426aaf841473245c7908d",
+    "closure_audits": "311cc2001931d4cceedb90ab5d21f06e15fdf881",
+    "closure_readiness": "de1d31b280e9fad4a3764537aa75d7d72802adb7"
+  },
+  "source_release": {
+    "id": "SONYC-UST-V2.3",
+    "evidence_status": "SOURCE_RELEASE_EVIDENCE_CERTIFIED"
+  },
+  "materialization_summary": {
+    "schema_version": "echo.sonyc-full-materialization-summary.v2",
+    "status": "PASS_WITH_REVIEW_FLAGS",
+    "asset_count": 18510,
+    "shards_expected": 19,
+    "shards_materialized": 19,
+    "total_duration_seconds": 185100.0,
+    "target_candidate_count": 236,
+    "confuser_candidate_count": 428,
+    "fingerprinted_ledger_relevant_assets": 599,
+    "fingerprint_failures": 0,
+    "probe_failures": 0,
+    "target_candidates_sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
+    "confuser_candidates_sha256": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
+    "shard_digests_sha256": "6fc390add105680d960273e3a6f69d6b03468014518368a96c5063dcdc55f4f3"
+  },
+  "criteria": [
+    {"id": "SONYC-19-SHARDS", "result": "PASS", "evidence": "19/19 verified shard jobs succeeded in run 34922010537"},
+    {"id": "SONYC-MERGE", "result": "PASS", "evidence": "Merge and validate all 19 shards succeeded"},
+    {"id": "SONYC-PROBE-CLOSURE", "result": "PASS", "evidence": "probe_failures=0"},
+    {"id": "SONYC-FINGERPRINT-CLOSURE", "result": "PASS", "evidence": "fingerprint_failures=0 and canonical fingerprint contract validator succeeded"},
+    {"id": "SONYC-DURABLE-PERSISTENCE", "result": "PASS", "evidence": "evidence committed at 78fc019839f1c9dad1a58a70d439605d887361d7"},
+    {"id": "SONYC-FREE-TIER", "result": "PASS", "evidence": "ECHO-FREE-TIER-001 enforced per shard and on certified implementation baseline"}
+  ],
+  "non_claims": [
+    "final corpus admission",
+    "global corpus duplicate/group/split certification",
+    "coverage or corpus solidity closure",
+    "freeze #1 or freeze #2 certification",
+    "corpus reproducibility certification",
+    "CERT-MK1-DF-CORPUS-001",
+    "model, threshold, replay, or field authorization"
+  ],
+  "invalidates_if": [
+    "SONYC source release identity or evidence changes materially",
+    "materialization/probe/fingerprint semantics change materially",
+    "the certified evidence files or their hashes change",
+    "the free-tier boundary is violated",
+    "a governing documentation ancestor becomes invalid without re-audit"
+  ],
+  "free_tier_boundary": {
+    "policy_id": "ECHO-FREE-TIER-001",
+    "result": "PASS"
+  }
+}
