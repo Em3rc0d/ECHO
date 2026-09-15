@@ -1,0 +1,105 @@
+name: MK1 OpenGameArt Rubberduck CC0 Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/materialize_opengameart_rubberduck_cc0.py'
+      - 'configs/data_foundry/opengameart_rubberduck_cc0.v1.json'
+      - 'src/echo/data_foundry/canonical_fingerprints.py'
+      - 'src/echo/data_foundry/probe.py'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-opengameart-rubberduck-cc0-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mk1-opengameart-rubberduck-cc0-main
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce ECHO-FREE-TIER-001
+        env:
+          PYTHONPATH: src
+        run: python scripts/check_free_tier_boundary.py
+      - name: Install free media probe and canonical decoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffprobe -version | head -n 1
+          ffmpeg -version | head -n 1
+      - name: Materialize pinned independent CC0 source
+        env:
+          PYTHONPATH: src
+          ECHO_OPENGAMEART_CC0_ROOT: ${{ runner.temp }}/echo-opengameart-rubberduck-cc0
+        run: python scripts/materialize_opengameart_rubberduck_cc0.py
+      - name: Enforce evidence and scratch boundaries
+        env:
+          ECHO_OPENGAMEART_CC0_ROOT: ${{ runner.temp }}/echo-opengameart-rubberduck-cc0
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          policy = json.loads(Path('configs/data_foundry/free_tier_boundary.v1.json').read_text())
+          root = Path(os.environ['ECHO_OPENGAMEART_CC0_ROOT'])
+          report = Path('MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json')
+          payload = json.loads(report.read_text())
+          scratch = sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) if root.exists() else 0
+          limit = int(policy['github_actions']['project_max_working_set_bytes'])
+          print('scratch bytes=', scratch, 'working-set limit=', limit, 'report bytes=', report.stat().st_size)
+          print('status=', payload['status'], 'materialized=', payload['materialized_count'], 'fingerprinted=', payload['fingerprinted_count'])
+          if scratch > limit:
+              raise SystemExit('OpenGameArt scratch exceeded free-tier working-set boundary')
+          if report.stat().st_size > 5_000_000:
+              raise SystemExit('OpenGameArt durable evidence unexpectedly exceeds 5 MB')
+          if payload['status'] != 'PASS':
+              raise SystemExit('OpenGameArt materialization is not PASS')
+          if payload['materialized_count'] != payload['fingerprinted_count']:
+              raise SystemExit('OpenGameArt fingerprint evidence incomplete')
+          if payload['positive_candidate_count'] != 6:
+              raise SystemExit('unexpected exact-positive candidate count')
+          if payload['hard_negative_candidate_count'] < 20 or payload['hard_negative_candidate_group_count'] < 10:
+              raise SystemExit('insufficient governed GLASS_SHATTER confuser candidate evidence')
+          PY
+      - name: Upload bounded evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: opengameart-rubberduck-cc0-evidence
+          path: MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+      - name: Commit durable evidence only if main is unchanged
+        run: |
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git fetch origin main
+          RUN_SHA="$(git rev-parse HEAD)"
+          REMOTE_MAIN_SHA="$(git rev-parse origin/main)"
+          echo "run_sha=$RUN_SHA"
+          echo "remote_main_sha=$REMOTE_MAIN_SHA"
+          if [[ "$RUN_SHA" != "$REMOTE_MAIN_SHA" ]]; then
+            echo 'main moved after this OpenGameArt run started; refusing to persist stale evidence'
+            exit 1
+          fi
+          git add MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json
+          if git diff --cached --quiet; then
+            echo 'No OpenGameArt evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize independent OpenGameArt CC0 candidates [skip ci]'
+            git push origin HEAD:main
+          fi
