@@ -35,6 +35,11 @@ PUBLIC_GAP = MATERIALIZATION / "public-gap-assets-report.json"
 DERIVED_FINGERPRINT_BLOCKER = "MISSING_CANONICAL_FINGERPRINT"
 CROSS_TARGET_SEMANTIC_STATUS = "EXACT_POSITIVE_CROSS_TARGET_CONFUSER_001"
 CROSS_TARGET_PROVENANCE_PREFIX = "MK1-HARD-NEGATIVE-MAPPING-001:CROSS_TARGET"
+COMPATIBLE_HARD_NEGATIVE_STATUSES = {
+    CROSS_TARGET_SEMANTIC_STATUS,
+    "EXPLICIT_FSD50K_CONFUSER",
+    "EXPLICIT_FSD50K_HARD_NEGATIVE_MAPPING_001",
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -160,32 +165,44 @@ def merge_semantic_hard_negatives(row: dict[str, Any], evidence: Mapping[str, An
 def apply_cross_target_hard_negatives(
     row: dict[str, Any],
     mapping: Mapping[str, tuple[str, ...]],
-) -> int:
-    """Attach only governed cross-target negative roles to exact release-safe positives."""
+) -> tuple[int, int]:
+    """Attach governed cross-target negatives without overriding semantic conflicts.
+
+    Returns ``(new_roles_attached, destinations_skipped_for_existing_semantics)``.
+    A pre-existing review/conflict semantic for a destination is stronger evidence
+    than the generic cross-target mapping and therefore blocks credit for only that
+    destination while leaving other valid destinations available.
+    """
 
     if row.get("rights_status") != "ALLOW_RELEASE_SAFE":
-        return 0
+        return 0, 0
     fingerprint = row.get("canonical_fingerprint")
     if not (isinstance(fingerprint, Mapping) and fingerprint.get("vector_sha256")):
-        return 0
+        return 0, 0
 
     positives = {
         str(value) for value in row.get("echo_labels") or []
         if str(value) in TARGET_LABELS
     }
     if not positives:
-        return 0
+        return 0, 0
 
-    derived: set[str] = set()
-    derivations: list[tuple[str, str]] = []
+    semantic = dict(row.get("semantic_status_by_target") or {})
+    eligible_derivations: list[tuple[str, str]] = []
+    conflict_skips = 0
     for source_positive in sorted(positives):
         for target in mapping.get(source_positive, ()):
             if target in positives:
                 continue
-            derived.add(target)
-            derivations.append((source_positive, target))
+            previous = semantic.get(target)
+            if previous and previous not in COMPATIBLE_HARD_NEGATIVE_STATUSES:
+                conflict_skips += 1
+                continue
+            eligible_derivations.append((source_positive, target))
+
+    derived = {target for _, target in eligible_derivations}
     if not derived:
-        return 0
+        return 0, conflict_skips
 
     existing = {str(value) for value in row.get("hard_negative_for") or []}
     new_roles = derived - existing - positives
@@ -195,26 +212,16 @@ def apply_cross_target_hard_negatives(
         | set(row["hard_negative_for"])
     )
 
-    semantic = dict(row.get("semantic_status_by_target") or {})
     provenance = set(str(value) for value in row.get("label_provenance") or [])
-    for source_positive, target in derivations:
+    for source_positive, target in eligible_derivations:
         if target in positives:
             continue
-        previous = semantic.get(target)
-        if previous and previous not in {
-            CROSS_TARGET_SEMANTIC_STATUS,
-            "EXPLICIT_FSD50K_CONFUSER",
-            "EXPLICIT_FSD50K_HARD_NEGATIVE_MAPPING_001",
-        }:
-            raise ValueError(
-                f"cross-target semantic conflict for {row.get('ledger_asset_id')} {target}: {previous}"
-            )
-        if not previous:
+        if not semantic.get(target):
             semantic[target] = CROSS_TARGET_SEMANTIC_STATUS
         provenance.add(f"{CROSS_TARGET_PROVENANCE_PREFIX}:{source_positive}->{target}")
     row["semantic_status_by_target"] = dict(sorted(semantic.items()))
     row["label_provenance"] = sorted(provenance)
-    return len(new_roles)
+    return len(new_roles), conflict_skips
 
 
 def enrich_row(
@@ -222,7 +229,7 @@ def enrich_row(
     evidence: Mapping[str, Any] | None,
     source_policy: Mapping[str, Any],
     cross_target_mapping: Mapping[str, tuple[str, ...]],
-) -> int:
+) -> tuple[int, int]:
     blockers = {
         str(value) for value in row.get("blocking_reasons") or []
         if str(value) != DERIVED_FINGERPRINT_BLOCKER
@@ -253,7 +260,9 @@ def enrich_row(
                 row["canonical_fingerprint"] = dict(fp)
         merge_semantic_hard_negatives(row, evidence)
 
-    cross_target_roles = apply_cross_target_hard_negatives(row, cross_target_mapping)
+    cross_target_roles, cross_target_conflict_skips = apply_cross_target_hard_negatives(
+        row, cross_target_mapping
+    )
     row["blocking_reasons"] = sorted(blockers)
     recompute_stage(row, source_policy)
 
@@ -264,7 +273,7 @@ def enrich_row(
         blockers.add(DERIVED_FINGERPRINT_BLOCKER)
         row["blocking_reasons"] = sorted(blockers)
         row["stage_status"] = "BLOCKED"
-    return cross_target_roles
+    return cross_target_roles, cross_target_conflict_skips
 
 
 def main() -> int:
@@ -288,16 +297,19 @@ def main() -> int:
     rows = read_jsonl(LEDGER)
     matched = 0
     cross_target_roles_attached = 0
+    cross_target_semantic_conflict_skips = 0
     for row in rows:
         evidence = index.get(str(row["ledger_asset_id"]))
         if evidence:
             matched += 1
-        cross_target_roles_attached += enrich_row(
+        attached, skipped = enrich_row(
             row,
             evidence,
             source_policy,
             cross_target_mapping,
         )
+        cross_target_roles_attached += attached
+        cross_target_semantic_conflict_skips += skipped
 
     rows = validate_ledger(rows)
     previous_summary = read_json(SUMMARY)
@@ -312,6 +324,7 @@ def main() -> int:
         "matched_asset_count": matched,
         "technical_evidence_asset_count": len(index),
         "cross_target_hard_negative_roles_attached": cross_target_roles_attached,
+        "cross_target_semantic_conflict_skips": cross_target_semantic_conflict_skips,
         "cross_target_mapping": {
             key: list(value) for key, value in sorted(cross_target_mapping.items())
         },
@@ -320,7 +333,7 @@ def main() -> int:
             for path in (SONYC_TARGETS, SONYC_CONFUSERS, FREESOUND, PUBLIC_GAP, HARD_NEGATIVE_MAPPING)
         },
         "fingerprint_stop_line": "Every exact positive or hard-negative role requires a canonical fingerprint before global near-duplicate audit readiness.",
-        "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels."
+        "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination."
     }
 
     with LEDGER.open("w", encoding="utf-8") as handle:
@@ -334,6 +347,7 @@ def main() -> int:
         "fingerprinted": summary["canonical_fingerprint_count"],
         "fingerprints_missing": summary["canonical_fingerprint_missing_count"],
         "cross_target_hard_negative_roles_attached": cross_target_roles_attached,
+        "cross_target_semantic_conflict_skips": cross_target_semantic_conflict_skips,
         "hard_negative_counts": summary["hard_negative_counts"],
         "stage_status_counts": summary["stage_status_counts"],
     }, sort_keys=True))
