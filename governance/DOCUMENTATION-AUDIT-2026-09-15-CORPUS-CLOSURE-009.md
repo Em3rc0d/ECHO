@@ -3,141 +3,104 @@
 **Certificate:** `CERT-DOC-009`  
 **Status:** `CERTIFIED`  
 **Audit date:** `2026-09-15`  
-**Audited main:** `32eb3c4ee989a45fa94210a214a0f7817c1b327a`  
+**Audited main:** `ecf76528d5cd722757782cc54311c3f02038b2b9`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`
 
 ## Scope
 
-This audit rebinds ECHO documentation governance to the durable MK1 corpus-closure state after the governed BigSoundBank + Wikimedia/PDSounds acquisition closed the complete `TIRE_SQUEAL` hard-negative floor. It certifies documentation consistency and the observed gate state only; it does **not** certify the final corpus or authorize model work.
-
-The acquisition was executed as real release-safe evidence:
-
-```text
-versioned source configs
-→ public license pages
-→ real public audio bytes
-→ SHA-256
-→ ffprobe
-→ canonical audio fingerprints
-→ exact governed TIRE_SQUEAL hard-negative semantics
-→ canonical ledger
-→ global grouping/dedup
-→ protected split assignment/quarantine
-→ coverage
-→ readiness
-```
+This audit rebinds ECHO documentation governance to the durable MK1 corpus-closure state after empirical BigSoundBank GLASS expansion and its downstream global grouping/split-quarantine recomputation. It certifies documentation consistency and the observed gate state only; it does **not** certify the final corpus or authorize model work.
 
 ## Immutable product direction
 
 > **Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.**
 
-The active MK1 path remains product-critical: release-safe acoustic corpus → corpus certification → Benchmark A/B/C → model winner → Event Engine → Edge Agent → MQTT/replay → real camera. Cameras, dashboards, alerts and transports remain supporting integrations and cannot redefine the acoustic promise.
+The active MK1 path remains: release-safe acoustic corpus → `CERT-MK1-DF-CORPUS-001` → Benchmark A/B/C → model winner → Event Engine → Edge Agent → MQTT/replay → real camera. Cameras, dashboards, alerts and transports remain supporting integrations.
 
 ## Audited empirical truth
 
 ```text
-main readiness commit            32eb3c4ee989a45fa94210a214a0f7817c1b327a
-data candidate merge             dba0aeac6c628bdf6d628e70bdfecfad46515a51
-public-gap evidence commit       25a5896a5f21f648408555c120403abbcbef9232
-canonical-ledger evidence        01f6a91e1ead45211a35fb96cb2d6e176476c99f
-closure evidence commit          58b701502dbafef3b1cc84b68988177d8b32e79c
-canonical corpus-facing rows     1149
-canonical fingerprints           1149 / 1149
-ledger blockers                  0
-global dedup                     PASS
-recording-family audit           PASS
-split integrity                  PASS
-protected split quarantine       3 groups / 77 assets
-background                       416 assets / 383 groups / 4 sources / PASS
-TIRE_SQUEAL hard negatives       25 assets / 12 groups / 2 sources / PASS
-coverage gate                    FAIL
-coverage detailed gap codes      17
-freeze #1 validation             FAIL
-freeze #2 validation             FAIL
-reproducibility                  FAIL
-readiness                        BLOCKED
-readiness coarse gap codes       9
-eligible_for_certificate_review  false
-modeling_allowed                 false
-CERT-MK1-DF-CORPUS-001           OPEN
-readiness evidence identity      ecacac93a64604a55d51c7dc1b8d2853f9a1f5f7aebbb086b8c69d93109af320
+main readiness commit            ecf76528d5cd722757782cc54311c3f02038b2b9
+public-gap evidence baseline      48e938034b98cf4d02588879b28ddec00c4666dd
+canonical-ledger evidence         8ff9c53aa6ce0b286f9414f56d7590bdf2f9609a
+closure evidence commit           b572d5ec1f3015dea1f010c7fd10cf30d653dc09
+canonical corpus-facing rows      1158
+canonical fingerprints            1158 / 1158
+ledger blockers                   0
+BigSoundBank ledger rows          53
+global acoustic components        14
+members reassigned                125
+global dedup                      PASS
+recording-family audit            PASS
+split integrity                   PASS
+protected split quarantine        2 groups / 93 assets
+background                        416 assets / 383 groups / 4 sources / PASS
+TIRE_SQUEAL hard negatives        25 assets / 12 groups / 2 sources / PASS
+coverage gate                     FAIL
+coverage detailed gap codes       17
+freeze #1 validation              FAIL
+freeze #2 validation              FAIL
+reproducibility                   FAIL
+readiness                         BLOCKED
+readiness coarse gap codes        9
+eligible_for_certificate_review   false
+modeling_allowed                  false
+CERT-MK1-DF-CORPUS-001            OPEN
+readiness evidence identity       9e7325ad5790a6a1448a2a8cbceb0f314ef1cbf7164c9079e65313a405bf2ce8
 ```
 
-The corpus-facing ledger remains blocker-free and fully fingerprinted. Protected split conflicts remain visible as three quarantined complete acoustic groups (77 assets); no member is remapped. Global grouping still performs no content deletion or content merge.
+The corpus-facing ledger is blocker-free and fully fingerprinted. Global grouping performs no content deletion or content merge.
 
-## TIRE_SQUEAL hard-negative closure
+## Empirical GLASS result
 
-The acquisition materialized **60 / 60** public-gap assets with **0 failures** and **60 canonical fingerprints**. The artifact candidate bytes were `53,083,038`, below the free-tier preferred maximum of `104,857,600` bytes. Raw media remains ephemeral; only evidence is durable in the repository.
+Nine additional governed BigSoundBank `GLASBrk` candidates materialized and entered the pre-final ledger, moving pre-final `GLASS_SHATTER` positives from 310 to 319. Global acoustic grouping then revealed a larger protected cross-source component. The split policy correctly quarantined complete conflicting groups rather than manually remapping members.
 
-The new TIRE hard-negative evidence uses two already-governed underlying acoustic-origin families:
+Final coverage is therefore:
 
 ```text
-BIGSOUNDBANK
-WIKIMEDIA_COMMONS
+GLASS_SHATTER final assets       238
+independent groups               221
+BIGSOUNDBANK                       6
+FREESOUND                        226
+OPENGAMEART_RUBBERDUCK             6
+max single-source fraction   0.94958
+required maximum               0.80
 ```
 
-BigSoundBank rows use only semantics already frozen by `MK1-HARD-NEGATIVE-MAPPING-001`: `Car`, `Car_passing_by`, `Accelerating_and_revving_and_vroom`, and `Squeak`. Wikimedia/PDSounds contributes independent public-domain car recordings. None of these rows is promoted to a TIRE positive.
+The new evidence did **not** justify removing or hiding acoustically linked rows merely to improve coverage. The observed quarantine increased to 93 assets and remains authoritative.
 
-The BigSoundBank 50 km/h multi-file series deliberately remains one recording family. After global grouping, deduplication and protected split handling, final TIRE hard-negative coverage is:
-
-```text
-assets              25   >= 20  PASS
-groups              12   >= 10  PASS
-source families      2   >= 2   PASS
-```
-
-The following detailed coverage gaps are therefore closed and must not reappear:
+## Current positive and hard-negative ledger counts
 
 ```text
-TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN
-TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_BELOW_MIN
-TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_BELOW_MIN
-```
+positive assets, pre-final ledger
+FIRE_ALARM         9
+GLASS_SHATTER    319
+SIREN             173
+TIRE_SQUEAL        11
+VEHICLE_HORN      245
 
-The corresponding coarse readiness blockers are also absent:
-
-```text
-TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
-```
-
-This reduced detailed coverage gaps from **20 → 17** and coarse readiness gaps from **11 → 9** without changing any coverage floor, source-family identity, positive label or certification rule.
-
-## Audited corpus counts
-
-```text
-positive assets, pre-final-dedup ledger
-FIRE_ALARM       9
-GLASS_SHATTER    310
-SIREN            173
-TIRE_SQUEAL      11
-VEHICLE_HORN     245
-
-hard-negative assets, pre-final-dedup ledger
+hard-negative assets, pre-final ledger
 FIRE_ALARM       206
 GLASS_SHATTER    440
 SIREN            245
-TIRE_SQUEAL      25
+TIRE_SQUEAL       25
 VEHICLE_HORN     146
 
 hard-negative underlying source families
-FIRE_ALARM       4
-GLASS_SHATTER    2
-SIREN            4
-TIRE_SQUEAL      2
-VEHICLE_HORN     3
+FIRE_ALARM         4
+GLASS_SHATTER      2
+SIREN              4
+TIRE_SQUEAL        2
+VEHICLE_HORN       3
 ```
 
-No positive-class count changed as a side effect of the TIRE hard-negative acquisition.
+All target-specific hard-negative floors are now closed. `TIRE_SQUEAL` HN remains 25 assets / 12 groups / 2 sources after final coverage handling.
 
 ## Background remains closed
 
-The target-free release-safe background pool now includes the newly admitted confusers and remains above its frozen source-family floor:
-
 ```text
-assets              416
-groups              383
-source families     4
+assets             416
+groups             383
+source families      4
 
 BIGSOUNDBANK
 OPENGAMEART_RUBBERDUCK
@@ -145,11 +108,9 @@ SONYC_UST
 WIKIMEDIA_COMMONS
 ```
 
-`BACKGROUND_SOURCES_BELOW_MIN` remains absent.
-
 ## Final detailed coverage blockers
 
-Exactly **17** detailed coverage gaps remain:
+Exactly **17** detailed gaps remain:
 
 ```text
 FIRE_ALARM_ASSETS_BELOW_MIN
@@ -171,11 +132,11 @@ TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN
 TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN
 ```
 
-Coverage asset quality remains clean: zero unknown licenses, zero missing label provenance, zero non-positive durations, zero invalid audio probes, zero exact duplicate groups and zero near-duplicate groups.
+Coverage asset quality remains clean: zero unknown licenses, zero missing label provenance, zero non-positive durations, zero invalid probes, zero exact duplicate groups and zero near-duplicate groups.
 
-## Exact current readiness gaps
+## Exact readiness gaps
 
-Readiness remains correctly coarser than final coverage and contains **9** blockers:
+Readiness remains correctly coarser than detailed coverage and contains **9** blockers:
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -189,7 +150,7 @@ REPRODUCIBILITY_NOT_PASS
 TIRE_SQUEAL_ASSETS_11_LT_50
 ```
 
-The remaining empirical work is now strictly positive-class acquisition/split closure for `FIRE_ALARM` and `TIRE_SQUEAL`, plus reducing `GLASS_SHATTER` single-source concentration with real non-Freesound positives. Only after final coverage reaches `PASS / gap_codes=[]` may Freeze #1, Freeze #2 and reproducibility close and `CERT-MK1-DF-CORPUS-001` become eligible for certification review.
+The remaining empirical work is strictly positive-class closure: reduce `GLASS_SHATTER` source concentration with genuine non-Freesound positives, increase `FIRE_ALARM` positives/groups/split coverage, and increase `TIRE_SQUEAL` positives/groups/split coverage. No floor, source-family identity or split protection may be weakened to make these gaps disappear.
 
 ## Certificate lineage
 
@@ -206,7 +167,7 @@ CERT-MK1-DF-CORPUS-001       OPEN
 
 ## Direction guardrail
 
-No work may jump ahead to model benchmarking, threshold calibration, replay progression or real-camera certification while `CERT-MK1-DF-CORPUS-001 != CERTIFIED` or `modeling_allowed != true`. Supporting infrastructure is allowed only when it directly unblocks the frozen MK1 vertical and does not displace corpus/model critical-path work.
+No Benchmark A/B/C, model training, threshold calibration, replay progression or real camera certification may begin while `CERT-MK1-DF-CORPUS-001 != CERTIFIED` or `modeling_allowed != true`. Hard-negative closure does not authorize model entry; Freeze #1, freeze #2 and reproducibility remain downstream of coverage.
 
 ## Markdown inventory
 
