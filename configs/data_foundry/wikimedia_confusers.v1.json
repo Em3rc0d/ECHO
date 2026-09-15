@@ -16,6 +16,42 @@
       ],
       "recording_family": "drb400atx-electronic-doorbell",
       "evidence_note": "Self-recorded electronic doorbell. The Commons page declares CC0. Doorbells/chimes are frozen hard-negative families for FIRE_ALARM and tonal alarm/chime confusers for SIREN. This row is never a positive target label."
+    },
+    {
+      "asset_key": "commons-car-cobblestone",
+      "url": "https://commons.wikimedia.org/wiki/File:Car_on_cobblestone.ogg",
+      "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Car_on_cobblestone.ogg",
+      "license": "Public-Domain",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": [
+        "TIRE_SQUEAL"
+      ],
+      "recording_family": "pdsounds-482",
+      "evidence_note": "Public-domain PDSounds recording of a car driving by on a cobblestone street. Car_passing_by is a frozen TIRE_SQUEAL hard-negative family. This row is never a positive target label."
+    },
+    {
+      "asset_key": "commons-starting-car-driving",
+      "url": "https://commons.wikimedia.org/wiki/File:Starting_a_car_and_driving.ogg",
+      "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Starting_a_car_and_driving.ogg",
+      "license": "Public-Domain",
+      "semantic": "Car",
+      "hard_negative_for": [
+        "TIRE_SQUEAL"
+      ],
+      "recording_family": "pdsounds-194",
+      "evidence_note": "Public-domain PDSounds recording of a car starting and driving. Car is a frozen TIRE_SQUEAL hard-negative family. This row is never a positive target label."
+    },
+    {
+      "asset_key": "commons-birds-cars-passing",
+      "url": "https://commons.wikimedia.org/wiki/File:Birds_songs_and_cars_passing_by.ogg",
+      "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Birds_songs_and_cars_passing_by.ogg",
+      "license": "Public-Domain",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": [
+        "TIRE_SQUEAL"
+      ],
+      "recording_family": "pdsounds-115",
+      "evidence_note": "Public-domain PDSounds recording with cars passing by. Car_passing_by is a frozen TIRE_SQUEAL hard-negative family. This row is never a positive target label."
     }
   ]
 }

@@ -1,0 +1,206 @@
+{
+  "schema_version": "echo.bigsoundbank-confusers.v1",
+  "checked_at": "2026-09-15",
+  "source_dataset": "echo-bigsoundbank-cc0-gap-v1",
+  "policy": "Every row is a real CC0 recording used only as an explicit hard negative. The semantic must be allowed by the frozen hard-negative mapping for every target role. Page license, bytes, SHA-256, audio probe, canonical fingerprint, grouping, global dedup and final coverage remain mandatory. Multiple files from one documented recording series stay one recording family.",
+  "assets": [
+    {
+      "asset_key": "bigsoundbank-2987",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-3-s2987.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2987.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2988",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-4-s2988.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2988.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2989",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-5-s2989.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2989.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2990",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-6-s2990.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2990.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2991",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-7-s2991.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2991.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2992",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-8-s2992.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2992.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2993",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-9-s2993.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2993.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2994",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-10-s2994.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2994.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2995",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-11-s2995.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2995.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2996",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-12-s2996.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2996.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2997",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-13-s2997.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2997.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-3000",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-14-s3000.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3000.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-3001",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-15-s3001.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/3001.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-2998",
+      "url": "https://bigsoundbank.com/car-passing-50km-h-16-s2998.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2998.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-passing-50kmh-series"
+    },
+    {
+      "asset_key": "bigsoundbank-556",
+      "url": "https://bigsoundbank.com/cars-passages-s0556.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0556.mp3",
+      "license": "CC0",
+      "semantic": "Car_passing_by",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-cars-passages-556"
+    },
+    {
+      "asset_key": "bigsoundbank-600",
+      "url": "https://bigsoundbank.com/acceleration-aston-martin-s0600.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0600.mp3",
+      "license": "CC0",
+      "semantic": "Accelerating_and_revving_and_vroom",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-aston-martin-600"
+    },
+    {
+      "asset_key": "bigsoundbank-290",
+      "url": "https://bigsoundbank.com/motor-car-1-s0290.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0290.mp3",
+      "license": "CC0",
+      "semantic": "Accelerating_and_revving_and_vroom",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-motor-car-290"
+    },
+    {
+      "asset_key": "bigsoundbank-1286",
+      "url": "https://bigsoundbank.com/car-on-a-road-s1286.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1286.mp3",
+      "license": "CC0",
+      "semantic": "Car",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-car-road-1286"
+    },
+    {
+      "asset_key": "bigsoundbank-1508",
+      "url": "https://bigsoundbank.com/grincements-plastique-s1508.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1508.mp3",
+      "license": "CC0",
+      "semantic": "Squeak",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-plastic-squeak-1508"
+    },
+    {
+      "asset_key": "bigsoundbank-847",
+      "url": "https://bigsoundbank.com/car-in-reverse-1-s0847.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0847.mp3",
+      "license": "CC0",
+      "semantic": "Car",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-peugeot-106-847"
+    },
+    {
+      "asset_key": "bigsoundbank-675",
+      "url": "https://bigsoundbank.com/damaged-muffler-accelerations-parked-car-s0675.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0675.mp3",
+      "license": "CC0",
+      "semantic": "Accelerating_and_revving_and_vroom",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-damaged-muffler-675"
+    },
+    {
+      "asset_key": "bigsoundbank-966",
+      "url": "https://bigsoundbank.com/small-gasoline-engine-s0966.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0966.mp3",
+      "license": "CC0",
+      "semantic": "Car",
+      "hard_negative_for": ["TIRE_SQUEAL"],
+      "recording_family": "bigsoundbank-small-engine-966"
+    }
+  ]
+}

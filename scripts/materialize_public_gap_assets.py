@@ -25,6 +25,7 @@ from echo.data_foundry.probe import probe_audio
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/data_foundry/gap_source_candidates.v1.json"
 WIKIMEDIA_CONFUSERS = ROOT / "configs/data_foundry/wikimedia_confusers.v1.json"
+BIGSOUNDBANK_CONFUSERS = ROOT / "configs/data_foundry/bigsoundbank_confusers.v1.json"
 OUTPUT_ROOT = Path(os.environ.get("ECHO_GAP_ASSET_ROOT", ROOT / ".materialized-gap-assets"))
 REPORT = ROOT / "MK1/mining-site/materialization/public-gap-assets-report.json"
 
@@ -71,7 +72,7 @@ def license_marker_ok(source_id: str, expected_license: str, page_text: str) -> 
     return False
 
 
-def iter_assets(config: dict, wikimedia_confusers: dict):
+def iter_assets(config: dict, wikimedia_confusers: dict, bigsoundbank_confusers: dict):
     for source_id in ("echo-bigsoundbank-cc0-gap-v1", "echo-wikimedia-fire-alarm-v1"):
         source = config["sources"][source_id]
         for target, rows in source["targets"].items():
@@ -88,18 +89,31 @@ def iter_assets(config: dict, wikimedia_confusers: dict):
             raise ValueError(f"Wikimedia confuser missing hard_negative_for: {row.get('asset_key')}")
         yield source_id, source, hard_negative_for[0], row
 
+    source_id = str(bigsoundbank_confusers.get("source_dataset") or "")
+    if source_id != "echo-bigsoundbank-cc0-gap-v1":
+        raise ValueError(f"unsupported BigSoundBank confuser source_dataset: {source_id}")
+    source = config["sources"][source_id]
+    for row in bigsoundbank_confusers.get("assets") or []:
+        hard_negative_for = [str(value) for value in (row.get("hard_negative_for") or [])]
+        if not hard_negative_for:
+            raise ValueError(f"BigSoundBank confuser missing hard_negative_for: {row.get('asset_key')}")
+        yield source_id, source, hard_negative_for[0], row
+
 
 def main() -> int:
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
     wikimedia_confusers = json.loads(WIKIMEDIA_CONFUSERS.read_text(encoding="utf-8"))
+    bigsoundbank_confusers = json.loads(BIGSOUNDBANK_CONFUSERS.read_text(encoding="utf-8"))
     if wikimedia_confusers.get("schema_version") != "echo.wikimedia-confusers.v1":
         raise SystemExit("unsupported Wikimedia confuser config schema")
+    if bigsoundbank_confusers.get("schema_version") != "echo.bigsoundbank-confusers.v1":
+        raise SystemExit("unsupported BigSoundBank confuser config schema")
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
     failures = []
 
-    for source_id, source, target, row in iter_assets(config, wikimedia_confusers):
+    for source_id, source, target, row in iter_assets(config, wikimedia_confusers, bigsoundbank_confusers):
         asset_key = str(row["asset_key"])
         page_url = str(row["url"])
         media_url = str(row["media_url"])
