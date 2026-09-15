@@ -3,7 +3,7 @@
   "boundary": "Conflicting protected original splits quarantine the complete acoustic recording group. No member is remapped; quarantined rows remain source/ledger evidence but cannot satisfy development coverage or frozen corpus membership.",
   "eligible_asset_count": 1046,
   "gap_codes": [],
-  "ledger_sha256": "cefd003a4dd0cada379a820115bb1d782d682f7b9f0b4437478d42c7763597d7",
+  "ledger_sha256": "a98cf1fc0db20dd886d9259b8d0c8bdfa34746ea4d1a6f7efa0394311409aef4",
   "original_split_conflict_count": 3,
   "original_split_conflicts_quarantined": 3,
   "policy_id": "MK1-SPLIT-INTEGRITY-002",

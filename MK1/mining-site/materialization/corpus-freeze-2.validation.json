@@ -5,10 +5,10 @@
   "gap_codes": [
     "UPSTREAM_COVERAGE_NOT_PASS"
   ],
-  "ledger_sha256": "cefd003a4dd0cada379a820115bb1d782d682f7b9f0b4437478d42c7763597d7",
+  "ledger_sha256": "a98cf1fc0db20dd886d9259b8d0c8bdfa34746ea4d1a6f7efa0394311409aef4",
   "quarantined_asset_count": 77,
   "schema_version": "echo.corpus-freeze-validation.v2",
-  "semantic_identity_sha256": "5f11b05c9b74d32b34931fd2432c62adce18eaaf2d0e892d0b2707ee85a16977",
+  "semantic_identity_sha256": "96358784438561034f91966bc2e219c0caa9ed8ffe543df042cf854ddeeddc24",
   "split_assignment_sha256": "ba6b3a26f1c9a1bca7c2fc051252b3bc0184e02f4a5df5c2ac63e05193abea8e",
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "FAIL"
