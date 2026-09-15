@@ -81,7 +81,7 @@ jobs:
           name: opengameart-rubberduck-cc0-evidence
           path: MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
           compression-level: 9
       - name: Commit durable evidence only if main is unchanged
         run: |
