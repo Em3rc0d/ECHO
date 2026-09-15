@@ -1,0 +1,74 @@
+{
+  "schema_version": "echo.bigsoundbank-glass-expansion.v1",
+  "checked_at": "2026-09-15",
+  "source_dataset": "echo-bigsoundbank-cc0-gap-v1",
+  "target": "GLASS_SHATTER",
+  "policy": "Only BigSoundBank pages that explicitly declare CC0/public-domain rights and UCS Glass / Break (GLASBrk) semantics are listed. Variants from the same apparent recording session remain one conservative recording family. Materialization, probe, canonical fingerprint, global dedup, grouping, split quarantine and final coverage remain authoritative.",
+  "assets": [
+    {
+      "asset_key": "bigsoundbank-387",
+      "url": "https://bigsoundbank.com/mirror-explodes-s0387.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0387.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "mirror_break_387"
+    },
+    {
+      "asset_key": "bigsoundbank-1121",
+      "url": "https://bigsoundbank.com/broken-christmas-ball-1-s1121.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1121.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "broken_christmas_ball_family"
+    },
+    {
+      "asset_key": "bigsoundbank-1122",
+      "url": "https://bigsoundbank.com/broken-christmas-ball-2-s1122.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1122.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "broken_christmas_ball_family"
+    },
+    {
+      "asset_key": "bigsoundbank-1123",
+      "url": "https://bigsoundbank.com/broken-christmas-ball-3-s1123.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/1123.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "broken_christmas_ball_family"
+    },
+    {
+      "asset_key": "bigsoundbank-2041",
+      "url": "https://bigsoundbank.com/bulb-bursting-3-s2041.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2041.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "bulb_bursting_family"
+    },
+    {
+      "asset_key": "bigsoundbank-2042",
+      "url": "https://bigsoundbank.com/bulb-bursting-4-s2042.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2042.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "bulb_bursting_family"
+    },
+    {
+      "asset_key": "bigsoundbank-2043",
+      "url": "https://bigsoundbank.com/bulb-bursting-5-s2043.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2043.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "bulb_bursting_family"
+    },
+    {
+      "asset_key": "bigsoundbank-2044",
+      "url": "https://bigsoundbank.com/bulb-bursting-6-s2044.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2044.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "bulb_bursting_family"
+    },
+    {
+      "asset_key": "bigsoundbank-2045",
+      "url": "https://bigsoundbank.com/bulb-bursting-7-s2045.html",
+      "media_url": "https://bigsoundbank.com/UPLOAD/mp3/2045.mp3",
+      "semantic": "glass_shatter",
+      "recording_family": "bulb_bursting_family"
+    }
+  ],
+  "grouping_stop_line": "Nine assets provide at most three new independent recording groups at this evidence level: mirror_break_387, broken_christmas_ball_family and bulb_bursting_family.",
+  "certification_stop_line": "This manifest does not itself grant corpus credit. Every row must survive real-byte materialization, CC0 marker verification, probe, canonical fingerprint, canonical-ledger semantic admission, global dedup/grouping, protected split handling and final coverage."
+}
