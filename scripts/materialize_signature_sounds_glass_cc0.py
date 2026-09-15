@@ -10,9 +10,10 @@ review can pin the archive before any ledger admission is possible.
 
 from __future__ import annotations
 
-from collections import Counter
+import base64
 import hashlib
 from html import unescape
+from html.parser import HTMLParser
 import io
 import json
 import os
@@ -21,7 +22,7 @@ import re
 import time
 from typing import Any, Mapping
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 from urllib.request import Request, urlopen
 import zipfile
 
@@ -38,15 +39,52 @@ OUTPUT_ROOT = Path(
     )
 )
 USER_AGENT = "ECHO-Data-Foundry/1.0 (+https://github.com/Em3rc0d/ECHO)"
+BROWSER_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/152.0.0.0 Safari/537.36"
+)
 MAX_ARCHIVE_BYTES = 25_000_000
 MAX_UNCOMPRESSED_BYTES = 100_000_000
 MAX_ARCHIVE_MEMBERS = 500
 
 
-def fetch(url: str, *, attempts: int = 6) -> tuple[bytes, str | None, str]:
+class _MediaFireDownloadButtonParser(HTMLParser):
+    """Collect only values attached to MediaFire's public download button."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.values: list[tuple[str, str]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.casefold() != "a":
+            return
+        values = {str(key).casefold(): str(value or "") for key, value in attrs}
+        is_download_button = (
+            values.get("id", "").casefold() == "downloadbutton"
+            or values.get("aria-label", "").casefold() == "download file"
+        )
+        if not is_download_button:
+            return
+        for attribute in ("href", "data-scrambled-url"):
+            value = values.get(attribute, "").strip()
+            if value:
+                self.values.append((attribute, value))
+
+
+def fetch(
+    url: str,
+    *,
+    attempts: int = 6,
+    user_agent: str = USER_AGENT,
+    referer: str | None = None,
+) -> tuple[bytes, str | None, str]:
     last_error: Exception | None = None
     for attempt in range(1, attempts + 1):
-        request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
+        headers = {"User-Agent": user_agent, "Accept": "*/*"}
+        if referer:
+            headers["Referer"] = referer
+        request = Request(url, headers=headers)
         try:
             with urlopen(request, timeout=120) as response:  # nosec B310 - governed public evidence URLs
                 return response.read(), response.headers.get_content_type(), response.geturl()
@@ -117,17 +155,75 @@ def canonical_page_evidence_ok(page_text: str) -> tuple[bool, list[str]]:
     return not missing, missing
 
 
+def _validate_mediafire_direct_zip_url(raw_url: str) -> str:
+    candidate = unescape(raw_url).replace("\\/", "/").strip()
+    if candidate.startswith("//"):
+        candidate = "https:" + candidate
+    parsed = urlparse(candidate)
+    host = (parsed.hostname or "").casefold()
+    if parsed.scheme.casefold() != "https":
+        raise ValueError("MediaFire direct URL must use HTTPS")
+    if not host.startswith("download") or not host.endswith(".mediafire.com"):
+        raise ValueError("MediaFire direct URL host is outside the governed download CDN")
+    if ".zip" not in unquote(parsed.path).casefold():
+        raise ValueError("MediaFire direct URL is not the governed ZIP asset")
+    return candidate
+
+
+def _decode_scrambled_mediafire_url(value: str) -> str:
+    cleaned = unescape(value).strip()
+    padding = "=" * (-len(cleaned) % 4)
+    try:
+        decoded = base64.b64decode(cleaned + padding, validate=True).decode("utf-8")
+    except Exception as exc:
+        raise ValueError("invalid MediaFire scrambled download URL") from exc
+    return decoded
+
+
 def direct_mediafire_download_url(landing_html: str) -> str:
-    decoded = unescape(landing_html)
-    candidates = re.findall(
-        r"https://download[^\"'<>\s]+\.mediafire\.com/[^\"'<>\s]+",
-        decoded,
-        flags=re.IGNORECASE,
+    """Resolve only MediaFire's own public direct-download button representations."""
+
+    decoded = unescape(landing_html).replace("\\/", "/")
+    parser = _MediaFireDownloadButtonParser()
+    parser.feed(decoded)
+
+    candidates: list[str] = []
+    for attribute, value in parser.values:
+        if attribute == "data-scrambled-url":
+            try:
+                candidates.append(_decode_scrambled_mediafire_url(value))
+            except ValueError:
+                continue
+        else:
+            candidates.append(value)
+
+    # MediaFire has historically emitted a JS variable for the same public
+    # download-button destination. It is still validated against the exact CDN.
+    candidates.extend(
+        match.group(1)
+        for match in re.finditer(
+            r"\bkNO\s*=\s*[\"'](https?://[^\"']+)[\"']",
+            decoded,
+            flags=re.IGNORECASE,
+        )
     )
-    zip_candidates = [url for url in candidates if ".zip" in url.casefold()]
-    if not zip_candidates:
-        raise ValueError("MediaFire direct ZIP URL not found in governed landing page")
-    return zip_candidates[0]
+
+    # Final compatibility fallback: accept a literal direct CDN URL anywhere
+    # in the public landing page, but never an arbitrary off-domain URL.
+    candidates.extend(
+        re.findall(
+            r"https://download[^\"'<>\s]+\.mediafire\.com/[^\"'<>\s]+",
+            decoded,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    for candidate in candidates:
+        try:
+            return _validate_mediafire_direct_zip_url(candidate)
+        except ValueError:
+            continue
+    raise ValueError("MediaFire public download button did not expose a governed direct ZIP URL")
 
 
 def safe_audio_members(archive_bytes: bytes, minimum_count: int) -> tuple[list[zipfile.ZipInfo], list[str], int]:
@@ -232,10 +328,19 @@ def main() -> int:
         )
 
     landing_url = str(config["acquisition_transport"]["landing_page"])
-    landing_bytes, _, resolved_landing = fetch(landing_url)
+    landing_bytes, _, resolved_landing = fetch(
+        landing_url,
+        user_agent=BROWSER_USER_AGENT,
+        referer=str(config["canonical_source_page"]),
+    )
     landing_text = landing_bytes.decode("utf-8", errors="replace")
     direct_url = direct_mediafire_download_url(landing_text)
-    archive_bytes, content_type, resolved_archive = fetch(direct_url)
+    archive_bytes, content_type, resolved_archive = fetch(
+        direct_url,
+        user_agent=BROWSER_USER_AGENT,
+        referer=resolved_landing,
+    )
+    resolved_direct = _validate_mediafire_direct_zip_url(resolved_archive)
     archive_sha256 = hashlib.sha256(archive_bytes).hexdigest()
     expected_sha256 = config["acquisition_transport"].get("expected_archive_sha256")
     if expected_sha256 is not None and archive_sha256 != str(expected_sha256):
@@ -278,8 +383,8 @@ def main() -> int:
             "landing_page": landing_url,
             "resolved_landing_page": resolved_landing,
             "landing_page_sha256": hashlib.sha256(landing_bytes).hexdigest(),
-            "resolved_archive_url": resolved_archive,
-            "resolved_archive_host": urlparse(resolved_archive).netloc,
+            "resolved_archive_url": resolved_direct,
+            "resolved_archive_host": urlparse(resolved_direct).netloc,
             "content_type": content_type,
             "source_credit": False,
         },
