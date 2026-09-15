@@ -90,43 +90,41 @@ closure audits          311cc2001931d4cceedb90ab5d21f06e15fdf881
 closure readiness       de1d31b280e9fad4a3764537aa75d7d72802adb7
 ```
 
-Current canonical ledger facts from readiness:
+Authoritative canonical-ledger summary:
 
 ```text
-ledger entries        1164
-fingerprints present  1164
-fingerprints missing     0
+status                    PASS_CONSOLIDATED_WITH_OPEN_GATES
+ledger entries            1164
+canonical fingerprints    1164
+fingerprints missing         0
+exact SHA-256 dup groups     0
 ```
 
-Current positive assets before final corpus certification:
+Current pre-final positive assets / underlying source families:
 
 ```text
-FIRE_ALARM       5
-GLASS_SHATTER  286
-SIREN          242
-TIRE_SQUEAL      5
-VEHICLE_HORN   326
+FIRE_ALARM       10 / 3
+GLASS_SHATTER   304 / 2
+SIREN           175 / 3
+TIRE_SQUEAL      11 / 2
+VEHICLE_HORN    245 / 3
 ```
 
-Current hard-negative assets / source families:
+Current hard-negative assets / underlying source families:
 
 ```text
-FIRE_ALARM      34 / 1
-GLASS_SHATTER  401 / 1
-SIREN          365 / 4
-TIRE_SQUEAL      0 / 0
-VEHICLE_HORN    33 / 1
+FIRE_ALARM       34 / 1
+GLASS_SHATTER   401 / 1
+SIREN            32 / 1
+TIRE_SQUEAL       0 / 0
+VEHICLE_HORN      0 / 0
 ```
 
-Canonical fingerprint coverage is now complete; the historical fingerprint-coverage gap is closed.
+Canonical fingerprint coverage is complete. That does not imply corpus admission: 531 rows are still `REVIEW_REQUIRED`, 503 rows require the global grouping audit, 83 lack an exact semantic role, and smaller rights/semantic conflict sets remain fail-closed.
 
 ## 7. Machine-readable corpus readiness
 
-Authoritative artifact:
-
-`MK1/mining-site/materialization/corpus-closure-readiness.json`
-
-Current state:
+Authoritative artifact: `MK1/mining-site/materialization/corpus-closure-readiness.json` at commit `de1d31b280e9fad4a3764537aa75d7d72802adb7`.
 
 ```text
 readiness_id = EMP-MK1-CORPUS-READINESS-001
@@ -137,27 +135,42 @@ CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
 ```
 
-Current gap codes:
+Current readiness gap codes are exactly:
 
 ```text
-FIRE_ALARM_ASSETS_5_LT_50
-TIRE_SQUEAL_ASSETS_5_LT_50
-TIRE_SQUEAL_UNDERLYING_SOURCES_1_LT_2
+CORPUS_CERTIFICATE_NOT_CERTIFIED
+COVERAGE_GATE_GAP_CODES_NOT_EMPTY
+COVERAGE_GATE_NOT_PASS
+COVERAGE_GATE_STATUS_NOT_PASS
+FIRE_ALARM_ASSETS_10_LT_50
 FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2
+FREEZE_1_VALIDATION_NOT_PASS
+FREEZE_2_VALIDATION_NOT_PASS
 GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
-VEHICLE_HORN_HARD_NEGATIVE_SOURCES_1_LT_2
+GLOBAL_DEDUP_AUDIT_NOT_PASS
+LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4
+LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_503
+LEDGER_LICENSE_NOT_RELEASE_SAFE_1
+LEDGER_NO_EXACT_SEMANTIC_ROLE_83
+LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1
+LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1
+LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1
+RECORDING_FAMILY_AUDIT_NOT_PASS
+REPRODUCIBILITY_NOT_PASS
+SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
+SPLIT_INTEGRITY_NOT_PASS
+TIRE_SQUEAL_ASSETS_11_LT_50
 TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_0_LT_10
 TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
+VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
+VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
 
-Those gaps are empirical and remain fail-closed.
+These are genuine corpus blockers and are not softened by SONYC/toolchain certification.
 
 ## 8. Corpus solidity floor
 
-`MK1-CORPUS-SOLIDITY-001` is unchanged.
-
-Per target: assets >=50, groups >=25, underlying independent sources >=2, duration >=180 s, largest source fraction <=0.80; train >=20 assets/10 groups, validation >=5/3, test >=5/3. Global negatives require >=200 assets/50 groups/3 sources. Per-target hard negatives require >=20 assets/10 groups/2 sources.
+`MK1-CORPUS-SOLIDITY-001` is unchanged. Per target: assets >=50, groups >=25, independent underlying sources >=2, duration >=180 s, largest source fraction <=0.80; train >=20 assets/10 groups, validation >=5/3, test >=5/3. Global negatives require >=200 assets/50 groups/3 sources. Per-target hard negatives require >=20 assets/10 groups/2 sources.
 
 No broad-label coercion, synthetic independence, duplicate-family inflation, field-holdout leakage, metadata-wrapper double counting or floor reduction is permitted.
 
@@ -165,11 +178,11 @@ No broad-label coercion, synthetic independence, duplicate-family inflation, fie
 
 ```text
 canonical ledger
-  -> close remaining semantic/source/coverage gaps
-  -> global exact + near-duplicate audit
+  -> close rights / exact semantic-role / source-credit conflicts
+  -> global exact + cross-format near-duplicate audit
   -> global recording-family/source-independence audit
   -> group-aware split
-  -> coverage/diversity PASS with gap_codes=[]
+  -> coverage/diversity/hard-negative PASS with gap_codes=[]
   -> freeze #1 + validate
   -> second clean freeze #2 + validate
   -> semantic identity / reproducibility PASS
@@ -242,7 +255,7 @@ EMP-MK1-CORPUS-READINESS-001   BLOCKED
         ↓
 close exact current corpus gaps
         ↓
-coverage + global audits + split + freeze×2 + reproducibility PASS
+global audits + split + coverage + freeze×2 + reproducibility PASS
         ↓
 CERT-MK1-DF-CORPUS-001 = CERTIFIED
         ↓
