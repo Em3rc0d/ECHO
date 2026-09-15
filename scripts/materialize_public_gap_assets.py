@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/data_foundry/gap_source_candidates.v1.json"
 WIKIMEDIA_CONFUSERS = ROOT / "configs/data_foundry/wikimedia_confusers.v1.json"
 BIGSOUNDBANK_CONFUSERS = ROOT / "configs/data_foundry/bigsoundbank_confusers.v1.json"
+BIGSOUNDBANK_GLASS_EXPANSION = ROOT / "configs/data_foundry/bigsoundbank_glass_expansion.v1.json"
 OUTPUT_ROOT = Path(os.environ.get("ECHO_GAP_ASSET_ROOT", ROOT / ".materialized-gap-assets"))
 REPORT = ROOT / "MK1/mining-site/materialization/public-gap-assets-report.json"
 
@@ -72,7 +73,12 @@ def license_marker_ok(source_id: str, expected_license: str, page_text: str) -> 
     return False
 
 
-def iter_assets(config: dict, wikimedia_confusers: dict, bigsoundbank_confusers: dict):
+def iter_assets(
+    config: dict,
+    wikimedia_confusers: dict,
+    bigsoundbank_confusers: dict,
+    bigsoundbank_glass_expansion: dict,
+):
     for source_id in ("echo-bigsoundbank-cc0-gap-v1", "echo-wikimedia-fire-alarm-v1"):
         source = config["sources"][source_id]
         for target, rows in source["targets"].items():
@@ -99,21 +105,43 @@ def iter_assets(config: dict, wikimedia_confusers: dict, bigsoundbank_confusers:
             raise ValueError(f"BigSoundBank confuser missing hard_negative_for: {row.get('asset_key')}")
         yield source_id, source, hard_negative_for[0], row
 
+    source_id = str(bigsoundbank_glass_expansion.get("source_dataset") or "")
+    target = str(bigsoundbank_glass_expansion.get("target") or "")
+    if source_id != "echo-bigsoundbank-cc0-gap-v1":
+        raise ValueError(f"unsupported BigSoundBank glass source_dataset: {source_id}")
+    if target != "GLASS_SHATTER":
+        raise ValueError(f"unsupported BigSoundBank glass target: {target}")
+    source = config["sources"][source_id]
+    for row in bigsoundbank_glass_expansion.get("assets") or []:
+        if row.get("hard_negative_for"):
+            raise ValueError(f"BigSoundBank glass positive cannot carry hard-negative role: {row.get('asset_key')}")
+        if str(row.get("semantic") or "") != "glass_shatter":
+            raise ValueError(f"BigSoundBank glass semantic drift: {row.get('asset_key')}")
+        yield source_id, source, target, row
+
 
 def main() -> int:
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
     wikimedia_confusers = json.loads(WIKIMEDIA_CONFUSERS.read_text(encoding="utf-8"))
     bigsoundbank_confusers = json.loads(BIGSOUNDBANK_CONFUSERS.read_text(encoding="utf-8"))
+    bigsoundbank_glass_expansion = json.loads(BIGSOUNDBANK_GLASS_EXPANSION.read_text(encoding="utf-8"))
     if wikimedia_confusers.get("schema_version") != "echo.wikimedia-confusers.v1":
         raise SystemExit("unsupported Wikimedia confuser config schema")
     if bigsoundbank_confusers.get("schema_version") != "echo.bigsoundbank-confusers.v1":
         raise SystemExit("unsupported BigSoundBank confuser config schema")
+    if bigsoundbank_glass_expansion.get("schema_version") != "echo.bigsoundbank-glass-expansion.v1":
+        raise SystemExit("unsupported BigSoundBank glass expansion config schema")
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
     failures = []
 
-    for source_id, source, target, row in iter_assets(config, wikimedia_confusers, bigsoundbank_confusers):
+    for source_id, source, target, row in iter_assets(
+        config,
+        wikimedia_confusers,
+        bigsoundbank_confusers,
+        bigsoundbank_glass_expansion,
+    ):
         asset_key = str(row["asset_key"])
         page_url = str(row["url"])
         media_url = str(row["media_url"])
@@ -177,7 +205,7 @@ def main() -> int:
         "failure_count": len(failures),
         "assets": sorted(rows, key=lambda value: (value["source_dataset"], value["target"], value["asset_key"])),
         "failures": failures,
-        "certification_note": "Materialized bytes are candidates only. Explicit hard-negative roles remain governed by versioned config; fingerprinting closes codec-normalized evidence capture, but grouping/global dedup/rights/coverage gates still control admission.",
+        "certification_note": "Materialized bytes are candidates only. Explicit hard-negative roles remain governed by versioned config; exact BigSoundBank glass_shatter rows are governed positives only after canonical-ledger semantic admission; fingerprinting closes codec-normalized evidence capture, but grouping/global dedup/rights/coverage gates still control admission.",
     }
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
