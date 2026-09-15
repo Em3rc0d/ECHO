@@ -6,6 +6,7 @@ from scripts.data_foundry.enforce_canonical_ledger_role_boundary import (
     apply_role_boundary,
     corpus_admission_rejection,
     has_governed_corpus_role,
+    unresolved_admission_blockers,
 )
 
 
@@ -51,6 +52,44 @@ class CanonicalLedgerRoleBoundaryTests(unittest.TestCase):
         self.assertIsNone(corpus_admission_rejection(row))
         kept, _ = apply_role_boundary([row])
         self.assertEqual(len(kept), 1)
+
+    def test_pre_grouping_marker_is_deferred_not_quarantined(self) -> None:
+        row = {
+            "source_dataset": "echo-freesound-release-safe-v1",
+            "source_asset_id": "98054",
+            "echo_labels": ["GLASS_SHATTER"],
+            "hard_negative_for": [],
+            "rights_status": "ALLOW_RELEASE_SAFE",
+            "blocking_reasons": ["GROUPING_GLOBAL_AUDIT_REQUIRED"],
+        }
+        self.assertEqual(unresolved_admission_blockers(row), set())
+        self.assertIsNone(corpus_admission_rejection(row))
+        kept, audit = apply_role_boundary([row])
+        self.assertEqual(len(kept), 1)
+        self.assertEqual(
+            audit["retained_deferred_blocker_counts"],
+            {"GROUPING_GLOBAL_AUDIT_REQUIRED": 1},
+        )
+
+    def test_grouping_marker_does_not_hide_a_real_conflict(self) -> None:
+        row = {
+            "source_dataset": "echo-freesound-release-safe-v1",
+            "echo_labels": ["SIREN"],
+            "hard_negative_for": [],
+            "rights_status": "ALLOW_RELEASE_SAFE",
+            "blocking_reasons": [
+                "GROUPING_GLOBAL_AUDIT_REQUIRED",
+                "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM",
+            ],
+        }
+        self.assertEqual(
+            unresolved_admission_blockers(row),
+            {"SEMANTIC_STATUS_CONFLICT_FIRE_ALARM"},
+        )
+        self.assertEqual(corpus_admission_rejection(row), "UNRESOLVED_ADMISSION_BLOCKER")
+        kept, audit = apply_role_boundary([row])
+        self.assertEqual(kept, [])
+        self.assertEqual(audit["removed_unresolved_blocker_rows"], 1)
 
     def test_research_only_positive_is_quarantined(self) -> None:
         row = {
