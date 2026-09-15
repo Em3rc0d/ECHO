@@ -1,8 +1,8 @@
 {
   "asset_count": 18510,
-  "certification_boundary": "Real SONYC bytes were fully materialized shard-by-shard under ECHO-FREE-TIER-001. This evidence does not by itself close CERT-MK1-DF-CORPUS-001; global source diversity, hard-negative, dedup, split and coverage gates remain authoritative.",
+  "certification_boundary": "Real SONYC bytes were fully materialized shard-by-shard under ECHO-FREE-TIER-001. Ledger-relevant target/confuser records retain asset-level size, probe and canonical fingerprint evidence. Global source diversity, hard-negative, near-duplicate, split and coverage gates remain authoritative.",
   "confuser_candidate_count": 428,
-  "confuser_candidates_sha256": "3ee965966b95d65ae7116b98e38f767037d747b8cba0cd833c07430164c4f4dd",
+  "confuser_candidates_sha256": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
   "confuser_ground_truth_counts": {
     "car-alarm": 1,
     "machinery-impact": 58,
@@ -168,9 +168,11 @@
     }
   ],
   "exact_duplicate_sha256_group_count": 491,
+  "fingerprint_failures": 0,
+  "fingerprinted_ledger_relevant_assets": 599,
   "probe_failures": 0,
-  "schema_version": "echo.sonyc-full-materialization-summary.v1",
-  "shard_digests_sha256": "0ceb6e3a8b4037f3b74a89796c4d3643f3e63a27e62b800d7ff29656bb12ecc2",
+  "schema_version": "echo.sonyc-full-materialization-summary.v2",
+  "shard_digests_sha256": "617bc335f51f9bc3abf3177fe41c1276ea9c946ba42e18b2c192fcf60333fb07",
   "shards_expected": 19,
   "shards_materialized": 19,
   "source_id": "sonyc-ust-v2",
@@ -182,7 +184,7 @@
   },
   "status": "PASS_WITH_REVIEW_FLAGS",
   "target_candidate_count": 236,
-  "target_candidates_sha256": "d37787141700b205f3849412b24b2543cefa8d379383527258cdac500cae4489",
+  "target_candidates_sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
   "target_ground_truth_counts": {
     "SIREN": 106,
     "VEHICLE_HORN": 157
