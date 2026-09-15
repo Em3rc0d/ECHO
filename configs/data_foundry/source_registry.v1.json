@@ -1,6 +1,6 @@
 {
   "schema_version": "echo.source-registry.v1",
-  "evidence_checked_at": "2026-09-13",
+  "evidence_checked_at": "2026-09-15",
   "sources": [
     {
       "source_id": "fsd50k-1.0",
@@ -191,6 +191,22 @@
       },
       "group_keys": ["recording_family", "asset_key"],
       "notes": "Public-domain rows can be release-safe candidates after semantic review; ShareAlike rows remain non-release-safe under current default policy; synthetic pattern assets never receive independent real-source credit."
+    },
+    {
+      "source_id": "echo-opengameart-rubberduck-cc0-v1",
+      "name": "ECHO curated OpenGameArt rubberduck CC0 break/impact pack",
+      "release": "curation-2026-09-15-v1",
+      "canonical_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+      "role": ["curated_per_asset_positive_pool", "hard_negative_candidate_pool", "gap_closure"],
+      "license_model": "uniform_submission_cc0_with_real_byte_evidence",
+      "dataset_license": "CC0",
+      "default_profile": "release_safe",
+      "asset_license_required": false,
+      "target_coverage": {
+        "GLASS_SHATTER": {"relation": "SIX_EXPLICIT_GLASS_BREAKING_POSITIVES_PLUS_CURATED_CONFUSERS", "review_required": false}
+      },
+      "group_keys": ["creator", "recording_family"],
+      "notes": "Canonical OpenGameArt evidence attributes the pack to creator rubberduck and marks it CC0. The pinned GitHub mirror is byte transport only, not a second acoustic source. All six glass-breaking variants remain one conservative positive recording family; non-glass and glass-hit/fall rows are confusers only."
     }
   ]
 }
