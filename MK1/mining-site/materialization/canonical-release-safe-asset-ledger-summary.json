@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "4b261bd10d6578a6256fca8ec848ea1055c24b32",
+  "baseline_commit": "ed00ba035dc03c345caff7dc2a1697b59e3ce13b",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1078,
+  "canonical_fingerprint_count": 1123,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -57,37 +57,37 @@
     "status": "PASS",
     "technical_evidence_asset_count": 1081
   },
-  "entry_count": 1078,
+  "entry_count": 1123,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1078,
-    "component_count": 996,
+    "asset_count": 1123,
+    "component_count": 1003,
     "content_deleted": false,
     "content_merge_performed": false,
-    "cross_source_group_near_duplicate_edge_count": 831,
+    "cross_source_group_near_duplicate_edge_count": 837,
     "fallback_asset_count_after": 0,
     "fallback_asset_count_before": 446,
     "global_acoustic_component_count": 17,
-    "members_reassigned_to_global_acoustic_component": 97,
-    "near_duplicate_edge_count": 831,
+    "members_reassigned_to_global_acoustic_component": 114,
+    "near_duplicate_edge_count": 837,
     "near_duplicate_threshold": 0.02,
     "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
     "schema_version": "echo.global-recording-group-resolution.v1",
-    "screened_fallback_source_group_count": 355,
+    "screened_fallback_source_group_count": 354,
     "status": "PASS"
   },
   "hard_negative_counts": {
     "FIRE_ALARM": 34,
-    "GLASS_SHATTER": 401,
+    "GLASS_SHATTER": 440,
     "SIREN": 32,
     "TIRE_SQUEAL": 0,
     "VEHICLE_HORN": 0
   },
   "hard_negative_underlying_source_family_counts": {
     "FIRE_ALARM": 1,
-    "GLASS_SHATTER": 1,
+    "GLASS_SHATTER": 2,
     "SIREN": 1,
     "TIRE_SQUEAL": 0,
     "VEHICLE_HORN": 0
@@ -117,6 +117,14 @@
       "path": "MK1/mining-site/materialization/fsd50k-metadata-inspection.json",
       "sha256": "c902f0a308f425ba362ee81dcc6539c268258d60ea47dab392836f98667d61f5"
     },
+    "opengameart_rubberduck_cc0_manifest": {
+      "path": "configs/data_foundry/opengameart_rubberduck_cc0.v1.json",
+      "sha256": "3c8564f0b71c3f893ad5e688b8152596a2278285a8ef06672675569c37a2dd11"
+    },
+    "opengameart_rubberduck_cc0_report": {
+      "path": "MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json",
+      "sha256": "8788a7b73284d4c2c43b5336792aca5e90b786501ca8f1821a009215407a5e3e"
+    },
     "public_gap": {
       "path": "MK1/mining-site/materialization/public-gap-assets-report.json",
       "sha256": "93cd434e8cdc0ac9dde935cc41a9ac6d06b9261914bbd00d7f8ac6233de2e81f"
@@ -138,7 +146,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "36ef8e19198a296d7806106adc2c4ee43b7827d893e78b6bbd2d1ffd83b3743a",
+  "ledger_sha256": "79026c3c404eb93e6cfe908c5ec437919d367a53ff5588995dcd38405f20f8e3",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -150,16 +158,42 @@
     "freeze/bundle validation",
     "second clean freeze reproducibility"
   ],
+  "opengameart_rubberduck_cc0_augmentation": {
+    "canonical_source_page_sha256": "604a00a018b3ae0626c22a407c2752951a048507953135cd2fd0fe8769c39a0d",
+    "grouping_stop_line": "All six numbered glass-breaking variants remain one positive recording group unless stronger independent-session evidence is later proven.",
+    "manifest_sha256": "3c8564f0b71c3f893ad5e688b8152596a2278285a8ef06672675569c37a2dd11",
+    "report_sha256": "8788a7b73284d4c2c43b5336792aca5e90b786501ca8f1821a009215407a5e3e",
+    "source_diversity_stop_line": "The OpenGameArt submission/creator is one acoustic-origin family. The pinned GitHub mirror is transport only and never receives independent credit.",
+    "source_id": "echo-opengameart-rubberduck-cc0-v1",
+    "stats": {
+      "group:bfh1:glass_breaking": 6,
+      "group:bfh1:glass_falling": 4,
+      "group:bfh1:glass_hit": 2,
+      "group:bfh1:metal_falling": 5,
+      "group:bfh1:metal_hit": 6,
+      "group:bfh1:rock_breaking": 3,
+      "group:bfh1:rock_falling": 9,
+      "group:bfh1:rock_hit": 1,
+      "group:bfh1:wood_breaking": 4,
+      "group:bfh1:wood_falling": 2,
+      "group:bfh1:wood_hit": 3,
+      "hard_negative_rows": 39,
+      "positive_rows": 6,
+      "rows": 45
+    },
+    "status": "PASS",
+    "underlying_source_family": "OPENGAMEART_RUBBERDUCK"
+  },
   "positive_counts": {
     "FIRE_ALARM": 9,
-    "GLASS_SHATTER": 304,
+    "GLASS_SHATTER": 310,
     "SIREN": 173,
     "TIRE_SQUEAL": 11,
     "VEHICLE_HORN": 245
   },
   "positive_underlying_source_family_counts": {
     "FIRE_ALARM": 2,
-    "GLASS_SHATTER": 2,
+    "GLASS_SHATTER": 3,
     "SIREN": 3,
     "TIRE_SQUEAL": 2,
     "VEHICLE_HORN": 3
@@ -175,7 +209,7 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1164,
+    "input_rows": 1209,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
@@ -207,7 +241,7 @@
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 446
     },
-    "retained_rows": 1078,
+    "retained_rows": 1123,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
@@ -215,6 +249,7 @@
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 22,
     "echo-freesound-release-safe-v1": 457,
+    "echo-opengameart-rubberduck-cc0-v1": 45,
     "sonyc-ust-v2": 599
   },
   "source_input_stats": {
@@ -239,12 +274,13 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1078
+    "READY_FOR_GLOBAL_DEDUP": 1123
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
     "BIGSOUNDBANK": 22,
     "FREESOUND": 457,
+    "OPENGAMEART_RUBBERDUCK": 45,
     "SONYC_UST": 599
   }
 }
