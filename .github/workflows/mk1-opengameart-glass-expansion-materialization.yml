@@ -1,0 +1,111 @@
+name: MK1 OpenGameArt Glass Expansion Materialization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/materialize_opengameart_glass_expansion.py'
+      - 'configs/data_foundry/opengameart_glass_expansion.v1.json'
+      - 'src/echo/data_foundry/canonical_fingerprints.py'
+      - 'src/echo/data_foundry/probe.py'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-opengameart-glass-expansion-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mk1-opengameart-glass-expansion-main
+  cancel-in-progress: false
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce ECHO-FREE-TIER-001
+        env:
+          PYTHONPATH: src
+        run: python scripts/check_free_tier_boundary.py
+      - name: Validate governed discovery config
+        run: python -m json.tool configs/data_foundry/opengameart_glass_expansion.v1.json >/dev/null
+      - name: Install free media probe and canonical decoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          set -o pipefail
+          ffprobe -version | head -n 1
+          ffmpeg -version | head -n 1
+      - name: Materialize OpenGameArt glass expansion evidence
+        env:
+          PYTHONPATH: src
+          ECHO_OPENGAMEART_GLASS_EXPANSION_ROOT: ${{ runner.temp }}/echo-opengameart-glass-expansion
+        run: python scripts/materialize_opengameart_glass_expansion.py
+      - name: Enforce discovery evidence and free-tier boundaries
+        env:
+          ECHO_OPENGAMEART_GLASS_EXPANSION_ROOT: ${{ runner.temp }}/echo-opengameart-glass-expansion
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          policy = json.loads(Path('configs/data_foundry/free_tier_boundary.v1.json').read_text())
+          root = Path(os.environ['ECHO_OPENGAMEART_GLASS_EXPANSION_ROOT'])
+          report = Path('MK1/mining-site/materialization/opengameart-glass-expansion-materialization.json')
+          payload = json.loads(report.read_text())
+          scratch = sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) if root.exists() else 0
+          limit = int(policy['github_actions']['project_max_working_set_bytes'])
+          print('scratch bytes=', scratch, 'working-set limit=', limit, 'report bytes=', report.stat().st_size)
+          print('status=', payload['status'], 'sources=', payload['source_count'], 'materialized=', payload['materialized_count'], 'fingerprinted=', payload['fingerprinted_count'])
+          print('explicit_positive_candidates=', payload['explicit_positive_candidate_count'], 'glass_named_review_candidates=', payload['glass_named_review_candidate_count'])
+          if scratch > limit:
+              raise SystemExit('OpenGameArt glass discovery scratch exceeded free-tier working-set boundary')
+          if report.stat().st_size > 5_000_000:
+              raise SystemExit('OpenGameArt glass discovery durable evidence unexpectedly exceeds 5 MB')
+          if payload['status'] != 'PASS':
+              raise SystemExit('OpenGameArt glass discovery materialization is not PASS')
+          if payload['source_count'] != 3:
+              raise SystemExit('unexpected governed source count')
+          if payload['materialized_count'] != payload['fingerprinted_count']:
+              raise SystemExit('OpenGameArt glass discovery fingerprint evidence incomplete')
+          if payload['explicit_positive_candidate_count'] != 1:
+              raise SystemExit('Till Behrend exact-positive discovery count drift')
+          if payload['glass_named_review_candidate_count'] < 6:
+              raise SystemExit('rubberduck glass discovery did not meet conservative expected floor')
+          PY
+      - name: Upload bounded evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: opengameart-glass-expansion-evidence
+          path: MK1/mining-site/materialization/opengameart-glass-expansion-materialization.json
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+      - name: Commit durable discovery evidence only if main is unchanged
+        run: |
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git fetch origin main
+          RUN_SHA="$(git rev-parse HEAD)"
+          REMOTE_MAIN_SHA="$(git rev-parse origin/main)"
+          echo "run_sha=$RUN_SHA"
+          echo "remote_main_sha=$REMOTE_MAIN_SHA"
+          if [[ "$RUN_SHA" != "$REMOTE_MAIN_SHA" ]]; then
+            echo 'main moved after this OpenGameArt glass discovery run started; refusing to persist stale evidence'
+            exit 1
+          fi
+          git add MK1/mining-site/materialization/opengameart-glass-expansion-materialization.json
+          if git diff --cached --quiet; then
+            echo 'No OpenGameArt glass discovery evidence changes.'
+          else
+            git commit -m 'evidence(mk1): discover OpenGameArt glass expansion candidates [skip ci]'
+            git push origin HEAD:main
+          fi
