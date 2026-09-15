@@ -4,21 +4,21 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "23e7c2e218eeb388b4a3bf29eee623594d3c402434595ee6d64b6fc4eaae943b",
+      "sha256": "5e33f7a00253511740ec76e49da1083dfdb0a5f3b48a7c48a2ebde43bad995b5",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "47e3b62785df9d48083e3fedd7eb78c723bdfe3f71e8ad70093d98068089b2aa",
+      "sha256": "5c3811147b96dfd6a53149851f422de38f1aa0a04c73cd8a6fea121d029979a3",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "da520728a900bd30cefa08b23fb024ccbfd4ae3a104bf964962ff68bb7739b9e",
+      "sha256": "f6de0469be54a70292170116e6ba5db1b3875316ae72c33744ae9d2ae9535642",
       "status": "FAIL"
     },
     "global_dedup_audit": {
@@ -39,15 +39,15 @@
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "9f82d32bc062c07aa1592b29b14cc6d89a8911982b3ed400c1135bc17121cbdf",
+      "sha256": "8a6a69fbc51bb3cc0d73d92551f40ff048947fc4f120b6e11a3b057dc60769a6",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
-      "pass": false,
+      "pass": true,
       "present": true,
-      "sha256": "aba6b6645773571161873f274035e58ffe79b205a2f5f39941b7a450ea0c4c85",
-      "status": "FAIL"
+      "sha256": "cbebaef50b5eaf6ceb8af539e8910ba1e7bfa2a0a3f3b52e8f8e2d528fcd5811",
+      "status": "PASS"
     }
   },
   "corpus_certificate": {
@@ -55,7 +55,7 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "fcd07c11d3291d5a78ee28cae93e42de0f16e78522720e78fffb5e71b4bcf129",
+  "evidence_identity_sha256": "c20eab44bae7cb10e7038833fdf46741d9d4c1574ebfe1b65e47dd6db160249b",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -71,7 +71,6 @@
     "LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1",
     "REPRODUCIBILITY_NOT_PASS",
     "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
-    "SPLIT_INTEGRITY_NOT_PASS",
     "TIRE_SQUEAL_ASSETS_11_LT_50",
     "TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20",
     "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2",
