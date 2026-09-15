@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "25a5896a5f21f648408555c120403abbcbef9232",
+  "baseline_commit": "48e938034b98cf4d02588879b28ddec00c4666dd",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1149,
+  "canonical_fingerprint_count": 1158,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -60,34 +60,34 @@
     "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination.",
     "inputs": {
       "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "c1630cc003aa9e06548feed6891ce3f10b874e0efb241dd72e030d411e7eaacf",
-      "MK1/mining-site/materialization/public-gap-assets-report.json": "b9889f37111ef54403134586f53736f3c840e749bc3b48238711a77795d15bb3",
+      "MK1/mining-site/materialization/public-gap-assets-report.json": "7102dbcbd335f50fbb06027ffeb40f955a953dfb09b247d88cd9703294e0289d",
       "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
       "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
       "configs/data_foundry/hard_negative_mapping.v1.json": "148f218bbe56bd342713b4e262443e6bbc9da0328aa40e20c2a3ea99eb8e8cd8"
     },
-    "matched_asset_count": 1107,
+    "matched_asset_count": 1116,
     "status": "PASS",
-    "technical_evidence_asset_count": 1107
+    "technical_evidence_asset_count": 1116
   },
-  "entry_count": 1149,
+  "entry_count": 1158,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1149,
-    "component_count": 1016,
+    "asset_count": 1158,
+    "component_count": 1011,
     "content_deleted": false,
     "content_merge_performed": false,
-    "cross_source_group_near_duplicate_edge_count": 837,
+    "cross_source_group_near_duplicate_edge_count": 853,
     "fallback_asset_count_after": 0,
     "fallback_asset_count_before": 446,
-    "global_acoustic_component_count": 17,
-    "members_reassigned_to_global_acoustic_component": 114,
-    "near_duplicate_edge_count": 838,
+    "global_acoustic_component_count": 14,
+    "members_reassigned_to_global_acoustic_component": 125,
+    "near_duplicate_edge_count": 857,
     "near_duplicate_threshold": 0.02,
     "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
     "schema_version": "echo.global-recording-group-resolution.v1",
-    "screened_fallback_source_group_count": 354,
+    "screened_fallback_source_group_count": 351,
     "status": "PASS"
   },
   "hard_negative_counts": {
@@ -139,7 +139,7 @@
     },
     "public_gap": {
       "path": "MK1/mining-site/materialization/public-gap-assets-report.json",
-      "sha256": "b9889f37111ef54403134586f53736f3c840e749bc3b48238711a77795d15bb3"
+      "sha256": "7102dbcbd335f50fbb06027ffeb40f955a953dfb09b247d88cd9703294e0289d"
     },
     "singapura_summary": {
       "path": "MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json",
@@ -158,7 +158,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "b41b5f8ede238127b4c9b311b898a431d950ccb18fce30a7f70347e1757d8728",
+  "ledger_sha256": "cb152b83ca2a205d81c52e55ed326f7688d0febfb6330c33581b8f2ed3a20a08",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -198,7 +198,7 @@
   },
   "positive_counts": {
     "FIRE_ALARM": 9,
-    "GLASS_SHATTER": 310,
+    "GLASS_SHATTER": 319,
     "SIREN": 173,
     "TIRE_SQUEAL": 11,
     "VEHICLE_HORN": 245
@@ -221,7 +221,7 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1235,
+    "input_rows": 1244,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
@@ -253,13 +253,13 @@
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 446
     },
-    "retained_rows": 1149,
+    "retained_rows": 1158,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
   "schema_version": "echo.canonical-asset-ledger-summary.v1",
   "source_asset_counts": {
-    "echo-bigsoundbank-cc0-gap-v1": 44,
+    "echo-bigsoundbank-cc0-gap-v1": 53,
     "echo-freesound-release-safe-v1": 457,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-wikimedia-fire-alarm-v1": 4,
@@ -275,8 +275,8 @@
       "status:RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED": 59
     },
     "public_gap": {
-      "exact_semantic_rows": 23,
-      "source:echo-bigsoundbank-cc0-gap-v1": 51,
+      "exact_semantic_rows": 32,
+      "source:echo-bigsoundbank-cc0-gap-v1": 60,
       "source:echo-wikimedia-fire-alarm-v1": 9
     },
     "sonyc": {
@@ -287,11 +287,11 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1149
+    "READY_FOR_GLOBAL_DEDUP": 1158
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
-    "BIGSOUNDBANK": 44,
+    "BIGSOUNDBANK": 53,
     "FREESOUND": 457,
     "OPENGAMEART_RUBBERDUCK": 45,
     "SONYC_UST": 599,
