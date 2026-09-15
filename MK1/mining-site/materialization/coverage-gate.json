@@ -56,8 +56,8 @@
       }
     },
     "GLASS_SHATTER": {
-      "asset_count": 245,
-      "clip_duration_seconds": 1186.906658,
+      "asset_count": 238,
+      "clip_duration_seconds": 1157.24047,
       "hard_negatives": {
         "asset_count": 428,
         "independent_group_count": 408,
@@ -67,11 +67,11 @@
           "SONYC_UST"
         ]
       },
-      "independent_group_count": 225,
-      "max_single_source_fraction": 0.955102,
+      "independent_group_count": 221,
+      "max_single_source_fraction": 0.94958,
       "source_asset_counts": {
-        "BIGSOUNDBANK": 5,
-        "FREESOUND": 234,
+        "BIGSOUNDBANK": 6,
+        "FREESOUND": 226,
         "OPENGAMEART_RUBBERDUCK": 6
       },
       "source_count": 3,
@@ -82,12 +82,12 @@
       ],
       "split_assets": {
         "test": 36,
-        "train": 185,
+        "train": 178,
         "validation": 24
       },
       "split_groups": {
         "test": 36,
-        "train": 165,
+        "train": 161,
         "validation": 24
       }
     },
@@ -202,10 +202,10 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1072,
+  "development_asset_count": 1065,
   "failures": [
     {
-      "actual": 0.955102,
+      "actual": 0.94958,
       "code": "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
       "label": "GLASS_SHATTER",
       "metric": "MAX_SINGLE_SOURCE_FRACTION",
@@ -356,11 +356,11 @@
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "ae25a1ebb684653bf9e22beaa33fa09c13499f892740083171254ce6e2129463",
+  "ledger_sha256": "3ae21eff2479ac3c87f3eb1295eb35561d90777c9ce1c7ddfefb4b3153deb190",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
-  "quarantined_split_conflict_asset_count": 77,
+  "quarantined_split_conflict_asset_count": 93,
   "schema_version": "echo.coverage-gate.v1",
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "FAIL"

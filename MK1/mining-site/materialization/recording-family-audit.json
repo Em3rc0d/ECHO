@@ -1,12 +1,12 @@
 {
   "gap_codes": [],
-  "largest_recording_family_asset_count": 73,
-  "ledger_sha256": "ae25a1ebb684653bf9e22beaa33fa09c13499f892740083171254ce6e2129463",
+  "largest_recording_family_asset_count": 91,
+  "ledger_sha256": "3ae21eff2479ac3c87f3eb1295eb35561d90777c9ce1c7ddfefb4b3153deb190",
   "missing_recording_group_count": 0,
   "pending_global_group_audit_count": 0,
   "pending_global_group_audit_sample": [],
-  "recording_family_count": 1016,
+  "recording_family_count": 1011,
   "schema_version": "echo.recording-family-audit.v1",
-  "scope_asset_count": 1149,
+  "scope_asset_count": 1158,
   "status": "PASS"
 }

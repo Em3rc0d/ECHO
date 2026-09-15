@@ -2,13 +2,67 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1149,
+  "fingerprinted_asset_count": 1158,
   "gap_codes": [],
-  "ledger_sha256": "ae25a1ebb684653bf9e22beaa33fa09c13499f892740083171254ce6e2129463",
+  "ledger_sha256": "3ae21eff2479ac3c87f3eb1295eb35561d90777c9ce1c7ddfefb4b3153deb190",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 500,
   "near_duplicate_candidate_sample": [
+    {
+      "distance": 0.00808824,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1121",
+      "right": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2045",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01574755,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1121",
+      "right": "echo-freesound-release-safe-v1:126877",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.00894608,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1121",
+      "right": "echo-freesound-release-safe-v1:216290",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.00376838,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1122",
+      "right": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1123",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.0129902,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1122",
+      "right": "echo-freesound-release-safe-v1:216287",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01902574,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1122",
+      "right": "echo-freesound-release-safe-v1:98378",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.0104473,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1123",
+      "right": "echo-freesound-release-safe-v1:216287",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01862745,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-1123",
+      "right": "echo-freesound-release-safe-v1:98378",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01580882,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2039",
+      "right": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2042",
+      "same_recording_group": true
+    },
     {
       "distance": 0.01868873,
       "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2039",
@@ -37,6 +91,66 @@
       "distance": 0.00560662,
       "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2039",
       "right": "echo-freesound-release-safe-v1:89901",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.015625,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2040",
+      "right": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2042",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01914828,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2042",
+      "right": "echo-freesound-release-safe-v1:216298",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01936275,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2042",
+      "right": "echo-freesound-release-safe-v1:88926",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01547181,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2042",
+      "right": "echo-freesound-release-safe-v1:89901",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01773897,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2044",
+      "right": "echo-freesound-release-safe-v1:161309",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01832108,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2044",
+      "right": "echo-freesound-release-safe-v1:173619",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01427696,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2044",
+      "right": "echo-freesound-release-safe-v1:194683",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01268382,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2044",
+      "right": "echo-freesound-release-safe-v1:88800",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01966912,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2045",
+      "right": "echo-freesound-release-safe-v1:126877",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01023284,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2045",
+      "right": "echo-freesound-release-safe-v1:216290",
       "same_recording_group": true
     },
     {
@@ -2894,120 +3008,6 @@
       "left": "echo-freesound-release-safe-v1:88925",
       "right": "echo-freesound-release-safe-v1:89890",
       "same_recording_group": true
-    },
-    {
-      "distance": 0.0169424,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89891",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00677083,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89894",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00585172,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89895",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.0064951,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89900",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.0067402,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89902",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01914828,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89903",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00873162,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89904",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00882353,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:89905",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01289828,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:977",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00563725,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:979",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00857843,
-      "left": "echo-freesound-release-safe-v1:88925",
-      "right": "echo-freesound-release-safe-v1:980",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01871936,
-      "left": "echo-freesound-release-safe-v1:88926",
-      "right": "echo-freesound-release-safe-v1:88936",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01681985,
-      "left": "echo-freesound-release-safe-v1:88926",
-      "right": "echo-freesound-release-safe-v1:88941",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01681985,
-      "left": "echo-freesound-release-safe-v1:88926",
-      "right": "echo-freesound-release-safe-v1:88945",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01672794,
-      "left": "echo-freesound-release-safe-v1:88926",
-      "right": "echo-freesound-release-safe-v1:89891",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01087623,
-      "left": "echo-freesound-release-safe-v1:88926",
-      "right": "echo-freesound-release-safe-v1:89901",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01237745,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88928",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01207108,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88932",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00891544,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88935",
-      "same_recording_group": true
     }
   ],
   "near_duplicate_threshold": 0.02,
@@ -3015,6 +3015,6 @@
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1149,
+  "scope_asset_count": 1158,
   "status": "PASS"
 }
