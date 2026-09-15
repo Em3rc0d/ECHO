@@ -5,6 +5,7 @@
 **SONYC:** `CERT-MK1-DF-SONYC-001 = CERTIFIED`  
 **Corpus:** `CERT-MK1-DF-CORPUS-001 = OPEN`  
 **Readiness:** `EMP-MK1-CORPUS-READINESS-001 = BLOCKED`  
+**Current readiness commit:** `d94eff2958bbe57076610524cbb192d14ec95739`  
 **Global invariant:** `ECHO-FREE-TIER-001`
 
 ## Gate chain
@@ -40,48 +41,44 @@ durable evidence           78fc019839f1c9dad1a58a70d439605d887361d7
 
 This node is scoped to SONYC materialization/fingerprint closure only.
 
-## Corpus-role boundary — PASS
+## DF-G2 / DF-G3 / corpus-role boundary — PASS for admitted ledger
 
-Review-only materializations without an exact positive or governed hard-negative role are excluded from the corpus-facing ledger while source evidence is retained.
+PR #14 quarantined non-release-safe and semantically conflicted rows. PR #15 corrected the boundary so the deliberate pre-grouping marker remains available to the immediately following grouping resolver without masking real blockers.
 
-```text
-input rows                 1164
-retained corpus-role rows  1081
-review-only removed          83
-canonical fingerprints     1081/1081
-```
-
-## DF-G2 / DF-G3 — three row blockers remain
+Current durable result:
 
 ```text
-LICENSE_NOT_RELEASE_SAFE = 1
-SEMANTIC_STATUS_CONFLICT_FIRE_ALARM = 1
-SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL = 1
+input source rows                  1164
+retained corpus-role rows          1078
+review/non-admissible removed        86
+unresolved corpus-facing blockers     0
+canonical fingerprints             1078/1078
 ```
 
-They must be resolved from exact source evidence or excluded from corpus membership. No positive/HN credit may be coerced.
+Rejected rows remain durable source evidence. No positive/HN credit was coerced and no license was rewritten.
 
 ## DF-G5 — PASS
 
-Post-grouping empirical chain:
+Current implementation/evidence chain:
 
 ```text
-PR #11 merge                8c547b70d23ce6c592ddd20d55ff37df9fa7fa03
-canonical ledger            9fa3d2f90ddfb731d0921749c921ab2987d54307
-closure evidence            e3e0f58dee3a1602e92f62c8a7708fa1e9fad9ea
-readiness                   8e7702a2bf629642f78859763dabbe09df03df02
+PR #15 implementation baseline  4b261bd10d6578a6256fca8ec848ea1055c24b32
+Data Foundry CI                  34980804090 PASS
+canonical ledger run             34980804004 PASS
+canonical ledger evidence        5239447e91915deef30b814c6b172010bd73d2ff
+closure evidence run             34980883811 PASS
+closure evidence                 b4086d7eb02df67091ac77cd519590abf336b70e
+readiness                        d94eff2958bbe57076610524cbb192d14ec95739
 ```
 
 Global grouping facts:
 
 ```text
-fallback assets before              448
-fallback assets after                 0
-global acoustic components           17
-members reassigned                    97
-screened fallback groups             357
-cross-source-group near edges        831
-content merged/deleted              false
+corpus-facing assets                    1078
+fallback assets after grouping             0
+global acoustic components                17
+members reassigned                         97
+content merged/deleted                  false
 ```
 
 Closure results:
@@ -89,30 +86,24 @@ Closure results:
 ```text
 global-dedup-audit.json       PASS / gap_codes=[]
 recording-family-audit.json   PASS / gap_codes=[]
-missing groups                0
-pending global group audits   0
+missing canonical fingerprints 0
+unresolved ledger blockers      0
 ```
 
 Acoustic fingerprint proximity is used for shared split protection, not as proof that two source objects are identical.
 
-## DF-G6 — FAIL, exact next blocker
+## DF-G6 — PASS via deterministic whole-group quarantine
 
 ```text
-split-integrity.json = FAIL
-original_split_conflict_count = 3
-eligible_asset_count = 1078
-UNASSIGNED = 62
+split-integrity.json = PASS
+original split conflicts detected = 3
+complete acoustic groups quarantined = 3
+quarantined assets = 62
+ready candidate assets = 1078
+eligible development assets = 1016
 ```
 
-Conflicting components:
-
-```text
-global-acoustic:49755af077645d9cd379
-global-acoustic:683a2c690a388e66903b
-global-acoustic:b0a528766144425812e3
-```
-
-The safe resolution is deterministic whole-component quarantine from development/final corpus membership whenever one acoustic component contains incompatible protected original splits. Source evidence remains retained. Moving individual clips, choosing a favorable seed, or splitting the acoustic component is forbidden.
+Conflicting groups are quarantined as complete acoustic components. Source evidence remains retained. Moving individual clips, choosing a favorable seed, or splitting an acoustic component remains forbidden.
 
 ## Corpus solidity — frozen
 
@@ -133,46 +124,46 @@ test >= 5 assets / 3 groups
 
 Per-target hard negatives require `>=20 assets / >=10 groups / >=2 underlying sources`. Global background/negatives require `>=200 assets / >=50 groups / >=3 underlying sources`.
 
-## Current final coverage failures
-
-Measured after grouping:
+## Current coverage precheck
 
 ```text
-FIRE_ALARM    9 assets / 6 groups; train 7/4, validation 2/2, test 0/0
-TIRE_SQUEAL  11 assets / 11 groups; train 9/9, validation 0/0, test 2/2
-GLASS_SHATTER largest source fraction 0.976974 > 0.80
-BACKGROUND    1 underlying source < 3
+FIRE_ALARM      positive 9/50     positive sources 2/2    HN 34/20    HN sources 1/2
+GLASS_SHATTER   positive 304/50   positive sources 2/2    HN 401/20   HN sources 1/2
+SIREN           positive 173/50   positive sources 3/2    HN 32/20    HN sources 1/2
+TIRE_SQUEAL     positive 11/50    positive sources 2/2    HN 0/20     HN sources 0/2
+VEHICLE_HORN    positive 245/50   positive sources 3/2    HN 0/20     HN sources 0/2
 ```
 
-Hard-negative deficits:
-
-```text
-FIRE_ALARM       26 assets / 26 groups / 1 source
-GLASS_SHATTER   342 assets / 341 groups / 1 source
-SIREN            26 assets / 26 groups / 1 source
-TIRE_SQUEAL       0 assets / 0 groups / 0 sources
-VEHICLE_HORN      0 assets / 0 groups / 0 sources
-```
-
-Therefore coverage requires real-media acquisition from genuinely independent acoustic source families. More Freesound wrappers do not create a second FREESOUND family.
+This is only the readiness precheck. `coverage-gate.json` remains FAIL and still enforces duration, group counts, per-split floors, largest-source concentration, quality and rights. Acquisition must include headroom for final dedup/group/split losses rather than merely reaching raw floors.
 
 ## Current readiness
 
-At `8e7702a2bf629642f78859763dabbe09df03df02`:
+At `d94eff2958bbe57076610524cbb192d14ec95739`:
 
 ```text
 status = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
-evidence_identity_sha256 = fcd07c11d3291d5a78ee28cae93e42de0f16e78522720e78fffb5e71b4bcf129
+evidence_identity_sha256 = 90f2dd006cfbacfe9dc1bdc5cb81c7d9411ccf5322d6ca2dd53f334e76c209e8
 ```
 
-Current readiness has 20 gap codes. Global dedup, grouping, and canonical fingerprint coverage are no longer among them. Remaining categories are: corpus cert absent; coverage not PASS; three ledger rights/semantic blockers; split not PASS; FIRE_ALARM/TIRE_SQUEAL asset deficits; HN source/asset deficits; freeze #1/#2 and reproducibility not PASS.
+Current readiness has 16 gap codes. Global dedup, recording-family, split-integrity, canonical fingerprint coverage and ledger blockers are no longer among them. Remaining categories are: corpus certificate absent; coverage not PASS; FIRE_ALARM/TIRE_SQUEAL positive deficits; per-target HN source/asset deficits; Freeze #1/#2 and reproducibility not PASS.
+
+## Highest-value next acquisition
+
+```text
+1. FIRE_ALARM: add genuine release-safe positives with margin above the 50-asset/group/duration/split floors.
+2. TIRE_SQUEAL: add genuine release-safe positives plus >=20 governed HN assets across >=2 independent source families.
+3. FIRE_ALARM / GLASS_SHATTER / SIREN: add a second independent HN source family.
+4. VEHICLE_HORN: add >=20 governed HN assets / >=10 groups / >=2 independent sources.
+```
+
+More wrappers over the same underlying Freesound family do not create source-family diversity.
 
 ## DF-G7 — freeze/reproducibility
 
-Freeze #1/#2 are ineligible while upstream split/coverage fails. Once eligible, both must bind exact membership, media hashes, groups, splits, source/rights/mapping policies, dedup and coverage evidence. A second clean process build must reproduce the same semantic identity.
+Freeze #1/#2 are ineligible while coverage fails. Once coverage is PASS, both freezes must bind exact membership, media hashes, groups, splits, source/rights/mapping policies, dedup and coverage evidence. A second clean process build must reproduce the same semantic identity before reproducibility can pass.
 
 ## DF-G8 — model entry
 
@@ -191,6 +182,10 @@ EMP-DATASET-001              OPEN
 EMP-DATA-QUALITY-001         OPEN
 CERT-MK1-DF-CORPUS-001      OPEN
 ```
+
+## Product direction
+
+The Foundry is not a side project. It is the evidence foundation for ECHO's acoustic classifier. Once corpus certification closes, active priority must move immediately to Benchmark A/B/C rather than continuing Foundry polishing without a blocker-driven reason.
 
 ## Invalidation
 
