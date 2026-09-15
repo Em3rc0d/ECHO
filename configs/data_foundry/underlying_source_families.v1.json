@@ -10,6 +10,7 @@
     "echo-freesound-exact-gap-v1": {"family": "FREESOUND", "diversity_credit": true},
     "echo-bigsoundbank-cc0-gap-v1": {"family": "BIGSOUNDBANK", "diversity_credit": true},
     "echo-wikimedia-fire-alarm-v1": {"family": "WIKIMEDIA_COMMONS", "diversity_credit": true},
+    "echo-opengameart-rubberduck-cc0-v1": {"family": "OPENGAMEART_RUBBERDUCK", "diversity_credit": true, "note": "The canonical OpenGameArt submission identifies rubberduck as creator of the pack. The pinned GitHub mirror is byte transport only and never receives separate source-family credit."},
     "singapura-v1.0a": {"family": "SINGAPURA", "diversity_credit": true},
     "esc50": {"family": "ESC50", "diversity_credit": true},
     "urbansound8k-1.0": {"family": "URBANSOUND8K", "diversity_credit": true},
@@ -20,6 +21,7 @@
     "Source diversity is counted by underlying acoustic-origin family, not wrapper/dataset name.",
     "The same SHA-256 or same upstream sound identity can never receive multiple source-family credits.",
     "Synthetic/reference-only sources never receive independent real-source credit.",
+    "A mirror/host receives no source-family credit when the canonical creator/origin is already known.",
     "When a stronger recording/session relationship becomes known, grouping must be upgraded and downstream evidence rerun."
   ]
 }
