@@ -1,0 +1,21 @@
+{
+  "schema_version": "echo.wikimedia-confusers.v1",
+  "checked_at": "2026-09-15",
+  "source_dataset": "echo-wikimedia-fire-alarm-v1",
+  "policy": "Every row is a target-free real recording with explicit per-target hard-negative semantics. Page license, bytes, SHA-256, audio probe, canonical fingerprint, grouping, global dedup and final coverage remain mandatory.",
+  "assets": [
+    {
+      "asset_key": "commons-electronic-doorbell",
+      "url": "https://commons.wikimedia.org/wiki/File:Electronic_doorbell.ogg",
+      "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Electronic_doorbell.ogg",
+      "license": "CC0",
+      "semantic": "electronic_doorbell",
+      "hard_negative_for": [
+        "FIRE_ALARM",
+        "SIREN"
+      ],
+      "recording_family": "drb400atx-electronic-doorbell",
+      "evidence_note": "Self-recorded electronic doorbell. The Commons page declares CC0. Doorbells/chimes are frozen hard-negative families for FIRE_ALARM and tonal alarm/chime confusers for SIREN. This row is never a positive target label."
+    }
+  ]
+}
