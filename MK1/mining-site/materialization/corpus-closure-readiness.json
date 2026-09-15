@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "7f79b1588bd3822ee8e259c4e245b2a683649d387f603fb7bc48369d8fc6fa41",
+      "sha256": "04f28b4ec7ce82285e01fdcdbbd09400b55e218f42b61e81a3d3eada2bc8b297",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "877e300b0683fe278d3a362c7b8f875cc6776763d3940029bab7dadce5774197",
+      "sha256": "4c7484638ffb510447680d4faddc32795eaa84c35ba74733b9b94f871979e24a",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "190001e41c297e82db26319e0d8baeba5da58e6439f1ac60f332063dbf39036c",
+      "sha256": "22d175ca3b416bb2a5dcad588f2ddc65a17b8a21108098e49bd9a5ee971f3ddc",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "87dea38d655a3e7653b21c781d5697be5245825235ae92051532f35c46720270",
+      "sha256": "91bce94acda3b84a051c6400d0411755faba0835930cebc6323dc3883e8e2042",
       "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "8d9be3d043ba2f4747b05bb16f3e6490c49fc531bd686f923a06794ce1c13309",
+      "sha256": "e2c7bb54f6a44c9a0bb3a3f9809464018ddcc9cc64afa0e0a74c932c6a9f5919",
       "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "15468cc5797d35daf49d1446805a3b49fe7217f31175a9a7f9234f79194b64b0",
+      "sha256": "28861431fab95a0bba1118df7816812f43f6bb5556a271f1f7644a839af1aa77",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": true,
       "present": true,
-      "sha256": "05f59b5b8ea0b99121ad4fd3c8f22018c380443e1ccf61f05a7394306cab9404",
+      "sha256": "ec9419b25f1d08461e8a02922db9bd85c60d0e3aac76852d440a1ccea24bb13d",
       "status": "PASS"
     }
   },
@@ -55,7 +55,7 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "9e7325ad5790a6a1448a2a8cbceb0f314ef1cbf7164c9079e65313a405bf2ce8",
+  "evidence_identity_sha256": "7c3dd6d518d8bc088a419b39e4dfb4894482def44906ca4561a4cc84f631f389",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -69,10 +69,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "48e938034b98cf4d02588879b28ddec00c4666dd",
-      "entry_count": 1158,
-      "ledger_sha256": "cb152b83ca2a205d81c52e55ed326f7688d0febfb6330c33581b8f2ed3a20a08",
-      "sha256": "9f7e214e227ae7fa9ba39981bc207a7fc37ac5ce6525beaad9cd4aa455e1d57b"
+      "baseline_commit": "05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa",
+      "entry_count": 1159,
+      "ledger_sha256": "d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a",
+      "sha256": "ddcbee772e567527025c2914e0eca08ea3f4baf0f66ef02821e4f93c570c1f49"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -107,9 +107,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 2,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 319,
+      "positive_assets_pre_final_dedup": 320,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 3,
+      "positive_underlying_source_families": 4,
       "precheck_status": "PASS",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
