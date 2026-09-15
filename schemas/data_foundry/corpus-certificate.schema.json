@@ -12,6 +12,7 @@
     "documentation",
     "free_tier_boundary",
     "inputs",
+    "empirical_outputs",
     "outputs",
     "criteria",
     "provenance",
@@ -40,8 +41,17 @@
     },
     "inputs": {
       "type": "object",
-      "required": ["corpus_readiness", "canonical_ledger_summary", "coverage_policy"],
+      "required": ["toolchain_certificate", "corpus_readiness", "canonical_ledger_summary", "coverage_policy"],
       "additionalProperties": true
+    },
+    "empirical_outputs": {
+      "type": "object",
+      "required": ["EMP-DATASET-001", "EMP-DATA-QUALITY-001"],
+      "properties": {
+        "EMP-DATASET-001": {"$ref": "#/$defs/empiricalOutput"},
+        "EMP-DATA-QUALITY-001": {"$ref": "#/$defs/empiricalOutput"}
+      },
+      "additionalProperties": false
     },
     "outputs": {"type": "array", "minItems": 1},
     "criteria": {
@@ -59,7 +69,12 @@
     },
     "provenance": {
       "type": "object",
-      "required": ["git_commit", "generated_at_utc"],
+      "required": ["evidence_baseline_commit", "generated_at_utc"],
+      "properties": {
+        "evidence_baseline_commit": {"type": "string", "minLength": 7},
+        "generated_at_utc": {"type": "string", "minLength": 1},
+        "github_run_id": {"type": ["string", "null"]}
+      },
       "additionalProperties": true
     },
     "evidence": {"type": "array", "minItems": 1},
@@ -67,6 +82,18 @@
     "invalidates_if": {"type": "array", "minItems": 1},
     "hash_contract": {"type": "string", "minLength": 1},
     "certificate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "empiricalOutput": {
+      "type": "object",
+      "required": ["status", "basis", "claim"],
+      "properties": {
+        "status": {"const": "PASS"},
+        "basis": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "claim": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    }
   },
   "additionalProperties": true
 }
