@@ -17,7 +17,9 @@ on:
       - 'src/echo/data_foundry/coverage_policy.py'
       - 'src/echo/data_foundry/splits.py'
       - 'scripts/data_foundry/build_corpus_closure_evidence.py'
+      - 'scripts/data_foundry/apply_split_conflict_quarantine.py'
       - 'tests/data_foundry/test_corpus_closure_evidence.py'
+      - 'tests/data_foundry/test_split_conflict_quarantine.py'
       - '.github/workflows/mk1-corpus-closure-evidence.yml'
 
 permissions:
@@ -42,10 +44,12 @@ jobs:
           python-version: '3.12'
       - name: Enforce ECHO-FREE-TIER-001
         run: python scripts/check_free_tier_boundary.py
-      - name: Produce closure evidence
+      - name: Produce closure evidence with protected split quarantine
         env:
           PYTHONPATH: src:.
-        run: python scripts/data_foundry/build_corpus_closure_evidence.py
+        run: |
+          python scripts/data_foundry/build_corpus_closure_evidence.py
+          python scripts/data_foundry/apply_split_conflict_quarantine.py
       - name: Verify process-level deterministic rebuild
         env:
           PYTHONPATH: src:.
@@ -59,6 +63,7 @@ jobs:
           cp MK1/mining-site/materialization/corpus-freeze-2.validation.json /tmp/echo-closure-first/
           cp MK1/mining-site/materialization/corpus-reproducibility.json /tmp/echo-closure-first/
           python scripts/data_foundry/build_corpus_closure_evidence.py
+          python scripts/data_foundry/apply_split_conflict_quarantine.py
           for name in global-dedup-audit.json recording-family-audit.json split-integrity.json coverage-gate.json corpus-freeze-1.validation.json corpus-freeze-2.validation.json corpus-reproducibility.json; do
             cmp "/tmp/echo-closure-first/$name" "MK1/mining-site/materialization/$name"
           done

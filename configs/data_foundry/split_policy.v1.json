@@ -1,8 +1,10 @@
 {
   "schema_version": "echo.split-policy.v1",
+  "policy_id": "MK1-SPLIT-INTEGRITY-002",
   "taxonomy_version": "echo.taxonomy.v1",
   "seed": "echo-mk1-data-v1",
   "preserve_recognized_original_splits": true,
+  "protected_original_split_conflict_strategy": "quarantine_entire_recording_group",
   "original_split_map": {
     "train": "train",
     "training": "train",
@@ -20,10 +22,12 @@
   },
   "rules": [
     "Field holdout is always isolated and never remapped into train/validation/test.",
-    "Recognized upstream train/validation/test semantics are preserved when present.",
+    "Recognized upstream train/validation/test semantics are preserved when they are mutually consistent inside a recording group.",
+    "If one protected recording group contains conflicting recognized upstream splits, the entire recording group is quarantined from development coverage and frozen corpus membership; individual clips are never remapped to manufacture a pass.",
+    "Quarantined assets remain durable source/ledger evidence and may be reconsidered only under a new audited split policy or corrected upstream identity evidence.",
     "Unpartitioned groups use deterministic SHA-256 group hashing with the frozen seed.",
-    "All assets sharing recording_group_id receive exactly one ECHO split.",
+    "All non-quarantined assets sharing recording_group_id receive exactly one ECHO split.",
     "Exact or registered near-duplicate content may not cross protected split boundaries.",
-    "Changing seed, ratios, original split mapping or grouping semantics creates a new split-policy version."
+    "Changing seed, ratios, original split mapping, conflict strategy or grouping semantics requires a new audited policy identity."
   ]
 }
