@@ -4,35 +4,35 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "ce8863b9adbeae9f3302c386ece365e5f4872b23197c394d73dea96792ba3f1d",
+      "sha256": "1183867f2015d3eb19b48afa34886628e8ef767a01d14847a15f1646217959f9",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "62b98b6b30f1fa9e32ef541d2bbb4b8b84b34d326ae74d2b0819d930e8ee2590",
+      "sha256": "9abdd9eb5556bfd9cac867a74324bc6b173590225a63241750e191f8b7b7efda",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "3da5bef264854f1d4e9344399e9ddc23d399a67ae0bf8c581e69c16398278b32",
+      "sha256": "6034ac0c7899eaa531162762fb7d6e424deb99b3fe768110ea11faa7998e2f61",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": false,
       "present": true,
-      "sha256": "b2d93887e6d6ce954e96c72a2741765c79545396c7e3805168029ff453bd5a76",
+      "sha256": "a4bb851226f4d64dfef92ee4f6b48c1c4abcf3eaefe6d1050bf9b40475d9fbff",
       "status": "FAIL"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": false,
       "present": true,
-      "sha256": "931c8b63d6414346380c70498b2be1cd9743eb95abe1ab16108995f32dba3298",
+      "sha256": "4fe260326245f4cd290f6c2e0c6146887d67e9b21eeeace406ddc7ebc1ec7990",
       "status": "FAIL"
     },
     "reproducibility": {
@@ -46,7 +46,7 @@
       "filename": "split-integrity.json",
       "pass": false,
       "present": true,
-      "sha256": "78783174530af8191eca1b8a13e8fb48dbd57dc7185fec5db045d7c0ae6ff51e",
+      "sha256": "84913ba5a33db6287c454e46f449367929788be91c6795fa9b2962d53a3526f3",
       "status": "FAIL"
     }
   },
@@ -55,7 +55,7 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "92b36c83f2fdb4a8befbde0ac46e95067043b673e4229564aabf4c85a88278d3",
+  "evidence_identity_sha256": "6582baef9435283c4e70c25b04c211fb3cf107e752782dfbb9066b897fefff0e",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -67,11 +67,8 @@
     "FREEZE_2_VALIDATION_NOT_PASS",
     "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2",
     "GLOBAL_DEDUP_AUDIT_NOT_PASS",
-    "LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4",
-    "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_503",
+    "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_448",
     "LEDGER_LICENSE_NOT_RELEASE_SAFE_1",
-    "LEDGER_NO_EXACT_SEMANTIC_ROLE_83",
-    "LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1",
     "LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1",
     "LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1",
     "RECORDING_FAMILY_AUDIT_NOT_PASS",
@@ -86,10 +83,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "78fc019839f1c9dad1a58a70d439605d887361d7",
-      "entry_count": 1164,
-      "ledger_sha256": "64a85c287d5c596ecfa9cc1dcf130ba7ac15c44f15a5899bb30f492117136273",
-      "sha256": "68b3df7c489f40de64d9b45e2e5bcee4b7726aae0e682e0e2a70a372220fa977"
+      "baseline_commit": "b2fc09b1c98c4c8adcb2fe9dc4db7e1dadc61107",
+      "entry_count": 1081,
+      "ledger_sha256": "bb8fc2293c910de385a47332bd4a8dcea41f84558cb6b7d3ca76a61a4bcd5f8f",
+      "sha256": "fbe9b0899b5e665573d45d6391aa115f4b66d7c03ee76aa6da2a23639c6b92f3"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -98,11 +95,8 @@
     }
   },
   "ledger_blocking_reason_counts": {
-    "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
-    "GROUPING_GLOBAL_AUDIT_REQUIRED": 503,
+    "GROUPING_GLOBAL_AUDIT_REQUIRED": 448,
     "LICENSE_NOT_RELEASE_SAFE": 1,
-    "NO_EXACT_SEMANTIC_ROLE": 83,
-    "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
     "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
     "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
   },
