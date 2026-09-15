@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "1cfa45e4aa4a258f8954e8d75fbfe10261ccb5b1",
+  "baseline_commit": "4b261bd10d6578a6256fca8ec848ea1055c24b32",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 632,
+  "canonical_fingerprint_count": 1078,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -39,7 +39,7 @@
     "supplemental_sha256": "fd3273f16195be850625c75ef6cfdd27828aa88c20a8a99686ee7f4cac925951",
     "underlying_source_family": "FREESOUND"
   },
-  "certification_boundary": "The corpus-facing canonical ledger contains only explicitly release-safe assets with exact positive or governed hard-negative roles and no unresolved admission blockers. Quarantined rows remain durable source evidence and are not silently relabeled. READY_FOR_GLOBAL_DEDUP still does not mean ADMITTED_RELEASE_SAFE or CERTIFIED.",
+  "certification_boundary": "The corpus-facing canonical ledger contains only explicitly release-safe assets with exact positive or governed hard-negative roles and no unresolved admission blockers other than the explicitly deferred pre-grouping marker. Quarantined rows remain durable source evidence and are not silently relabeled. The following grouping resolver must clear the deferred marker; READY_FOR_GLOBAL_DEDUP still does not mean ADMITTED_RELEASE_SAFE or CERTIFIED.",
   "corpus_certificate": {
     "id": "CERT-MK1-DF-CORPUS-001",
     "status": "OPEN"
@@ -57,25 +57,25 @@
     "status": "PASS",
     "technical_evidence_asset_count": 1081
   },
-  "entry_count": 632,
+  "entry_count": 1078,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 632,
-    "component_count": 626,
+    "asset_count": 1078,
+    "component_count": 996,
     "content_deleted": false,
     "content_merge_performed": false,
-    "cross_source_group_near_duplicate_edge_count": 0,
+    "cross_source_group_near_duplicate_edge_count": 831,
     "fallback_asset_count_after": 0,
-    "fallback_asset_count_before": 0,
-    "global_acoustic_component_count": 0,
-    "members_reassigned_to_global_acoustic_component": 0,
-    "near_duplicate_edge_count": 0,
+    "fallback_asset_count_before": 446,
+    "global_acoustic_component_count": 17,
+    "members_reassigned_to_global_acoustic_component": 97,
+    "near_duplicate_edge_count": 831,
     "near_duplicate_threshold": 0.02,
     "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
     "schema_version": "echo.global-recording-group-resolution.v1",
-    "screened_fallback_source_group_count": 0,
+    "screened_fallback_source_group_count": 355,
     "status": "PASS"
   },
   "hard_negative_counts": {
@@ -138,7 +138,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "91bd92983f973ed3e67f67ec8a0b3303b0396dcf6425382e8b351376abe7b699",
+  "ledger_sha256": "36ef8e19198a296d7806106adc2c4ee43b7827d893e78b6bbd2d1ffd83b3743a",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -152,17 +152,17 @@
   ],
   "positive_counts": {
     "FIRE_ALARM": 9,
-    "GLASS_SHATTER": 7,
-    "SIREN": 110,
+    "GLASS_SHATTER": 304,
+    "SIREN": 173,
     "TIRE_SQUEAL": 11,
-    "VEHICLE_HORN": 159
+    "VEHICLE_HORN": 245
   },
   "positive_underlying_source_family_counts": {
     "FIRE_ALARM": 2,
-    "GLASS_SHATTER": 1,
-    "SIREN": 2,
+    "GLASS_SHATTER": 2,
+    "SIREN": 3,
     "TIRE_SQUEAL": 2,
-    "VEHICLE_HORN": 2
+    "VEHICLE_HORN": 3
   },
   "profile": "release_safe",
   "profile_exclusions": {
@@ -171,12 +171,15 @@
     "singapura-v1.0a": "research_extended / CC-BY-SA-4.0; evidence retained but not counted in release_safe ledger"
   },
   "role_boundary": {
-    "boundary_note": "Removed rows remain in source materialization/review evidence. This step does not promote disputed labels, rewrite licenses, invent source families, lower coverage floors, or merge acoustic content. Any unresolved blocker is quarantined fail-closed.",
+    "boundary_note": "Removed rows remain in source materialization/review evidence. This step does not promote disputed labels, rewrite licenses, invent source families, lower coverage floors, or merge acoustic content. GROUPING_GLOBAL_AUDIT_REQUIRED alone is retained only because global recording-group resolution runs immediately next and must clear it; all other unresolved blockers are quarantined fail-closed.",
+    "deferred_pre_grouping_blockers": [
+      "GROUPING_GLOBAL_AUDIT_REQUIRED"
+    ],
     "input_rows": 1164,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
-      "GROUPING_GLOBAL_AUDIT_REQUIRED": 503,
+      "GROUPING_GLOBAL_AUDIT_REQUIRED": 57,
       "LICENSE_NOT_RELEASE_SAFE": 1,
       "NO_EXACT_SEMANTIC_ROLE": 83,
       "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
@@ -187,28 +190,31 @@
     "removed_rejection_counts": {
       "NOT_RELEASE_SAFE": 1,
       "REVIEW_ONLY_NO_GOVERNED_ROLE": 83,
-      "UNRESOLVED_ADMISSION_BLOCKER": 448
+      "UNRESOLVED_ADMISSION_BLOCKER": 2
     },
     "removed_review_only_rows": 83,
     "removed_rights_status_counts": {
-      "ALLOW_RELEASE_SAFE": 531,
+      "ALLOW_RELEASE_SAFE": 85,
       "RESEARCH_ONLY": 1
     },
-    "removed_rows": 532,
+    "removed_rows": 86,
     "removed_source_counts": {
       "echo-bigsoundbank-cc0-gap-v1": 7,
-      "echo-freesound-release-safe-v1": 520,
+      "echo-freesound-release-safe-v1": 74,
       "echo-wikimedia-fire-alarm-v1": 5
     },
-    "removed_unresolved_blocker_rows": 448,
-    "retained_rows": 632,
-    "schema_version": "echo.canonical-ledger-role-boundary.v2",
+    "removed_unresolved_blocker_rows": 2,
+    "retained_deferred_blocker_counts": {
+      "GROUPING_GLOBAL_AUDIT_REQUIRED": 446
+    },
+    "retained_rows": 1078,
+    "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
   "schema_version": "echo.canonical-asset-ledger-summary.v1",
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 22,
-    "echo-freesound-release-safe-v1": 11,
+    "echo-freesound-release-safe-v1": 457,
     "sonyc-ust-v2": 599
   },
   "source_input_stats": {
@@ -233,12 +239,12 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 632
+    "READY_FOR_GLOBAL_DEDUP": 1078
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
     "BIGSOUNDBANK": 22,
-    "FREESOUND": 11,
+    "FREESOUND": 457,
     "SONYC_UST": 599
   }
 }
