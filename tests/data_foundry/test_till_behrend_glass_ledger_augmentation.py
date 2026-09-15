@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
+import tempfile
 import unittest
 
 from scripts.data_foundry import augment_canonical_ledger_with_till_behrend_glass as augmentation
@@ -66,6 +68,47 @@ class TillBehrendGlassLedgerAugmentationTests(unittest.TestCase):
         self.assertEqual(source["profiles"]["release_safe"], "ALLOW")
         self.assertEqual(source["source_release_status"], "CURATED_REAL_BYTE_EVIDENCE_CERTIFIED")
         self.assertEqual(source["evidence_urls"], ["https://opengameart.org/content/glass-break"])
+
+    def test_real_augmentation_adds_exactly_one_ready_glass_row(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            ledger = temp / "ledger.jsonl"
+            summary = temp / "summary.json"
+            shutil.copy2(augmentation.LEDGER, ledger)
+            shutil.copy2(augmentation.SUMMARY, summary)
+
+            before_rows = augmentation.read_jsonl(ledger)
+            before_summary = augmentation.read_json(summary)
+            old_ledger, old_summary = augmentation.LEDGER, augmentation.SUMMARY
+            try:
+                augmentation.LEDGER = ledger
+                augmentation.SUMMARY = summary
+                self.assertEqual(augmentation.main(), 0)
+            finally:
+                augmentation.LEDGER = old_ledger
+                augmentation.SUMMARY = old_summary
+
+            after_rows = augmentation.read_jsonl(ledger)
+            after_summary = augmentation.read_json(summary)
+            self.assertEqual(len(after_rows), len(before_rows) + 1)
+            self.assertEqual(
+                after_summary["positive_counts"]["GLASS_SHATTER"],
+                before_summary["positive_counts"]["GLASS_SHATTER"] + 1,
+            )
+            self.assertEqual(after_summary["canonical_fingerprint_missing_count"], 0)
+
+            till_rows = [
+                row
+                for row in after_rows
+                if row["ledger_asset_id"] == f"{augmentation.SOURCE_ID}:{augmentation.ASSET_ID}"
+            ]
+            self.assertEqual(len(till_rows), 1)
+            till = till_rows[0]
+            self.assertEqual(till["echo_labels"], ["GLASS_SHATTER"])
+            self.assertEqual(till["underlying_source_family"], "OPENGAMEART_TILL_BEHREND")
+            self.assertEqual(till["recording_group_id"], "opengameart:till-behrend:glass-breaking")
+            self.assertEqual(till["stage_status"], "READY_FOR_GLOBAL_DEDUP")
+            self.assertTrue(till["canonical_fingerprint"]["canonical_pcm_sha256"])
 
 
 if __name__ == "__main__":
