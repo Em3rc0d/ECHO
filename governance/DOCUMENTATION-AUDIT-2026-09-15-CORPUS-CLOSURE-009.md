@@ -3,22 +3,23 @@
 **Certificate:** `CERT-DOC-009`  
 **Status:** `CERTIFIED`  
 **Audit date:** `2026-09-15`  
-**Audited main:** `abd49a196b4d7fd96725fef9196f778c19ed4819`  
+**Audited main:** `32eb3c4ee989a45fa94210a214a0f7817c1b327a`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`
 
 ## Scope
 
-This audit rebinds ECHO documentation governance to the durable MK1 corpus-closure state after the governed Wikimedia Commons confuser admission closed the third-background-source deficit. It certifies documentation consistency and the observed gate state only; it does **not** certify the final corpus or authorize model work.
+This audit rebinds ECHO documentation governance to the durable MK1 corpus-closure state after the governed BigSoundBank + Wikimedia/PDSounds acquisition closed the complete `TIRE_SQUEAL` hard-negative floor. It certifies documentation consistency and the observed gate state only; it does **not** certify the final corpus or authorize model work.
 
-The acquisition path was executed as real evidence, not as a source-count metadata patch:
+The acquisition was executed as real release-safe evidence:
 
 ```text
-CC0 Wikimedia page
-→ public audio bytes
+versioned source configs
+→ public license pages
+→ real public audio bytes
 → SHA-256
 → ffprobe
-→ canonical audio fingerprint
-→ explicit FIRE_ALARM/SIREN hard-negative role
+→ canonical audio fingerprints
+→ exact governed TIRE_SQUEAL hard-negative semantics
 → canonical ledger
 → global grouping/dedup
 → protected split assignment/quarantine
@@ -35,49 +36,72 @@ The active MK1 path remains product-critical: release-safe acoustic corpus → c
 ## Audited empirical truth
 
 ```text
-main readiness commit            abd49a196b4d7fd96725fef9196f778c19ed4819
-public-gap evidence commit       64e755f08cae3c17f52e9dcf91709ad2b8aa9c2c
-canonical-ledger evidence        b8a27b9a523dbda4d8abbb0bb81369bebb16f901
-closure evidence commit          2ca6f7671cad4fb183956cb7b9562f01e3804e97
-canonical corpus-facing rows     1124
-canonical fingerprints           1124 / 1124
+main readiness commit            32eb3c4ee989a45fa94210a214a0f7817c1b327a
+data candidate merge             dba0aeac6c628bdf6d628e70bdfecfad46515a51
+public-gap evidence commit       25a5896a5f21f648408555c120403abbcbef9232
+canonical-ledger evidence        01f6a91e1ead45211a35fb96cb2d6e176476c99f
+closure evidence commit          58b701502dbafef3b1cc84b68988177d8b32e79c
+canonical corpus-facing rows     1149
+canonical fingerprints           1149 / 1149
 ledger blockers                  0
 global dedup                     PASS
 recording-family audit           PASS
 split integrity                  PASS
 protected split quarantine       3 groups / 77 assets
-background                       391 assets / 371 groups / 3 sources / PASS
+background                       416 assets / 383 groups / 4 sources / PASS
+TIRE_SQUEAL hard negatives       25 assets / 12 groups / 2 sources / PASS
 coverage gate                    FAIL
-coverage detailed gap codes      20
+coverage detailed gap codes      17
 freeze #1 validation             FAIL
 freeze #2 validation             FAIL
 reproducibility                  FAIL
 readiness                        BLOCKED
+readiness coarse gap codes       9
 eligible_for_certificate_review  false
 modeling_allowed                 false
 CERT-MK1-DF-CORPUS-001           OPEN
-readiness evidence identity      87ac42503bad478d2068a967bdbc701f941576a2cb138a20692b95cff881d686
+readiness evidence identity      ecacac93a64604a55d51c7dc1b8d2853f9a1f5f7aebbb086b8c69d93109af320
 ```
 
 The corpus-facing ledger remains blocker-free and fully fingerprinted. Protected split conflicts remain visible as three quarantined complete acoustic groups (77 assets); no member is remapped. Global grouping still performs no content deletion or content merge.
 
-## Wikimedia background closure
+## TIRE_SQUEAL hard-negative closure
 
-One self-recorded CC0 Wikimedia Commons electronic-doorbell asset is admitted under the already-frozen `WIKIMEDIA_COMMONS` underlying acoustic-origin family. It remains target-free and receives only explicit hard-negative roles for `FIRE_ALARM` and `SIREN`; it is never promoted to an ECHO positive.
+The acquisition materialized **60 / 60** public-gap assets with **0 failures** and **60 canonical fingerprints**. The artifact candidate bytes were `53,083,038`, below the free-tier preferred maximum of `104,857,600` bytes. Raw media remains ephemeral; only evidence is durable in the repository.
 
-After global grouping, deduplication and protected split handling, final release-safe background is:
+The new TIRE hard-negative evidence uses two already-governed underlying acoustic-origin families:
 
 ```text
-assets              391
-groups              371
-source families     3
-
-OPENGAMEART_RUBBERDUCK
-SONYC_UST
+BIGSOUNDBANK
 WIKIMEDIA_COMMONS
 ```
 
-`BACKGROUND_SOURCES_BELOW_MIN` is absent from the final coverage gate. The detailed coverage set therefore fell from **21 → 20** without lowering the `min_sources=3` floor or inventing a source family.
+BigSoundBank rows use only semantics already frozen by `MK1-HARD-NEGATIVE-MAPPING-001`: `Car`, `Car_passing_by`, `Accelerating_and_revving_and_vroom`, and `Squeak`. Wikimedia/PDSounds contributes independent public-domain car recordings. None of these rows is promoted to a TIRE positive.
+
+The BigSoundBank 50 km/h multi-file series deliberately remains one recording family. After global grouping, deduplication and protected split handling, final TIRE hard-negative coverage is:
+
+```text
+assets              25   >= 20  PASS
+groups              12   >= 10  PASS
+source families      2   >= 2   PASS
+```
+
+The following detailed coverage gaps are therefore closed and must not reappear:
+
+```text
+TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN
+TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_BELOW_MIN
+TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_BELOW_MIN
+```
+
+The corresponding coarse readiness blockers are also absent:
+
+```text
+TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
+TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
+```
+
+This reduced detailed coverage gaps from **20 → 17** and coarse readiness gaps from **11 → 9** without changing any coverage floor, source-family identity, positive label or certification rule.
 
 ## Audited corpus counts
 
@@ -93,22 +117,39 @@ hard-negative assets, pre-final-dedup ledger
 FIRE_ALARM       206
 GLASS_SHATTER    440
 SIREN            245
-TIRE_SQUEAL      0
+TIRE_SQUEAL      25
 VEHICLE_HORN     146
 
 hard-negative underlying source families
 FIRE_ALARM       4
 GLASS_SHATTER    2
 SIREN            4
-TIRE_SQUEAL      0
+TIRE_SQUEAL      2
 VEHICLE_HORN     3
 ```
 
-No positive-class count changed as a side effect of the Wikimedia admission. The new asset only adds governed target-specific negative evidence plus one legitimate background source family.
+No positive-class count changed as a side effect of the TIRE hard-negative acquisition.
+
+## Background remains closed
+
+The target-free release-safe background pool now includes the newly admitted confusers and remains above its frozen source-family floor:
+
+```text
+assets              416
+groups              383
+source families     4
+
+BIGSOUNDBANK
+OPENGAMEART_RUBBERDUCK
+SONYC_UST
+WIKIMEDIA_COMMONS
+```
+
+`BACKGROUND_SOURCES_BELOW_MIN` remains absent.
 
 ## Final detailed coverage blockers
 
-Exactly 20 detailed coverage gaps remain:
+Exactly **17** detailed coverage gaps remain:
 
 ```text
 FIRE_ALARM_ASSETS_BELOW_MIN
@@ -122,9 +163,6 @@ FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN
 GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH
 TIRE_SQUEAL_ASSETS_BELOW_MIN
 TIRE_SQUEAL_GROUPS_BELOW_MIN
-TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN
-TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_BELOW_MIN
-TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_BELOW_MIN
 TIRE_SQUEAL_TEST_ASSETS_BELOW_MIN
 TIRE_SQUEAL_TEST_GROUPS_BELOW_MIN
 TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN
@@ -137,7 +175,7 @@ Coverage asset quality remains clean: zero unknown licenses, zero missing label 
 
 ## Exact current readiness gaps
 
-Readiness remains correctly coarser than final coverage and contains 11 blockers:
+Readiness remains correctly coarser than final coverage and contains **9** blockers:
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -149,24 +187,9 @@ FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
 REPRODUCIBILITY_NOT_PASS
 TIRE_SQUEAL_ASSETS_11_LT_50
-TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
 
-The remaining empirical work is therefore localized to real release-safe FIRE/TIRE/GLASS acquisition and resulting split/coverage closure. Only after final coverage reaches `PASS / gap_codes=[]` may Freeze #1, Freeze #2 and reproducibility close and `CERT-MK1-DF-CORPUS-001` become eligible for certification review.
-
-## Orchestration stop-line
-
-The first push containing the new Canonical Ledger workflow also launched one pre-materialization ledger execution. It failed exactly at the fail-closed admission boundary because the Wikimedia report did not yet exist and wrote no durable ledger evidence. The authoritative path subsequently ran in the intended order and passed:
-
-```text
-Public Gap Materialization PASS
-→ canonical ledger deterministic rebuild PASS
-→ closure evidence deterministic rebuild PASS
-→ readiness deterministic rebuild PASS
-```
-
-The stabilization patch removes the Canonical Ledger workflow's self-trigger path. Wikimedia/data admissions remain serialized behind successful materialization `workflow_run` events, while `workflow_dispatch` remains available for deliberate workflow-only validation.
+The remaining empirical work is now strictly positive-class acquisition/split closure for `FIRE_ALARM` and `TIRE_SQUEAL`, plus reducing `GLASS_SHATTER` single-source concentration with real non-Freesound positives. Only after final coverage reaches `PASS / gap_codes=[]` may Freeze #1, Freeze #2 and reproducibility close and `CERT-MK1-DF-CORPUS-001` become eligible for certification review.
 
 ## Certificate lineage
 
