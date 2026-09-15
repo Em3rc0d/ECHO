@@ -1,19 +1,16 @@
 {
-  "baseline_commit": "8fef84e29305ac65498ffbe8c231803ece4d01ec",
+  "baseline_commit": "78fc019839f1c9dad1a58a70d439605d887361d7",
   "blocking_reason_counts": {
     "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
     "GROUPING_GLOBAL_AUDIT_REQUIRED": 503,
     "LICENSE_NOT_RELEASE_SAFE": 1,
-    "MISSING_ASSET_LEVEL_AUDIO_PROBE": 363,
-    "MISSING_ASSET_LEVEL_BYTE_SIZE": 363,
-    "MISSING_CANONICAL_FINGERPRINT": 599,
     "NO_EXACT_SEMANTIC_ROLE": 83,
     "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
     "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
     "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
   },
-  "canonical_fingerprint_count": 565,
-  "canonical_fingerprint_missing_count": 599,
+  "canonical_fingerprint_count": 1164,
+  "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
     "fingerprint_enrichment": {
@@ -61,10 +58,10 @@
     "inputs": {
       "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "c1630cc003aa9e06548feed6891ce3f10b874e0efb241dd72e030d411e7eaacf",
       "MK1/mining-site/materialization/public-gap-assets-report.json": "93cd434e8cdc0ac9dde935cc41a9ac6d06b9261914bbd00d7f8ac6233de2e81f",
-      "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "3ee965966b95d65ae7116b98e38f767037d747b8cba0cd833c07430164c4f4dd",
-      "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "d37787141700b205f3849412b24b2543cefa8d379383527258cdac500cae4489"
+      "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
+      "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     },
-    "matched_asset_count": 718,
+    "matched_asset_count": 1081,
     "status": "PASS",
     "technical_evidence_asset_count": 1081
   },
@@ -121,18 +118,18 @@
     },
     "sonyc_confusers": {
       "path": "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl",
-      "sha256": "3ee965966b95d65ae7116b98e38f767037d747b8cba0cd833c07430164c4f4dd"
+      "sha256": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540"
     },
     "sonyc_summary": {
       "path": "MK1/mining-site/materialization/sonyc-v2.3-full-materialization-summary.json",
-      "sha256": "5722743ce507ce943fef599b9fec86263327cea3756a1b077a998c26bb3a301d"
+      "sha256": "cf67d26dd16c538cc8944ea03fc97abc9424c912edc5e9b3ef8671f022a9ea00"
     },
     "sonyc_targets": {
       "path": "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl",
-      "sha256": "d37787141700b205f3849412b24b2543cefa8d379383527258cdac500cae4489"
+      "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "0bee23c90ce53794a39155081d71400b49d66b93e3ceeb8c8c1a6fbe808fad75",
+  "ledger_sha256": "64a85c287d5c596ecfa9cc1dcf130ba7ac15c44f15a5899bb30f492117136273",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -193,8 +190,8 @@
     }
   },
   "stage_status_counts": {
-    "BLOCKED": 600,
-    "READY_FOR_GLOBAL_DEDUP": 33,
+    "BLOCKED": 1,
+    "READY_FOR_GLOBAL_DEDUP": 632,
     "REVIEW_REQUIRED": 531
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
