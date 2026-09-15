@@ -56,8 +56,8 @@
       }
     },
     "GLASS_SHATTER": {
-      "asset_count": 238,
-      "clip_duration_seconds": 1157.24047,
+      "asset_count": 239,
+      "clip_duration_seconds": 1158.549314,
       "hard_negatives": {
         "asset_count": 428,
         "independent_group_count": 408,
@@ -67,28 +67,30 @@
           "SONYC_UST"
         ]
       },
-      "independent_group_count": 221,
-      "max_single_source_fraction": 0.94958,
+      "independent_group_count": 222,
+      "max_single_source_fraction": 0.945607,
       "source_asset_counts": {
         "BIGSOUNDBANK": 6,
         "FREESOUND": 226,
-        "OPENGAMEART_RUBBERDUCK": 6
+        "OPENGAMEART_RUBBERDUCK": 6,
+        "OPENGAMEART_TILL_BEHREND": 1
       },
-      "source_count": 3,
+      "source_count": 4,
       "sources": [
         "BIGSOUNDBANK",
         "FREESOUND",
-        "OPENGAMEART_RUBBERDUCK"
+        "OPENGAMEART_RUBBERDUCK",
+        "OPENGAMEART_TILL_BEHREND"
       ],
       "split_assets": {
         "test": 36,
         "train": 178,
-        "validation": 24
+        "validation": 25
       },
       "split_groups": {
         "test": 36,
         "train": 161,
-        "validation": 24
+        "validation": 25
       }
     },
     "SIREN": {
@@ -202,10 +204,10 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1065,
+  "development_asset_count": 1066,
   "failures": [
     {
-      "actual": 0.94958,
+      "actual": 0.945607,
       "code": "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
       "label": "GLASS_SHATTER",
       "metric": "MAX_SINGLE_SOURCE_FRACTION",
@@ -356,7 +358,7 @@
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "3ae21eff2479ac3c87f3eb1295eb35561d90777c9ce1c7ddfefb4b3153deb190",
+  "ledger_sha256": "efeceab46d25f44f6281737b62b1a9269287b293f2c65048979b4df7c649f27b",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
