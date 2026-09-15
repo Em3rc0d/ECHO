@@ -30,6 +30,7 @@ on:
       - 'scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py'
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
+      - 'scripts/data_foundry/enforce_canonical_ledger_role_boundary.py'
       - 'scripts/check_free_tier_boundary.py'
       - '.github/workflows/mk1-canonical-ledger.yml'
 
@@ -60,7 +61,7 @@ jobs:
           python -m json.tool configs/data_foundry/underlying_source_families.v1.json >/dev/null
           python -m json.tool configs/data_foundry/freesound_cc0_supplemental.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
-      - name: Build, augment and enrich canonical release-safe evidence ledger
+      - name: Build, augment, enrich and role-bound canonical release-safe evidence ledger
         env:
           PYTHONPATH: src:.
         run: |
@@ -68,6 +69,7 @@ jobs:
           python scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
+          python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
       - name: Verify deterministic rebuild
         env:
           PYTHONPATH: src:.
@@ -78,6 +80,7 @@ jobs:
           python scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
+          python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           cmp /tmp/ledger.first.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl
           cmp /tmp/ledger.first.summary.json MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
       - name: Enforce compact durable output
