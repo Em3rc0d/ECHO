@@ -10,11 +10,11 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 PROMISE = "Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial"
 EXPECTED_MD_COUNT = 213
-EXPECTED_READINESS_COMMIT = "32eb3c4ee989a45fa94210a214a0f7817c1b327a"
-EXPECTED_EVIDENCE_IDENTITY = "ecacac93a64604a55d51c7dc1b8d2853f9a1f5f7aebbb086b8c69d93109af320"
-EXPECTED_LEDGER_BASELINE = "25a5896a5f21f648408555c120403abbcbef9232"
-EXPECTED_LEDGER_SHA256 = "b41b5f8ede238127b4c9b311b898a431d950ccb18fce30a7f70347e1757d8728"
-EXPECTED_COVERAGE_LEDGER_SHA256 = "ae25a1ebb684653bf9e22beaa33fa09c13499f892740083171254ce6e2129463"
+EXPECTED_READINESS_COMMIT = "ecf76528d5cd722757782cc54311c3f02038b2b9"
+EXPECTED_EVIDENCE_IDENTITY = "9e7325ad5790a6a1448a2a8cbceb0f314ef1cbf7164c9079e65313a405bf2ce8"
+EXPECTED_LEDGER_BASELINE = "48e938034b98cf4d02588879b28ddec00c4666dd"
+EXPECTED_LEDGER_SHA256 = "cb152b83ca2a205d81c52e55ed326f7688d0febfb6330c33581b8f2ed3a20a08"
+EXPECTED_COVERAGE_LEDGER_SHA256 = "3ae21eff2479ac3c87f3eb1295eb35561d90777c9ce1c7ddfefb4b3153deb190"
 EXPECTED_GAPS = {
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -141,38 +141,41 @@ def main() -> int:
     require(sonyc_summary.get("probe_failures") == 0 and sonyc_summary.get("fingerprint_failures") == 0, "SONYC technical failures must stay zero", failures)
     require(sonyc.get("free_tier_boundary", {}).get("result") == "PASS", "SONYC free-tier result drift", failures)
 
-    # Current canonical corpus-facing ledger after TIRE_SQUEAL hard-negative admission.
+    # Current canonical corpus-facing ledger after empirical BigSoundBank GLASS expansion.
     require(ledger.get("baseline_commit") == EXPECTED_LEDGER_BASELINE, "canonical ledger baseline drift", failures)
-    require(ledger.get("entry_count") == 1149, "canonical ledger entry count drift", failures)
+    require(ledger.get("entry_count") == 1158, "canonical ledger entry count drift", failures)
     require(ledger.get("ledger_sha256") == EXPECTED_LEDGER_SHA256, "canonical ledger identity drift", failures)
-    require(ledger.get("canonical_fingerprint_count") == 1149 and ledger.get("canonical_fingerprint_missing_count") == 0, "canonical fingerprint closure drift", failures)
+    require(ledger.get("canonical_fingerprint_count") == 1158 and ledger.get("canonical_fingerprint_missing_count") == 0, "canonical fingerprint closure drift", failures)
     require((ledger.get("blocking_reason_counts") or {}) == {}, "corpus-facing ledger blockers reappeared", failures)
     source_counts = ledger.get("source_asset_counts") or {}
     require(source_counts.get("echo-wikimedia-fire-alarm-v1") == 4, "governed Wikimedia asset count drift", failures)
-    require(source_counts.get("echo-bigsoundbank-cc0-gap-v1") == 44, "governed BigSoundBank asset count drift", failures)
+    require(source_counts.get("echo-bigsoundbank-cc0-gap-v1") == 53, "governed BigSoundBank asset count drift", failures)
     grouping = ledger.get("global_recording_group_resolution") or {}
     require(grouping.get("status") == "PASS", "global recording-group resolution not PASS", failures)
     require(grouping.get("fallback_asset_count_after") == 0, "fallback grouping closure regressed", failures)
-    require(grouping.get("global_acoustic_component_count") == 17, "global acoustic component count drift", failures)
-    require(grouping.get("members_reassigned_to_global_acoustic_component") == 114, "global component membership drift", failures)
+    require(grouping.get("global_acoustic_component_count") == 14, "global acoustic component count drift", failures)
+    require(grouping.get("members_reassigned_to_global_acoustic_component") == 125, "global component membership drift", failures)
     require(grouping.get("content_deleted") is False and grouping.get("content_merge_performed") is False, "grouping must not merge/delete content", failures)
 
-    expected_positive = {"FIRE_ALARM": 9, "GLASS_SHATTER": 310, "SIREN": 173, "TIRE_SQUEAL": 11, "VEHICLE_HORN": 245}
+    expected_positive = {"FIRE_ALARM": 9, "GLASS_SHATTER": 319, "SIREN": 173, "TIRE_SQUEAL": 11, "VEHICLE_HORN": 245}
     expected_hn = {"FIRE_ALARM": 206, "GLASS_SHATTER": 440, "SIREN": 245, "TIRE_SQUEAL": 25, "VEHICLE_HORN": 146}
     expected_hn_sources = {"FIRE_ALARM": 4, "GLASS_SHATTER": 2, "SIREN": 4, "TIRE_SQUEAL": 2, "VEHICLE_HORN": 3}
     require(ledger.get("positive_counts") == expected_positive, "positive corpus counts drift", failures)
     require(ledger.get("hard_negative_counts") == expected_hn, "hard-negative corpus counts drift", failures)
     require(ledger.get("hard_negative_underlying_source_family_counts") == expected_hn_sources, "hard-negative source-family counts drift", failures)
 
-    # Structural nodes stay closed.
+    # Structural nodes stay closed. Empirical cross-source grouping may reduce the
+    # number of conflict components while increasing quarantined members; both are
+    # frozen here exactly as observed, never optimized away for coverage.
     require(dedup.get("status") == "PASS" and dedup.get("gap_codes") == [], "global dedup must remain PASS", failures)
     require(group_audit.get("status") == "PASS" and group_audit.get("gap_codes") == [], "recording-family audit must remain PASS", failures)
     require(split.get("status") == "PASS" and split.get("gap_codes") == [], "split integrity must remain PASS", failures)
-    require(split.get("original_split_conflict_count") == 3, "audited split conflict count drift", failures)
-    require(split.get("original_split_conflicts_quarantined") == 3, "all protected split conflicts must stay quarantined", failures)
-    require(split.get("quarantined_asset_count") == 77, "quarantined split asset count drift", failures)
+    require(split.get("original_split_conflict_count") == 2, "audited split conflict count drift", failures)
+    require(split.get("original_split_conflicts_quarantined") == 2, "all protected split conflicts must stay quarantined", failures)
+    require(split.get("quarantined_asset_count") == 93, "quarantined split asset count drift", failures)
 
-    # Final coverage truth: background remains closed and TIRE_SQUEAL HN floors are now closed.
+    # Final coverage truth: background and every hard-negative floor remain closed;
+    # the remaining work is GLASS source concentration plus FIRE/TIRE positives/splits.
     require(coverage.get("status") == "FAIL", "coverage gate unexpectedly not FAIL; re-audit required", failures)
     require(coverage.get("ledger_sha256") == EXPECTED_COVERAGE_LEDGER_SHA256, "coverage ledger identity drift", failures)
     coverage_gaps = set(coverage.get("gap_codes", []))
@@ -183,6 +186,12 @@ def main() -> int:
     require(background.get("source_count") == 4, "background source-family count drift", failures)
     require(set(background.get("sources") or []) == {"BIGSOUNDBANK", "OPENGAMEART_RUBBERDUCK", "SONYC_UST", "WIKIMEDIA_COMMONS"}, "background source-family identity drift", failures)
     require("BACKGROUND_SOURCES_BELOW_MIN" not in coverage_gaps, "background source-family gap reappeared", failures)
+
+    glass = (coverage.get("classes") or {}).get("GLASS_SHATTER") or {}
+    require(glass.get("asset_count") == 238, "GLASS_SHATTER final asset count drift", failures)
+    require(glass.get("independent_group_count") == 221, "GLASS_SHATTER final group count drift", failures)
+    require(glass.get("max_single_source_fraction") == 0.94958, "GLASS_SHATTER source concentration drift", failures)
+    require((glass.get("source_asset_counts") or {}) == {"BIGSOUNDBANK": 6, "FREESOUND": 226, "OPENGAMEART_RUBBERDUCK": 6}, "GLASS_SHATTER final source counts drift", failures)
 
     tire_hn = ((coverage.get("classes") or {}).get("TIRE_SQUEAL") or {}).get("hard_negatives") or {}
     require(tire_hn.get("asset_count") == 25, "TIRE_SQUEAL HN asset closure drift", failures)
@@ -216,7 +225,7 @@ def main() -> int:
     require(set(readiness.get("gap_codes", [])) == EXPECTED_GAPS, "readiness gap-code set drift; re-audit required", failures)
     ledger_input = readiness.get("inputs", {}).get("canonical_ledger_summary", {})
     require(ledger_input.get("baseline_commit") == EXPECTED_LEDGER_BASELINE, "readiness ledger baseline drift", failures)
-    require(ledger_input.get("entry_count") == 1149, "readiness ledger count drift", failures)
+    require(ledger_input.get("entry_count") == 1158, "readiness ledger count drift", failures)
     require(ledger_input.get("ledger_sha256") == EXPECTED_LEDGER_SHA256, "readiness ledger identity drift", failures)
     require((readiness.get("ledger_blocking_reason_counts") or {}) == {}, "readiness reports ledger blockers", failures)
     tire_readiness = (readiness.get("target_readiness") or {}).get("TIRE_SQUEAL") or {}
@@ -267,12 +276,13 @@ def main() -> int:
     print("documentation certificate: CERT-DOC-009")
     print("toolchain: CERT-MK1-DF-TOOLCHAIN-005 CANDIDATE")
     print("SONYC: CERT-MK1-DF-SONYC-001 CERTIFIED")
-    print("canonical fingerprints: 1149/1149")
+    print("canonical fingerprints: 1158/1158")
     print("ledger blockers: 0")
     print("global dedup: PASS")
     print("recording-family audit: PASS")
-    print("split integrity: PASS / 3 groups quarantined / 77 assets")
+    print("split integrity: PASS / 2 groups quarantined / 93 assets")
     print("background sources: 4 / PASS")
+    print("GLASS_SHATTER final: 238 assets / Freesound fraction 0.94958")
     print("TIRE_SQUEAL hard negatives: 25 assets / 12 groups / 2 sources / PASS")
     print("coverage detailed gaps:", len(EXPECTED_COVERAGE_GAPS))
     print("readiness gaps:", len(EXPECTED_GAPS))
