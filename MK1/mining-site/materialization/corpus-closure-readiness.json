@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "fefb82d3679826e5ac6ab969d349f6e8d3e086b96d25f7a2d43904fc51da6ec4",
+      "sha256": "ce8863b9adbeae9f3302c386ece365e5f4872b23197c394d73dea96792ba3f1d",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "d33bbe650d5a52bddc3b2a6d9b7701637862413c70361eac871820195fe342dc",
+      "sha256": "62b98b6b30f1fa9e32ef541d2bbb4b8b84b34d326ae74d2b0819d930e8ee2590",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "dba943332681584021e4f082408f0ff34f0b854175be6a35712ad62e7a54cea8",
+      "sha256": "3da5bef264854f1d4e9344399e9ddc23d399a67ae0bf8c581e69c16398278b32",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": false,
       "present": true,
-      "sha256": "247b0738c65659ef8de122ed3030a458714cd0857f5d8736f460d924719b0fb2",
+      "sha256": "b2d93887e6d6ce954e96c72a2741765c79545396c7e3805168029ff453bd5a76",
       "status": "FAIL"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": false,
       "present": true,
-      "sha256": "2671dffaa80f6eca762b8a75f49d011c394748860b0ee7ae99dd7d9a2c341a3e",
+      "sha256": "931c8b63d6414346380c70498b2be1cd9743eb95abe1ab16108995f32dba3298",
       "status": "FAIL"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "706dac57491cdc4780c335c0941f05981245e7d9a65090d6c6a2356514e4271b",
+      "sha256": "cea66add9e786c247f26ed935bedbc44e405386fa173675efb763520668a0d25",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": false,
       "present": true,
-      "sha256": "1775a5d95443ec531b4bf127f8342190c4cf622ea026e0868730ff456a2664a0",
+      "sha256": "78783174530af8191eca1b8a13e8fb48dbd57dc7185fec5db045d7c0ae6ff51e",
       "status": "FAIL"
     }
   },
@@ -55,9 +55,8 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "a9de0d5873beb4cb4c07bef507118cbb2559c60c9cfa503099b56ed46678c344",
+  "evidence_identity_sha256": "92b36c83f2fdb4a8befbde0ac46e95067043b673e4229564aabf4c85a88278d3",
   "gap_codes": [
-    "CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE",
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
@@ -71,9 +70,6 @@
     "LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4",
     "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_503",
     "LEDGER_LICENSE_NOT_RELEASE_SAFE_1",
-    "LEDGER_MISSING_ASSET_LEVEL_AUDIO_PROBE_363",
-    "LEDGER_MISSING_ASSET_LEVEL_BYTE_SIZE_363",
-    "LEDGER_MISSING_CANONICAL_FINGERPRINT_599",
     "LEDGER_NO_EXACT_SEMANTIC_ROLE_83",
     "LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1",
     "LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1",
@@ -90,10 +86,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "8fef84e29305ac65498ffbe8c231803ece4d01ec",
+      "baseline_commit": "78fc019839f1c9dad1a58a70d439605d887361d7",
       "entry_count": 1164,
-      "ledger_sha256": "0bee23c90ce53794a39155081d71400b49d66b93e3ceeb8c8c1a6fbe808fad75",
-      "sha256": "811f994d699fe60938dadf460d4166f848d147d99d053ded12455db1196ff965"
+      "ledger_sha256": "64a85c287d5c596ecfa9cc1dcf130ba7ac15c44f15a5899bb30f492117136273",
+      "sha256": "68b3df7c489f40de64d9b45e2e5bcee4b7726aae0e682e0e2a70a372220fa977"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -105,9 +101,6 @@
     "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
     "GROUPING_GLOBAL_AUDIT_REQUIRED": 503,
     "LICENSE_NOT_RELEASE_SAFE": 1,
-    "MISSING_ASSET_LEVEL_AUDIO_PROBE": 363,
-    "MISSING_ASSET_LEVEL_BYTE_SIZE": 363,
-    "MISSING_CANONICAL_FINGERPRINT": 599,
     "NO_EXACT_SEMANTIC_ROLE": 83,
     "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
     "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
