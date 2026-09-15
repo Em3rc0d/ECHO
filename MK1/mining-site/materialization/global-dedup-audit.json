@@ -2,9 +2,9 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1124,
+  "fingerprinted_asset_count": 1149,
   "gap_codes": [],
-  "ledger_sha256": "d97d90809670fbfee2d1a93e90eb7ac50fa649460625e43e0d7977ec473b4981",
+  "ledger_sha256": "ae25a1ebb684653bf9e22beaa33fa09c13499f892740083171254ce6e2129463",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 500,
@@ -43,6 +43,12 @@
       "distance": 0.01369485,
       "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2249",
       "right": "echo-freesound-release-safe-v1:258169",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01228554,
+      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2990",
+      "right": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2998",
       "same_recording_group": true
     },
     {
@@ -3002,12 +3008,6 @@
       "left": "echo-freesound-release-safe-v1:88927",
       "right": "echo-freesound-release-safe-v1:88935",
       "same_recording_group": true
-    },
-    {
-      "distance": 0.01164216,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88936",
-      "same_recording_group": true
     }
   ],
   "near_duplicate_threshold": 0.02,
@@ -3015,6 +3015,6 @@
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1124,
+  "scope_asset_count": 1149,
   "status": "PASS"
 }
