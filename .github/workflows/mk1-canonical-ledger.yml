@@ -6,6 +6,7 @@ on:
     workflows:
       - 'MK1 Freesound Release Safe Materialization'
       - 'MK1 Freesound CC0 Free Materialization'
+      - 'MK1 SONYC Free Materialization'
     types: [completed]
   push:
     branches: [main]
