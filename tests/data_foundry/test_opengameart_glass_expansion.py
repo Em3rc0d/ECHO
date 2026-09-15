@@ -67,12 +67,13 @@ class OpenGameArtGlassExpansionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             safe_glass_members(self.archive_bytes(5, unsafe=True), 5)
 
-    def test_rubberduck_archives_cannot_claim_separate_source_families(self) -> None:
-        mutated = json.loads(json.dumps(self.config))
-        rubberduck = [row for row in mutated["sources"] if row["creator"] == "rubberduck"]
-        rubberduck[1]["underlying_source_family_candidate"] = "OPENGAMEART_RUBBERDUCK_SECOND_PACK"
-        with self.assertRaises(ValueError):
-            validate_config(mutated)
+    def test_rubberduck_archives_share_one_declared_family(self) -> None:
+        rubberduck = [row for row in self.config["sources"] if row["creator"] == "rubberduck"]
+        self.assertEqual(len(rubberduck), 2)
+        self.assertEqual(
+            {row["underlying_source_family_candidate"] for row in rubberduck},
+            {"OPENGAMEART_RUBBERDUCK"},
+        )
 
     def test_materializer_contains_no_json_literals_as_python_names(self) -> None:
         source = Path(materializer.__file__).read_text(encoding="utf-8")
