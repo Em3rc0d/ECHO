@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "5e33f7a00253511740ec76e49da1083dfdb0a5f3b48a7c48a2ebde43bad995b5",
+      "sha256": "aa48fc9c14bf259f852a3a5ed32298357ef4837f928c42080fe11c310f0d31f7",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "5c3811147b96dfd6a53149851f422de38f1aa0a04c73cd8a6fea121d029979a3",
+      "sha256": "e182eccab8587bb05f81edc842c14bc4d755b63d6a4089911c1ebb68c767dce7",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "f6de0469be54a70292170116e6ba5db1b3875316ae72c33744ae9d2ae9535642",
+      "sha256": "40893d87e7a22bbabbcc6785912168ed965ca96ee639ec2e05913d51a4cb0f5d",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "79b68ebdf8b2aff28d0364410e5a65bebb7cc45785174a1dbba35e93b234d56b",
+      "sha256": "bd210779feddb0dc78d902cab12fc451d18fa0eab7ebd0dbd722e24541f311cf",
       "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "4e1cf0a2ffa00e0e4ab79036921d4367f515a18a09aaa530cd6b5ac089eb63b9",
+      "sha256": "ab49d91fa051d6bb7bd8ce26f37170e5abc80c0e96909c63d7ced845e77c6ef8",
       "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "8a6a69fbc51bb3cc0d73d92551f40ff048947fc4f120b6e11a3b057dc60769a6",
+      "sha256": "be0d1191b4768e1c74d558ad8252ac1f9fc5b30f25eb91fe2335bca63c069526",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": true,
       "present": true,
-      "sha256": "cbebaef50b5eaf6ceb8af539e8910ba1e7bfa2a0a3f3b52e8f8e2d528fcd5811",
+      "sha256": "509018a68d101a2d39266d1d0603aa8c9d190592662abbbdc34651be92cd1376",
       "status": "PASS"
     }
   },
@@ -55,20 +55,19 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "c20eab44bae7cb10e7038833fdf46741d9d4c1574ebfe1b65e47dd6db160249b",
+  "evidence_identity_sha256": "91c77da8bee8af94dc22b802598db1c4cc0327808c6e5d93c78cb5c2d5985b38",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
     "COVERAGE_GATE_STATUS_NOT_PASS",
-    "FIRE_ALARM_ASSETS_10_LT_50",
+    "FIRE_ALARM_ASSETS_9_LT_50",
     "FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
+    "GLASS_SHATTER_ASSETS_7_LT_50",
     "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2",
-    "LEDGER_LICENSE_NOT_RELEASE_SAFE_1",
-    "LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1",
-    "LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1",
+    "GLASS_SHATTER_UNDERLYING_SOURCES_1_LT_2",
     "REPRODUCIBILITY_NOT_PASS",
     "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
     "TIRE_SQUEAL_ASSETS_11_LT_50",
@@ -79,10 +78,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "8c547b70d23ce6c592ddd20d55ff37df9fa7fa03",
-      "entry_count": 1081,
-      "ledger_sha256": "d31a264f4f8cac2c14b78e8bf93d0c02ff3d81b0c814b5340131f73850fe1cbf",
-      "sha256": "0242eb8e4ba8c1196bfae0cff172de8e62ba3489b561fb20b341a145a70379a9"
+      "baseline_commit": "1cfa45e4aa4a258f8954e8d75fbfe10261ccb5b1",
+      "entry_count": 632,
+      "ledger_sha256": "91bd92983f973ed3e67f67ec8a0b3303b0396dcf6425382e8b351376abe7b699",
+      "sha256": "63b3eab4ac1ae6da87b16b111a24e8ef66c50fb05a610b2e8b930a0eb24c6944"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -90,11 +89,7 @@
       "sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36"
     }
   },
-  "ledger_blocking_reason_counts": {
-    "LICENSE_NOT_RELEASE_SAFE": 1,
-    "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
-    "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
-  },
+  "ledger_blocking_reason_counts": {},
   "modeling_allowed": false,
   "next_authorized_stage": "CORPUS_FOUNDRY_CLOSURE",
   "profile": "release_safe",
@@ -109,9 +104,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 1,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 10,
+      "positive_assets_pre_final_dedup": 9,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 3,
+      "positive_underlying_source_families": 2,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
@@ -121,9 +116,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 1,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 304,
+      "positive_assets_pre_final_dedup": 7,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 2,
+      "positive_underlying_source_families": 1,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
@@ -133,9 +128,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 1,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 175,
+      "positive_assets_pre_final_dedup": 110,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 3,
+      "positive_underlying_source_families": 2,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
@@ -157,9 +152,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 0,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 245,
+      "positive_assets_pre_final_dedup": 159,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 3,
+      "positive_underlying_source_families": 2,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     }
