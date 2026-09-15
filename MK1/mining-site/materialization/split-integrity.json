@@ -1,19 +1,24 @@
 {
-  "assignment_sha256": "0ce50eb05604c6cd49c954ca60e3a6d22acece145d5dbb94b609824611d2f173",
-  "eligible_asset_count": 632,
+  "assignment_sha256": "5d72a4632f4ca33e81a9e9e702e901a6dae23de01aa534f5900585bd5b9edde5",
+  "eligible_asset_count": 1078,
   "gap_codes": [
-    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
-    "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS"
+    "ELIGIBLE_ASSET_WITHOUT_SPLIT",
+    "ORIGINAL_SPLIT_CONFLICT_WITHIN_RECORDING_FAMILY"
   ],
-  "ledger_sha256": "cefee139faf14f0a05853edbb29e1cba3883ef73c318800945a1a185484bbdaa",
-  "original_split_conflict_count": 0,
-  "original_split_conflict_sample": [],
-  "recording_family_assignment_count": 626,
+  "ledger_sha256": "a197697c2b4babdb6dcdbe3f9d413fd9fe9f385afc518e3a63281f7119aa57ef",
+  "original_split_conflict_count": 3,
+  "original_split_conflict_sample": [
+    "global-acoustic:49755af077645d9cd379",
+    "global-acoustic:683a2c690a388e66903b",
+    "global-acoustic:b0a528766144425812e3"
+  ],
+  "recording_family_assignment_count": 993,
   "schema_version": "echo.split-integrity.v1",
   "split_asset_counts": {
-    "test": 360,
-    "train": 81,
-    "validation": 191
+    "UNASSIGNED": 62,
+    "test": 458,
+    "train": 330,
+    "validation": 228
   },
   "split_policy_sha256": "e1b05b687248b509f1f3c2868f5e16ade87987efb9e8db9d739c13c4b3ce34a2",
   "status": "FAIL"

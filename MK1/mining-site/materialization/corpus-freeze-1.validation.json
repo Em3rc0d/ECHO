@@ -1,16 +1,14 @@
 {
-  "asset_count": 632,
+  "asset_count": 1078,
   "boundary": "No bundle is eligible for benchmark handoff unless all upstream closure gates pass.",
   "freeze_id": "MK1-CORPUS-FREEZE-1",
   "gap_codes": [
-    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
-    "UPSTREAM_RECORDING_FAMILY_NOT_PASS",
     "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS",
     "UPSTREAM_COVERAGE_NOT_PASS"
   ],
-  "ledger_sha256": "cefee139faf14f0a05853edbb29e1cba3883ef73c318800945a1a185484bbdaa",
+  "ledger_sha256": "a197697c2b4babdb6dcdbe3f9d413fd9fe9f385afc518e3a63281f7119aa57ef",
   "schema_version": "echo.corpus-freeze-validation.v1",
-  "semantic_identity_sha256": "099ee4b3442163688b565dc4a220ac9bddf3db699e77c5da9a38663031f9af68",
-  "split_assignment_sha256": "0ce50eb05604c6cd49c954ca60e3a6d22acece145d5dbb94b609824611d2f173",
+  "semantic_identity_sha256": "920c591429a22e81bfe193933c6db9b653a109988b299ed26e50d18c3e675fda",
+  "split_assignment_sha256": "5d72a4632f4ca33e81a9e9e702e901a6dae23de01aa534f5900585bd5b9edde5",
   "status": "FAIL"
 }

@@ -50,8 +50,8 @@
       }
     },
     "GLASS_SHATTER": {
-      "asset_count": 7,
-      "clip_duration_seconds": 111.722047,
+      "asset_count": 304,
+      "clip_duration_seconds": 1305.024256,
       "hard_negatives": {
         "asset_count": 342,
         "independent_group_count": 341,
@@ -60,29 +60,31 @@
           "SONYC_UST"
         ]
       },
-      "independent_group_count": 5,
-      "max_single_source_fraction": 1.0,
+      "independent_group_count": 228,
+      "max_single_source_fraction": 0.976974,
       "source_asset_counts": {
-        "BIGSOUNDBANK": 7
+        "BIGSOUNDBANK": 7,
+        "FREESOUND": 297
       },
-      "source_count": 1,
+      "source_count": 2,
       "sources": [
-        "BIGSOUNDBANK"
+        "BIGSOUNDBANK",
+        "FREESOUND"
       ],
       "split_assets": {
-        "test": 0,
-        "train": 7,
-        "validation": 0
+        "test": 36,
+        "train": 182,
+        "validation": 24
       },
       "split_groups": {
-        "test": 0,
-        "train": 5,
-        "validation": 0
+        "test": 36,
+        "train": 165,
+        "validation": 24
       }
     },
     "SIREN": {
-      "asset_count": 110,
-      "clip_duration_seconds": 1240.581333,
+      "asset_count": 173,
+      "clip_duration_seconds": 2206.036189,
       "hard_negatives": {
         "asset_count": 26,
         "independent_group_count": 26,
@@ -91,26 +93,28 @@
           "SONYC_UST"
         ]
       },
-      "independent_group_count": 110,
-      "max_single_source_fraction": 0.963636,
+      "independent_group_count": 173,
+      "max_single_source_fraction": 0.612717,
       "source_asset_counts": {
         "BIGSOUNDBANK": 4,
+        "FREESOUND": 63,
         "SONYC_UST": 106
       },
-      "source_count": 2,
+      "source_count": 3,
       "sources": [
         "BIGSOUNDBANK",
+        "FREESOUND",
         "SONYC_UST"
       ],
       "split_assets": {
-        "test": 33,
-        "train": 16,
-        "validation": 61
+        "test": 60,
+        "train": 50,
+        "validation": 63
       },
       "split_groups": {
-        "test": 33,
-        "train": 16,
-        "validation": 61
+        "test": 60,
+        "train": 50,
+        "validation": 63
       }
     },
     "TIRE_SQUEAL": {
@@ -145,79 +149,46 @@
       }
     },
     "VEHICLE_HORN": {
-      "asset_count": 159,
-      "clip_duration_seconds": 1577.703775,
+      "asset_count": 245,
+      "clip_duration_seconds": 2405.154386,
       "hard_negatives": {
         "asset_count": 0,
         "independent_group_count": 0,
         "source_count": 0,
         "sources": []
       },
-      "independent_group_count": 159,
-      "max_single_source_fraction": 0.987421,
+      "independent_group_count": 244,
+      "max_single_source_fraction": 0.640816,
       "source_asset_counts": {
         "BIGSOUNDBANK": 2,
+        "FREESOUND": 86,
         "SONYC_UST": 157
       },
-      "source_count": 2,
+      "source_count": 3,
       "sources": [
         "BIGSOUNDBANK",
+        "FREESOUND",
         "SONYC_UST"
       ],
       "split_assets": {
-        "test": 94,
-        "train": 21,
-        "validation": 44
+        "test": 129,
+        "train": 61,
+        "validation": 55
       },
       "split_groups": {
-        "test": 94,
-        "train": 21,
-        "validation": 44
+        "test": 129,
+        "train": 60,
+        "validation": 55
       }
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 632,
+  "development_asset_count": 1078,
   "failures": [
     {
-      "actual": 7,
-      "code": "GLASS_SHATTER_ASSETS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "ASSETS",
-      "required": 50
-    },
-    {
-      "actual": 5,
-      "code": "GLASS_SHATTER_GROUPS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "GROUPS",
-      "required": 25
-    },
-    {
-      "actual": 1,
-      "code": "GLASS_SHATTER_SOURCES_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "SOURCES",
-      "required": 2
-    },
-    {
-      "actual": 111.722047,
-      "code": "GLASS_SHATTER_DURATION_SECONDS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "DURATION_SECONDS",
-      "required": 180.0
-    },
-    {
-      "actual": 1.0,
+      "actual": 0.976974,
       "code": "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
       "label": "GLASS_SHATTER",
-      "metric": "MAX_SINGLE_SOURCE_FRACTION",
-      "required_max": 0.8
-    },
-    {
-      "actual": 0.963636,
-      "code": "SIREN_SOURCE_CONCENTRATION_TOO_HIGH",
-      "label": "SIREN",
       "metric": "MAX_SINGLE_SOURCE_FRACTION",
       "required_max": 0.8
     },
@@ -236,13 +207,6 @@
       "required": 25
     },
     {
-      "actual": 0.987421,
-      "code": "VEHICLE_HORN_SOURCE_CONCENTRATION_TOO_HIGH",
-      "label": "VEHICLE_HORN",
-      "metric": "MAX_SINGLE_SOURCE_FRACTION",
-      "required_max": 0.8
-    },
-    {
       "actual": 11,
       "code": "TIRE_SQUEAL_ASSETS_BELOW_MIN",
       "label": "TIRE_SQUEAL",
@@ -255,30 +219,6 @@
       "label": "TIRE_SQUEAL",
       "metric": "GROUPS",
       "required": 25
-    },
-    {
-      "actual": 7,
-      "code": "GLASS_SHATTER_TRAIN_ASSETS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "ASSETS",
-      "required": 20,
-      "split": "train"
-    },
-    {
-      "actual": 5,
-      "code": "GLASS_SHATTER_TRAIN_GROUPS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "GROUPS",
-      "required": 10,
-      "split": "train"
-    },
-    {
-      "actual": 16,
-      "code": "SIREN_TRAIN_ASSETS_BELOW_MIN",
-      "label": "SIREN",
-      "metric": "ASSETS",
-      "required": 20,
-      "split": "train"
     },
     {
       "actual": 7,
@@ -313,22 +253,6 @@
       "split": "train"
     },
     {
-      "actual": 0,
-      "code": "GLASS_SHATTER_VALIDATION_ASSETS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "ASSETS",
-      "required": 5,
-      "split": "validation"
-    },
-    {
-      "actual": 0,
-      "code": "GLASS_SHATTER_VALIDATION_GROUPS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "GROUPS",
-      "required": 3,
-      "split": "validation"
-    },
-    {
       "actual": 2,
       "code": "FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN",
       "label": "FIRE_ALARM",
@@ -359,22 +283,6 @@
       "metric": "GROUPS",
       "required": 3,
       "split": "validation"
-    },
-    {
-      "actual": 0,
-      "code": "GLASS_SHATTER_TEST_ASSETS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "ASSETS",
-      "required": 5,
-      "split": "test"
-    },
-    {
-      "actual": 0,
-      "code": "GLASS_SHATTER_TEST_GROUPS_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "GROUPS",
-      "required": 3,
-      "split": "test"
     },
     {
       "actual": 0,
@@ -477,12 +385,6 @@
       "required": 2
     },
     {
-      "code": "UPSTREAM_GLOBAL_DEDUP_NOT_PASS"
-    },
-    {
-      "code": "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS"
-    },
-    {
       "code": "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS"
     }
   ],
@@ -498,21 +400,9 @@
     "FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN",
     "FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN",
     "FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN",
-    "GLASS_SHATTER_ASSETS_BELOW_MIN",
-    "GLASS_SHATTER_DURATION_SECONDS_BELOW_MIN",
-    "GLASS_SHATTER_GROUPS_BELOW_MIN",
     "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-    "GLASS_SHATTER_SOURCES_BELOW_MIN",
     "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
-    "GLASS_SHATTER_TEST_ASSETS_BELOW_MIN",
-    "GLASS_SHATTER_TEST_GROUPS_BELOW_MIN",
-    "GLASS_SHATTER_TRAIN_ASSETS_BELOW_MIN",
-    "GLASS_SHATTER_TRAIN_GROUPS_BELOW_MIN",
-    "GLASS_SHATTER_VALIDATION_ASSETS_BELOW_MIN",
-    "GLASS_SHATTER_VALIDATION_GROUPS_BELOW_MIN",
     "SIREN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-    "SIREN_SOURCE_CONCENTRATION_TOO_HIGH",
-    "SIREN_TRAIN_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_GROUPS_BELOW_MIN",
     "TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN",
@@ -524,15 +414,12 @@
     "TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN",
-    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
-    "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS",
     "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS",
     "VEHICLE_HORN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
     "VEHICLE_HORN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
-    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-    "VEHICLE_HORN_SOURCE_CONCENTRATION_TOO_HIGH"
+    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN"
   ],
-  "ledger_sha256": "cefee139faf14f0a05853edbb29e1cba3883ef73c318800945a1a185484bbdaa",
+  "ledger_sha256": "a197697c2b4babdb6dcdbe3f9d413fd9fe9f385afc518e3a63281f7119aa57ef",
   "note": "Coverage uses only release-safe READY_FOR_GLOBAL_DEDUP rows and underlying acoustic source families, never dataset wrappers.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
