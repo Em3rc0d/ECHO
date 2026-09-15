@@ -2,9 +2,9 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-008`
+**Documentation ancestor:** `CERT-DOC-009`
 
-`CERTIFIED` is always scope-bounded. Green CI is execution evidence, not a substitute for missing empirical corpus evidence. No certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
+`CERTIFIED` is scope-bounded. Green CI is execution evidence, not a substitute for missing empirical evidence. No certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
 ## States
 
@@ -18,22 +18,20 @@
 | CERT-MK0-001..013 | MK0 decisions + research gate | CERTIFIED | MK0 evidence corpus | material ancestor changes |
 | CERT-MK1-READY-001 | MK1 replay-build readiness | CERTIFIED | MK0 + Definition of Ready | architecture-changing dependency |
 | CERT-MK1-DF-SPEC-001 | Data Foundry architecture/contracts/policies | CERTIFIED | Foundry docs/config/schema/foundation | semantic contract changes |
-| CERT-MK1-DF-TOOLCHAIN-001..003 | Historical toolchains | INVALIDATED | historical evidence | superseded |
-| CERT-MK1-DF-TOOLCHAIN-004 | SONYC persistence/fingerprint Foundry baseline | INVALIDATED | baseline `ab8c47ba...` | invalidated by closure semantic changes |
-| CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | PR #10/#11 + fresh CI/free-tier/cascade | certify only after active closure implementation stabilizes |
-| CERT-MK1-DF-SONYC-001 | SONYC v2.3 materialization/fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...` | SONYC evidence/materialization/fingerprint/free-tier changes |
-| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `8e7702a2...` | recomputed when input evidence/policy changes |
+| CERT-MK1-DF-TOOLCHAIN-001..004 | Historical toolchains | INVALIDATED | historical evidence | superseded |
+| CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | role boundary + grouping + split quarantine + fresh CI/free-tier/cascade | certify only after closure semantics stabilize |
+| CERT-MK1-DF-SONYC-001 | SONYC v2.3 materialization/fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...` | SONYC materialization/fingerprint/free-tier changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus readiness | BLOCKED | readiness `589e7f4a...` | recomputed when input evidence/policy changes |
 | EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | release-safe closure | produced only from closed corpus |
 | EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | dedup/group/split/coverage closure | produced only from real closure |
 | CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | dataset + quality + all closure gates + reproducibility + free-tier | material corpus ancestor changes |
-| CERT-DOC-001..006 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
-| CERT-DOC-007 | Corpus-role-boundary documentation audit | INVALIDATED | 211-file audit | superseded by fresh grouping cascade |
-| CERT-DOC-008 | Post-grouping documentation corpus | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-15-GROUPING-CLOSURE-008.md` | Markdown/evidence/policy/certification truth changes |
+| CERT-DOC-001..008 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
+| CERT-DOC-009 | Post-split documentation corpus | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-15-SPLIT-CLOSURE-009.md` | Markdown/evidence/policy/certification truth changes |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized field evidence | closes only with field evidence + upstream authorization |
 | EMP-MODEL-001 | Model winner | BLOCKED | corpus cert + Benchmark A/B/C | cannot run before corpus cert |
 | EMP-THRESH-001 | Event thresholds | BLOCKED | certified corpus + model/replay | cannot run before upstream gates |
 
-## SONYC scoped certificate
+## Scoped SONYC certificate
 
 ```text
 CERT-MK1-DF-SONYC-001     CERTIFIED
@@ -47,41 +45,45 @@ durable evidence          78fc019839f1c9dad1a58a70d439605d887361d7
 
 Its scope does not certify the final corpus.
 
-## Post-grouping empirical chain
+## Current empirical chain
 
 ```text
-PR #11 merge                 8c547b70d23ce6c592ddd20d55ff37df9fa7fa03
-Data Foundry CI              34969860336 PASS
-Documentation Governance     34969860448 PASS
-Free-Tier Boundary           34969860642 PASS
-canonical ledger run         34969860666 PASS
+PR #11 grouping merge        8c547b70d23ce6c592ddd20d55ff37df9fa7fa03
 canonical ledger evidence    9fa3d2f90ddfb731d0921749c921ab2987d54307
-closure evidence run         34969945975 PASS
-closure evidence             e3e0f58dee3a1602e92f62c8a7708fa1e9fad9ea
-readiness run                34970028139 PASS
-readiness evidence           8e7702a2bf629642f78859763dabbe09df03df02
+PR #13 split merge           03cd0627c9c6fcf0780d8d4ce48d5fa7f89fbd01
+Data Foundry CI              34971457870 PASS
+Free-Tier Boundary           34971457814 PASS
+closure evidence run         34971457662 PASS
+closure evidence             205eb419b20f10461271ff1fbbd78eb3fa9560e9
+readiness run                34971547338 PASS
+readiness evidence           589e7f4affed39e1ffcf6f50602d79587560bbb3
 ```
 
-Canonical corpus-facing ledger:
+## Closed corpus-foundry nodes
 
 ```text
-entry_count                         1081
-canonical fingerprints              1081 / 1081
-fallback assets before grouping      448
-fallback assets after grouping         0
-global acoustic components            17
-screened fallback groups              357
-assets moved into acoustic components  97
+canonical fingerprint coverage    PASS / 1081 of 1081
+global dedup                      PASS / gap_codes=[]
+recording-family audit            PASS / gap_codes=[]
+split integrity                   PASS / gap_codes=[]
 ```
 
-Global closure nodes now empirically PASS:
+Split policy `MK1-SPLIT-INTEGRITY-002` quarantined exactly three whole acoustic groups spanning protected source splits:
 
 ```text
-global-dedup-audit.json       PASS / gap_codes=[]
-recording-family-audit.json   PASS / gap_codes=[]
+ready candidate assets        1078
+quarantined groups               3
+quarantined assets              62
+eligible development assets   1016
+UNASSIGNED                       0
+quarantine identity 1679540dd50eea39200f95ee98130d2e38acd0d21ca73edf7eac04040bb42aaf
 ```
 
-The three remaining ledger blockers are exact:
+No member was moved between protected splits. Quarantined rows remain source/ledger evidence and cannot satisfy coverage or frozen membership.
+
+## Remaining ledger blockers
+
+Exactly three corpus-facing rows remain non-admissible:
 
 ```text
 LICENSE_NOT_RELEASE_SAFE = 1
@@ -89,38 +91,41 @@ SEMANTIC_STATUS_CONFLICT_FIRE_ALARM = 1
 SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL = 1
 ```
 
-## Current split and coverage truth
+They may be excluded with an auditable admission boundary or resolved by exact source evidence. They may not be coerced into corpus credit.
 
-`split-integrity.json = FAIL` because three global acoustic components span recognized upstream split assignments. 62 otherwise-ready assets are currently unassigned. Any fix must preserve whole acoustic groups; manual clip movement and seed shopping are forbidden.
+## Current coverage truth
 
-Current final coverage exposes real deficits, including:
+`coverage-gate.json = FAIL` over 1016 development assets. It has no upstream split/dedup/group failure.
 
 ```text
-FIRE_ALARM       9 assets / 6 groups
-TIRE_SQUEAL     11 assets / 11 groups
-GLASS_SHATTER   largest source fraction 0.976974 > 0.80
-BACKGROUND      1 source family < 3
-
-HN source families:
-FIRE_ALARM       1 < 2
-GLASS_SHATTER    1 < 2
-SIREN            1 < 2
-TIRE_SQUEAL      0 < 2; 0 assets < 20
-VEHICLE_HORN     0 < 2; 0 assets < 20
+FIRE_ALARM       9 assets / 6 groups / 190.182749 s
+TIRE_SQUEAL     11 assets / 11 groups / 280.544098 s
+GLASS_SHATTER   242 assets; FREESOUND=237, BIGSOUNDBANK=5; max source fraction=0.979339
+BACKGROUND      363 assets / 362 groups / 1 source family
 ```
 
-These are not candidates for floor reduction. They require source-safe exclusion where invalid and genuine real-media acquisition where coverage is insufficient.
+Hard-negative deficits:
+
+```text
+FIRE_ALARM       26 assets / 26 groups / 1 source
+GLASS_SHATTER   342 assets / 341 groups / 1 source
+SIREN            26 assets / 26 groups / 1 source
+TIRE_SQUEAL       0 / 0 / 0
+VEHICLE_HORN      0 / 0 / 0
+```
+
+No floor will be reduced. New credit requires genuine independent real-media evidence.
 
 ## Authoritative readiness
 
-At `8e7702a2bf629642f78859763dabbe09df03df02`:
+At `589e7f4affed39e1ffcf6f50602d79587560bbb3`:
 
 ```text
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
-evidence_identity_sha256 = fcd07c11d3291d5a78ee28cae93e42de0f16e78522720e78fffb5e71b4bcf129
+evidence_identity_sha256 = c20eab44bae7cb10e7038833fdf46741d9d4c1574ebfe1b65e47dd6db160249b
 ```
 
 Exact readiness gap codes:
@@ -140,7 +145,6 @@ LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1
 LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1
 REPRODUCIBILITY_NOT_PASS
 SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
-SPLIT_INTEGRITY_NOT_PASS
 TIRE_SQUEAL_ASSETS_11_LT_50
 TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
 TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
@@ -153,7 +157,7 @@ VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 ```text
 CERT-MK1-DF-CORPUS-001 = CERTIFIED
 AND gap_codes=[]
-AND all required closure evidence = PASS
+AND required closure evidence = PASS
 AND reproducibility = PASS
 AND ECHO-FREE-TIER-001 = PASS
         ↓
@@ -162,30 +166,28 @@ model-entry PASS
 Benchmark A/B/C authorized
 ```
 
-Until then there is no model training, threshold calibration, replay progression or real-camera progression.
+Until then: no model training, threshold calibration, replay progression or real-camera progression.
 
 ## Dependency DAG
 
 ```text
-CERT-ECHO-000 + CERT-DOC-008 + ECHO-FREE-TIER-001
+CERT-ECHO-000 + CERT-DOC-009 + ECHO-FREE-TIER-001
         ↓
 CERT-MK1-DF-SPEC-001
         ↓
-TOOLCHAIN-005 = CANDIDATE + SONYC-001 = CERTIFIED
+TOOLCHAIN-005 CANDIDATE + SONYC-001 CERTIFIED
         ↓
-GLOBAL DEDUP = PASS + RECORDING FAMILY = PASS
+FP PASS → DEDUP PASS → FAMILY PASS → SPLIT PASS
         ↓
-close 3 row blockers + protected-split conflicts
+close 3 non-admissible rows
         ↓
-close real coverage / source-diversity / HN gaps
+close real positive/background/HN/source-diversity coverage gaps
         ↓
 coverage PASS → freeze #1 → freeze #2 → reproducibility PASS
         ↓
 EMP-DATASET-001 + EMP-DATA-QUALITY-001
         ↓
-CERT-MK1-DF-CORPUS-001
-        ↓
-model-entry → Benchmark A/B/C
+CERT-MK1-DF-CORPUS-001 → model-entry → Benchmark A/B/C
 ```
 
 ## Invalidation
