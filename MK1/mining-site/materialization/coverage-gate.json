@@ -21,10 +21,12 @@
       "asset_count": 9,
       "clip_duration_seconds": 190.182749,
       "hard_negatives": {
-        "asset_count": 26,
-        "independent_group_count": 26,
-        "source_count": 1,
+        "asset_count": 205,
+        "independent_group_count": 205,
+        "source_count": 3,
         "sources": [
+          "BIGSOUNDBANK",
+          "FREESOUND",
           "SONYC_UST"
         ]
       },
@@ -54,8 +56,8 @@
       "asset_count": 245,
       "clip_duration_seconds": 1186.906658,
       "hard_negatives": {
-        "asset_count": 369,
-        "independent_group_count": 349,
+        "asset_count": 428,
+        "independent_group_count": 408,
         "source_count": 2,
         "sources": [
           "OPENGAMEART_RUBBERDUCK",
@@ -90,10 +92,12 @@
       "asset_count": 173,
       "clip_duration_seconds": 2206.036189,
       "hard_negatives": {
-        "asset_count": 26,
-        "independent_group_count": 26,
-        "source_count": 1,
+        "asset_count": 244,
+        "independent_group_count": 243,
+        "source_count": 3,
         "sources": [
+          "BIGSOUNDBANK",
+          "FREESOUND",
           "SONYC_UST"
         ]
       },
@@ -156,10 +160,14 @@
       "asset_count": 245,
       "clip_duration_seconds": 2405.154386,
       "hard_negatives": {
-        "asset_count": 0,
-        "independent_group_count": 0,
-        "source_count": 0,
-        "sources": []
+        "asset_count": 146,
+        "independent_group_count": 146,
+        "source_count": 3,
+        "sources": [
+          "BIGSOUNDBANK",
+          "FREESOUND",
+          "SONYC_UST"
+        ]
       },
       "independent_group_count": 244,
       "max_single_source_fraction": 0.640816,
@@ -326,41 +334,6 @@
       "required": 3
     },
     {
-      "actual": 1,
-      "code": "SIREN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-      "label": "SIREN",
-      "metric": "HARD_NEGATIVE_SOURCES",
-      "required": 2
-    },
-    {
-      "actual": 1,
-      "code": "FIRE_ALARM_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-      "label": "FIRE_ALARM",
-      "metric": "HARD_NEGATIVE_SOURCES",
-      "required": 2
-    },
-    {
-      "actual": 0,
-      "code": "VEHICLE_HORN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
-      "label": "VEHICLE_HORN",
-      "metric": "HARD_NEGATIVE_ASSETS",
-      "required": 20
-    },
-    {
-      "actual": 0,
-      "code": "VEHICLE_HORN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
-      "label": "VEHICLE_HORN",
-      "metric": "HARD_NEGATIVE_GROUPS",
-      "required": 10
-    },
-    {
-      "actual": 0,
-      "code": "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-      "label": "VEHICLE_HORN",
-      "metric": "HARD_NEGATIVE_SOURCES",
-      "required": 2
-    },
-    {
       "actual": 0,
       "code": "TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN",
       "label": "TIRE_SQUEAL",
@@ -387,7 +360,6 @@
     "BACKGROUND_SOURCES_BELOW_MIN",
     "FIRE_ALARM_ASSETS_BELOW_MIN",
     "FIRE_ALARM_GROUPS_BELOW_MIN",
-    "FIRE_ALARM_HARD_NEGATIVE_SOURCES_BELOW_MIN",
     "FIRE_ALARM_TEST_ASSETS_BELOW_MIN",
     "FIRE_ALARM_TEST_GROUPS_BELOW_MIN",
     "FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN",
@@ -395,7 +367,6 @@
     "FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN",
     "FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN",
     "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
-    "SIREN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
     "TIRE_SQUEAL_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_GROUPS_BELOW_MIN",
     "TIRE_SQUEAL_HARD_NEGATIVE_ASSETS_BELOW_MIN",
@@ -406,10 +377,7 @@
     "TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
-    "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN",
-    "VEHICLE_HORN_HARD_NEGATIVE_ASSETS_BELOW_MIN",
-    "VEHICLE_HORN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
-    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN"
+    "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
   "ledger_sha256": "a98cf1fc0db20dd886d9259b8d0c8bdfa34746ea4d1a6f7efa0394311409aef4",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
