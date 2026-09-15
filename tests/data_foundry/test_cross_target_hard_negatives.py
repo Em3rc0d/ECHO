@@ -35,8 +35,8 @@ class CrossTargetHardNegativeTests(unittest.TestCase):
 
     def test_siren_positive_is_preserved_while_confuser_roles_are_added(self) -> None:
         row = self.base_row("SIREN")
-        attached = apply_cross_target_hard_negatives(row, load_cross_target_confusers())
-        self.assertEqual(attached, 2)
+        attached, skipped = apply_cross_target_hard_negatives(row, load_cross_target_confusers())
+        self.assertEqual((attached, skipped), (2, 0))
         self.assertEqual(row["echo_labels"], ["SIREN"])
         self.assertEqual(row["hard_negative_for"], ["FIRE_ALARM", "VEHICLE_HORN"])
         self.assertEqual(row["semantic_status_by_target"]["FIRE_ALARM"], CROSS_TARGET_SEMANTIC_STATUS)
@@ -44,23 +44,36 @@ class CrossTargetHardNegativeTests(unittest.TestCase):
 
     def test_vehicle_horn_positive_is_preserved_as_siren_confuser(self) -> None:
         row = self.base_row("VEHICLE_HORN")
-        attached = apply_cross_target_hard_negatives(row, load_cross_target_confusers())
-        self.assertEqual(attached, 1)
+        attached, skipped = apply_cross_target_hard_negatives(row, load_cross_target_confusers())
+        self.assertEqual((attached, skipped), (1, 0))
         self.assertEqual(row["echo_labels"], ["VEHICLE_HORN"])
         self.assertEqual(row["hard_negative_for"], ["SIREN"])
+
+    def test_existing_conflict_blocks_only_that_destination(self) -> None:
+        row = self.base_row("SIREN")
+        row["semantic_status_by_target"]["FIRE_ALARM"] = "CONFLICT:EXACT_CATEGORY_REVIEW_REQUIRED|REVIEW_REQUIRED"
+        attached, skipped = apply_cross_target_hard_negatives(row, load_cross_target_confusers())
+        self.assertEqual((attached, skipped), (1, 1))
+        self.assertEqual(row["echo_labels"], ["SIREN"])
+        self.assertEqual(row["hard_negative_for"], ["VEHICLE_HORN"])
+        self.assertEqual(
+            row["semantic_status_by_target"]["FIRE_ALARM"],
+            "CONFLICT:EXACT_CATEGORY_REVIEW_REQUIRED|REVIEW_REQUIRED",
+        )
+        self.assertEqual(row["semantic_status_by_target"]["VEHICLE_HORN"], CROSS_TARGET_SEMANTIC_STATUS)
 
     def test_non_release_safe_row_gets_no_cross_target_credit(self) -> None:
         row = self.base_row("SIREN")
         row["rights_status"] = "REVIEW_REQUIRED"
         original = copy.deepcopy(row)
-        self.assertEqual(apply_cross_target_hard_negatives(row, load_cross_target_confusers()), 0)
+        self.assertEqual(apply_cross_target_hard_negatives(row, load_cross_target_confusers()), (0, 0))
         self.assertEqual(row, original)
 
     def test_missing_fingerprint_gets_no_cross_target_credit(self) -> None:
         row = self.base_row("SIREN")
         row["canonical_fingerprint"] = None
         original = copy.deepcopy(row)
-        self.assertEqual(apply_cross_target_hard_negatives(row, load_cross_target_confusers()), 0)
+        self.assertEqual(apply_cross_target_hard_negatives(row, load_cross_target_confusers()), (0, 0))
         self.assertEqual(row, original)
 
     def test_same_target_mapping_fails_closed(self) -> None:
