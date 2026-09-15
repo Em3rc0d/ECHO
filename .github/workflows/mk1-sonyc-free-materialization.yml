@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/data_foundry/materialize_sonyc_shard.py'
       - 'scripts/data_foundry/merge_sonyc_reports.py'
+      - 'scripts/data_foundry/validate_sonyc_fingerprint_contract.py'
       - 'src/echo/data_foundry/canonical_fingerprints.py'
       - 'configs/data_foundry/acquisition_registry.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
@@ -110,36 +111,11 @@ jobs:
             --input-root '${{ runner.temp }}/sonyc-shard-evidence' \
             --output-dir MK1/mining-site/materialization
       - name: Enforce SONYC v2 fingerprint closure
+        env:
+          PYTHONPATH: src
         run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          root = Path('MK1/mining-site/materialization')
-          summary = json.loads((root / 'sonyc-v2.3-full-materialization-summary.json').read_text())
-          schema = summary.get('schema_version') or summary.get('schema')
-          expected_schema = 'echo.sonyc-full-materialization-summary.v2'
-          if schema != expected_schema:
-              raise SystemExit(f'expected {expected_schema}, got {schema!r}')
-
-          checked = 0
-          missing = []
-          for filename in ('sonyc-v2.3-target-candidates.jsonl', 'sonyc-v2.3-confuser-candidates.jsonl'):
-              path = root / filename
-              with path.open(encoding='utf-8') as handle:
-                  for line_number, line in enumerate(handle, 1):
-                      line = line.strip()
-                      if not line:
-                          continue
-                      row = json.loads(line)
-                      checked += 1
-                      fingerprint = row.get('canonical_fingerprint')
-                      if not isinstance(fingerprint, dict) or not fingerprint.get('digest'):
-                          missing.append(f'{filename}:{line_number}')
-          print('SONYC candidate rows checked=', checked)
-          if missing:
-              raise SystemExit(f'missing canonical fingerprint evidence in {len(missing)} rows; examples={missing[:10]}')
-          PY
+          python scripts/data_foundry/validate_sonyc_fingerprint_contract.py \
+            --materialization-dir MK1/mining-site/materialization
       - name: Commit durable evidence only
         run: |
           git config user.name 'echo-data-foundry-bot'
