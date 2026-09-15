@@ -1,0 +1,81 @@
+{
+  "schema_version": "echo.opengameart-glass-expansion.v1",
+  "checked_at": "2026-09-15",
+  "target": "GLASS_SHATTER",
+  "phase": "EVIDENCE_DISCOVERY_ONLY",
+  "policy": "Canonical OpenGameArt pages are the rights/provenance authority. Direct files and archives are byte transport only. Discovery evidence grants zero corpus, split, coverage or source-diversity credit until a separate reviewed admission change is merged.",
+  "sources": [
+    {
+      "source_id": "echo-opengameart-till-behrend-glass-v1",
+      "canonical_source_page": "https://opengameart.org/content/glass-break",
+      "creator": "Till Behrend",
+      "submitted_by": "TinyWorlds",
+      "declared_license": "CC0",
+      "underlying_source_family_candidate": "OPENGAMEART_TILL_BEHREND",
+      "kind": "direct_audio",
+      "media_url": "https://opengameart.org/sites/default/files/glass_breaking.wav",
+      "expected_filename": "glass_breaking.wav",
+      "semantic_candidate": "glass_shatter",
+      "recording_family_candidate": "till-behrend:glass-breaking",
+      "page_markers": [
+        "Glass Break",
+        "CC0",
+        "Till Behrend",
+        "uploaded with permission by the author",
+        "glass_breaking.wav"
+      ]
+    },
+    {
+      "source_id": "echo-opengameart-rubberduck-100cc0-v1",
+      "canonical_source_page": "https://opengameart.org/content/100-cc0-sfx",
+      "creator": "rubberduck",
+      "declared_license": "CC0",
+      "underlying_source_family_candidate": "OPENGAMEART_RUBBERDUCK",
+      "kind": "zip_glass_discovery",
+      "archive_url": "https://opengameart.org/sites/default/files/100-CC0-SFX_0.zip",
+      "minimum_glass_named_audio_entries": 5,
+      "page_markers": [
+        "100 CC0 SFX",
+        "CC0",
+        "rubberduck",
+        "recorded with an android device",
+        "5x glass",
+        "100-CC0-SFX.zip"
+      ],
+      "governance": {
+        "glass_named_files_are_review_candidates_only": true,
+        "filename_glass_alone_does_not_prove_break_or_shatter": true,
+        "recording_group_credit_forbidden_in_discovery": true
+      }
+    },
+    {
+      "source_id": "echo-opengameart-rubberduck-100cc0-v2",
+      "canonical_source_page": "https://opengameart.org/content/100-cc0-sfx-2",
+      "creator": "rubberduck",
+      "declared_license": "CC0",
+      "underlying_source_family_candidate": "OPENGAMEART_RUBBERDUCK",
+      "kind": "zip_glass_discovery",
+      "archive_url": "https://opengameart.org/sites/default/files/sfx_100_v2.zip",
+      "minimum_glass_named_audio_entries": 1,
+      "page_markers": [
+        "100 CC0 SFX #2",
+        "CC0",
+        "rubberduck",
+        "glass",
+        "sfx_100_v2.zip"
+      ],
+      "governance": {
+        "glass_named_files_are_review_candidates_only": true,
+        "filename_glass_alone_does_not_prove_break_or_shatter": true,
+        "recording_group_credit_forbidden_in_discovery": true
+      }
+    }
+  ],
+  "global_stop_lines": [
+    "OpenGameArt hosting does not merge independent creators into one source family.",
+    "The two rubberduck packs share OPENGAMEART_RUBBERDUCK and can never inflate source-family diversity.",
+    "Till Behrend remains a separate candidate family only because the canonical page identifies a distinct author and explicit uploader permission.",
+    "No archive member becomes GLASS_SHATTER positive from a generic glass filename alone.",
+    "All admitted bytes must later pass global dedup, global recording-group resolution, protected split quarantine and coverage."
+  ]
+}
