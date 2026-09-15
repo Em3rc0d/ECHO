@@ -3,7 +3,7 @@
 **Fecha de corte:** 2026-09-15  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
 **Global execution invariant:** `ECHO-FREE-TIER-001`  
-**Audited readiness:** `d94eff2958bbe57076610524cbb192d14ec95739`
+**Audited readiness:** `ecf76528d5cd722757782cc54311c3f02038b2b9`
 
 ## 1. Promise
 
@@ -11,12 +11,18 @@
 
 La promesa permanece inmutable. Cámaras, RTSP/ONVIF, MQTT, dashboards, persistencia y alertas son soporte; no redefinen el core acústico.
 
-## 2. Estamos en el camino crítico correcto
-
-El primer vertical de MK1 sigue congelado en este orden:
+## 2. Camino crítico MK1
 
 ```text
 Data Foundry / corpus release-safe
+  ↓
+coverage PASS / gap_codes=[]
+  ↓
+freeze #1
+  ↓
+freeze #2 clean
+  ↓
+reproducibility
   ↓
 CERT-MK1-DF-CORPUS-001
   ↓
@@ -30,10 +36,10 @@ Edge Agent
   ↓
 MQTT + replay E2E
   ↓
-cámara real
+real camera
 ```
 
-No se debe adelantar UI, cámara, thresholds o integraciones secundarias por encima del cierre del corpus/modelo. La infraestructura solo es prioritaria cuando desbloquea directamente este vertical.
+No se adelanta modelado, thresholds, replay o cámara antes del certificado de corpus.
 
 ## 3. Current MK state
 
@@ -49,7 +55,7 @@ MK1 build = IN_PROGRESS
   global dedup               = PASS
   recording-family audit     = PASS
   split integrity            = PASS
-  coverage                   = FAIL
+  coverage                   = FAIL / 17 detailed gaps
   freeze #1                  = FAIL / gated by coverage
   freeze #2                  = FAIL / gated by freeze #1
   reproducibility            = FAIL / gated by frozen corpus
@@ -58,93 +64,161 @@ MK1 build = IN_PROGRESS
 MK2 = GATED_BY_MK1
 ```
 
-All required execution remains 0 USD. Paid fallbacks, label coercion, source-family inflation and lowered quality floors are forbidden.
+All required execution remains 0 USD. Paid fallbacks, label coercion, source-family inflation, split leakage and lowered quality floors are forbidden.
 
 ## 4. Certificate lineage
 
 ```text
-CERT-MK1-DF-SPEC-001          = CERTIFIED
+CERT-MK1-DF-SPEC-001           = CERTIFIED
 CERT-MK1-DF-TOOLCHAIN-001..003 = historical
-CERT-MK1-DF-TOOLCHAIN-004     = INVALIDATED / historical
-CERT-MK1-DF-TOOLCHAIN-005     = CANDIDATE
-CERT-MK1-DF-SONYC-001         = CERTIFIED / scoped
-CERT-MK1-DF-CORPUS-001        = OPEN
+CERT-MK1-DF-TOOLCHAIN-004      = INVALIDATED / historical
+CERT-MK1-DF-TOOLCHAIN-005      = CANDIDATE
+CERT-MK1-DF-SONYC-001          = CERTIFIED / scoped
+CERT-MK1-DF-CORPUS-001         = OPEN
 
 CERT-DOC-001..008              = historical / invalidated
 CERT-DOC-009                   = CERTIFIED / current
 ```
 
-`TOOLCHAIN-005` remains candidate while active corpus-closure work can still change Foundry semantics. `SONYC-001` remains independently valid because its scoped materialization/fingerprint contract has not changed.
+`TOOLCHAIN-005` remains candidate while active corpus-closure work can still change Foundry semantics. `SONYC-001` remains independently valid within its scope.
 
-## 5. Current durable corpus-facing truth
+## 5. Durable corpus-facing truth
 
-Implementation baseline after PR #15:
+Latest public-gap evidence baseline:
 
 ```text
-4b261bd10d6578a6256fca8ec848ea1055c24b32
+48e938034b98cf4d02588879b28ddec00c4666dd
+```
+
+Canonical-ledger evidence commit:
+
+```text
+8ff9c53aa6ce0b286f9414f56d7590bdf2f9609a
+```
+
+Closure evidence commit:
+
+```text
+b572d5ec1f3015dea1f010c7fd10cf30d653dc09
 ```
 
 Current durable readiness commit:
 
 ```text
-d94eff2958bbe57076610524cbb192d14ec95739
+ecf76528d5cd722757782cc54311c3f02038b2b9
 ```
 
 Canonical ledger:
 
 ```text
-entry_count                         1078
-canonical fingerprints              1078 / 1078
-missing fingerprints                   0
-ledger blockers                        0
-fallback assets after grouping          0
-global acoustic components             17
-assets protected by components          97
-content merge/delete                 false
+entry_count                           1158
+canonical fingerprints                1158 / 1158
+missing fingerprints                     0
+ledger blockers                          0
+BigSoundBank rows                        53
+fallback assets after grouping            0
+global acoustic components               14
+members reassigned to components         125
+content merge/delete                   false
+ledger_sha256  cb152b83ca2a205d81c52e55ed326f7688d0febfb6330c33581b8f2ed3a20a08
 ```
 
-Current closure nodes:
+Structural closure:
 
 ```text
 global-dedup-audit.json       PASS / gap_codes=[]
 recording-family-audit.json   PASS / gap_codes=[]
 split-integrity.json          PASS / gap_codes=[]
-coverage-gate.json            FAIL
+coverage-gate.json            FAIL / 17 gaps
 corpus-freeze-1.validation    FAIL
 corpus-freeze-2.validation    FAIL
 corpus-reproducibility        FAIL
 ```
 
-The former rights/semantic row blockers were quarantined from corpus admission while their source evidence remains durable. No disputed label or non-release-safe license was promoted.
-
 ## 6. Split integrity
 
-The three global acoustic components with incompatible protected upstream splits are quarantined as complete groups, not split or manually remapped:
+Empirical global acoustic grouping currently exposes two complete components with incompatible protected upstream splits:
 
 ```text
-original split conflicts detected     3
-complete groups quarantined            3
-assets quarantined                    62
-split-integrity status              PASS
+original split conflicts detected       2
+complete groups quarantined             2
+assets quarantined                     93
+eligible development assets          1065
+split-integrity status                PASS
 ```
 
-This is the intended fail-closed behavior: leakage protection is preserved, while quarantined evidence cannot satisfy development coverage or frozen-corpus membership.
+One quarantined component contains 91 assets spanning BigSoundBank GLASS variants, Freesound rows and OpenGameArt rubberduck evidence. This relationship is retained rather than hidden to improve coverage. No member is manually remapped.
 
-## 7. Current target precheck
+## 7. Current final coverage truth
 
 ```text
-FIRE_ALARM      positives 9 / 50     positive sources 2 / 2    HN 34 / 20    HN sources 1 / 2
-GLASS_SHATTER   positives 304 / 50   positive sources 2 / 2    HN 401 / 20   HN sources 1 / 2
-SIREN           positives 173 / 50   positive sources 3 / 2    HN 32 / 20    HN sources 1 / 2
-TIRE_SQUEAL     positives 11 / 50    positive sources 2 / 2    HN 0 / 20     HN sources 0 / 2
-VEHICLE_HORN    positives 245 / 50   positive sources 3 / 2    HN 0 / 20     HN sources 0 / 2
+BACKGROUND
+  assets 416 / groups 383 / sources 4     PASS
+
+FIRE_ALARM
+  assets 9 / groups 6 / duration 190.18 s
+  positive sources 2
+  train 7 assets / 4 groups
+  validation 2 / 2
+  test 0 / 0
+  HN 206 assets / 206 groups / 4 sources  PASS
+
+GLASS_SHATTER
+  final assets 238 / groups 221
+  BIGSOUNDBANK 6
+  FREESOUND 226
+  OPENGAMEART_RUBBERDUCK 6
+  max single-source fraction 0.94958       FAIL <= 0.80 required
+  HN 428 assets / 408 groups / 2 sources   PASS
+
+SIREN
+  assets 173 / groups 173
+  HN 245 assets / 244 groups / 4 sources   PASS
+
+TIRE_SQUEAL
+  assets 11 / groups 11 / duration 280.54 s
+  positive sources 2
+  train 9 / 9
+  validation 0 / 0
+  test 2 / 2
+  HN 25 assets / 12 groups / 2 sources     PASS
+
+VEHICLE_HORN
+  assets 245 / groups 244
+  HN 146 assets / 146 groups / 3 sources   PASS
 ```
 
-This precheck is not the full coverage gate. Final coverage also enforces recording groups, duration, train/validation/test floors, concentration, quality, rights and duplicate controls.
+Asset quality remains clean: 0 unknown licenses, 0 missing label provenance, 0 invalid probes, 0 non-positive durations, 0 exact duplicate groups and 0 near-duplicate groups in final coverage.
 
-## 8. Machine-readable readiness
+## 8. Detailed coverage gaps
 
-Authoritative artifact at `d94eff2958bbe57076610524cbb192d14ec95739`:
+Exactly 17 remain:
+
+```text
+FIRE_ALARM_ASSETS_BELOW_MIN
+FIRE_ALARM_GROUPS_BELOW_MIN
+FIRE_ALARM_TEST_ASSETS_BELOW_MIN
+FIRE_ALARM_TEST_GROUPS_BELOW_MIN
+FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN
+FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN
+FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN
+FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN
+GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH
+TIRE_SQUEAL_ASSETS_BELOW_MIN
+TIRE_SQUEAL_GROUPS_BELOW_MIN
+TIRE_SQUEAL_TEST_ASSETS_BELOW_MIN
+TIRE_SQUEAL_TEST_GROUPS_BELOW_MIN
+TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN
+TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN
+TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN
+TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN
+```
+
+All former background and target-specific hard-negative gaps remain closed.
+
+## 9. Machine-readable readiness
+
+Authoritative artifact at `ecf76528d5cd722757782cc54311c3f02038b2b9`:
 
 ```text
 readiness_id = EMP-MK1-CORPUS-READINESS-001
@@ -153,10 +227,10 @@ eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
-evidence_identity_sha256 = 90f2dd006cfbacfe9dc1bdc5cb81c7d9411ccf5322d6ca2dd53f334e76c209e8
+evidence_identity_sha256 = 9e7325ad5790a6a1448a2a8cbceb0f314ef1cbf7164c9079e65313a405bf2ce8
 ```
 
-Exact readiness gap codes:
+Exact readiness gaps:
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -164,34 +238,27 @@ COVERAGE_GATE_GAP_CODES_NOT_EMPTY
 COVERAGE_GATE_NOT_PASS
 COVERAGE_GATE_STATUS_NOT_PASS
 FIRE_ALARM_ASSETS_9_LT_50
-FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2
 FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
-GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
 REPRODUCIBILITY_NOT_PASS
-SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
 TIRE_SQUEAL_ASSETS_11_LT_50
-TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
-VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
-VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
 
-## 9. Frozen solidity law
+## 10. Frozen solidity law
 
 `MK1-CORPUS-SOLIDITY-001` is unchanged. Per target: >=50 assets, >=25 groups, >=2 independent underlying sources, >=180 s, largest-source fraction <=0.80; train >=20 assets/10 groups, validation >=5/3, test >=5/3. Per-target hard negatives require >=20 assets/10 groups/2 sources. Global negatives require >=200 assets/50 groups/3 sources.
 
-## 10. Active closure sequence
+## 11. Active closure sequence
 
 ```text
-corpus-role boundary         PASS
-global acoustic grouping    PASS
-global dedup                PASS
-recording-family audit      PASS
-split integrity             PASS
-ledger admission blockers   CLOSED
+structural gates              PASS
+hard-negative floors          PASS
+background                    PASS
+ledger blockers               CLOSED
   ↓
-acquire genuine release-safe coverage + HN source diversity
+GLASS: add genuine non-Freesound positives without hiding quarantine
+FIRE_ALARM: add real exact positives/groups and split coverage
+TIRE_SQUEAL: add real exact positives/groups and split coverage
   ↓
 coverage PASS / gap_codes=[]
   ↓
@@ -210,9 +277,7 @@ modeling_allowed = true
 Benchmark A/B/C
 ```
 
-Highest-value acquisition deficits are FIRE_ALARM positive coverage, TIRE_SQUEAL positive/HN coverage, a second independent HN source family for FIRE_ALARM/GLASS_SHATTER/SIREN, and real HN corpora for TIRE_SQUEAL/VEHICLE_HORN. Final acquisition quantities must include headroom for dedup/group/split/quality losses rather than target the floors exactly.
-
-## 11. Release law
+## 12. Release law
 
 ```text
 NO CERT-MK1-DF-CORPUS-001
@@ -225,7 +290,7 @@ NO replay progression
 NO real camera progression
 ```
 
-## 12. Documentation state
+## 13. Documentation state
 
 ```text
 governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-009.md
@@ -233,6 +298,6 @@ CERT-DOC-009 = CERTIFIED / current
 Markdown corpus = 213 files
 ```
 
-## 13. Invalidation
+## 14. Invalidation
 
 Changes to promise, taxonomy, source/audio/event contracts, acquisition/mapping/rights/probe/fingerprint/dedup/group/split/coverage/freeze semantics, machine-readable closure evidence, SONYC persistence, model-entry wiring, `ECHO-FREE-TIER-001`, certificate state or audited documentation require dependency review and selective recertification.
