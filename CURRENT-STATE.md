@@ -9,19 +9,13 @@
 
 > **Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.**
 
-La promesa continúa inmutable. Cámaras, RTSP/ONVIF, MQTT, dashboards, persistencia y alertas son infraestructura de soporte; no redefinen el core acústico.
+La promesa continúa inmutable. Cámaras, RTSP/ONVIF, MQTT, dashboards, persistencia y alertas son soporte; no redefinen el core acústico.
 
 ## 2. Development law
 
-ECHO mantiene el orden:
+ECHO mantiene `brainstorming -> design -> arch -> plan -> build -> test`, acompañado por `mining-site/` y `quarries/`. Ninguna etapa downstream compensa evidencia upstream faltante. Todos los MK heredan `ECHO-FREE-TIER-001`: ruta requerida de 0 USD, sin paid runners/GPU/storage/API/datasets y sin rebajar gates para conseguir PASS.
 
-```text
-brainstorming -> design -> arch -> plan -> build -> test
-```
-
-con `mining-site/` y `quarries/` para investigación/evidencia. Cada transición importante exige documentación actual, implementación/evidencia cuando corresponde, test y certificado dependiente. Todos los MK heredan `ECHO-FREE-TIER-001`: ruta requerida de 0 USD, sin overages, runners/GPU/storage/API/datasets pagados y sin rebajar gates para conseguir un PASS.
-
-## 3. Milestones
+## 3. Current MK state
 
 ```text
 MK0 = CERTIFIED
@@ -31,12 +25,12 @@ MK1
   build = IN_PROGRESS
     Data Foundry spec             = CERTIFIED
     Data Foundry toolchain        = CERTIFIED_CURRENT_BASELINE
+    SONYC v2.3 materialization    = CERTIFIED
     canonical corpus ledger       = MATERIALIZED / OPEN_GATES
     corpus closure readiness      = BLOCKED_FAIL_CLOSED
     model benchmark               = LOCKED_BY_CORPUS_CERT
     replay                        = LOCKED_BY_CORPUS_CERT
     real camera                   = EXTERNAL_GATE + LOCKED_BY_CORPUS_CERT
-  test = FOUNDRY_GATES_ACTIVE / FULL_MK1_PENDING
   milestone = NOT_CERTIFIED
 
 MK2 = GATED_BY_MK1
@@ -47,94 +41,145 @@ MK2 = GATED_BY_MK1
 ```text
 CERT-MK1-DF-SPEC-001       = CERTIFIED
 CERT-MK1-DF-TOOLCHAIN-001  = historical
-CERT-MK1-DF-TOOLCHAIN-002  = historical / superseded
-CERT-MK1-DF-TOOLCHAIN-003  = CERTIFIED / current
+CERT-MK1-DF-TOOLCHAIN-002  = historical
+CERT-MK1-DF-TOOLCHAIN-003  = INVALIDATED / historical
+CERT-MK1-DF-TOOLCHAIN-004  = CERTIFIED / current
+CERT-MK1-DF-SONYC-001      = CERTIFIED / current scoped materialization
 CERT-MK1-DF-CORPUS-001     = OPEN
 
-CERT-DOC-001..004           = historical / superseded for current HEAD
-CERT-DOC-005                = CERTIFIED / current
+CERT-DOC-001..005           = historical / invalidated for current HEAD
+CERT-DOC-006                = CERTIFIED / current
 ```
 
-`CERT-MK1-DF-TOOLCHAIN-003` binds the readiness/guard implementation baseline `dc225803b5c066b365779fdc2b4b2f0984bb7e19` to Data Foundry CI run `34904125873`, which passed Python 3.10, 3.11 and 3.12. The same baseline passed `ECHO-FREE-TIER-001` in run `34904125820` and deterministic Corpus Closure Readiness generation in run `34904125899`.
+`CERT-MK1-DF-TOOLCHAIN-004` binds implementation baseline `ab8c47ba6aabb25390644954a2a06945ca7a81bb` to Data Foundry CI `34922010529` (Python 3.10/3.11/3.12 PASS), Free-Tier `34922010518`, and real SONYC run `34922010537`.
 
-The durable readiness evidence was committed as `aac662b770669bf633dd58a582514abcb39c30a1`.
+## 5. SONYC v2.3 certified materialization
 
-## 5. Canonical corpus ledger
-
-Current compact canonical evidence:
+`CERT-MK1-DF-SONYC-001` certifies the scoped SONYC materialization path:
 
 ```text
-canonical ledger entries = 1048
-fingerprints present      = 449
-fingerprints missing      = 599
-exact SHA-256 duplicate groups = 0
+real SONYC run             34922010537
+verified shards            19 / 19 PASS
+merge                      PASS
+fingerprint contract       PASS
+probe failures             0
+fingerprint failures       0
+durable evidence commit    78fc019839f1c9dad1a58a70d439605d887361d7
 ```
 
-Positive counts **before final global dedup/group/split certification**:
+Fresh materialization summary:
 
 ```text
-GLASS_SHATTER  286
-SIREN          170
+release assets                    18510
+release duration seconds          185100.0
+target candidate rows             236
+confuser candidate rows           428
+fingerprinted ledger assets       599
+```
+
+This certificate is intentionally narrower than corpus certification. It does not claim final corpus admission, global duplicate/group/split closure, coverage, freeze/reproducibility or model authorization.
+
+## 6. Canonical ledger after SONYC integration
+
+Evidence propagated through:
+
+```text
+SONYC durable evidence  78fc019839f1c9dad1a58a70d439605d887361d7
+canonical ledger        c93ddb97902b3650921426aaf841473245c7908d
+closure audits          311cc2001931d4cceedb90ab5d21f06e15fdf881
+closure readiness       de1d31b280e9fad4a3764537aa75d7d72802adb7
+```
+
+Current canonical ledger facts from readiness:
+
+```text
+ledger entries        1164
+fingerprints present  1164
+fingerprints missing     0
+```
+
+Current positive assets before final corpus certification:
+
+```text
 FIRE_ALARM       5
-VEHICLE_HORN   235
+GLASS_SHATTER  286
+SIREN          242
 TIRE_SQUEAL      5
+VEHICLE_HORN   326
 ```
 
-Underlying positive source-family counts:
+Current hard-negative assets / source families:
 
 ```text
-GLASS_SHATTER 2
-SIREN         3
-FIRE_ALARM    2
-VEHICLE_HORN  3
-TIRE_SQUEAL   1
+FIRE_ALARM      34 / 1
+GLASS_SHATTER  401 / 1
+SIREN          365 / 4
+TIRE_SQUEAL      0 / 0
+VEHICLE_HORN    33 / 1
 ```
 
-Hard-negative counts currently represented by the canonical ledger:
+Canonical fingerprint coverage is now complete; the historical fingerprint-coverage gap is closed.
 
-```text
-GLASS_SHATTER 401  / source families 1
-SIREN          32  / source families 1
-FIRE_ALARM     34  / source families 1
-VEHICLE_HORN    0  / source families 0
-TIRE_SQUEAL     0  / source families 0
-```
-
-These are pre-final-audit quantities; they do not imply a certified corpus.
-
-## 6. Machine-readable closure readiness
+## 7. Machine-readable corpus readiness
 
 Authoritative artifact:
 
+`MK1/mining-site/materialization/corpus-closure-readiness.json`
+
+Current state:
+
 ```text
-MK1/mining-site/materialization/corpus-closure-readiness.json
 readiness_id = EMP-MK1-CORPUS-READINESS-001
 status = BLOCKED
+eligible_for_certificate_review = false
 modeling_allowed = false
+CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
 ```
 
-The artifact is rebuilt deterministically by `MK1 Corpus Closure Readiness`. It derives `gap_codes` from the canonical ledger, coverage policy and named closure evidence rather than relying on prose.
-
-Current important gaps include:
+Current gap codes:
 
 ```text
 FIRE_ALARM_ASSETS_5_LT_50
 TIRE_SQUEAL_ASSETS_5_LT_50
 TIRE_SQUEAL_UNDERLYING_SOURCES_1_LT_2
-VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
 FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2
 GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
-SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
-CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE
+VEHICLE_HORN_HARD_NEGATIVE_SOURCES_1_LT_2
+TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
+TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_0_LT_10
+TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
 
-and the final evidence files for global dedup, recording-family audit, split integrity, coverage gate, two freeze validations and reproducibility are not yet PASS.
+Those gaps are empirical and remain fail-closed.
 
-## 7. Release law — fail closed
+## 8. Corpus solidity floor
 
-The project now enforces, in code and CI:
+`MK1-CORPUS-SOLIDITY-001` is unchanged.
+
+Per target: assets >=50, groups >=25, underlying independent sources >=2, duration >=180 s, largest source fraction <=0.80; train >=20 assets/10 groups, validation >=5/3, test >=5/3. Global negatives require >=200 assets/50 groups/3 sources. Per-target hard negatives require >=20 assets/10 groups/2 sources.
+
+No broad-label coercion, synthetic independence, duplicate-family inflation, field-holdout leakage, metadata-wrapper double counting or floor reduction is permitted.
+
+## 9. Active corpus-closure sequence
+
+```text
+canonical ledger
+  -> close remaining semantic/source/coverage gaps
+  -> global exact + near-duplicate audit
+  -> global recording-family/source-independence audit
+  -> group-aware split
+  -> coverage/diversity PASS with gap_codes=[]
+  -> freeze #1 + validate
+  -> second clean freeze #2 + validate
+  -> semantic identity / reproducibility PASS
+  -> EMP-DATASET-001 + EMP-DATA-QUALITY-001
+  -> CERT-MK1-DF-CORPUS-001
+```
+
+Only after the named corpus certificate does the model-entry gate authorize Benchmark A/B/C.
+
+## 10. Release law — fail closed
 
 ```text
 NO CERT-MK1-DF-CORPUS-001
@@ -143,72 +188,13 @@ NO Benchmark A/B/C
 NO YAMNet/PANNs/CNN model work
 NO EMP-MODEL-001
 NO threshold calibration
-NO replay pipeline
+NO replay progression
 NO real camera progression
 ```
 
-`scripts/data_foundry/build_corpus_closure_readiness.py --require-modeling-ready` returns non-zero until the closure evidence is complete, `gap_codes=[]`, and `CERT-MK1-DF-CORPUS-001` itself is `CERTIFIED`.
+`scripts/data_foundry/build_corpus_closure_readiness.py --require-modeling-ready` remains non-zero until the corpus predicate is satisfied. `scripts/check_modeling_gate_wiring.py` rejects model/benchmark/train workflow bypasses.
 
-`.github/workflows/mk1-model-entry-gate.yml` exposes that rule as a reusable workflow. `scripts/check_modeling_gate_wiring.py` rejects future model/benchmark/train workflows that do not wire the corpus gate.
-
-## 8. Corpus solidity floor
-
-`MK1-CORPUS-SOLIDITY-001` remains unchanged.
-
-Per target:
-
-```text
-assets >= 50
-groups >= 25
-underlying independent sources >= 2
-duration >= 180 s
-largest source fraction <= 0.80
-train      >= 20 assets / 10 groups
-validation >= 5 assets / 3 groups
-test       >= 5 assets / 3 groups
-```
-
-Global negatives:
-
-```text
-assets >= 200
-groups >= 50
-sources >= 3
-```
-
-Per-target hard negatives:
-
-```text
-assets >= 20
-groups >= 10
-sources >= 2
-```
-
-No broad-label coercion, field-holdout leakage, synthetic independence, duplicate-family inflation, metadata-wrapper double counting or floor reduction is permitted.
-
-## 9. Active Corpus Foundry closure sequence
-
-Only this stage is authorized now:
-
-```text
-canonical ledger
-  -> close rights/semantics/technical evidence
-  -> complete canonical fingerprints
-  -> materialize independent hard negatives
-  -> global exact + cross-format near-duplicate audit
-  -> global recording-family/source-independence audit
-  -> group-aware split
-  -> coverage/diversity PASS with gap_codes=[]
-  -> freeze #1 + validate
-  -> freeze #2 + validate
-  -> semantic identity/reproducibility PASS
-  -> EMP-DATASET-001 + EMP-DATA-QUALITY-001
-  -> CERT-MK1-DF-CORPUS-001
-```
-
-Only after that certificate does the model-entry gate authorize Benchmark A/B/C.
-
-## 10. Frozen target semantics
+## 11. Frozen target semantics
 
 ```text
 GLASS_SHATTER
@@ -218,70 +204,49 @@ VEHICLE_HORN
 TIRE_SQUEAL
 ```
 
-`BACKGROUND_NO_TARGET` remains a training/evaluation state and `UNKNOWN` remains a decision-layer abstention. Semantic stop-lines remain strict:
+`BACKGROUND_NO_TARGET` is a training/evaluation state and `UNKNOWN` is a decision-layer abstention. Stop-lines remain strict: Alarm != FIRE_ALARM, Squeak != TIRE_SQUEAL, Car != VEHICLE_HORN, Glassware != GLASS_SHATTER.
+
+## 12. Documentation state
 
 ```text
-Alarm      != FIRE_ALARM
-Squeak     != TIRE_SQUEAL
-Car        != VEHICLE_HORN
-Glassware  != GLASS_SHATTER
+governance/DOCUMENTATION-AUDIT-2026-09-14-SONYC-RECERTIFICATION.md
+CERT-DOC-006 = CERTIFIED / current
+Markdown corpus = 210 files
 ```
 
-## 11. Documentation state
+Documentation certification proves reconstructibility/coherence, not final corpus completion.
 
-Current documentation audit:
-
-```text
-governance/DOCUMENTATION-AUDIT-2026-09-14-CORPUS-READINESS.md
-CERT-DOC-005 = CERTIFIED
-Markdown corpus = 208 files
-```
-
-The documentation certificate certifies reconstructibility/coherence, not empirical corpus completion. `CERT-DOC-005` becomes stale if the documented corpus or certification truth changes materially without re-audit.
-
-## 12. Open empirical/external nodes
+## 13. Open nodes
 
 ```text
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
 EMP-DATASET-001               = OPEN
 EMP-DATA-QUALITY-001          = OPEN
 CERT-MK1-DF-CORPUS-001       = OPEN
-EMP-MODEL-001                 = LOCKED
-EMP-THRESH-001                = LOCKED
-EMP-DIST-001                  = LOCKED / EXTERNAL FIELD EVIDENCE
+EMP-MODEL-001                 = BLOCKED
+EMP-THRESH-001                = BLOCKED
+EMP-DIST-001                  = BLOCKED / EXTERNAL FIELD EVIDENCE
 EMP-CAP-001                   = OPEN AFTER RUNTIME BUILD
 EMP-SLO-001                   = OPEN
 EXT-CAMERA-001                = EXTERNAL_GATE_OPEN / NOT AUTHORIZED YET
 ```
 
-## 13. Other frozen MK1 decisions
-
-- Logical architecture is multi-source from day one; all audio/inference/event state carries `source_id`.
-- RTSP is the primary camera transport; ONVIF is optional discovery/configuration.
-- FFmpeg is the baseline decoder/extractor; GStreamer remains an alternative for more demanding transport behavior.
-- Benchmark A/B/C remains YAMNet + ECHO head vs PANNs/Cnn14 + ECHO head vs compact log-mel CNN, but is not yet authorized.
-- Target output is multi-label.
-- Event lifecycle remains `RAW_INFERENCE -> CANDIDATE_EVENT -> CONFIRMED_EVENT -> ALERT/PUBSUB`.
-- MQTT/Mosquitto remains the initial event bus; QoS 1 requires idempotent `event_id` handling.
-- Continuous ASR/speaker identification and default continuous audio retention remain out of scope.
-
 ## 14. Next valid transition
 
 ```text
-CERT-DOC-005                  ✅
-CERT-MK1-DF-TOOLCHAIN-003     ✅
-ECHO-FREE-TIER-001             ✅
-EMP-MK1-CORPUS-READINESS-001  BLOCKED
+CERT-DOC-006                   ✅
+CERT-MK1-DF-TOOLCHAIN-004      ✅
+CERT-MK1-DF-SONYC-001          ✅
+ECHO-FREE-TIER-001              ✅
+EMP-MK1-CORPUS-READINESS-001   BLOCKED
         ↓
-close only listed corpus gaps
+close exact current corpus gaps
         ↓
-readiness eligible_for_certificate_review = true
-        ↓
-formal corpus certification review
+coverage + global audits + split + freeze×2 + reproducibility PASS
         ↓
 CERT-MK1-DF-CORPUS-001 = CERTIFIED
         ↓
-readiness modeling_allowed = true
+modeling_allowed = true
         ↓
 Benchmark A/B/C
 ```
@@ -290,4 +255,4 @@ No downstream shortcut is authorized.
 
 ## 15. Invalidation
 
-Changes to promise, taxonomy, source/audio/event contracts, Foundry source/acquisition/mapping/rights/probe/fingerprint/dedup/group/split/coverage/freeze semantics, model-entry guard, benchmark set, delivery/privacy rules, `ECHO-FREE-TIER-001`, or audited documentation require dependency review and selective recertification.
+Changes to promise, taxonomy, source/audio/event contracts, Foundry source/acquisition/mapping/rights/probe/fingerprint/dedup/group/split/coverage/freeze semantics, SONYC persistence, model-entry guard, benchmark set, delivery/privacy rules, `ECHO-FREE-TIER-001`, or audited documentation require dependency review and selective recertification.
