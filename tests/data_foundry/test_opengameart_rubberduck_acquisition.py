@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
 import unittest
 
+from scripts import materialize_opengameart_rubberduck_cc0 as materializer
 from scripts.materialize_opengameart_rubberduck_cc0 import (
     CONFIG,
     canonical_page_evidence_ok,
@@ -66,6 +68,18 @@ class OpenGameArtRubberduckAcquisitionTests(unittest.TestCase):
         mutated["assets"][0]["path"] = "bfh1_rock_breaking_01.ogg"
         with self.assertRaises(ValueError):
             validate_config(mutated)
+
+    def test_materializer_contains_no_json_literals_as_python_names(self) -> None:
+        source = Path(materializer.__file__).read_text(encoding="utf-8")
+        tree = ast.parse(source)
+        invalid = sorted(
+            {
+                node.id
+                for node in ast.walk(tree)
+                if isinstance(node, ast.Name) and node.id in {"false", "true", "null"}
+            }
+        )
+        self.assertEqual(invalid, [])
 
 
 if __name__ == "__main__":
