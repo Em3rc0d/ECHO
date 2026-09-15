@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
-import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -74,22 +73,45 @@ class OpenGameArtLedgerAugmentationTests(unittest.TestCase):
             manifest_index(mutated_manifest)
 
     def test_real_durable_ledger_copy_accepts_exactly_governed_rows(self) -> None:
-        baseline_ledger = augmentation.LEDGER
-        baseline_summary = augmentation.SUMMARY
-        baseline_count = sum(1 for line in baseline_ledger.read_text(encoding="utf-8").splitlines() if line.strip())
+        # The durable ledger now already contains the admitted OpenGameArt rows.
+        # Reconstruct the pre-admission fixture by removing exactly this source,
+        # then prove the deterministic augmentation adds it back once and only once.
+        baseline_rows = [
+            json.loads(line)
+            for line in augmentation.LEDGER.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        pre_admission_rows = [
+            row for row in baseline_rows if row.get("source_dataset") != SOURCE_ID
+        ]
+        existing_source_rows = len(baseline_rows) - len(pre_admission_rows)
+        self.assertEqual(existing_source_rows, 45)
+
+        baseline_summary = json.loads(augmentation.SUMMARY.read_text(encoding="utf-8"))
+        baseline_summary.pop("opengameart_rubberduck_cc0_augmentation", None)
+        baseline_summary["entry_count"] = len(pre_admission_rows)
 
         with tempfile.TemporaryDirectory(dir=augmentation.ROOT) as directory:
             work = Path(directory)
             ledger = work / "ledger.jsonl"
             summary = work / "summary.json"
-            shutil.copyfile(baseline_ledger, ledger)
-            shutil.copyfile(baseline_summary, summary)
+            ledger.write_text(
+                "".join(
+                    json.dumps(row, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n"
+                    for row in pre_admission_rows
+                ),
+                encoding="utf-8",
+            )
+            summary.write_text(
+                json.dumps(baseline_summary, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
 
             with patch.object(augmentation, "LEDGER", ledger), patch.object(augmentation, "SUMMARY", summary):
                 self.assertEqual(augmentation.main(), 0)
 
             rows = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines() if line.strip()]
-            self.assertEqual(len(rows), baseline_count + 45)
+            self.assertEqual(len(rows), len(pre_admission_rows) + 45)
             admitted = [row for row in rows if row["source_dataset"] == SOURCE_ID]
             self.assertEqual(len(admitted), 45)
             self.assertEqual(sum(TARGET in row.get("echo_labels", []) for row in admitted), 6)

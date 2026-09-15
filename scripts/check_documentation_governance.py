@@ -10,10 +10,10 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 PROMISE = "Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial"
 EXPECTED_MD_COUNT = 213
-EXPECTED_READINESS_COMMIT = "d94eff2958bbe57076610524cbb192d14ec95739"
-EXPECTED_EVIDENCE_IDENTITY = "90f2dd006cfbacfe9dc1bdc5cb81c7d9411ccf5322d6ca2dd53f334e76c209e8"
-EXPECTED_LEDGER_BASELINE = "4b261bd10d6578a6256fca8ec848ea1055c24b32"
-EXPECTED_LEDGER_SHA256 = "36ef8e19198a296d7806106adc2c4ee43b7827d893e78b6bbd2d1ffd83b3743a"
+EXPECTED_READINESS_COMMIT = "608ecc5efdcd399b7f29b4d522b0fb46b99e87bf"
+EXPECTED_EVIDENCE_IDENTITY = "797daf518868a86ee553e4a663a4ee444df4e055c915b3d34f41fb6f8e495e11"
+EXPECTED_LEDGER_BASELINE = "ed00ba035dc03c345caff7dc2a1697b59e3ce13b"
+EXPECTED_LEDGER_SHA256 = "79026c3c404eb93e6cfe908c5ec437919d367a53ff5588995dcd38405f20f8e3"
 EXPECTED_GAPS = {
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -23,7 +23,6 @@ EXPECTED_GAPS = {
     "FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
-    "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2",
     "REPRODUCIBILITY_NOT_PASS",
     "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
     "TIRE_SQUEAL_ASSETS_11_LT_50",
@@ -128,20 +127,20 @@ def main() -> int:
 
     # Current canonical corpus-facing ledger.
     require(ledger.get("baseline_commit") == EXPECTED_LEDGER_BASELINE, "canonical ledger baseline drift", failures)
-    require(ledger.get("entry_count") == 1078, "canonical ledger entry count drift", failures)
+    require(ledger.get("entry_count") == 1123, "canonical ledger entry count drift", failures)
     require(ledger.get("ledger_sha256") == EXPECTED_LEDGER_SHA256, "canonical ledger identity drift", failures)
-    require(ledger.get("canonical_fingerprint_count") == 1078 and ledger.get("canonical_fingerprint_missing_count") == 0, "canonical fingerprint closure drift", failures)
+    require(ledger.get("canonical_fingerprint_count") == 1123 and ledger.get("canonical_fingerprint_missing_count") == 0, "canonical fingerprint closure drift", failures)
     require((ledger.get("blocking_reason_counts") or {}) == {}, "corpus-facing ledger blockers reappeared", failures)
     grouping = ledger.get("global_recording_group_resolution") or {}
     require(grouping.get("status") == "PASS", "global recording-group resolution not PASS", failures)
     require(grouping.get("fallback_asset_count_after") == 0, "fallback grouping closure regressed", failures)
     require(grouping.get("global_acoustic_component_count") == 17, "global acoustic component count drift", failures)
-    require(grouping.get("members_reassigned_to_global_acoustic_component") == 97, "global component membership drift", failures)
+    require(grouping.get("members_reassigned_to_global_acoustic_component") == 114, "global component membership drift", failures)
     require(grouping.get("content_deleted") is False and grouping.get("content_merge_performed") is False, "grouping must not merge/delete content", failures)
 
-    expected_positive = {"FIRE_ALARM": 9, "GLASS_SHATTER": 304, "SIREN": 173, "TIRE_SQUEAL": 11, "VEHICLE_HORN": 245}
-    expected_hn = {"FIRE_ALARM": 34, "GLASS_SHATTER": 401, "SIREN": 32, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}
-    expected_hn_sources = {"FIRE_ALARM": 1, "GLASS_SHATTER": 1, "SIREN": 1, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}
+    expected_positive = {"FIRE_ALARM": 9, "GLASS_SHATTER": 310, "SIREN": 173, "TIRE_SQUEAL": 11, "VEHICLE_HORN": 245}
+    expected_hn = {"FIRE_ALARM": 34, "GLASS_SHATTER": 440, "SIREN": 32, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}
+    expected_hn_sources = {"FIRE_ALARM": 1, "GLASS_SHATTER": 2, "SIREN": 1, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}
     require(ledger.get("positive_counts") == expected_positive, "positive corpus counts drift", failures)
     require(ledger.get("hard_negative_counts") == expected_hn, "hard-negative corpus counts drift", failures)
     require(ledger.get("hard_negative_underlying_source_family_counts") == expected_hn_sources, "hard-negative source-family counts drift", failures)
@@ -152,7 +151,7 @@ def main() -> int:
     require(split.get("status") == "PASS" and split.get("gap_codes") == [], "split integrity must remain PASS", failures)
     require(split.get("original_split_conflict_count") == 3, "audited split conflict count drift", failures)
     require(split.get("original_split_conflicts_quarantined") == 3, "all protected split conflicts must stay quarantined", failures)
-    require(split.get("quarantined_asset_count") == 62, "quarantined split asset count drift", failures)
+    require(split.get("quarantined_asset_count") == 77, "quarantined split asset count drift", failures)
 
     # Final corpus/model gate stays fail-closed until coverage/freezes/repro close.
     require(ledger_state(docs["cert_ledger"], "CERT-MK1-DF-CORPUS-001", "OPEN"), "corpus certificate is not OPEN", failures)
@@ -165,7 +164,7 @@ def main() -> int:
     require(set(readiness.get("gap_codes", [])) == EXPECTED_GAPS, "readiness gap-code set drift; re-audit required", failures)
     ledger_input = readiness.get("inputs", {}).get("canonical_ledger_summary", {})
     require(ledger_input.get("baseline_commit") == EXPECTED_LEDGER_BASELINE, "readiness ledger baseline drift", failures)
-    require(ledger_input.get("entry_count") == 1078, "readiness ledger count drift", failures)
+    require(ledger_input.get("entry_count") == 1123, "readiness ledger count drift", failures)
     require(ledger_input.get("ledger_sha256") == EXPECTED_LEDGER_SHA256, "readiness ledger identity drift", failures)
     require((readiness.get("ledger_blocking_reason_counts") or {}) == {}, "readiness reports ledger blockers", failures)
 
@@ -211,11 +210,11 @@ def main() -> int:
     print("documentation certificate: CERT-DOC-009")
     print("toolchain: CERT-MK1-DF-TOOLCHAIN-005 CANDIDATE")
     print("SONYC: CERT-MK1-DF-SONYC-001 CERTIFIED")
-    print("canonical fingerprints: 1078/1078")
+    print("canonical fingerprints: 1123/1123")
     print("ledger blockers: 0")
     print("global dedup: PASS")
     print("recording-family audit: PASS")
-    print("split integrity: PASS / 3 groups quarantined / 62 assets")
+    print("split integrity: PASS / 3 groups quarantined / 77 assets")
     print("readiness gaps:", len(EXPECTED_GAPS))
     print("corpus certificate: OPEN")
     print("modeling_allowed: false")

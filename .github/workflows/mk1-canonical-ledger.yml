@@ -28,6 +28,7 @@ on:
       - 'configs/data_foundry/underlying_source_families.v1.json'
       - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'configs/data_foundry/opengameart_rubberduck_cc0.v1.json'
+      - 'configs/data_foundry/hard_negative_mapping.v1.json'
       - 'configs/data_foundry/near_duplicate_policy.v1.json'
       - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
       - 'src/echo/data_foundry/ledger.py'
@@ -69,6 +70,7 @@ jobs:
           python -m json.tool configs/data_foundry/underlying_source_families.v1.json >/dev/null
           python -m json.tool configs/data_foundry/freesound_cc0_supplemental.v1.json >/dev/null
           python -m json.tool configs/data_foundry/opengameart_rubberduck_cc0.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/hard_negative_mapping.v1.json >/dev/null
           python -m json.tool configs/data_foundry/near_duplicate_policy.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
       - name: Build and resolve canonical release-safe corpus ledger

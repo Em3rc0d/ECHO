@@ -61,11 +61,23 @@
       "exclude_if_labels_include": []
     }
   },
+  "cross_target_exact_positive_confusers": {
+    "SIREN": [
+      "FIRE_ALARM",
+      "VEHICLE_HORN"
+    ],
+    "VEHICLE_HORN": [
+      "SIREN"
+    ]
+  },
+  "cross_target_semantics": "An exact release-safe positive may also be an explicit hard negative for a different ECHO target when the two events are acoustically plausible confusers. The original positive label is preserved; same-target hard-negative roles are forbidden; rights, probe, fingerprint, grouping, global dedup and split quarantine remain mandatory before coverage credit.",
   "governance": {
     "generic_alarm_is_not_fire_alarm_positive": true,
     "squeak_is_not_tire_squeal_positive": true,
     "car_engine_or_passing_is_not_vehicle_horn_positive": true,
     "glassware_or_crack_is_not_glass_shatter_positive": true,
+    "cross_target_roles_never_promote_or_remove_positive_labels": true,
+    "cross_target_same_target_role_forbidden": true,
     "hard_negative_credit_requires_real_bytes_release_safe_rights_probe_group_and_dedup": true
   }
 }
