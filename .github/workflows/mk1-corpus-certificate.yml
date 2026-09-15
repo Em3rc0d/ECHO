@@ -1,0 +1,116 @@
+name: MK1 Corpus Certificate
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ['MK1 Corpus Closure Readiness']
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - 'MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-004.md'
+      - 'governance/DOCUMENTATION-AUDIT-2026-09-14-CORPUS-CERTIFICATION.md'
+      - '.github/workflows/mk1-corpus-certificate.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mk1-corpus-certificate-main
+  cancel-in-progress: false
+
+jobs:
+  certify:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce ECHO-FREE-TIER-001
+        run: python scripts/check_free_tier_boundary.py
+      - name: Validate certificate schema JSON
+        run: python -m json.tool schemas/data_foundry/corpus-certificate.schema.json >/dev/null
+      - name: Build fresh pre-certificate readiness
+        env:
+          PYTHONPATH: src
+        run: >-
+          python scripts/data_foundry/build_corpus_closure_readiness.py
+          --ignore-corpus-certificate
+          --output /tmp/corpus-readiness.pre-cert.json
+      - name: Determine certificate eligibility
+        id: eligibility
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          p = json.loads(Path('/tmp/corpus-readiness.pre-cert.json').read_text())
+          eligible = (
+              p.get('eligible_for_certificate_review') is True
+              and p.get('modeling_allowed') is False
+              and p.get('status') == 'BLOCKED'
+              and p.get('gap_codes') == ['CORPUS_CERTIFICATE_NOT_CERTIFIED']
+          )
+          print(f"eligible={'true' if eligible else 'false'}")
+          PY
+      - name: Determine governance ancestor availability
+        id: governance
+        run: |
+          if [ -f MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-004.md ] && \
+             [ -f governance/DOCUMENTATION-AUDIT-2026-09-14-CORPUS-CERTIFICATION.md ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Explain blocked certificate
+        if: steps.eligibility.outputs.eligible != 'true' || steps.governance.outputs.ready != 'true'
+        run: |
+          echo "CERT-MK1-DF-CORPUS-001 remains BLOCKED"
+          echo "eligible_for_certificate_review=${{ steps.eligibility.outputs.eligible }}"
+          echo "governance_ancestors_ready=${{ steps.governance.outputs.ready }}"
+      - name: Emit durable corpus certificate
+        if: steps.eligibility.outputs.eligible == 'true' && steps.governance.outputs.ready == 'true'
+        env:
+          PYTHONPATH: src
+        run: >-
+          python scripts/data_foundry/emit_corpus_certificate.py
+          --readiness /tmp/corpus-readiness.pre-cert.json
+      - name: Rerun readiness and require model authorization
+        if: steps.eligibility.outputs.eligible == 'true' && steps.governance.outputs.ready == 'true'
+        env:
+          PYTHONPATH: src
+        run: python scripts/data_foundry/build_corpus_closure_readiness.py --require-modeling-ready
+      - name: Verify deterministic post-certificate readiness
+        if: steps.eligibility.outputs.eligible == 'true' && steps.governance.outputs.ready == 'true'
+        env:
+          PYTHONPATH: src
+        run: |
+          cp MK1/mining-site/materialization/corpus-closure-readiness.json /tmp/readiness.certified.first.json
+          python scripts/data_foundry/build_corpus_closure_readiness.py --require-modeling-ready
+          cmp /tmp/readiness.certified.first.json MK1/mining-site/materialization/corpus-closure-readiness.json
+      - name: Fail if baseline moved before certificate commit
+        if: steps.eligibility.outputs.eligible == 'true' && steps.governance.outputs.ready == 'true'
+        run: |
+          git fetch origin main --depth=1
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+      - name: Commit certificate and final readiness atomically
+        if: steps.eligibility.outputs.eligible == 'true' && steps.governance.outputs.ready == 'true'
+        run: |
+          paths=(
+            MK1/mining-site/materialization/cert-mk1-df-corpus-001.json
+            MK1/mining-site/materialization/corpus-closure-readiness.json
+          )
+          if [ -z "$(git status --porcelain -- "${paths[@]}")" ]; then
+            echo "Corpus certificate and readiness already current"
+            exit 0
+          fi
+          git config user.name "echo-data-foundry-bot"
+          git config user.email "123134857+Em3rc0d@users.noreply.github.com"
+          git add "${paths[@]}"
+          git diff --cached --quiet && exit 0
+          git commit -m "cert(mk1): issue CERT-MK1-DF-CORPUS-001 [skip ci]"
+          git push origin HEAD:main
