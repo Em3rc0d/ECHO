@@ -2,9 +2,9 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1078,
+  "fingerprinted_asset_count": 1123,
   "gap_codes": [],
-  "ledger_sha256": "b9594ee64cc557d4466792581a333ccecf13de496b4420f0ba782877019bb33a",
+  "ledger_sha256": "cefd003a4dd0cada379a820115bb1d782d682f7b9f0b4437478d42c7763597d7",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 500,
@@ -346,6 +346,12 @@
       "same_recording_group": true
     },
     {
+      "distance": 0.01317402,
+      "left": "echo-freesound-release-safe-v1:161309",
+      "right": "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_06.ogg",
+      "same_recording_group": true
+    },
+    {
       "distance": 0.01795343,
       "left": "echo-freesound-release-safe-v1:173600",
       "right": "echo-freesound-release-safe-v1:173607",
@@ -364,9 +370,21 @@
       "same_recording_group": true
     },
     {
+      "distance": 0.01847426,
+      "left": "echo-freesound-release-safe-v1:173600",
+      "right": "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_breaking_01.ogg",
+      "same_recording_group": true
+    },
+    {
       "distance": 0.01470588,
       "left": "echo-freesound-release-safe-v1:173607",
       "right": "echo-freesound-release-safe-v1:88933",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01969975,
+      "left": "echo-freesound-release-safe-v1:173607",
+      "right": "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_breaking_01.ogg",
       "same_recording_group": true
     },
     {
@@ -460,6 +478,12 @@
       "same_recording_group": true
     },
     {
+      "distance": 0.01277574,
+      "left": "echo-freesound-release-safe-v1:216283",
+      "right": "echo-opengameart-rubberduck-cc0-v1:bfh1_wood_breaking_01.ogg",
+      "same_recording_group": true
+    },
+    {
       "distance": 0.0182598,
       "left": "echo-freesound-release-safe-v1:216284",
       "right": "echo-freesound-release-safe-v1:216299",
@@ -481,6 +505,12 @@
       "distance": 0.01933211,
       "left": "echo-freesound-release-safe-v1:216293",
       "right": "echo-freesound-release-safe-v1:216294",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.01841299,
+      "left": "echo-freesound-release-safe-v1:216296",
+      "right": "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_07.ogg",
       "same_recording_group": true
     },
     {
@@ -2978,36 +3008,6 @@
       "left": "echo-freesound-release-safe-v1:88927",
       "right": "echo-freesound-release-safe-v1:88936",
       "same_recording_group": true
-    },
-    {
-      "distance": 0.00848652,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88937",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01991422,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88941",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00818015,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88942",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01783088,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88945",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00465686,
-      "left": "echo-freesound-release-safe-v1:88927",
-      "right": "echo-freesound-release-safe-v1:88948",
-      "same_recording_group": true
     }
   ],
   "near_duplicate_threshold": 0.02,
@@ -3015,6 +3015,6 @@
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1078,
+  "scope_asset_count": 1123,
   "status": "PASS"
 }

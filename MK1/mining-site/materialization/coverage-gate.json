@@ -8,10 +8,11 @@
     "near_duplicate_groups": 0
   },
   "background": {
-    "asset_count": 363,
-    "independent_group_count": 362,
-    "source_count": 1,
+    "asset_count": 390,
+    "independent_group_count": 370,
+    "source_count": 2,
     "sources": [
+      "OPENGAMEART_RUBBERDUCK",
       "SONYC_UST"
     ]
   },
@@ -50,30 +51,33 @@
       }
     },
     "GLASS_SHATTER": {
-      "asset_count": 242,
-      "clip_duration_seconds": 1191.936908,
+      "asset_count": 245,
+      "clip_duration_seconds": 1186.906658,
       "hard_negatives": {
-        "asset_count": 342,
-        "independent_group_count": 341,
-        "source_count": 1,
+        "asset_count": 369,
+        "independent_group_count": 349,
+        "source_count": 2,
         "sources": [
+          "OPENGAMEART_RUBBERDUCK",
           "SONYC_UST"
         ]
       },
       "independent_group_count": 225,
-      "max_single_source_fraction": 0.979339,
+      "max_single_source_fraction": 0.955102,
       "source_asset_counts": {
         "BIGSOUNDBANK": 5,
-        "FREESOUND": 237
+        "FREESOUND": 234,
+        "OPENGAMEART_RUBBERDUCK": 6
       },
-      "source_count": 2,
+      "source_count": 3,
       "sources": [
         "BIGSOUNDBANK",
-        "FREESOUND"
+        "FREESOUND",
+        "OPENGAMEART_RUBBERDUCK"
       ],
       "split_assets": {
         "test": 36,
-        "train": 182,
+        "train": 185,
         "validation": 24
       },
       "split_groups": {
@@ -183,10 +187,10 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1016,
+  "development_asset_count": 1046,
   "failures": [
     {
-      "actual": 0.979339,
+      "actual": 0.955102,
       "code": "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
       "label": "GLASS_SHATTER",
       "metric": "MAX_SINGLE_SOURCE_FRACTION",
@@ -317,16 +321,9 @@
       "split": "test"
     },
     {
-      "actual": 1,
+      "actual": 2,
       "code": "BACKGROUND_SOURCES_BELOW_MIN",
       "required": 3
-    },
-    {
-      "actual": 1,
-      "code": "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_BELOW_MIN",
-      "label": "GLASS_SHATTER",
-      "metric": "HARD_NEGATIVE_SOURCES",
-      "required": 2
     },
     {
       "actual": 1,
@@ -397,7 +394,6 @@
     "FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN",
     "FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN",
     "FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN",
-    "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_BELOW_MIN",
     "GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH",
     "SIREN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
     "TIRE_SQUEAL_ASSETS_BELOW_MIN",
@@ -415,11 +411,11 @@
     "VEHICLE_HORN_HARD_NEGATIVE_GROUPS_BELOW_MIN",
     "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN"
   ],
-  "ledger_sha256": "b9594ee64cc557d4466792581a333ccecf13de496b4420f0ba782877019bb33a",
+  "ledger_sha256": "cefd003a4dd0cada379a820115bb1d782d682f7b9f0b4437478d42c7763597d7",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
-  "quarantined_split_conflict_asset_count": 62,
+  "quarantined_split_conflict_asset_count": 77,
   "schema_version": "echo.coverage-gate.v1",
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "FAIL"

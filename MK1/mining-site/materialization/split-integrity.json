@@ -1,9 +1,9 @@
 {
-  "assignment_sha256": "d2941b842a953e5c5010d1437bd42ddf6b2398cfc80b62b6732d646d1e96660b",
+  "assignment_sha256": "ba6b3a26f1c9a1bca7c2fc051252b3bc0184e02f4a5df5c2ac63e05193abea8e",
   "boundary": "Conflicting protected original splits quarantine the complete acoustic recording group. No member is remapped; quarantined rows remain source/ledger evidence but cannot satisfy development coverage or frozen corpus membership.",
-  "eligible_asset_count": 1016,
+  "eligible_asset_count": 1046,
   "gap_codes": [],
-  "ledger_sha256": "b9594ee64cc557d4466792581a333ccecf13de496b4420f0ba782877019bb33a",
+  "ledger_sha256": "cefd003a4dd0cada379a820115bb1d782d682f7b9f0b4437478d42c7763597d7",
   "original_split_conflict_count": 3,
   "original_split_conflicts_quarantined": 3,
   "policy_id": "MK1-SPLIT-INTEGRITY-002",
@@ -34,7 +34,7 @@
       "recording_group_id": "global-acoustic:683a2c690a388e66903b"
     },
     {
-      "asset_count": 58,
+      "asset_count": 73,
       "asset_ids": [
         "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2039",
         "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2040",
@@ -44,6 +44,9 @@
         "echo-freesound-release-safe-v1:173600",
         "echo-freesound-release-safe-v1:173607",
         "echo-freesound-release-safe-v1:179263",
+        "echo-freesound-release-safe-v1:216282",
+        "echo-freesound-release-safe-v1:216288",
+        "echo-freesound-release-safe-v1:216296",
         "echo-freesound-release-safe-v1:216298",
         "echo-freesound-release-safe-v1:219837",
         "echo-freesound-release-safe-v1:219845",
@@ -93,27 +96,39 @@
         "echo-freesound-release-safe-v1:977",
         "echo-freesound-release-safe-v1:979",
         "echo-freesound-release-safe-v1:980",
-        "echo-freesound-release-safe-v1:981"
+        "echo-freesound-release-safe-v1:981",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_breaking_01.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_breaking_02.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_breaking_03.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_01.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_02.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_03.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_04.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_05.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_06.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_07.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_08.ogg",
+        "echo-opengameart-rubberduck-cc0-v1:bfh1_rock_falling_09.ogg"
       ],
       "recognized_original_splits": [
         "test",
         "train",
         "validation"
       ],
-      "recording_group_id": "global-acoustic:b0a528766144425812e3"
+      "recording_group_id": "global-acoustic:fbba31649a68d648f1ae"
     }
   ],
-  "quarantine_identity_sha256": "1679540dd50eea39200f95ee98130d2e38acd0d21ca73edf7eac04040bb42aaf",
-  "quarantined_asset_count": 62,
+  "quarantine_identity_sha256": "0ada3fd0303431c5f37883321af02b920ffab7e0c7925dfb5ecfd9b37b975cb1",
+  "quarantined_asset_count": 77,
   "quarantined_recording_family_count": 3,
-  "ready_candidate_asset_count": 1078,
-  "recording_family_assignment_count": 996,
+  "ready_candidate_asset_count": 1123,
+  "recording_family_assignment_count": 1003,
   "schema_version": "echo.split-integrity.v2",
   "split_asset_counts": {
-    "quarantine": 62,
-    "test": 458,
-    "train": 330,
-    "validation": 228
+    "quarantine": 77,
+    "test": 460,
+    "train": 352,
+    "validation": 234
   },
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "PASS"
