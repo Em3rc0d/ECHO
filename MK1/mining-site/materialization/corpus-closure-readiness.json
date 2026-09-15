@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "50c44f67e84576bd8eef573c75a11588c371c2d6cedad8fa36a33a058f6ebcb8",
+      "sha256": "39d7f0554c0bfda522deb72f9446dc9a57ece617d85e68c4275ba13728ad2c13",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "1635ddc857366b32071a21f1b656dff5a14b9108008917455cf74e8a79745cd2",
+      "sha256": "3b9b072f78adfea99b6d334ee35db135fba2702b14e7b767a61577081270bf68",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "dba524acd4a8c8214164f2a55b1369ca948541f35cb89258469880eade9ecd49",
+      "sha256": "a262364c9e3f43d558a716df0512173f532d7b82da338835229e5312794e9876",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "5a64cea2fba5c4603571511d38a7198cbd55d41f522649360e0f191646abc442",
+      "sha256": "a316259d46f1e34bbc0c4a803cf6f2e2fc2bc9b7eb3d297bb8a3005ab11b6009",
       "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "3fc90e1fe474eaa2b5418c02e794a226ae0f4148928c69a8054d4b03c0b99694",
+      "sha256": "314843df92abbb71691e97f1bc5ae4f633141d2568857ac8499585a9dfee821e",
       "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "5e1a4de5bd50c8cd2214fe17460be7a970976582a9000ae4ae1c30e57cc7208c",
+      "sha256": "883f4744b9507b9fe2fe2ae83676b56e04cb0bfd843e74cf2c01c15ba1214c33",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": true,
       "present": true,
-      "sha256": "d87e468a5076f086814cb79b47af9c7e0c71cc6231511874d3e1b9750c302e34",
+      "sha256": "fd337f0f34fdd050be1a4f7c6b8d381da42b9dcf4f7598fbd33f5453811d76c7",
       "status": "PASS"
     }
   },
@@ -55,30 +55,26 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "797daf518868a86ee553e4a663a4ee444df4e055c915b3d34f41fb6f8e495e11",
+  "evidence_identity_sha256": "91bd70680f2d2d0c90283cc4a51d8340217efbec677141ee0c14bd6db4fced7e",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
     "COVERAGE_GATE_STATUS_NOT_PASS",
     "FIRE_ALARM_ASSETS_9_LT_50",
-    "FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
-    "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
     "TIRE_SQUEAL_ASSETS_11_LT_50",
     "TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20",
-    "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2",
-    "VEHICLE_HORN_HARD_NEGATIVES_0_LT_20",
-    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2"
+    "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2"
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "ed00ba035dc03c345caff7dc2a1697b59e3ce13b",
+      "baseline_commit": "e9202f4bdf1e2c6e39fc447bb1055f23273f0c5f",
       "entry_count": 1123,
-      "ledger_sha256": "79026c3c404eb93e6cfe908c5ec437919d367a53ff5588995dcd38405f20f8e3",
-      "sha256": "9909015e0b0706958c66522e005637a60124ae9b38d9fbe99572d37b085cc528"
+      "ledger_sha256": "26cb183c9b5349aa6d9f7d27bee42fabe887797f10ee30fa456188a58be8fbae",
+      "sha256": "a76ac25199425f62ae329004f039bc390c0998676f8ecc8ba07ce7236324719f"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -97,9 +93,9 @@
   "target_readiness": {
     "FIRE_ALARM": {
       "hard_negative_assets_floor": 20,
-      "hard_negative_assets_pre_final_dedup": 34,
+      "hard_negative_assets_pre_final_dedup": 205,
       "hard_negative_source_floor": 2,
-      "hard_negative_underlying_source_families": 1,
+      "hard_negative_underlying_source_families": 3,
       "positive_assets_floor": 50,
       "positive_assets_pre_final_dedup": 9,
       "positive_source_floor": 2,
@@ -121,14 +117,14 @@
     },
     "SIREN": {
       "hard_negative_assets_floor": 20,
-      "hard_negative_assets_pre_final_dedup": 32,
+      "hard_negative_assets_pre_final_dedup": 244,
       "hard_negative_source_floor": 2,
-      "hard_negative_underlying_source_families": 1,
+      "hard_negative_underlying_source_families": 3,
       "positive_assets_floor": 50,
       "positive_assets_pre_final_dedup": 173,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
-      "precheck_status": "FAIL",
+      "precheck_status": "PASS",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
     "TIRE_SQUEAL": {
@@ -145,14 +141,14 @@
     },
     "VEHICLE_HORN": {
       "hard_negative_assets_floor": 20,
-      "hard_negative_assets_pre_final_dedup": 0,
+      "hard_negative_assets_pre_final_dedup": 146,
       "hard_negative_source_floor": 2,
-      "hard_negative_underlying_source_families": 0,
+      "hard_negative_underlying_source_families": 3,
       "positive_assets_floor": 50,
       "positive_assets_pre_final_dedup": 245,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
-      "precheck_status": "FAIL",
+      "precheck_status": "PASS",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     }
   }
