@@ -14,6 +14,7 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
       - '.github/workflows/mk1-corpus-readiness.yml'
+      - '.github/workflows/mk1-corpus-certificate.yml'
       - '.github/workflows/mk1-model-entry-gate.yml'
   pull_request:
     paths:
@@ -27,6 +28,7 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
       - '.github/workflows/mk1-corpus-readiness.yml'
+      - '.github/workflows/mk1-corpus-certificate.yml'
       - '.github/workflows/mk1-model-entry-gate.yml'
 
 permissions:
@@ -68,6 +70,7 @@ jobs:
           python -m json.tool schemas/data_foundry/coverage-policy.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/corpus-closure-readiness.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/corpus-certificate.schema.json >/dev/null
       - name: Validate Foundry source registry
         env:
           PYTHONPATH: src
