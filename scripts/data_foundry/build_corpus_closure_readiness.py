@@ -7,6 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
+from echo.data_foundry.certification import CERTIFICATE_PATH, apply_corpus_certificate
 from echo.data_foundry.readiness import (
     REQUIRED_EVIDENCE_NODES,
     evaluate_readiness,
@@ -19,6 +20,7 @@ MATERIALIZATION = ROOT / "MK1/mining-site/materialization"
 
 DEFAULT_LEDGER = MATERIALIZATION / "canonical-release-safe-asset-ledger-summary.json"
 DEFAULT_POLICY = ROOT / "configs/data_foundry/coverage_policy.v1.json"
+DEFAULT_CERTIFICATE = ROOT / CERTIFICATE_PATH
 DEFAULT_OUTPUT = MATERIALIZATION / "corpus-closure-readiness.json"
 
 
@@ -27,6 +29,8 @@ def main() -> int:
     parser.add_argument("--ledger-summary", type=Path, default=DEFAULT_LEDGER)
     parser.add_argument("--coverage-policy", type=Path, default=DEFAULT_POLICY)
     parser.add_argument("--evidence-dir", type=Path, default=MATERIALIZATION)
+    parser.add_argument("--corpus-certificate", type=Path, default=DEFAULT_CERTIFICATE)
+    parser.add_argument("--ignore-corpus-certificate", action="store_true")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--require-modeling-ready", action="store_true")
     parser.add_argument("--stdout", action="store_true")
@@ -55,6 +59,17 @@ def main() -> int:
         evidence_artifacts=evidence,
         evidence_hashes=hashes,
     )
+
+    if not args.ignore_corpus_certificate and args.corpus_certificate.is_file():
+        certificate = load_json_object(args.corpus_certificate)
+        result = apply_corpus_certificate(result, certificate)
+        result["corpus_certificate"]["path"] = str(
+            args.corpus_certificate.resolve().relative_to(ROOT.resolve())
+        )
+        result["corpus_certificate"]["file_sha256"] = sha256_file(
+            args.corpus_certificate
+        )
+
     encoded = json.dumps(result, indent=2, sort_keys=True) + "\n"
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(encoded, encoding="utf-8")
@@ -65,6 +80,7 @@ def main() -> int:
         print(result["readiness_id"], result["status"])
         print("eligible_for_certificate_review:", result["eligible_for_certificate_review"])
         print("modeling_allowed:", result["modeling_allowed"])
+        print("certificate_status:", result["corpus_certificate"]["status"])
         print("gap_codes:", len(result["gap_codes"]))
         for gap in result["gap_codes"]:
             print(" -", gap)
