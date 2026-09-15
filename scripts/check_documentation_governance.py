@@ -11,6 +11,34 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 PROMISE = "Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial"
 EXPECTED_MD_COUNT = 210
+EXPECTED_GAPS = {
+    "CORPUS_CERTIFICATE_NOT_CERTIFIED",
+    "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
+    "COVERAGE_GATE_NOT_PASS",
+    "COVERAGE_GATE_STATUS_NOT_PASS",
+    "FIRE_ALARM_ASSETS_10_LT_50",
+    "FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2",
+    "FREEZE_1_VALIDATION_NOT_PASS",
+    "FREEZE_2_VALIDATION_NOT_PASS",
+    "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2",
+    "GLOBAL_DEDUP_AUDIT_NOT_PASS",
+    "LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4",
+    "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_503",
+    "LEDGER_LICENSE_NOT_RELEASE_SAFE_1",
+    "LEDGER_NO_EXACT_SEMANTIC_ROLE_83",
+    "LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1",
+    "LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1",
+    "LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1",
+    "RECORDING_FAMILY_AUDIT_NOT_PASS",
+    "REPRODUCIBILITY_NOT_PASS",
+    "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
+    "SPLIT_INTEGRITY_NOT_PASS",
+    "TIRE_SQUEAL_ASSETS_11_LT_50",
+    "TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20",
+    "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2",
+    "VEHICLE_HORN_HARD_NEGATIVES_0_LT_20",
+    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2",
+}
 
 REQUIRED_FILES = {
     "charter": ROOT / "PROJECT-CHARTER.md",
@@ -25,6 +53,7 @@ REQUIRED_FILES = {
     "materialization": ROOT / "MK1/build/data-foundry/MATERIALIZATION.md",
     "toolchain_cert": ROOT / "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-004.md",
     "sonyc_cert": ROOT / "MK1/mining-site/materialization/sonyc-v2.3-materialization-certificate.json",
+    "ledger_summary": ROOT / "MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json",
     "readiness": ROOT / "MK1/mining-site/materialization/corpus-closure-readiness.json",
 }
 
@@ -52,13 +81,11 @@ def main() -> int:
             print(" -", failure)
         return 2
 
-    docs = {
-        name: text(path)
-        for name, path in REQUIRED_FILES.items()
-        if name not in {"readiness", "sonyc_cert"}
-    }
+    json_names = {"readiness", "sonyc_cert", "ledger_summary"}
+    docs = {name: text(path) for name, path in REQUIRED_FILES.items() if name not in json_names}
     readiness = json.loads(REQUIRED_FILES["readiness"].read_text(encoding="utf-8"))
     sonyc = json.loads(REQUIRED_FILES["sonyc_cert"].read_text(encoding="utf-8"))
+    ledger_summary = json.loads(REQUIRED_FILES["ledger_summary"].read_text(encoding="utf-8"))
 
     require(PROMISE in docs["charter"], "immutable promise missing from charter", failures)
     require(PROMISE in docs["state"], "immutable promise missing from current state", failures)
@@ -68,15 +95,15 @@ def main() -> int:
     require("FROZEN_GLOBAL_POLICY" in docs["free_tier"], "free-tier policy not frozen", failures)
     require("0 USD" in docs["free_tier"], "zero-cost invariant missing", failures)
 
-    # Documentation certificate.
+    # Documentation lineage.
     require("CERT-DOC-006" in docs["doc_coverage"] and "Current certificate" in docs["doc_coverage"], "DOCUMENTATION-COVERAGE does not name CERT-DOC-006 as current", failures)
     require(ledger_state(docs["cert_ledger"], "CERT-DOC-006", "CERTIFIED"), "CERT-DOC-006 not certified in ledger", failures)
-    require(ledger_state(docs["cert_ledger"], "CERT-DOC-005", "INVALIDATED"), "CERT-DOC-005 must be historical/invalidated", failures)
+    require(ledger_state(docs["cert_ledger"], "CERT-DOC-005", "INVALIDATED"), "CERT-DOC-005 must be invalidated", failures)
     require("CERT-DOC-006                = CERTIFIED / current" in docs["state"], "CURRENT-STATE does not show CERT-DOC-006 current", failures)
     require("**Certificate:** `CERT-DOC-006`" in docs["doc_audit"], "current audit does not bind CERT-DOC-006", failures)
     require("**Status:** `CERTIFIED`" in docs["doc_audit"], "current documentation audit not certified", failures)
 
-    # Toolchain certificate and historical invalidation.
+    # Toolchain lineage.
     require(ledger_state(docs["cert_ledger"], "CERT-MK1-DF-TOOLCHAIN-004", "CERTIFIED"), "toolchain-004 missing/not certified", failures)
     require(ledger_state(docs["cert_ledger"], "CERT-MK1-DF-TOOLCHAIN-003", "INVALIDATED"), "toolchain-003 must be invalidated", failures)
     require("CERT-MK1-DF-TOOLCHAIN-004  = CERTIFIED / current" in docs["state"], "CURRENT-STATE does not show toolchain-004 current", failures)
@@ -104,7 +131,16 @@ def main() -> int:
     require(sonyc.get("free_tier_boundary", {}).get("policy_id") == "ECHO-FREE-TIER-001", "SONYC certificate missing free-tier ancestor", failures)
     require(sonyc.get("free_tier_boundary", {}).get("result") == "PASS", "SONYC free-tier result must be PASS", failures)
 
-    # Final corpus/model gate must remain fail-closed.
+    # Canonical ledger exact truth.
+    require(ledger_summary.get("baseline_commit") == "78fc019839f1c9dad1a58a70d439605d887361d7", "canonical ledger baseline drift", failures)
+    require(ledger_summary.get("entry_count") == 1164, "canonical ledger entry count drift", failures)
+    require(ledger_summary.get("canonical_fingerprint_count") == 1164, "canonical fingerprint count drift", failures)
+    require(ledger_summary.get("canonical_fingerprint_missing_count") == 0, "canonical fingerprint closure regressed", failures)
+    require(ledger_summary.get("status") == "PASS_CONSOLIDATED_WITH_OPEN_GATES", "unexpected canonical ledger status", failures)
+    require(ledger_summary.get("positive_counts") == {"FIRE_ALARM": 10, "GLASS_SHATTER": 304, "SIREN": 175, "TIRE_SQUEAL": 11, "VEHICLE_HORN": 245}, "canonical positive counts drift", failures)
+    require(ledger_summary.get("hard_negative_counts") == {"FIRE_ALARM": 34, "GLASS_SHATTER": 401, "SIREN": 32, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}, "canonical hard-negative counts drift", failures)
+
+    # Final corpus/model gate remains fail-closed.
     require(ledger_state(docs["cert_ledger"], "CERT-MK1-DF-CORPUS-001", "OPEN"), "corpus certificate is not explicitly OPEN", failures)
     require("CERT-MK1-DF-CORPUS-001     = OPEN" in docs["state"], "CURRENT-STATE does not keep corpus certificate OPEN", failures)
     require(readiness.get("readiness_id") == "EMP-MK1-CORPUS-READINESS-001", "unexpected readiness id", failures)
@@ -112,12 +148,13 @@ def main() -> int:
     require(readiness.get("eligible_for_certificate_review") is False, "certificate review must remain ineligible", failures)
     require(readiness.get("modeling_allowed") is False, "modeling_allowed must remain false while corpus OPEN", failures)
     require(readiness.get("corpus_certificate", {}).get("status") == "OPEN", "readiness corpus certificate status drift", failures)
-    require(bool(readiness.get("gap_codes")), "blocked readiness unexpectedly has no gap codes", failures)
+    require(set(readiness.get("gap_codes", [])) == EXPECTED_GAPS, "readiness gap-code set drift; re-audit required", failures)
+    require(readiness.get("inputs", {}).get("canonical_ledger_summary", {}).get("entry_count") == 1164, "readiness ledger input count drift", failures)
 
-    ledger = readiness.get("canonical_ledger", {})
-    require(ledger.get("ledger_entries") == 1164, "canonical ledger entry count drift", failures)
-    require(ledger.get("fingerprint_count") == 1164, "canonical fingerprint count drift", failures)
-    require(ledger.get("missing_fingerprint_count") == 0, "canonical fingerprint closure regressed", failures)
+    for key in ("coverage_gate", "freeze_1_validation", "freeze_2_validation", "global_dedup_audit", "recording_family_audit", "reproducibility", "split_integrity"):
+        node = readiness.get("closure_evidence_nodes", {}).get(key, {})
+        require(node.get("present") is True, f"closure node missing: {key}", failures)
+        require(node.get("pass") is False, f"closure node unexpectedly PASS without corpus re-audit: {key}", failures)
 
     closure_joined = docs["closure_plan"] + "\n" + docs["foundry_gates"] + "\n" + docs["state"]
     for marker in ("near-duplicate", "hard-negative", "recording-family", "second clean freeze", "gap_codes", "model-entry"):
@@ -148,7 +185,7 @@ def main() -> int:
     print("foundry toolchain certificate: CERT-MK1-DF-TOOLCHAIN-004")
     print("SONYC materialization certificate: CERT-MK1-DF-SONYC-001")
     print("canonical fingerprints: 1164/1164")
-    print("corpus readiness: BLOCKED (correct empirical state)")
+    print("corpus readiness: BLOCKED with exact audited gaps")
     print("corpus certificate: OPEN")
     print("modeling_allowed: false")
     print("markdown corpus files:", len(md_files))
