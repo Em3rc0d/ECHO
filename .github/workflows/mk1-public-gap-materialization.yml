@@ -7,6 +7,7 @@ on:
       - 'configs/data_foundry/gap_source_candidates.v1.json'
       - 'configs/data_foundry/wikimedia_confusers.v1.json'
       - 'configs/data_foundry/bigsoundbank_confusers.v1.json'
+      - 'configs/data_foundry/bigsoundbank_glass_expansion.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
       - 'scripts/materialize_public_gap_assets.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py'
@@ -33,6 +34,7 @@ jobs:
           python -m json.tool configs/data_foundry/gap_source_candidates.v1.json >/dev/null
           python -m json.tool configs/data_foundry/wikimedia_confusers.v1.json >/dev/null
           python -m json.tool configs/data_foundry/bigsoundbank_confusers.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/bigsoundbank_glass_expansion.v1.json >/dev/null
       - name: Install deterministic media probe dependency
         run: |
           sudo apt-get update -qq
