@@ -22,70 +22,66 @@ MK1 build = IN_PROGRESS
   corpus-role boundary       = PASS
   global dedup               = PASS
   recording-family audit     = PASS
-  split integrity            = FAIL / 3 protected conflicts
+  split integrity            = PASS
   coverage                   = FAIL
+  freeze #1/#2               = INELIGIBLE_BY_COVERAGE
   corpus readiness           = BLOCKED_FAIL_CLOSED
   model/replay/camera        = LOCKED_BY_CORPUS_CERT
 MK2 = GATED_BY_MK1
 ```
 
-All required execution remains 0 USD. Paid fallbacks, label coercion, source-family inflation and lowered quality floors are forbidden.
+Todos los paths requeridos mantienen 0 USD. Se prohíben paid fallbacks, coerción de labels, inflación de source families, seed shopping y reducción de floors.
 
 ## 3. Certificate lineage
 
 ```text
 CERT-MK1-DF-SPEC-001       = CERTIFIED
-CERT-MK1-DF-TOOLCHAIN-001..003 = historical
-CERT-MK1-DF-TOOLCHAIN-004  = INVALIDATED / historical
+CERT-MK1-DF-TOOLCHAIN-001..004 = historical / INVALIDATED
 CERT-MK1-DF-TOOLCHAIN-005  = CANDIDATE
 CERT-MK1-DF-SONYC-001      = CERTIFIED / scoped
 CERT-MK1-DF-CORPUS-001     = OPEN
 
-CERT-DOC-001..007           = historical / invalidated
-CERT-DOC-008                = CERTIFIED / current
+CERT-DOC-001..008           = historical / invalidated
+CERT-DOC-009                = CERTIFIED / current
 ```
 
-`TOOLCHAIN-005` stays candidate while closure semantics are still changing. `SONYC-001` remains independently valid because its scoped materialization/fingerprint contract has not changed.
-
-## 4. Post-grouping durable evidence
+## 4. Durable closure lineage
 
 ```text
-PR #11 merge                 8c547b70d23ce6c592ddd20d55ff37df9fa7fa03
-Data Foundry CI              34969860336 PASS
-Documentation Governance     34969860448 PASS
-Free-Tier Boundary           34969860642 PASS
-canonical ledger run         34969860666 PASS
-canonical ledger evidence    9fa3d2f90ddfb731d0921749c921ab2987d54307
-closure evidence run         34969945975 PASS
-closure evidence             e3e0f58dee3a1602e92f62c8a7708fa1e9fad9ea
-readiness run                34970028139 PASS
-readiness evidence           8e7702a2bf629642f78859763dabbe09df03df02
+PR #11 grouping merge       8c547b70d23ce6c592ddd20d55ff37df9fa7fa03
+canonical ledger            9fa3d2f90ddfb731d0921749c921ab2987d54307
+PR #13 split merge          03cd0627c9c6fcf0780d8d4ce48d5fa7f89fbd01
+Data Foundry CI             34971457870 PASS
+Free-Tier Boundary          34971457814 PASS
+closure evidence run        34971457662 PASS
+closure evidence            205eb419b20f10461271ff1fbbd78eb3fa9560e9
+readiness run               34971547338 PASS
+readiness evidence          589e7f4affed39e1ffcf6f50602d79587560bbb3
 ```
 
-The evidence pipeline being green does not mean corpus closure is green; it means the current PASS/FAIL evidence is reproducibly materialized.
-
-## 5. Canonical ledger and global grouping
+## 5. Closed technical nodes
 
 ```text
-entry_count                         1081
-canonical fingerprints              1081 / 1081
-fallback assets before grouping      448
-fallback assets after grouping         0
-global acoustic components            17
-members protected by components        97
-screened fallback source groups       357
-near-duplicate cross-group edges       831
-content merge/delete                false
+canonical fingerprints       1081 / 1081 PASS
+global dedup                  PASS / gap_codes=[]
+recording-family audit        PASS / gap_codes=[]
+split integrity               PASS / gap_codes=[]
 ```
 
-Empirical closure:
+Split closure uses `MK1-SPLIT-INTEGRITY-002`:
 
 ```text
-global-dedup-audit.json       = PASS / gap_codes=[]
-recording-family-audit.json   = PASS / gap_codes=[]
+ready candidate assets       1078
+quarantined acoustic groups     3
+quarantined assets             62
+eligible development assets  1016
+UNASSIGNED                      0
+quarantine identity 1679540dd50eea39200f95ee98130d2e38acd0d21ca73edf7eac04040bb42aaf
 ```
 
-Remaining ledger blockers are exactly:
+Los tres grupos conflictivos completos fueron puestos en quarantine. Ningún clip individual se movió entre train/validation/test; los 62 assets siguen disponibles como evidencia pero no cuentan en coverage/freeze.
+
+## 6. Remaining ledger blockers
 
 ```text
 LICENSE_NOT_RELEASE_SAFE = 1
@@ -93,51 +89,35 @@ SEMANTIC_STATUS_CONFLICT_FIRE_ALARM = 1
 SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL = 1
 ```
 
-Those assets cannot receive final corpus credit unless source evidence resolves them. Exclusion is permitted; coercion is not.
-
-## 6. Split integrity
-
-The acoustic grouping correctly exposed three groups that span recognized source splits:
-
-```text
-split-integrity.json = FAIL
-original_split_conflict_count = 3
-eligible assets without split = 62
-
-conflicting groups:
-global-acoustic:49755af077645d9cd379
-global-acoustic:683a2c690a388e66903b
-global-acoustic:b0a528766144425812e3
-```
-
-No seed shopping or manual clip movement is allowed. The safe next transition is policy-governed quarantine of each complete conflicting acoustic component from corpus membership, preserving all source evidence.
+El siguiente paso autorizado es excluirlos mediante una frontera explícita y auditable, o resolverlos solo con evidencia exacta de origen. No pueden recibir crédito por conveniencia.
 
 ## 7. Current coverage truth
 
-Measured final-eligible coverage already exposes genuine acquisition needs:
+`coverage-gate.json = FAIL` sobre 1016 development assets, sin fallos upstream de dedup/group/split.
 
 ```text
-FIRE_ALARM       9 assets / 6 groups / 190.18 s
-TIRE_SQUEAL     11 assets / 11 groups / 280.54 s
-GLASS_SHATTER   304 assets, but largest source fraction 0.976974 > 0.80
-BACKGROUND      363 assets / 362 groups / only 1 underlying source
+FIRE_ALARM       9 assets / 6 groups / 190.182749 s
+TIRE_SQUEAL     11 assets / 11 groups / 280.544098 s
+GLASS_SHATTER   242 assets / 225 groups; FREESOUND=237, BIGSOUNDBANK=5
+                largest source fraction=0.979339 > 0.80
+BACKGROUND      363 assets / 362 groups / 1 source family
 ```
 
-Hard-negative families:
+Hard negatives finales actuales:
 
 ```text
-FIRE_ALARM       26 final-eligible HN / 1 source
-GLASS_SHATTER   342 final-eligible HN / 1 source
-SIREN            26 final-eligible HN / 1 source
-TIRE_SQUEAL       0 / 0
-VEHICLE_HORN      0 / 0
+FIRE_ALARM       26 assets / 26 groups / 1 source
+GLASS_SHATTER   342 assets / 341 groups / 1 source
+SIREN            26 assets / 26 groups / 1 source
+TIRE_SQUEAL       0 / 0 / 0
+VEHICLE_HORN      0 / 0 / 0
 ```
 
-FIRE_ALARM and TIRE_SQUEAL also fail several train/validation/test asset/group floors. These are real deficits; no floor reduction is authorized.
+FIRE_ALARM y TIRE_SQUEAL fallan además floors de assets/groups por split. Estos déficits requieren media real e independencia acústica genuina; otro wrapper Freesound no crea otra familia.
 
 ## 8. Machine-readable readiness
 
-Authoritative artifact at `8e7702a2bf629642f78859763dabbe09df03df02`:
+Authoritative artifact: `MK1/mining-site/materialization/corpus-closure-readiness.json` at `589e7f4affed39e1ffcf6f50602d79587560bbb3`.
 
 ```text
 readiness_id = EMP-MK1-CORPUS-READINESS-001
@@ -146,10 +126,10 @@ eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
-evidence_identity_sha256 = fcd07c11d3291d5a78ee28cae93e42de0f16e78522720e78fffb5e71b4bcf129
+evidence_identity_sha256 = c20eab44bae7cb10e7038833fdf46741d9d4c1574ebfe1b65e47dd6db160249b
 ```
 
-Exact readiness gap codes:
+Exact readiness gaps (19):
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -166,7 +146,6 @@ LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1
 LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1
 REPRODUCIBILITY_NOT_PASS
 SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
-SPLIT_INTEGRITY_NOT_PASS
 TIRE_SQUEAL_ASSETS_11_LT_50
 TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
 TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
@@ -176,21 +155,20 @@ VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 
 ## 9. Frozen solidity law
 
-`MK1-CORPUS-SOLIDITY-001` is unchanged. Per target: >=50 assets, >=25 groups, >=2 independent underlying sources, >=180 s, largest-source fraction <=0.80; train >=20 assets/10 groups, validation >=5/3, test >=5/3. Per-target hard negatives require >=20 assets/10 groups/2 sources. Global negatives require >=200 assets/50 groups/3 sources.
+`MK1-CORPUS-SOLIDITY-001` no cambia. Per target: assets >=50, groups >=25, independent sources >=2, duration >=180 s, largest source fraction <=0.80; train >=20/10, validation >=5/3, test >=5/3. Per-target HN >=20 assets/10 groups/2 sources. Global background >=200 assets/50 groups/3 sources.
 
 ## 10. Active closure sequence
 
 ```text
-corpus-role boundary           PASS
-global acoustic grouping      PASS
-global dedup                  PASS
-recording-family audit        PASS
+corpus-role boundary        PASS
+fingerprints                PASS
+global dedup                PASS
+recording-family            PASS
+split                       PASS
   ↓
-exclude/resolve 3 row blockers
+exclude/resolve 3 non-admissible ledger rows
   ↓
-quarantine 3 split-conflict acoustic components
-  ↓
-acquire genuine FIRE_ALARM/TIRE_SQUEAL/negative/source-diversity evidence
+acquire real positive/background/HN/source-diversity evidence
   ↓
 coverage PASS / gap_codes=[]
   ↓
@@ -200,7 +178,7 @@ EMP-DATASET-001 + EMP-DATA-QUALITY-001
   ↓
 CERT-MK1-DF-CORPUS-001 = CERTIFIED
   ↓
-modeling_allowed = true → Benchmark A/B/C
+modeling_allowed=true → Benchmark A/B/C
 ```
 
 ## 11. Release law
@@ -219,9 +197,9 @@ NO real camera progression
 ## 12. Documentation state
 
 ```text
-governance/DOCUMENTATION-AUDIT-2026-09-15-GROUPING-CLOSURE-008.md
-CERT-DOC-008 = CERTIFIED / current
-Markdown corpus = 212 files
+governance/DOCUMENTATION-AUDIT-2026-09-15-SPLIT-CLOSURE-009.md
+CERT-DOC-009 = CERTIFIED / current
+Markdown corpus = 213 files
 ```
 
 ## 13. Invalidation
