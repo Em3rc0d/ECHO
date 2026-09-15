@@ -1,6 +1,6 @@
 {
   "schema_version": "echo.dataset-certification.v1",
-  "checked_at": "2026-09-13",
+  "checked_at": "2026-09-15",
   "scope_note": "Source/release certification is not corpus certification. Concrete audio remains subject to acquisition checksums, per-asset rights where applicable, semantic mapping, technical probing, grouping, deduplication, split audit and frozen-manifest certification.",
   "profile_semantics": {
     "release_safe": "Only sources with an ALLOW source-level decision may enter a release-safe frozen corpus. Per-asset policy still applies.",
@@ -115,6 +115,20 @@
         "Public-domain status does not bypass semantic review.",
         "CC-BY-SA assets are research-only under current release-safe policy.",
         "Synthetic standard-pattern assets receive no independent real-source or recording-group credit."
+      ]
+    },
+    "echo-opengameart-rubberduck-cc0-v1": {
+      "release": "curation-2026-09-15-v1",
+      "source_release_status": "CURATED_REAL_BYTE_EVIDENCE_CERTIFIED",
+      "profiles": {"release_safe": "ALLOW", "research_extended": "ALLOW", "field_holdout": "DENY"},
+      "license_conclusion": "The canonical OpenGameArt submission is marked CC0 and identifies rubberduck as creator of the 75-sound breaking/falling/hit pack. The pinned GitHub mirror is transport only and receives no source-family credit.",
+      "evidence_urls": ["https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx"],
+      "conditions": [
+        "Durable materialization evidence must remain PASS with canonical source-page creator/CC0/authorship markers, page SHA-256, real media SHA-256, positive technical probe and canonical fingerprint for every governed row.",
+        "Only the six explicitly governed glass_breaking rows may enter as GLASS_SHATTER positive candidates in this curation.",
+        "Glass falls/hits and non-glass break/impact rows are confuser candidates, never positive inflation.",
+        "All six numbered glass-breaking variants remain one conservative recording group unless stronger independent-session evidence is proven.",
+        "Global exact/near dedup, grouping, split and coverage gates remain mandatory before corpus certification."
       ]
     }
   }
