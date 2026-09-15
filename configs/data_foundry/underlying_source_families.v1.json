@@ -11,6 +11,7 @@
     "echo-bigsoundbank-cc0-gap-v1": {"family": "BIGSOUNDBANK", "diversity_credit": true},
     "echo-wikimedia-fire-alarm-v1": {"family": "WIKIMEDIA_COMMONS", "diversity_credit": true},
     "echo-opengameart-rubberduck-cc0-v1": {"family": "OPENGAMEART_RUBBERDUCK", "diversity_credit": true, "note": "The canonical OpenGameArt submission identifies rubberduck as creator of the pack. The pinned GitHub mirror is byte transport only and never receives separate source-family credit."},
+    "echo-opengameart-till-behrend-glass-v1": {"family": "OPENGAMEART_TILL_BEHREND", "diversity_credit": true, "note": "The canonical OpenGameArt page names Till Behrend as author and states the upload was made with permission from the author. OpenGameArt hosting is publication/byte transport context, not the acoustic-origin family identity."},
     "singapura-v1.0a": {"family": "SINGAPURA", "diversity_credit": true},
     "esc50": {"family": "ESC50", "diversity_credit": true},
     "urbansound8k-1.0": {"family": "URBANSOUND8K", "diversity_credit": true},

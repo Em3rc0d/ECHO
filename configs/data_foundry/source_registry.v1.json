@@ -207,6 +207,22 @@
       },
       "group_keys": ["creator", "recording_family"],
       "notes": "Canonical OpenGameArt evidence attributes the pack to creator rubberduck and marks it CC0. The pinned GitHub mirror is byte transport only, not a second acoustic source. All six glass-breaking variants remain one conservative positive recording family; non-glass and glass-hit/fall rows are confusers only."
+    },
+    {
+      "source_id": "echo-opengameart-till-behrend-glass-v1",
+      "name": "ECHO curated OpenGameArt Till Behrend glass-break asset",
+      "release": "curation-2026-09-15-v1",
+      "canonical_url": "https://opengameart.org/content/glass-break",
+      "role": ["curated_per_asset_positive_pool", "gap_closure"],
+      "license_model": "uniform_submission_cc0_with_real_byte_evidence",
+      "dataset_license": "CC0",
+      "default_profile": "release_safe",
+      "asset_license_required": false,
+      "target_coverage": {
+        "GLASS_SHATTER": {"relation": "ONE_EXPLICIT_GLASS_BREAK_POSITIVE", "review_required": false}
+      },
+      "group_keys": ["creator", "recording_family"],
+      "notes": "Canonical OpenGameArt evidence names Till Behrend as author, states uploader permission, marks the asset CC0, and exposes glass_breaking.wav. This source receives one acoustic-origin family only; OpenGameArt hosting itself is not diversity credit."
     }
   ]
 }

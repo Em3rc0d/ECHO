@@ -130,6 +130,20 @@
         "All six numbered glass-breaking variants remain one conservative recording group unless stronger independent-session evidence is proven.",
         "Global exact/near dedup, grouping, split and coverage gates remain mandatory before corpus certification."
       ]
+    },
+    "echo-opengameart-till-behrend-glass-v1": {
+      "release": "curation-2026-09-15-v1",
+      "source_release_status": "CURATED_REAL_BYTE_EVIDENCE_CERTIFIED",
+      "profiles": {"release_safe": "ALLOW", "research_extended": "ALLOW", "field_holdout": "DENY"},
+      "license_conclusion": "The canonical OpenGameArt page marks the asset CC0, names Till Behrend as author, states the upload was made with permission from the author, and publishes the direct glass_breaking.wav asset.",
+      "evidence_urls": ["https://opengameart.org/content/glass-break"],
+      "conditions": [
+        "The durable OpenGameArt glass-expansion materialization report must remain PASS with canonical source-page markers, page SHA-256, real media SHA-256, positive technical probe and canonical fingerprint.",
+        "Exactly glass_breaking.wav may enter as a GLASS_SHATTER positive through this curation.",
+        "The eleven generic rubberduck glass-named discovery rows remain semantic review-only and receive zero positive credit through this source.",
+        "The Till Behrend asset receives one conservative recording-family identity and one underlying acoustic-origin family; OpenGameArt hosting itself does not create extra diversity credit.",
+        "Global exact/near dedup, recording-family resolution, protected split quarantine and coverage remain mandatory before corpus certification."
+      ]
     }
   }
 }
