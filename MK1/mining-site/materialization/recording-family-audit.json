@@ -4,7 +4,7 @@
     "RECORDING_FAMILY_GLOBAL_AUDIT_PENDING"
   ],
   "largest_recording_family_asset_count": 4,
-  "ledger_sha256": "540f246db641531304235d94e89002b198f202c2c0370c675c8a716ec3aac671",
+  "ledger_sha256": "de720c814c4aca192119d8c790ce9bac7539897d567789776c0ef69a38a4a02e",
   "missing_recording_group_count": 0,
   "pending_global_group_audit_count": 503,
   "pending_global_group_audit_sample": [
