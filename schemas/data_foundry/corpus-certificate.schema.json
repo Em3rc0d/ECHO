@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://echo.local/schemas/data_foundry/corpus-certificate.schema.json",
+  "title": "ECHO MK1 Corpus Certificate",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "artifact_version",
+    "status",
+    "scope",
+    "documentation",
+    "free_tier_boundary",
+    "inputs",
+    "outputs",
+    "criteria",
+    "provenance",
+    "evidence",
+    "non_claims",
+    "invalidates_if",
+    "hash_contract",
+    "certificate_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "echo.cert.v1"},
+    "artifact_id": {"const": "CERT-MK1-DF-CORPUS-001"},
+    "artifact_version": {"type": "string", "minLength": 1},
+    "status": {"const": "CERTIFIED"},
+    "scope": {"type": "string", "minLength": 1},
+    "documentation": {"type": "array", "minItems": 1},
+    "free_tier_boundary": {
+      "type": "object",
+      "required": ["policy_id", "policy_sha256", "result"],
+      "properties": {
+        "policy_id": {"const": "ECHO-FREE-TIER-001"},
+        "policy_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "result": {"const": "PASS"}
+      },
+      "additionalProperties": true
+    },
+    "inputs": {
+      "type": "object",
+      "required": ["corpus_readiness", "canonical_ledger_summary", "coverage_policy"],
+      "additionalProperties": true
+    },
+    "outputs": {"type": "array", "minItems": 1},
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "result"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "result": {"const": "PASS"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["git_commit", "generated_at_utc"],
+      "additionalProperties": true
+    },
+    "evidence": {"type": "array", "minItems": 1},
+    "non_claims": {"type": "array", "minItems": 1},
+    "invalidates_if": {"type": "array", "minItems": 1},
+    "hash_contract": {"type": "string", "minLength": 1},
+    "certificate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
