@@ -10,26 +10,22 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 PROMISE = "Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial"
 EXPECTED_MD_COUNT = 213
-EXPECTED_READINESS_COMMIT = "608ecc5efdcd399b7f29b4d522b0fb46b99e87bf"
-EXPECTED_EVIDENCE_IDENTITY = "797daf518868a86ee553e4a663a4ee444df4e055c915b3d34f41fb6f8e495e11"
-EXPECTED_LEDGER_BASELINE = "ed00ba035dc03c345caff7dc2a1697b59e3ce13b"
-EXPECTED_LEDGER_SHA256 = "79026c3c404eb93e6cfe908c5ec437919d367a53ff5588995dcd38405f20f8e3"
+EXPECTED_READINESS_COMMIT = "8b478cd34184b6b8cdbee024c342eef2f497556f"
+EXPECTED_EVIDENCE_IDENTITY = "33c57393f497b3c36b5ba66e2bf6a5db18b5f4e09851d5fc89dcf47b0858e3e0"
+EXPECTED_LEDGER_BASELINE = "e9202f4bdf1e2c6e39fc447bb1055f23273f0c5f"
+EXPECTED_LEDGER_SHA256 = "26cb183c9b5349aa6d9f7d27bee42fabe887797f10ee30fa456188a58be8fbae"
 EXPECTED_GAPS = {
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
     "COVERAGE_GATE_STATUS_NOT_PASS",
     "FIRE_ALARM_ASSETS_9_LT_50",
-    "FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
-    "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
     "TIRE_SQUEAL_ASSETS_11_LT_50",
     "TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20",
     "TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2",
-    "VEHICLE_HORN_HARD_NEGATIVES_0_LT_20",
-    "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2",
 }
 
 REQUIRED_FILES = {
@@ -139,8 +135,8 @@ def main() -> int:
     require(grouping.get("content_deleted") is False and grouping.get("content_merge_performed") is False, "grouping must not merge/delete content", failures)
 
     expected_positive = {"FIRE_ALARM": 9, "GLASS_SHATTER": 310, "SIREN": 173, "TIRE_SQUEAL": 11, "VEHICLE_HORN": 245}
-    expected_hn = {"FIRE_ALARM": 34, "GLASS_SHATTER": 440, "SIREN": 32, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}
-    expected_hn_sources = {"FIRE_ALARM": 1, "GLASS_SHATTER": 2, "SIREN": 1, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 0}
+    expected_hn = {"FIRE_ALARM": 205, "GLASS_SHATTER": 440, "SIREN": 244, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 146}
+    expected_hn_sources = {"FIRE_ALARM": 3, "GLASS_SHATTER": 2, "SIREN": 3, "TIRE_SQUEAL": 0, "VEHICLE_HORN": 3}
     require(ledger.get("positive_counts") == expected_positive, "positive corpus counts drift", failures)
     require(ledger.get("hard_negative_counts") == expected_hn, "hard-negative corpus counts drift", failures)
     require(ledger.get("hard_negative_underlying_source_family_counts") == expected_hn_sources, "hard-negative source-family counts drift", failures)
