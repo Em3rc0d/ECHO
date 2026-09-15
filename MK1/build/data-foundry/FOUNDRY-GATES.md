@@ -23,11 +23,11 @@ DF-G0 source registry
   -> DF-G8 model-entry gate
 ```
 
-A downstream gate cannot compensate for an upstream failure. Paid fallbacks and lowered quality floors are forbidden.
+A downstream gate cannot compensate for an upstream failure. All execution inherits `ECHO-FREE-TIER-001`; paid fallbacks and lowered quality floors are forbidden.
 
-## SONYC materialization node
+## SONYC certified materialization node
 
-`CERT-MK1-DF-SONYC-001` is now `CERTIFIED` for SONYC-UST-V2.3 full real-media materialization. Exact evidence:
+`CERT-MK1-DF-SONYC-001` certifies SONYC-UST-V2.3 full real-media materialization:
 
 ```text
 implementation baseline  ab8c47ba6aabb25390644954a2a06945ca7a81bb
@@ -40,7 +40,7 @@ fingerprint failures      0
 durable evidence          78fc019839f1c9dad1a58a70d439605d887361d7
 ```
 
-The source release contains 18,510 assets / 185,100 seconds. The durable ledger-relevant extraction produced 236 target-candidate rows, 428 confuser-candidate rows and 599 unique fingerprinted ledger-relevant acoustic assets. Review flags in the materialization summary are not silently converted into corpus admission.
+The source release contains 18,510 assets / 185,100 seconds. Durable extraction produced 236 target-candidate rows, 428 confuser-candidate rows and 599 unique fingerprinted ledger-relevant acoustic assets. Materialization review flags are never equivalent to corpus admission.
 
 ## DF-G0 — Source identity
 
@@ -71,25 +71,34 @@ Hard negatives never become positives by convenience.
 
 Every admitted row requires real bytes, byte size, SHA-256, valid audio probe, positive duration, provenance and canonical fingerprint where required.
 
-After SONYC integration the canonical ledger reports:
+Current canonical ledger summary:
 
 ```text
-ledger entries        1164
-fingerprints present  1164
-fingerprints missing     0
+entry_count                         1164
+canonical_fingerprint_count         1164
+canonical_fingerprint_missing_count    0
+exact_duplicate_sha256_group_count     0
+status = PASS_CONSOLIDATED_WITH_OPEN_GATES
 ```
 
-The previous canonical-fingerprint coverage gap is closed. This does not close semantic/source/coverage gaps.
+Canonical fingerprint coverage is complete. Ledger admission is not: current blocking-reason counts include `GROUPING_GLOBAL_AUDIT_REQUIRED=503`, `NO_EXACT_SEMANTIC_ROLE=83`, `AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT=4`, plus one license conflict, one rights-text conflict and two target semantic-status conflicts.
 
 ## DF-G5 — Global duplicate / recording-family audit
 
-Final corpus certification still requires PASS evidence for global exact + cross-format near-duplicate handling and recording-family/source-independence grouping. Protected-split leakage is forbidden.
+The refreshed closure evidence currently says:
 
-Required outputs include `global-dedup-audit.json` and `recording-family-audit.json` with closure-compatible PASS semantics.
+```text
+global-dedup-audit.json       = FAIL
+recording-family-audit.json    = FAIL
+```
+
+Final certification requires canonical transcode-aware near-duplicate handling and global recording-family/source-independence review, with no protected-split leakage.
 
 ## DF-G6 — Split integrity
 
-Group-aware splitting must preserve:
+Current `split-integrity.json = FAIL`.
+
+Group-aware splitting must ultimately prove:
 
 ```text
 group overlap = 0
@@ -98,7 +107,7 @@ near-duplicate overlap = 0
 field holdout overlap = 0
 ```
 
-Seed shopping or manual clip movement to manufacture coverage is forbidden. Required output: `split-integrity.json = PASS`.
+Seed shopping/manual clip movement to manufacture coverage is forbidden.
 
 ## Corpus solidity
 
@@ -119,70 +128,76 @@ test >= 5 assets / 3 groups
 
 Global negatives: >=200 assets / >=50 groups / >=3 sources. Per-target hard negatives: >=20 assets / >=10 groups / >=2 sources.
 
-Current positive assets:
+Current pre-final positive assets / source families:
 
 ```text
-FIRE_ALARM       5 / 50
-GLASS_SHATTER  286 / 50
-SIREN          242 / 50
-TIRE_SQUEAL      5 / 50
-VEHICLE_HORN   326 / 50
+FIRE_ALARM       10 / 3
+GLASS_SHATTER   304 / 2
+SIREN           175 / 3
+TIRE_SQUEAL      11 / 2
+VEHICLE_HORN    245 / 3
 ```
 
 Current hard-negative assets / source families:
 
 ```text
-FIRE_ALARM      34 / 1
-GLASS_SHATTER  401 / 1
-SIREN          365 / 4
-TIRE_SQUEAL      0 / 0
-VEHICLE_HORN    33 / 1
+FIRE_ALARM       34 / 1
+GLASS_SHATTER   401 / 1
+SIREN            32 / 1
+TIRE_SQUEAL       0 / 0
+VEHICLE_HORN      0 / 0
 ```
 
-Current readiness gap codes:
+Current coverage gate is `FAIL`; no floor may be lowered to obtain certification.
+
+## Exact current readiness blockers
+
+`EMP-MK1-CORPUS-READINESS-001` at `de1d31b280e9fad4a3764537aa75d7d72802adb7` is `BLOCKED`, `eligible_for_certificate_review=false`, `modeling_allowed=false`.
 
 ```text
-FIRE_ALARM_ASSETS_5_LT_50
-TIRE_SQUEAL_ASSETS_5_LT_50
-TIRE_SQUEAL_UNDERLYING_SOURCES_1_LT_2
+CORPUS_CERTIFICATE_NOT_CERTIFIED
+COVERAGE_GATE_GAP_CODES_NOT_EMPTY
+COVERAGE_GATE_NOT_PASS
+COVERAGE_GATE_STATUS_NOT_PASS
+FIRE_ALARM_ASSETS_10_LT_50
 FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2
+FREEZE_1_VALIDATION_NOT_PASS
+FREEZE_2_VALIDATION_NOT_PASS
 GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
-VEHICLE_HORN_HARD_NEGATIVE_SOURCES_1_LT_2
+GLOBAL_DEDUP_AUDIT_NOT_PASS
+LEDGER_AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT_4
+LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_503
+LEDGER_LICENSE_NOT_RELEASE_SAFE_1
+LEDGER_NO_EXACT_SEMANTIC_ROLE_83
+LEDGER_RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED_1
+LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1
+LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1
+RECORDING_FAMILY_AUDIT_NOT_PASS
+REPRODUCIBILITY_NOT_PASS
+SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
+SPLIT_INTEGRITY_NOT_PASS
+TIRE_SQUEAL_ASSETS_11_LT_50
 TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVE_GROUPS_0_LT_10
 TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
+VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
+VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
-
-No floor may be lowered to obtain certification. Required coverage output remains `coverage-gate.json` with `status=PASS` and `gap_codes=[]` before corpus certification.
 
 ## DF-G7 — Freeze and reproducibility
 
+Current evidence is fail-closed:
+
+```text
+corpus-freeze-1.validation.json = FAIL
+corpus-freeze-2.validation.json = FAIL
+corpus-reproducibility.json     = FAIL
+```
+
 Freeze #1 must bind exact asset membership, hashes, recording families, splits, rights/mapping/source policies, coverage and dedup/quarantine evidence. A second clean freeze over unchanged inputs must reproduce semantic identity.
-
-Required outputs:
-
-```text
-corpus-freeze-1.validation.json = PASS
-corpus-freeze-2.validation.json = PASS
-corpus-reproducibility.json = PASS
-```
-
-## Readiness and certificate review
-
-Current authoritative readiness:
-
-```text
-EMP-MK1-CORPUS-READINESS-001 = BLOCKED
-eligible_for_certificate_review = false
-modeling_allowed = false
-CERT-MK1-DF-CORPUS-001 = OPEN
-```
-
-`CERT-MK1-DF-SONYC-001` does not alter this predicate. It closes one scoped upstream materialization claim only.
 
 ## DF-G8 — Model-entry handoff
 
-The reusable MK1 Model Entry Gate runs `build_corpus_closure_readiness.py --require-modeling-ready` and fails until the named corpus certificate is `CERTIFIED`, all required closure evidence passes and no gap remains. Future model/benchmark/train workflows are checked for bypass wiring.
+`CERT-MK1-DF-CORPUS-001` remains `OPEN`. The reusable MK1 Model Entry Gate runs `build_corpus_closure_readiness.py --require-modeling-ready` and fails until the named corpus certificate is `CERTIFIED`, all required closure evidence passes and `gap_codes=[]`. Future model/benchmark/train workflows are checked for bypass wiring.
 
 ## Certificate lineage
 
