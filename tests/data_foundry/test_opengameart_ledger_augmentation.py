@@ -3,8 +3,12 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import shutil
+import tempfile
 import unittest
+from unittest.mock import patch
 
+from scripts.data_foundry import augment_canonical_ledger_with_opengameart_cc0 as augmentation
 from scripts.data_foundry.augment_canonical_ledger_with_opengameart_cc0 import (
     MANIFEST,
     REPORT,
@@ -68,6 +72,42 @@ class OpenGameArtLedgerAugmentationTests(unittest.TestCase):
         first_positive["semantic"] = "generic_break_review_required"
         with self.assertRaisesRegex(ValueError, "positive semantic drift"):
             manifest_index(mutated_manifest)
+
+    def test_real_durable_ledger_copy_accepts_exactly_governed_rows(self) -> None:
+        baseline_ledger = augmentation.LEDGER
+        baseline_summary = augmentation.SUMMARY
+        baseline_count = sum(1 for line in baseline_ledger.read_text(encoding="utf-8").splitlines() if line.strip())
+
+        with tempfile.TemporaryDirectory(dir=augmentation.ROOT) as directory:
+            work = Path(directory)
+            ledger = work / "ledger.jsonl"
+            summary = work / "summary.json"
+            shutil.copyfile(baseline_ledger, ledger)
+            shutil.copyfile(baseline_summary, summary)
+
+            with patch.object(augmentation, "LEDGER", ledger), patch.object(augmentation, "SUMMARY", summary):
+                self.assertEqual(augmentation.main(), 0)
+
+            rows = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines() if line.strip()]
+            self.assertEqual(len(rows), baseline_count + 45)
+            admitted = [row for row in rows if row["source_dataset"] == SOURCE_ID]
+            self.assertEqual(len(admitted), 45)
+            self.assertEqual(sum(TARGET in row.get("echo_labels", []) for row in admitted), 6)
+            self.assertEqual(sum(TARGET in row.get("hard_negative_for", []) for row in admitted), 39)
+            self.assertEqual(
+                {row["recording_group_id"] for row in admitted if TARGET in row.get("echo_labels", [])},
+                {"opengameart:rubberduck:bfh1:glass_breaking"},
+            )
+            self.assertTrue(all(row["underlying_source_family"] == SOURCE_FAMILY for row in admitted))
+            self.assertTrue(all(row["stage_status"] == "READY_FOR_GLOBAL_DEDUP" for row in admitted))
+            self.assertTrue(all((row.get("canonical_fingerprint") or {}).get("vector_sha256") for row in admitted))
+
+            summary_payload = json.loads(summary.read_text(encoding="utf-8"))
+            evidence = summary_payload["opengameart_rubberduck_cc0_augmentation"]
+            self.assertEqual(evidence["status"], "PASS")
+            self.assertEqual(evidence["stats"]["rows"], 45)
+            self.assertEqual(evidence["stats"]["positive_rows"], 6)
+            self.assertEqual(evidence["stats"]["hard_negative_rows"], 39)
 
 
 if __name__ == "__main__":
