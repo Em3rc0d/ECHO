@@ -1,25 +1,120 @@
 {
-  "assignment_sha256": "5d72a4632f4ca33e81a9e9e702e901a6dae23de01aa534f5900585bd5b9edde5",
-  "eligible_asset_count": 1078,
-  "gap_codes": [
-    "ELIGIBLE_ASSET_WITHOUT_SPLIT",
-    "ORIGINAL_SPLIT_CONFLICT_WITHIN_RECORDING_FAMILY"
-  ],
+  "assignment_sha256": "d2941b842a953e5c5010d1437bd42ddf6b2398cfc80b62b6732d646d1e96660b",
+  "boundary": "Conflicting protected original splits quarantine the complete acoustic recording group. No member is remapped; quarantined rows remain source/ledger evidence but cannot satisfy development coverage or frozen corpus membership.",
+  "eligible_asset_count": 1016,
+  "gap_codes": [],
   "ledger_sha256": "a197697c2b4babdb6dcdbe3f9d413fd9fe9f385afc518e3a63281f7119aa57ef",
   "original_split_conflict_count": 3,
-  "original_split_conflict_sample": [
-    "global-acoustic:49755af077645d9cd379",
-    "global-acoustic:683a2c690a388e66903b",
-    "global-acoustic:b0a528766144425812e3"
+  "original_split_conflicts_quarantined": 3,
+  "policy_id": "MK1-SPLIT-INTEGRITY-002",
+  "protected_original_split_conflict_strategy": "quarantine_entire_recording_group",
+  "quarantine_groups": [
+    {
+      "asset_count": 2,
+      "asset_ids": [
+        "echo-freesound-release-safe-v1:212698",
+        "echo-freesound-release-safe-v1:216292"
+      ],
+      "recognized_original_splits": [
+        "train",
+        "validation"
+      ],
+      "recording_group_id": "global-acoustic:49755af077645d9cd379"
+    },
+    {
+      "asset_count": 2,
+      "asset_ids": [
+        "echo-freesound-release-safe-v1:126878",
+        "echo-freesound-release-safe-v1:98378"
+      ],
+      "recognized_original_splits": [
+        "test",
+        "train"
+      ],
+      "recording_group_id": "global-acoustic:683a2c690a388e66903b"
+    },
+    {
+      "asset_count": 58,
+      "asset_ids": [
+        "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2039",
+        "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2040",
+        "echo-freesound-release-safe-v1:148073",
+        "echo-freesound-release-safe-v1:148074",
+        "echo-freesound-release-safe-v1:161309",
+        "echo-freesound-release-safe-v1:173600",
+        "echo-freesound-release-safe-v1:173607",
+        "echo-freesound-release-safe-v1:179263",
+        "echo-freesound-release-safe-v1:216298",
+        "echo-freesound-release-safe-v1:219837",
+        "echo-freesound-release-safe-v1:219845",
+        "echo-freesound-release-safe-v1:219846",
+        "echo-freesound-release-safe-v1:219847",
+        "echo-freesound-release-safe-v1:84705",
+        "echo-freesound-release-safe-v1:85107",
+        "echo-freesound-release-safe-v1:85168",
+        "echo-freesound-release-safe-v1:85184",
+        "echo-freesound-release-safe-v1:88806",
+        "echo-freesound-release-safe-v1:88809",
+        "echo-freesound-release-safe-v1:88917",
+        "echo-freesound-release-safe-v1:88920",
+        "echo-freesound-release-safe-v1:88921",
+        "echo-freesound-release-safe-v1:88922",
+        "echo-freesound-release-safe-v1:88923",
+        "echo-freesound-release-safe-v1:88924",
+        "echo-freesound-release-safe-v1:88925",
+        "echo-freesound-release-safe-v1:88926",
+        "echo-freesound-release-safe-v1:88927",
+        "echo-freesound-release-safe-v1:88928",
+        "echo-freesound-release-safe-v1:88931",
+        "echo-freesound-release-safe-v1:88932",
+        "echo-freesound-release-safe-v1:88933",
+        "echo-freesound-release-safe-v1:88935",
+        "echo-freesound-release-safe-v1:88936",
+        "echo-freesound-release-safe-v1:88937",
+        "echo-freesound-release-safe-v1:88941",
+        "echo-freesound-release-safe-v1:88942",
+        "echo-freesound-release-safe-v1:88945",
+        "echo-freesound-release-safe-v1:88948",
+        "echo-freesound-release-safe-v1:88949",
+        "echo-freesound-release-safe-v1:88950",
+        "echo-freesound-release-safe-v1:89887",
+        "echo-freesound-release-safe-v1:89888",
+        "echo-freesound-release-safe-v1:89889",
+        "echo-freesound-release-safe-v1:89890",
+        "echo-freesound-release-safe-v1:89891",
+        "echo-freesound-release-safe-v1:89894",
+        "echo-freesound-release-safe-v1:89895",
+        "echo-freesound-release-safe-v1:89900",
+        "echo-freesound-release-safe-v1:89901",
+        "echo-freesound-release-safe-v1:89902",
+        "echo-freesound-release-safe-v1:89903",
+        "echo-freesound-release-safe-v1:89904",
+        "echo-freesound-release-safe-v1:89905",
+        "echo-freesound-release-safe-v1:977",
+        "echo-freesound-release-safe-v1:979",
+        "echo-freesound-release-safe-v1:980",
+        "echo-freesound-release-safe-v1:981"
+      ],
+      "recognized_original_splits": [
+        "test",
+        "train",
+        "validation"
+      ],
+      "recording_group_id": "global-acoustic:b0a528766144425812e3"
+    }
   ],
-  "recording_family_assignment_count": 993,
-  "schema_version": "echo.split-integrity.v1",
+  "quarantine_identity_sha256": "1679540dd50eea39200f95ee98130d2e38acd0d21ca73edf7eac04040bb42aaf",
+  "quarantined_asset_count": 62,
+  "quarantined_recording_family_count": 3,
+  "ready_candidate_asset_count": 1078,
+  "recording_family_assignment_count": 996,
+  "schema_version": "echo.split-integrity.v2",
   "split_asset_counts": {
-    "UNASSIGNED": 62,
+    "quarantine": 62,
     "test": 458,
     "train": 330,
     "validation": 228
   },
-  "split_policy_sha256": "e1b05b687248b509f1f3c2868f5e16ade87987efb9e8db9d739c13c4b3ce34a2",
-  "status": "FAIL"
+  "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
+  "status": "PASS"
 }

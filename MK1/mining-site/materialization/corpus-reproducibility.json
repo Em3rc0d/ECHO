@@ -1,11 +1,12 @@
 {
-  "freeze_1_identity": "920c591429a22e81bfe193933c6db9b653a109988b299ed26e50d18c3e675fda",
-  "freeze_2_identity": "920c591429a22e81bfe193933c6db9b653a109988b299ed26e50d18c3e675fda",
+  "freeze_1_identity": "78c1ca80dcd794d5286bdc4dc63a7f2bb9b10a4712d613f81dca875468e25e76",
+  "freeze_2_identity": "78c1ca80dcd794d5286bdc4dc63a7f2bb9b10a4712d613f81dca875468e25e76",
   "gap_codes": [
     "UPSTREAM_FREEZE_NOT_ELIGIBLE"
   ],
   "identity_match": true,
-  "note": "Workflow performs a second process-level deterministic rebuild before persistence; certificate review still binds identities to the exact evidence commit.",
-  "schema_version": "echo.corpus-reproducibility.v1",
+  "note": "Both freezes use identical whole-group split quarantine semantics; final certificate review binds these identities to exact durable evidence.",
+  "quarantine_identity_sha256": "1679540dd50eea39200f95ee98130d2e38acd0d21ca73edf7eac04040bb42aaf",
+  "schema_version": "echo.corpus-reproducibility.v2",
   "status": "FAIL"
 }
