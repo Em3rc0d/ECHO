@@ -1,7 +1,6 @@
 {
-  "baseline_commit": "b2fc09b1c98c4c8adcb2fe9dc4db7e1dadc61107",
+  "baseline_commit": "8c547b70d23ce6c592ddd20d55ff37df9fa7fa03",
   "blocking_reason_counts": {
-    "GROUPING_GLOBAL_AUDIT_REQUIRED": 448,
     "LICENSE_NOT_RELEASE_SAFE": 1,
     "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
     "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
@@ -66,6 +65,23 @@
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
+  "global_recording_group_resolution": {
+    "asset_count": 1081,
+    "component_count": 999,
+    "content_deleted": false,
+    "content_merge_performed": false,
+    "cross_source_group_near_duplicate_edge_count": 831,
+    "fallback_asset_count_after": 0,
+    "fallback_asset_count_before": 448,
+    "global_acoustic_component_count": 17,
+    "members_reassigned_to_global_acoustic_component": 97,
+    "near_duplicate_edge_count": 831,
+    "near_duplicate_threshold": 0.02,
+    "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
+    "schema_version": "echo.global-recording-group-resolution.v1",
+    "screened_fallback_source_group_count": 357,
+    "status": "PASS"
+  },
   "hard_negative_counts": {
     "FIRE_ALARM": 34,
     "GLASS_SHATTER": 401,
@@ -126,7 +142,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "bb8fc2293c910de385a47332bd4a8dcea41f84558cb6b7d3ca76a61a4bcd5f8f",
+  "ledger_sha256": "d31a264f4f8cac2c14b78e8bf93d0c02ff3d81b0c814b5340131f73850fe1cbf",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -208,8 +224,8 @@
   },
   "stage_status_counts": {
     "BLOCKED": 1,
-    "READY_FOR_GLOBAL_DEDUP": 632,
-    "REVIEW_REQUIRED": 448
+    "READY_FOR_GLOBAL_DEDUP": 1078,
+    "REVIEW_REQUIRED": 2
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
