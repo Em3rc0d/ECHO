@@ -48,8 +48,11 @@ def evaluate_coverage(
 
     The gate is intentionally conservative. Field-holdout rows are excluded
     from development coverage, explicit confuser mappings are required for
-    hard-negative credit, and duplicate/technical-quality failures prevent a
-    corpus from using repeated or unverified media to satisfy numeric floors.
+    target-specific hard-negative credit, and duplicate/technical-quality
+    failures prevent a corpus from using repeated or unverified media to
+    satisfy numeric floors. A row may be a positive for one target and an
+    explicit hard negative for a different target; same-target positive/HN
+    credit is never allowed. Generic background remains target-free only.
     """
     cfg = _profile(policy, profile)
     materialized = [dict(row) for row in rows]
@@ -85,6 +88,7 @@ def evaluate_coverage(
     for row in development:
         asset_id = str(row.get("asset_id") or "")
         labels = tuple(str(v) for v in (row.get("echo_labels") or []))
+        label_set = set(labels)
         source = str(row.get("source_dataset") or "UNKNOWN")
         group = str(row.get("recording_group_id") or "")
         split = str(row.get("echo_split") or "")
@@ -103,18 +107,29 @@ def evaluate_coverage(
         if not label_provenance:
             missing_label_provenance.append(asset_id)
 
+        # Generic background remains target-free. Positive-bearing assets never
+        # inflate the background floor merely because they are confusers for a
+        # different target.
         if not labels:
             negative_assets += 1
             if group:
                 negative_groups.add(group)
             negative_sources.add(source)
-            confuses = extra.get("confuses", ()) if isinstance(extra, Mapping) else ()
-            if isinstance(confuses, (list, tuple, set)):
-                for target in {str(value) for value in confuses} & set(TARGET_LABELS):
-                    confuser_assets[target] += 1
-                    if group:
-                        confuser_groups[target].add(group)
-                    confuser_sources[target].add(source)
+
+        # Hard-negative roles are target-specific. The canonical ledger permits
+        # a row to be an exact positive for A and an explicit hard negative for
+        # B, while forbidding positive/HN overlap for the same target. Preserve
+        # that contract here instead of discarding valid cross-target confusers.
+        confuses = extra.get("confuses", ()) if isinstance(extra, Mapping) else ()
+        if isinstance(confuses, (list, tuple, set)):
+            eligible_confusers = (
+                {str(value) for value in confuses} & set(TARGET_LABELS)
+            ) - label_set
+            for target in eligible_confusers:
+                confuser_assets[target] += 1
+                if group:
+                    confuser_groups[target].add(group)
+                confuser_sources[target].add(source)
 
         for label in labels:
             if label not in TARGET_LABELS:

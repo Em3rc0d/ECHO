@@ -115,6 +115,55 @@ class CoveragePolicyTests(unittest.TestCase):
         self.assertEqual(result["status"], "FAIL")
         self.assertIn("FIRE_ALARM_HARD_NEGATIVE_ASSETS_BELOW_MIN", result["gap_codes"])
 
+    def test_positive_for_one_target_can_be_hard_negative_for_another(self) -> None:
+        rows = self._solid_rows()
+
+        # Remove VEHICLE_HORN confuser credit from all target-free negatives so
+        # the horn HN floor can only be closed by exact SIREN positives.
+        for row in rows:
+            if not row.get("echo_labels"):
+                row["extra"]["confuses"] = [
+                    label for label in row["extra"]["confuses"]
+                    if label != "VEHICLE_HORN"
+                ]
+
+        # Ten SIREN recording groups x two assets, alternating two sources,
+        # satisfy the existing horn HN floor without changing SIREN positives.
+        siren_rows = [row for row in rows if row.get("echo_labels") == ["SIREN"]][:20]
+        self.assertEqual(len({row["recording_group_id"] for row in siren_rows}), 10)
+        self.assertEqual(len({row["source_dataset"] for row in siren_rows}), 2)
+        for row in siren_rows:
+            row["extra"]["confuses"] = ["VEHICLE_HORN"]
+
+        result = evaluate_coverage(rows, policy=self.policy, profile="release_safe")
+        self.assertEqual(result["status"], "PASS")
+        horn_hn = result["classes"]["VEHICLE_HORN"]["hard_negatives"]
+        self.assertEqual(horn_hn["asset_count"], 20)
+        self.assertEqual(horn_hn["independent_group_count"], 10)
+        self.assertEqual(horn_hn["source_count"], 2)
+        # Positive-bearing cross-target confusers are not generic background.
+        self.assertEqual(result["background"]["asset_count"], 200)
+        self.assertEqual(result["background"]["independent_group_count"], 100)
+
+    def test_same_target_positive_cannot_receive_hard_negative_credit(self) -> None:
+        rows = self._solid_rows()
+
+        # Remove pure-negative SIREN credit, then try to replace it by marking
+        # SIREN positives as SIREN confusers. Same-target credit must be ignored.
+        for row in rows:
+            if not row.get("echo_labels"):
+                row["extra"]["confuses"] = [
+                    label for label in row["extra"]["confuses"]
+                    if label != "SIREN"
+                ]
+        for row in [row for row in rows if row.get("echo_labels") == ["SIREN"]][:20]:
+            row["extra"]["confuses"] = ["SIREN"]
+
+        result = evaluate_coverage(rows, policy=self.policy, profile="release_safe")
+        self.assertEqual(result["status"], "FAIL")
+        self.assertIn("SIREN_HARD_NEGATIVE_ASSETS_BELOW_MIN", result["gap_codes"])
+        self.assertEqual(result["classes"]["SIREN"]["hard_negatives"]["asset_count"], 0)
+
     def test_exact_duplicates_fail_solidity_gate(self) -> None:
         rows = self._solid_rows()
         rows[1]["sha256"] = rows[0]["sha256"]
