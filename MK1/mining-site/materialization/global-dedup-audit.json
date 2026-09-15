@@ -2,11 +2,11 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1163,
+  "fingerprinted_asset_count": 1080,
   "gap_codes": [
     "NEAR_DUPLICATE_CANDIDATES_REQUIRE_GROUP_OR_REVIEW"
   ],
-  "ledger_sha256": "de720c814c4aca192119d8c790ce9bac7539897d567789776c0ef69a38a4a02e",
+  "ledger_sha256": "cefee139faf14f0a05853edbb29e1cba3883ef73c318800945a1a185484bbdaa",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 500,
@@ -39,12 +39,6 @@
       "distance": 0.00560662,
       "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2039",
       "right": "echo-freesound-release-safe-v1:89901",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01847426,
-      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2249",
-      "right": "echo-freesound-release-safe-v1:201718",
       "same_recording_group": false
     },
     {
@@ -417,12 +411,6 @@
       "distance": 0.01133578,
       "left": "echo-freesound-release-safe-v1:194685",
       "right": "echo-freesound-release-safe-v1:84702",
-      "same_recording_group": false
-    },
-    {
-      "distance": 0.01421569,
-      "left": "echo-freesound-release-safe-v1:201718",
-      "right": "echo-freesound-release-safe-v1:258169",
       "same_recording_group": false
     },
     {
@@ -3010,13 +2998,25 @@
       "left": "echo-freesound-release-safe-v1:88927",
       "right": "echo-freesound-release-safe-v1:88942",
       "same_recording_group": false
+    },
+    {
+      "distance": 0.01783088,
+      "left": "echo-freesound-release-safe-v1:88927",
+      "right": "echo-freesound-release-safe-v1:88945",
+      "same_recording_group": false
+    },
+    {
+      "distance": 0.00465686,
+      "left": "echo-freesound-release-safe-v1:88927",
+      "right": "echo-freesound-release-safe-v1:88948",
+      "same_recording_group": false
     }
   ],
   "near_duplicate_threshold": 0.02,
-  "near_duplicate_unresolved_cross_group_count": 833,
+  "near_duplicate_unresolved_cross_group_count": 831,
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1163,
+  "scope_asset_count": 1080,
   "status": "FAIL"
 }

@@ -8,7 +8,7 @@
     "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS",
     "UPSTREAM_COVERAGE_NOT_PASS"
   ],
-  "ledger_sha256": "de720c814c4aca192119d8c790ce9bac7539897d567789776c0ef69a38a4a02e",
+  "ledger_sha256": "cefee139faf14f0a05853edbb29e1cba3883ef73c318800945a1a185484bbdaa",
   "schema_version": "echo.corpus-freeze-validation.v1",
   "semantic_identity_sha256": "099ee4b3442163688b565dc4a220ac9bddf3db699e77c5da9a38663031f9af68",
   "split_assignment_sha256": "0ce50eb05604c6cd49c954ca60e3a6d22acece145d5dbb94b609824611d2f173",

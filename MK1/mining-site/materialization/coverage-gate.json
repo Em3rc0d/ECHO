@@ -532,7 +532,7 @@
     "VEHICLE_HORN_HARD_NEGATIVE_SOURCES_BELOW_MIN",
     "VEHICLE_HORN_SOURCE_CONCENTRATION_TOO_HIGH"
   ],
-  "ledger_sha256": "de720c814c4aca192119d8c790ce9bac7539897d567789776c0ef69a38a4a02e",
+  "ledger_sha256": "cefee139faf14f0a05853edbb29e1cba3883ef73c318800945a1a185484bbdaa",
   "note": "Coverage uses only release-safe READY_FOR_GLOBAL_DEDUP rows and underlying acoustic source families, never dataset wrappers.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
