@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import base64
 import io
 import json
 from pathlib import Path
@@ -63,11 +64,37 @@ class SignatureSoundsGlassAcquisitionTests(unittest.TestCase):
         self.assertFalse(ok)
         self.assertIn("CC0_MARKER_MISSING", missing)
 
-    def test_mediafire_transport_parser_requires_direct_zip(self) -> None:
-        html = '<a href="https://download123.mediafire.com/token/file/Glass%2BSmash%2BOne%2BShots.zip">Download</a>'
-        url = direct_mediafire_download_url(html)
-        self.assertIn("download123.mediafire.com", url)
-        self.assertIn(".zip", url)
+    def test_mediafire_transport_parser_accepts_download_button_href(self) -> None:
+        direct = "https://download123.mediafire.com/token/file/Glass%2BSmash%2BOne%2BShots.zip"
+        html = f'<a aria-label="Download file" href="{direct}" id="downloadButton">Download</a>'
+        self.assertEqual(direct_mediafire_download_url(html), direct)
+
+    def test_mediafire_transport_parser_accepts_scrambled_download_button(self) -> None:
+        direct = "https://download456.mediafire.com/token/file/Glass%2BSmash%2BOne%2BShots.zip"
+        scrambled = base64.b64encode(direct.encode("utf-8")).decode("ascii")
+        html = f'<a id="downloadButton" data-scrambled-url="{scrambled}">Download</a>'
+        self.assertEqual(direct_mediafire_download_url(html), direct)
+
+    def test_mediafire_transport_parser_accepts_kno_compatibility_value(self) -> None:
+        direct = "https://download789.mediafire.com/token/file/Glass%2BSmash%2BOne%2BShots.zip"
+        html = f'<script>kNO = "{direct}";</script>'
+        self.assertEqual(direct_mediafire_download_url(html), direct)
+
+    def test_mediafire_transport_parser_rejects_off_domain_and_non_zip(self) -> None:
+        with self.assertRaises(ValueError):
+            direct_mediafire_download_url(
+                '<a id="downloadButton" href="https://downloads.example.com/Glass_Smash_One_Shots.zip">Download</a>'
+            )
+        with self.assertRaises(ValueError):
+            direct_mediafire_download_url(
+                '<a id="downloadButton" href="https://download123.mediafire.com/token/file/not-a-zip.bin">Download</a>'
+            )
+        with self.assertRaises(ValueError):
+            direct_mediafire_download_url(
+                '<a id="downloadButton" href="http://download123.mediafire.com/token/file/Glass.zip">Download</a>'
+            )
+
+    def test_mediafire_transport_parser_does_not_accept_landing_page_as_archive(self) -> None:
         with self.assertRaises(ValueError):
             direct_mediafire_download_url('<a href="https://www.mediafire.com/file/x/file">landing only</a>')
 
