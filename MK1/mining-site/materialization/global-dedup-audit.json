@@ -2,9 +2,9 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1123,
+  "fingerprinted_asset_count": 1124,
   "gap_codes": [],
-  "ledger_sha256": "a98cf1fc0db20dd886d9259b8d0c8bdfa34746ea4d1a6f7efa0394311409aef4",
+  "ledger_sha256": "d97d90809670fbfee2d1a93e90eb7ac50fa649460625e43e0d7977ec473b4981",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 500,
@@ -3015,6 +3015,6 @@
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1123,
+  "scope_asset_count": 1124,
   "status": "PASS"
 }
