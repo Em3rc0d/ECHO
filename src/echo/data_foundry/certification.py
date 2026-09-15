@@ -8,6 +8,10 @@ CERTIFICATE_SCHEMA_VERSION = "echo.cert.v1"
 CORPUS_CERTIFICATE_ID = "CERT-MK1-DF-CORPUS-001"
 CORPUS_CERTIFICATE_VERSION = "1.0.0"
 READINESS_ID = "EMP-MK1-CORPUS-READINESS-001"
+DATASET_EMPIRICAL_ID = "EMP-DATASET-001"
+DATA_QUALITY_EMPIRICAL_ID = "EMP-DATA-QUALITY-001"
+TOOLCHAIN_CERTIFICATE_ID = "CERT-MK1-DF-TOOLCHAIN-004"
+DOCUMENTATION_CERTIFICATE_ID = "CERT-DOC-006"
 FREE_TIER_POLICY_ID = "ECHO-FREE-TIER-001"
 CERTIFICATE_PATH = "MK1/mining-site/materialization/cert-mk1-df-corpus-001.json"
 CERTIFICATE_ONLY_GAP = "CORPUS_CERTIFICATE_NOT_CERTIFIED"
@@ -91,11 +95,20 @@ def build_corpus_certificate(
     git_commit: str,
     generated_at_utc: str,
     free_tier_policy_sha256: str,
+    toolchain_certificate_sha256: str,
+    documentation_certificate_sha256: str,
     github_run_id: str | None = None,
 ) -> dict[str, Any]:
     failures = validate_pre_certificate_readiness(readiness)
     if failures:
         raise ValueError("; ".join(failures))
+    for name, digest in (
+        ("free-tier policy", free_tier_policy_sha256),
+        ("toolchain certificate", toolchain_certificate_sha256),
+        ("documentation certificate", documentation_certificate_sha256),
+    ):
+        if len(str(digest)) != 64:
+            raise ValueError(f"{name} sha256 is missing or malformed")
 
     nodes = readiness["closure_evidence_nodes"]
     evidence = [
@@ -108,6 +121,30 @@ def build_corpus_certificate(
         for node, row in sorted(nodes.items())
     ]
 
+    empirical_outputs = {
+        DATASET_EMPIRICAL_ID: {
+            "status": "PASS",
+            "basis": [
+                "canonical_ledger_summary",
+                "coverage_gate",
+                "freeze_1_validation",
+                "freeze_2_validation",
+                "reproducibility",
+            ],
+            "claim": "Exact admitted real corpus identity/counts/durations/groups are frozen and reproducible for this evidence identity.",
+        },
+        DATA_QUALITY_EMPIRICAL_ID: {
+            "status": "PASS",
+            "basis": [
+                "global_dedup_audit",
+                "recording_family_audit",
+                "split_integrity",
+                "coverage_gate",
+            ],
+            "claim": "Duplicate, grouping, split, coverage and diversity closure evidence passed for this evidence identity.",
+        },
+    }
+
     payload: dict[str, Any] = {
         "schema_version": CERTIFICATE_SCHEMA_VERSION,
         "artifact_id": CORPUS_CERTIFICATE_ID,
@@ -115,7 +152,11 @@ def build_corpus_certificate(
         "status": "CERTIFIED",
         "scope": "MK1 release_safe frozen acoustic corpus",
         "documentation": [
-            {"certificate": "CERT-DOC-005"},
+            {
+                "certificate": DOCUMENTATION_CERTIFICATE_ID,
+                "path": "governance/DOCUMENTATION-AUDIT-2026-09-14-CORPUS-CERTIFICATION.md",
+                "sha256": documentation_certificate_sha256,
+            },
             {"path": "governance/CERTIFICATION-DAG.md"},
             {"path": "MK1/build/data-foundry/CORPUS-SOLIDITY-GATE.md"},
             {"path": "MK1/build/data-foundry/CORPUS-FREEZE.md"},
@@ -126,6 +167,12 @@ def build_corpus_certificate(
             "result": "PASS",
         },
         "inputs": {
+            "toolchain_certificate": {
+                "id": TOOLCHAIN_CERTIFICATE_ID,
+                "path": "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-004.md",
+                "sha256": toolchain_certificate_sha256,
+                "status": "CERTIFIED",
+            },
             "corpus_readiness": {
                 "id": READINESS_ID,
                 "evidence_identity_sha256": readiness["evidence_identity_sha256"],
@@ -136,27 +183,20 @@ def build_corpus_certificate(
             ),
             "coverage_policy": dict(readiness["inputs"]["coverage_policy"]),
         },
+        "empirical_outputs": empirical_outputs,
         "outputs": [{"path": CERTIFICATE_PATH}],
         "criteria": [
-            {
-                "id": "CORPUS_READINESS_ELIGIBLE",
-                "result": "PASS",
-            },
-            {
-                "id": "ALL_CLOSURE_EVIDENCE_PASS",
-                "result": "PASS",
-            },
-            {
-                "id": "NO_OPEN_GAPS_EXCEPT_CERTIFICATE",
-                "result": "PASS",
-            },
-            {
-                "id": "ECHO_FREE_TIER_001",
-                "result": "PASS",
-            },
+            {"id": "CORPUS_READINESS_ELIGIBLE", "result": "PASS"},
+            {"id": DATASET_EMPIRICAL_ID, "result": "PASS"},
+            {"id": DATA_QUALITY_EMPIRICAL_ID, "result": "PASS"},
+            {"id": "ALL_CLOSURE_EVIDENCE_PASS", "result": "PASS"},
+            {"id": "NO_OPEN_GAPS_EXCEPT_CERTIFICATE", "result": "PASS"},
+            {"id": TOOLCHAIN_CERTIFICATE_ID, "result": "PASS"},
+            {"id": DOCUMENTATION_CERTIFICATE_ID, "result": "PASS"},
+            {"id": "ECHO_FREE_TIER_001", "result": "PASS"},
         ],
         "provenance": {
-            "git_commit": git_commit,
+            "evidence_baseline_commit": git_commit,
             "generated_at_utc": generated_at_utc,
             "github_run_id": github_run_id,
         },
@@ -170,8 +210,9 @@ def build_corpus_certificate(
             "coverage policy changes",
             "any dedup, recording-family, split, coverage, freeze, or reproducibility evidence changes",
             "source, asset, rights, mapping, grouping, fingerprint, or freeze semantics change",
+            "the certified Foundry toolchain ancestor changes or invalidates",
+            "the documentation coherence ancestor changes or invalidates",
             "ECHO-FREE-TIER-001 is violated",
-            "a required documentation ancestor becomes stale or invalidated",
         ],
         "hash_contract": "certificate_sha256 is SHA-256 over canonical JSON of this object with certificate_sha256 omitted",
     }
@@ -209,16 +250,28 @@ def validate_corpus_certificate(
     elif readiness_input.get("evidence_identity_sha256") != evidence_identity_sha256:
         failures.append("certificate evidence identity does not match current readiness")
 
+    toolchain = inputs.get("toolchain_certificate") if isinstance(inputs, Mapping) else None
+    if not isinstance(toolchain, Mapping) or toolchain.get("id") != TOOLCHAIN_CERTIFICATE_ID:
+        failures.append("required toolchain certificate ancestor is missing")
+
+    empirical = certificate.get("empirical_outputs")
+    if not isinstance(empirical, Mapping):
+        failures.append("empirical_outputs are missing")
+    else:
+        for node in (DATASET_EMPIRICAL_ID, DATA_QUALITY_EMPIRICAL_ID):
+            row = empirical.get(node)
+            if not isinstance(row, Mapping) or str(row.get("status") or "").upper() != "PASS":
+                failures.append(f"{node} is not PASS")
+
     criteria = certificate.get("criteria")
     if not isinstance(criteria, list) or not criteria:
         failures.append("certificate criteria are missing")
-    else:
-        if any(
-            not isinstance(row, Mapping)
-            or str(row.get("result") or "").upper() != "PASS"
-            for row in criteria
-        ):
-            failures.append("certificate contains a non-PASS criterion")
+    elif any(
+        not isinstance(row, Mapping)
+        or str(row.get("result") or "").upper() != "PASS"
+        for row in criteria
+    ):
+        failures.append("certificate contains a non-PASS criterion")
 
     claimed_hash = str(certificate.get("certificate_sha256") or "")
     if len(claimed_hash) != 64:
