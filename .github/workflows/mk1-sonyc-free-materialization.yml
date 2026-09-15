@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
@@ -94,7 +94,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -120,7 +120,15 @@ jobs:
         run: |
           git config user.name 'echo-data-foundry-bot'
           git config user.email '123134857+Em3rc0d@users.noreply.github.com'
-          git pull --rebase origin main
+          git fetch origin main
+          RUN_SHA="$(git rev-parse HEAD)"
+          REMOTE_MAIN_SHA="$(git rev-parse origin/main)"
+          echo "run_sha=$RUN_SHA"
+          echo "remote_main_sha=$REMOTE_MAIN_SHA"
+          if [[ "$RUN_SHA" != "$REMOTE_MAIN_SHA" ]]; then
+            echo 'main moved after this SONYC run started; refusing to persist stale evidence'
+            exit 1
+          fi
           git add \
             MK1/mining-site/materialization/sonyc-v2.3-full-materialization-summary.json \
             MK1/mining-site/materialization/sonyc-v2.3-shard-digests.json \
