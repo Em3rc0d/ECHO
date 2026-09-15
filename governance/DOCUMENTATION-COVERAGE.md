@@ -1,34 +1,36 @@
 # Documentation Coverage Audit
 
 **Status:** `PASS_CURRENT_HEAD`  
-**Current certificate:** `CERT-DOC-008`  
-**Current Markdown corpus:** `212 files`  
-**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-15-GROUPING-CLOSURE-008.md`
+**Current certificate:** `CERT-DOC-009`  
+**Current Markdown corpus:** `213 files`  
+**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-15-SPLIT-CLOSURE-009.md`
 
 ## Rule
 
-ECHO is documentation-first and evidence-first. Documentation preserves the distinction `FACT/EVIDENCE`, `INFERENCE`, `HYPOTHESIS`, `DECISION`, and `TARGET`. Green CI never manufactures empirical corpus/model evidence. All current truth inherits `ECHO-FREE-TIER-001`.
+ECHO is documentation-first and evidence-first. Documentation preserves `FACT/EVIDENCE`, `INFERENCE`, `HYPOTHESIS`, `DECISION`, and `TARGET`. Green CI does not manufacture corpus/model evidence. All truth inherits `ECHO-FREE-TIER-001`.
 
 ## Certificate lineage
 
 ```text
-CERT-DOC-001..006  historical / invalidated
-CERT-DOC-007       historical / 211 files / invalidated by grouping cascade
-CERT-DOC-008       current / 212 files / CERTIFIED
+CERT-DOC-001..007  historical / invalidated
+CERT-DOC-008       historical / 212 files / invalidated by split cascade
+CERT-DOC-009       current / 213 files / CERTIFIED
 ```
 
-DOC-008 adds exactly one Markdown record relative to DOC-007: `DOCUMENTATION-AUDIT-2026-09-15-GROUPING-CLOSURE-008.md`.
+DOC-009 adds exactly one Markdown record relative to DOC-008: `DOCUMENTATION-AUDIT-2026-09-15-SPLIT-CLOSURE-009.md`.
 
 ## Current audited truth
 
 ```text
-CERT-DOC-008                    = CERTIFIED
+CERT-DOC-009                    = CERTIFIED
 CERT-MK1-DF-TOOLCHAIN-004       = INVALIDATED
 CERT-MK1-DF-TOOLCHAIN-005       = CANDIDATE
 CERT-MK1-DF-SONYC-001           = CERTIFIED
+CANONICAL_FINGERPRINTS           = PASS 1081/1081
 GLOBAL_DEDUP                     = PASS
 RECORDING_FAMILY_AUDIT           = PASS
-SPLIT_INTEGRITY                  = FAIL
+SPLIT_INTEGRITY                  = PASS
+COVERAGE                         = FAIL
 EMP-MK1-CORPUS-READINESS-001    = BLOCKED
 CERT-MK1-DF-CORPUS-001          = OPEN
 modeling_allowed                 = false
@@ -36,24 +38,26 @@ Benchmark A/B/C                  = LOCKED
 ECHO-FREE-TIER-001               = PASS
 ```
 
-The authoritative readiness artifact is `MK1/mining-site/materialization/corpus-closure-readiness.json` at `8e7702a2bf629642f78859763dabbe09df03df02`, evidence identity `fcd07c11d3291d5a78ee28cae93e42de0f16e78522720e78fffb5e71b4bcf129`.
+Authoritative readiness is `MK1/mining-site/materialization/corpus-closure-readiness.json` at `589e7f4affed39e1ffcf6f50602d79587560bbb3`, evidence identity `c20eab44bae7cb10e7038833fdf46741d9d4c1574ebfe1b65e47dd6db160249b`.
 
-Canonical ledger truth is 1081 corpus-facing rows with 1081/1081 canonical fingerprints. Global grouping resolved all 448 former fallback grouping blockers. Fresh dedup and recording-family audits are PASS. Three row-level rights/semantic blockers and three protected-split conflict components remain fail-closed.
+Split integrity now passes via deterministic whole-group quarantine: three conflicting acoustic groups / 62 assets remain evidence but do not enter development coverage or frozen membership. The current development set has 1016 assets.
+
+Three ledger rights/semantic rows remain fail-closed. Coverage remains the empirical bottleneck: FIRE_ALARM/TIRE_SQUEAL positives, GLASS_SHATTER source concentration, background source diversity and per-target hard-negative source/asset deficits.
 
 ## Automated governance
 
-`scripts/check_documentation_governance.py` validates:
+`scripts/check_documentation_governance.py` enforces:
 
-- immutable promise and `ECHO-FREE-TIER-001`;
-- DOC-008 current / DOC-007 invalidated;
-- SONYC-001 scoped certification;
-- TOOLCHAIN-004 invalidated / TOOLCHAIN-005 candidate;
-- exact audited ledger and readiness identities;
-- global dedup and recording-family PASS;
-- split FAIL with exactly three audited conflicts;
+- immutable promise and free-tier ancestor;
+- DOC-009 current / DOC-008 invalidated;
+- SONYC-001 certified and TOOLCHAIN-005 still candidate;
+- exact ledger/readiness identities;
+- dedup/family/split PASS;
+- exactly 3 quarantined groups / 62 quarantined assets / 1016 eligible assets;
+- exact 19 readiness gaps;
 - corpus certificate OPEN and `modeling_allowed=false`;
-- 212-file Markdown inventory and absence of merge-conflict markers.
+- 213 Markdown files and no merge-conflict markers.
 
 ## Invalidation
 
-DOC-008 becomes stale if the 212-file inventory, machine-readable ledger/closure/readiness evidence, certificate/policy truth, rights/semantics/grouping/split/coverage/freeze logic, immutable promise, or free-tier boundary changes without a fresh audit.
+DOC-009 becomes stale if the 213-file inventory, durable ledger/closure/readiness evidence, certificate/policy truth, rights/semantics/grouping/split/coverage/freeze logic, immutable promise, or `ECHO-FREE-TIER-001` changes without a fresh audit.
