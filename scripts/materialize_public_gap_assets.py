@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Materialize small public FIRE_ALARM/TIRE_SQUEAL gap assets.
+"""Materialize small public release-safe gap and confuser assets.
 
 Raw media is written to a CI scratch/artifact directory, never committed to Git.
 The repository receives hashes, probes, canonical fingerprints and license-page
-evidence. Admission into a frozen corpus still requires semantic review,
+evidence. Admission into a frozen corpus still requires governed semantics,
 grouping, global deduplication and the corpus solidity gate.
 """
 
@@ -24,6 +24,7 @@ from echo.data_foundry.probe import probe_audio
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/data_foundry/gap_source_candidates.v1.json"
+WIKIMEDIA_CONFUSERS = ROOT / "configs/data_foundry/wikimedia_confusers.v1.json"
 OUTPUT_ROOT = Path(os.environ.get("ECHO_GAP_ASSET_ROOT", ROOT / ".materialized-gap-assets"))
 REPORT = ROOT / "MK1/mining-site/materialization/public-gap-assets-report.json"
 
@@ -64,31 +65,46 @@ def license_marker_ok(source_id: str, expected_license: str, page_text: str) -> 
     if source_id == "echo-bigsoundbank-cc0-gap-v1":
         return "cc0" in lower and ("public domain" in lower or "free and royalty-free" in lower)
     if expected_license.casefold() in {"public-domain", "public domain", "cc0"}:
-        return "public domain" in lower or "cc0" in lower
+        return "public domain" in lower or "cc0" in lower or "cc-zero" in lower
     if "cc-by-sa" in expected_license.casefold():
         return "share alike" in lower or "cc-by-sa" in lower or "attribution-share alike" in lower
     return False
 
 
-def iter_assets(config: dict):
+def iter_assets(config: dict, wikimedia_confusers: dict):
     for source_id in ("echo-bigsoundbank-cc0-gap-v1", "echo-wikimedia-fire-alarm-v1"):
         source = config["sources"][source_id]
         for target, rows in source["targets"].items():
             for row in rows:
                 yield source_id, source, target, row
 
+    source_id = str(wikimedia_confusers.get("source_dataset") or "")
+    if source_id != "echo-wikimedia-fire-alarm-v1":
+        raise ValueError(f"unsupported Wikimedia confuser source_dataset: {source_id}")
+    source = config["sources"][source_id]
+    for row in wikimedia_confusers.get("assets") or []:
+        hard_negative_for = [str(value) for value in (row.get("hard_negative_for") or [])]
+        if not hard_negative_for:
+            raise ValueError(f"Wikimedia confuser missing hard_negative_for: {row.get('asset_key')}")
+        yield source_id, source, hard_negative_for[0], row
+
 
 def main() -> int:
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
+    wikimedia_confusers = json.loads(WIKIMEDIA_CONFUSERS.read_text(encoding="utf-8"))
+    if wikimedia_confusers.get("schema_version") != "echo.wikimedia-confusers.v1":
+        raise SystemExit("unsupported Wikimedia confuser config schema")
+
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     rows = []
     failures = []
 
-    for source_id, source, target, row in iter_assets(config):
+    for source_id, source, target, row in iter_assets(config, wikimedia_confusers):
         asset_key = str(row["asset_key"])
         page_url = str(row["url"])
         media_url = str(row["media_url"])
         expected_license = str(row.get("license") or ("CC0" if source_id == "echo-bigsoundbank-cc0-gap-v1" else "UNKNOWN"))
+        hard_negative_for = sorted({str(value) for value in (row.get("hard_negative_for") or [])})
         try:
             page_bytes, _, resolved_page = fetch(page_url)
             page_text = page_bytes.decode("utf-8", errors="replace")
@@ -110,6 +126,7 @@ def main() -> int:
                 "source_dataset": source_id,
                 "target": target,
                 "semantic": row.get("semantic"),
+                "hard_negative_for": hard_negative_for,
                 "recording_family": row.get("recording_family"),
                 "license_id": expected_license,
                 "page_url": page_url,
@@ -123,13 +140,18 @@ def main() -> int:
                 "local_relpath": str(path.relative_to(OUTPUT_ROOT)),
                 "audio_probe": probe.to_dict(),
                 "canonical_fingerprint": fingerprint,
-                "admission_status": "CANDIDATE_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED",
+                "admission_status": (
+                    "CANDIDATE_REAL_BYTES_MATERIALIZED_GOVERNED_HARD_NEGATIVE"
+                    if hard_negative_for
+                    else "CANDIDATE_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED"
+                ),
             })
         except Exception as exc:
             failures.append({
                 "asset_key": asset_key,
                 "source_dataset": source_id,
                 "target": target,
+                "hard_negative_for": hard_negative_for,
                 "error": f"{type(exc).__name__}:{exc}",
             })
 
@@ -141,7 +163,7 @@ def main() -> int:
         "failure_count": len(failures),
         "assets": sorted(rows, key=lambda value: (value["source_dataset"], value["target"], value["asset_key"])),
         "failures": failures,
-        "certification_note": "Materialized bytes are candidates only. Fingerprinting closes codec-normalized evidence capture, but semantic review/group/global dedup/rights/coverage gates still control admission.",
+        "certification_note": "Materialized bytes are candidates only. Explicit hard-negative roles remain governed by versioned config; fingerprinting closes codec-normalized evidence capture, but grouping/global dedup/rights/coverage gates still control admission.",
     }
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
