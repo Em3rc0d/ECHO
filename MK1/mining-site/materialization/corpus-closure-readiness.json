@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "1183867f2015d3eb19b48afa34886628e8ef767a01d14847a15f1646217959f9",
+      "sha256": "23e7c2e218eeb388b4a3bf29eee623594d3c402434595ee6d64b6fc4eaae943b",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "9abdd9eb5556bfd9cac867a74324bc6b173590225a63241750e191f8b7b7efda",
+      "sha256": "47e3b62785df9d48083e3fedd7eb78c723bdfe3f71e8ad70093d98068089b2aa",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "6034ac0c7899eaa531162762fb7d6e424deb99b3fe768110ea11faa7998e2f61",
+      "sha256": "da520728a900bd30cefa08b23fb024ccbfd4ae3a104bf964962ff68bb7739b9e",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
-      "pass": false,
+      "pass": true,
       "present": true,
-      "sha256": "a4bb851226f4d64dfef92ee4f6b48c1c4abcf3eaefe6d1050bf9b40475d9fbff",
-      "status": "FAIL"
+      "sha256": "79b68ebdf8b2aff28d0364410e5a65bebb7cc45785174a1dbba35e93b234d56b",
+      "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
-      "pass": false,
+      "pass": true,
       "present": true,
-      "sha256": "4fe260326245f4cd290f6c2e0c6146887d67e9b21eeeace406ddc7ebc1ec7990",
-      "status": "FAIL"
+      "sha256": "4e1cf0a2ffa00e0e4ab79036921d4367f515a18a09aaa530cd6b5ac089eb63b9",
+      "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "cea66add9e786c247f26ed935bedbc44e405386fa173675efb763520668a0d25",
+      "sha256": "9f82d32bc062c07aa1592b29b14cc6d89a8911982b3ed400c1135bc17121cbdf",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": false,
       "present": true,
-      "sha256": "84913ba5a33db6287c454e46f449367929788be91c6795fa9b2962d53a3526f3",
+      "sha256": "aba6b6645773571161873f274035e58ffe79b205a2f5f39941b7a450ea0c4c85",
       "status": "FAIL"
     }
   },
@@ -55,7 +55,7 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "6582baef9435283c4e70c25b04c211fb3cf107e752782dfbb9066b897fefff0e",
+  "evidence_identity_sha256": "fcd07c11d3291d5a78ee28cae93e42de0f16e78522720e78fffb5e71b4bcf129",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -66,12 +66,9 @@
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
     "GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2",
-    "GLOBAL_DEDUP_AUDIT_NOT_PASS",
-    "LEDGER_GROUPING_GLOBAL_AUDIT_REQUIRED_448",
     "LEDGER_LICENSE_NOT_RELEASE_SAFE_1",
     "LEDGER_SEMANTIC_STATUS_CONFLICT_FIRE_ALARM_1",
     "LEDGER_SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL_1",
-    "RECORDING_FAMILY_AUDIT_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
     "SIREN_HARD_NEGATIVE_SOURCES_1_LT_2",
     "SPLIT_INTEGRITY_NOT_PASS",
@@ -83,10 +80,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "b2fc09b1c98c4c8adcb2fe9dc4db7e1dadc61107",
+      "baseline_commit": "8c547b70d23ce6c592ddd20d55ff37df9fa7fa03",
       "entry_count": 1081,
-      "ledger_sha256": "bb8fc2293c910de385a47332bd4a8dcea41f84558cb6b7d3ca76a61a4bcd5f8f",
-      "sha256": "fbe9b0899b5e665573d45d6391aa115f4b66d7c03ee76aa6da2a23639c6b92f3"
+      "ledger_sha256": "d31a264f4f8cac2c14b78e8bf93d0c02ff3d81b0c814b5340131f73850fe1cbf",
+      "sha256": "0242eb8e4ba8c1196bfae0cff172de8e62ba3489b561fb20b341a145a70379a9"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -95,7 +92,6 @@
     }
   },
   "ledger_blocking_reason_counts": {
-    "GROUPING_GLOBAL_AUDIT_REQUIRED": 448,
     "LICENSE_NOT_RELEASE_SAFE": 1,
     "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
     "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
