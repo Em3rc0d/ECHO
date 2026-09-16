@@ -2,7 +2,7 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-011`
+**Documentation ancestor:** `CERT-DOC-012`
 
 `CERTIFIED` is always scope-bounded. Green CI is execution evidence, not a substitute for missing empirical corpus evidence. No certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
@@ -22,12 +22,12 @@
 | CERT-MK1-DF-TOOLCHAIN-004 | SONYC persistence/fingerprint Foundry baseline | INVALIDATED | baseline `ab8c47ba...` | invalidated by closure semantic changes |
 | CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | active closure CI + deterministic evidence cascade | certify only after active closure implementation stabilizes |
 | CERT-MK1-DF-SONYC-001 | SONYC v2.3 materialization/fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...` | SONYC evidence/materialization/fingerprint/free-tier changes |
-| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `2088c93d...` | recomputed when input evidence/policy changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `48af9f22...` | recomputed when input evidence/policy changes |
 | EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | release-safe closure | produced only from closed corpus |
 | EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | dedup/group/split/coverage closure | produced only from real closure |
 | CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | dataset + quality + all closure gates + reproducibility + free-tier | material corpus ancestor changes |
-| CERT-DOC-001..010 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
-| CERT-DOC-011 | Current post-Wikimedia corpus-closure documentation truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-011.md` | audited truth changes |
+| CERT-DOC-001..011 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
+| CERT-DOC-012 | Current post-Freesound corpus-closure documentation truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-16-CORPUS-CLOSURE-012.md` | audited truth changes |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized field evidence | closes only with field evidence + upstream authorization |
 | EMP-MODEL-001 | Model winner | BLOCKED | corpus cert + Benchmark A/B/C | cannot run before corpus cert |
 | EMP-THRESH-001 | Event thresholds | BLOCKED | certified corpus + model/replay | cannot run before upstream gates |
@@ -46,22 +46,24 @@ durable evidence          78fc019839f1c9dad1a58a70d439605d887361d7
 
 ## Current durable corpus evidence
 
-At `main@2088c93d65b5d4dff58bb5cdb91b0e76e6288afb`:
+At `main@48af9f220b30f2197aa376bff025195cb0a2a13b`:
 
 ```text
-canonical ledger baseline              0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7
-canonical ledger entries               1162
-canonical fingerprints                 1162 / 1162
+canonical ledger baseline              050f2ebc39fea0d1e6903190ad471fd97d1487dc
+canonical ledger entries               1141
+canonical fingerprints                 1141 / 1141
 missing fingerprints                   0
 unresolved ledger blockers             0
-ledger sha256                          b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab
+ledger sha256                          1ab3712452f42205fe9004f1d6cb9e778297487891bb373e5c42d635854f1d85
 fallback assets after grouping         0
-global acoustic components             14
-members reassigned to components       125
+global acoustic components             12
+members reassigned to components       118
 content merge/delete                   false
 ```
 
-Closed structural gates:
+The current release-safe revalidation is allowed to reduce corpus-facing rows. Stale historical availability/rights evidence is never grandfathered to preserve metrics.
+
+Closed structural gates on this durable baseline:
 
 ```text
 global-dedup-audit.json       PASS / gap_codes=[]
@@ -78,44 +80,45 @@ BACKGROUND
   416 assets / 383 groups / 4 sources                   PASS
 
 FIRE_ALARM
-  12 assets / 9 groups / 311.05767 s / 3 sources
-  BIGSOUNDBANK 4 / FREESOUND 5 / WIKIMEDIA_COMMONS 3
-  train 10/7, validation 2/2, test 0/0
-  HN 206 assets / 206 groups / 4 sources                 PASS
+  19 assets / 16 groups / 460.864037 s / 3 sources
+  BIGSOUNDBANK 4 / FREESOUND 12 / WIKIMEDIA_COMMONS 3
+  train 17/14, validation 2/2, test 0/0
+  HN 202 assets / 202 groups / 4 sources                 PASS
 
 GLASS_SHATTER
-  239 assets / 222 groups
-  BIGSOUNDBANK 6 / FREESOUND 226
+  222 assets / 205 groups
+  BIGSOUNDBANK 6 / FREESOUND 209
   OPENGAMEART_RUBBERDUCK 6 / OPENGAMEART_TILL_BEHREND 1
-  max single-source fraction 0.945607                    FAIL <= 0.80
+  max single-source fraction 0.941441                    FAIL <= 0.80
   HN 428 assets / 408 groups / 2 sources                 PASS
 
 SIREN
-  173 assets / 173 groups
-  HN 245 assets / 244 groups / 4 sources                 PASS
+  169 assets / 169 groups
+  HN 235 assets / 235 groups / 4 sources                 PASS
 
 TIRE_SQUEAL
-  11 assets / 11 groups / 280.544098 s
-  train 9/9, validation 0/0, test 2/2
+  14 assets / 10 groups / 344.600098 s / 2 sources
+  BIGSOUNDBANK 5 / FREESOUND 9
+  train 11/8, validation 0/0, test 3/2
   HN 25 assets / 12 groups / 2 sources                   PASS
 
 VEHICLE_HORN
-  245 assets / 244 groups
-  HN 146 assets / 146 groups / 3 sources                 PASS
+  235 assets / 235 groups
+  HN 142 assets / 142 groups / 3 sources                 PASS
 ```
 
-Coverage is `FAIL` with exactly 17 detailed gap codes: eight FIRE positive/split gaps, one GLASS concentration gap and eight TIRE positive/split gaps. Asset-quality stop lines remain zero.
+Coverage is `FAIL` with exactly 16 detailed gap codes. Background and every governed hard-negative floor remain closed. Asset-quality stop lines remain zero.
 
 ## Machine-readable readiness
 
-At `2088c93d65b5d4dff58bb5cdb91b0e76e6288afb`:
+At `48af9f220b30f2197aa376bff025195cb0a2a13b`:
 
 ```text
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
-evidence_identity_sha256 = 9b6da43da378dbf546a3961c6ed47b8e7218b5135bbe84680f58eecf86030559
+evidence_identity_sha256 = 85dee5596dbc9c88e0430e32b5e8eec7c014d526d132974542b2e4a36a108a50
 ```
 
 Exact readiness gaps:
@@ -125,27 +128,27 @@ CORPUS_CERTIFICATE_NOT_CERTIFIED
 COVERAGE_GATE_GAP_CODES_NOT_EMPTY
 COVERAGE_GATE_NOT_PASS
 COVERAGE_GATE_STATUS_NOT_PASS
-FIRE_ALARM_ASSETS_12_LT_50
+FIRE_ALARM_ASSETS_19_LT_50
 FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
 REPRODUCIBILITY_NOT_PASS
-TIRE_SQUEAL_ASSETS_11_LT_50
+TIRE_SQUEAL_ASSETS_14_LT_50
 ```
 
-## Freesound evidence boundary
+## Near-duplicate implementation review
 
-The next FIRE/TIRE acquisition is not pre-certified. Freesound generated reports must be SHA-bound and rejected if `main` moves. Raw supplemental semantic configuration must not race Canonical Ledger before fresh materialization evidence exists. Candidate rows receive zero empirical corpus credit until they survive materialization → canonical ledger → grouping/dedup → split → coverage → readiness.
+PR #37 is a candidate correction to align execution with `MK1-NEAR-DUP-001`. Broad normalized-RMS proximity remains a screening signal. The branch does not receive corpus credit and does not rewrite the current quarantine. Only a merged implementation followed by the complete durable evidence cascade can establish a new grouping/split/coverage truth.
 
 ## Product critical path
 
 ```text
-CERT-ECHO-000 + CERT-DOC-011 + ECHO-FREE-TIER-001
+CERT-ECHO-000 + CERT-DOC-012 + ECHO-FREE-TIER-001
         ↓
 CERT-MK1-DF-SPEC-001
         ↓
 TOOLCHAIN-005 = CANDIDATE + SONYC-001 = CERTIFIED
         ↓
-GLOBAL DEDUP + RECORDING FAMILY + SPLIT INTEGRITY = PASS
+GLOBAL DEDUP + RECORDING FAMILY + SPLIT INTEGRITY
         ↓
 real coverage / source-diversity acquisition
         ↓
