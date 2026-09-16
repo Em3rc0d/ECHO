@@ -2,9 +2,6 @@ name: MK1 Corpus Closure Evidence
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ['MK1 Canonical Corpus Ledger']
-    types: [completed]
   push:
     branches: [main]
     paths:
@@ -31,13 +28,12 @@ concurrency:
 
 jobs:
   closure-evidence:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
