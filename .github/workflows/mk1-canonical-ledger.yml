@@ -36,13 +36,16 @@ on:
       - 'configs/data_foundry/near_duplicate_policy.v1.json'
       - 'configs/data_foundry/split_policy.v1.json'
       - 'configs/data_foundry/coverage_policy.v1.json'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
       - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
       - 'schemas/data_foundry/corpus-closure-readiness.schema.json'
+      - 'schemas/data_foundry/corpus-certificate.schema.json'
       - 'src/echo/data_foundry/ledger.py'
       - 'src/echo/data_foundry/canonical_fingerprints.py'
       - 'src/echo/data_foundry/coverage_policy.py'
       - 'src/echo/data_foundry/splits.py'
       - 'src/echo/data_foundry/readiness.py'
+      - 'src/echo/data_foundry/certification.py'
       - 'scripts/data_foundry/build_canonical_asset_ledger.py'
       - 'scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py'
@@ -56,9 +59,12 @@ on:
       - 'scripts/data_foundry/build_corpus_closure_evidence.py'
       - 'scripts/data_foundry/apply_split_conflict_quarantine.py'
       - 'scripts/data_foundry/build_corpus_closure_readiness.py'
+      - 'scripts/data_foundry/emit_corpus_certificate.py'
       - 'scripts/check_corpus_pipeline_wiring.py'
       - 'scripts/check_modeling_gate_wiring.py'
       - 'scripts/check_free_tier_boundary.py'
+      - 'MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md'
+      - 'MK1/build/data-foundry/CORPUS-CERTIFICATE-HANDOFF.md'
       - '.github/workflows/mk1-canonical-ledger.yml'
       - '.github/workflows/mk1-corpus-closure-evidence.yml'
       - '.github/workflows/mk1-corpus-readiness.yml'
@@ -96,7 +102,7 @@ jobs:
         run: python scripts/check_free_tier_boundary.py
       - name: Validate pipeline wiring
         run: python scripts/check_corpus_pipeline_wiring.py
-      - name: Validate ledger and readiness contracts
+      - name: Validate ledger, readiness and certificate contracts
         run: |
           python -m json.tool configs/data_foundry/dataset_certification.v1.json >/dev/null
           python -m json.tool configs/data_foundry/source_registry.v1.json >/dev/null
@@ -112,6 +118,7 @@ jobs:
           python -m json.tool configs/data_foundry/coverage_policy.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/corpus-closure-readiness.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/corpus-certificate.schema.json >/dev/null
       - name: Build canonical release-safe corpus ledger
         env:
           PYTHONPATH: src:.
@@ -126,13 +133,37 @@ jobs:
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
-      - name: Build closure evidence and readiness from the same ledger
+      - name: Build closure evidence and execute certificate handoff
         env:
           PYTHONPATH: src:.
         run: |
           python scripts/data_foundry/build_corpus_closure_evidence.py
           python scripts/data_foundry/apply_split_conflict_quarantine.py
+          python scripts/data_foundry/build_corpus_closure_readiness.py --ignore-corpus-certificate --output /tmp/corpus-readiness.pre-cert.json
+          python scripts/data_foundry/emit_corpus_certificate.py --readiness /tmp/corpus-readiness.pre-cert.json --if-eligible
           python scripts/data_foundry/build_corpus_closure_readiness.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          pre = json.loads(Path('/tmp/corpus-readiness.pre-cert.json').read_text())
+          final = json.loads(Path('MK1/mining-site/materialization/corpus-closure-readiness.json').read_text())
+          eligible = (
+              pre.get('eligible_for_certificate_review') is True
+              and pre.get('status') == 'BLOCKED'
+              and pre.get('modeling_allowed') is False
+              and pre.get('gap_codes') == ['CORPUS_CERTIFICATE_NOT_CERTIFIED']
+          )
+          if eligible:
+              assert final.get('status') == 'READY', final
+              assert final.get('modeling_allowed') is True, final
+              assert final.get('gap_codes') == [], final
+              assert final.get('next_authorized_stage') == 'BENCHMARK_A_B_C', final
+              assert (final.get('corpus_certificate') or {}).get('status') == 'CERTIFIED', final
+          else:
+              assert final.get('modeling_allowed') is False, final
+              assert final.get('next_authorized_stage') == 'CORPUS_FOUNDRY_CLOSURE', final
+          print('certificate handoff eligible=', eligible, 'final_status=', final.get('status'))
+          PY
       - name: Verify process-level deterministic full cascade
         env:
           PYTHONPATH: src:.
@@ -153,6 +184,13 @@ jobs:
           for name in "${paths[@]}"; do
             cp "MK1/mining-site/materialization/$name" "/tmp/echo-cascade-first/$name"
           done
+          cp /tmp/corpus-readiness.pre-cert.json /tmp/echo-cascade-first/corpus-readiness.pre-cert.json
+          if [ -f MK1/mining-site/materialization/cert-mk1-df-corpus-001.json ]; then
+            cp MK1/mining-site/materialization/cert-mk1-df-corpus-001.json /tmp/echo-cascade-first/cert-mk1-df-corpus-001.json
+            echo present > /tmp/echo-cascade-first/certificate-state
+          else
+            echo absent > /tmp/echo-cascade-first/certificate-state
+          fi
           python scripts/data_foundry/build_canonical_asset_ledger.py
           python scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
@@ -165,10 +203,18 @@ jobs:
           python scripts/data_foundry/resolve_global_recording_groups.py
           python scripts/data_foundry/build_corpus_closure_evidence.py
           python scripts/data_foundry/apply_split_conflict_quarantine.py
+          python scripts/data_foundry/build_corpus_closure_readiness.py --ignore-corpus-certificate --output /tmp/corpus-readiness.pre-cert.json
+          python scripts/data_foundry/emit_corpus_certificate.py --readiness /tmp/corpus-readiness.pre-cert.json --if-eligible
           python scripts/data_foundry/build_corpus_closure_readiness.py
+          cmp /tmp/echo-cascade-first/corpus-readiness.pre-cert.json /tmp/corpus-readiness.pre-cert.json
           for name in "${paths[@]}"; do
             cmp "/tmp/echo-cascade-first/$name" "MK1/mining-site/materialization/$name"
           done
+          if grep -qx present /tmp/echo-cascade-first/certificate-state; then
+            cmp /tmp/echo-cascade-first/cert-mk1-df-corpus-001.json MK1/mining-site/materialization/cert-mk1-df-corpus-001.json
+          else
+            test ! -f MK1/mining-site/materialization/cert-mk1-df-corpus-001.json
+          fi
       - name: Validate durable JSON and compactness
         run: |
           total=0
@@ -177,6 +223,10 @@ jobs:
             bytes="$(stat -c%s "MK1/mining-site/materialization/$name")"
             total=$((total + bytes))
           done
+          if [ -f MK1/mining-site/materialization/cert-mk1-df-corpus-001.json ]; then
+            python -m json.tool MK1/mining-site/materialization/cert-mk1-df-corpus-001.json >/dev/null
+            total=$((total + $(stat -c%s MK1/mining-site/materialization/cert-mk1-df-corpus-001.json)))
+          fi
           ledger_bytes="$(stat -c%s MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl)"
           echo "atomic corpus evidence bytes=$((total + ledger_bytes))"
           test "$ledger_bytes" -le 25000000
@@ -200,6 +250,9 @@ jobs:
             MK1/mining-site/materialization/corpus-reproducibility.json
             MK1/mining-site/materialization/corpus-closure-readiness.json
           )
+          if [ -f MK1/mining-site/materialization/cert-mk1-df-corpus-001.json ]; then
+            paths+=(MK1/mining-site/materialization/cert-mk1-df-corpus-001.json)
+          fi
           if [ -z "$(git status --porcelain -- "${paths[@]}")" ]; then
             echo 'Atomic corpus evidence already current.'
             exit 0
