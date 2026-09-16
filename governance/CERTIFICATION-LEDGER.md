@@ -2,7 +2,7 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-012`
+**Documentation ancestor:** `CERT-DOC-013`
 
 `CERTIFIED` is always scope-bounded. Green CI is execution evidence, not a substitute for missing empirical corpus evidence. No certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
@@ -22,12 +22,12 @@
 | CERT-MK1-DF-TOOLCHAIN-004 | SONYC persistence/fingerprint Foundry baseline | INVALIDATED | baseline `ab8c47ba...` | invalidated by closure semantic changes |
 | CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | active closure CI + deterministic evidence cascade | certify only after active closure implementation stabilizes |
 | CERT-MK1-DF-SONYC-001 | SONYC v2.3 materialization/fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...` | SONYC evidence/materialization/fingerprint/free-tier changes |
-| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `48af9f22...` | recomputed when input evidence/policy changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `896398c9...` | recomputed when input evidence/policy changes |
 | EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | release-safe closure | produced only from closed corpus |
 | EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | dedup/group/split/coverage closure | produced only from real closure |
 | CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | dataset + quality + all closure gates + reproducibility + free-tier | material corpus ancestor changes |
-| CERT-DOC-001..011 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
-| CERT-DOC-012 | Current post-Freesound-rematerialization closure truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-16-CORPUS-CLOSURE-012.md` | audited truth changes |
+| CERT-DOC-001..012 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
+| CERT-DOC-013 | Current confirmed-grouping closure truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-16-CORPUS-CLOSURE-013.md` | audited truth changes |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized field evidence | closes only with field evidence + upstream authorization |
 | EMP-MODEL-001 | Model winner | BLOCKED | corpus cert + Benchmark A/B/C | cannot run before corpus cert |
 | EMP-THRESH-001 | Event thresholds | BLOCKED | certified corpus + model/replay | cannot run before upstream gates |
@@ -46,79 +46,100 @@ durable evidence          78fc019839f1c9dad1a58a70d439605d887361d7
 
 ## Current durable corpus evidence
 
-At `main@48af9f220b30f2197aa376bff025195cb0a2a13b`:
+At `main@896398c90b0170189cdadd19c12396348e89a37a`:
 
 ```text
-canonical ledger baseline              050f2ebc39fea0d1e6903190ad471fd97d1487dc
+canonical ledger baseline              57869db92f9b8d691d8e7390dd0629e759928b03
 canonical ledger entries               1141
 canonical fingerprints                 1141 / 1141
 missing fingerprints                   0
 unresolved ledger blockers             0
-ledger sha256                          1ab3712452f42205fe9004f1d6cb9e778297487891bb373e5c42d635854f1d85
+ledger-summary sha256                  cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1
+coverage ledger sha256                 93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
 fallback assets after grouping         0
-global acoustic components             12
-members reassigned to components       118
+global acoustic components             2
+members reassigned to components       4
 content merge/delete                   false
 ```
 
-The live release-safe Freesound rebuild reduced the ledger from the DOC-011 snapshot. This is accepted current evidence, not an operator deletion to improve metrics.
-
-Closed structural gates:
+## Near-duplicate and split closure
 
 ```text
+candidate threshold                    0.02
+confirmed threshold                   0.002
+max decoded-sample delta               0.01
+candidate relations                    855
+candidate cross-group                  849
+confirmed relations                    2
+confirmed cross-group conflicts        0
+length-rejected candidates             835
+
 global-dedup-audit.json       PASS / gap_codes=[]
 recording-family-audit.json   PASS / gap_codes=[]
 split-integrity.json          PASS / gap_codes=[]
-protected split conflicts     2
-quarantined assets            93
+protected split conflicts     0
+quarantined assets            0
+development assets            1141
 ```
+
+Broad RMS-envelope proximity is screening only. Review-only edges do not form transitive recording identity. Exact byte/PCM identity and strict confirmed relations remain split-protection evidence.
 
 ## Current final coverage truth
 
 ```text
 BACKGROUND
-  416 assets / 383 groups / 4 sources                   PASS
+  428 assets / 385 groups / 4 sources                   PASS
 
 FIRE_ALARM
   19 assets / 16 groups / 460.864037 s / 3 sources
   BIGSOUNDBANK 4 / FREESOUND 12 / WIKIMEDIA_COMMONS 3
   train 17/14, validation 2/2, test 0/0
-  HN 202 assets / 202 groups / 4 sources                 PASS
+  HN 202 assets / 202 groups / 4 sources                PASS
 
 GLASS_SHATTER
-  222 assets / 205 groups
-  BIGSOUNDBANK 6 / FREESOUND 209
+  303 assets / 287 groups / 1244.131193 s
+  BIGSOUNDBANK 16 / FREESOUND 280
   OPENGAMEART_RUBBERDUCK 6 / OPENGAMEART_TILL_BEHREND 1
-  max single-source fraction 0.941441                    FAIL <= 0.80
-  HN 428 assets / 408 groups / 2 sources                 PASS
+  max single-source fraction 0.924092                   FAIL <= 0.80
+  HN 440 assets / 410 groups / 2 sources                PASS
 
 SIREN
   169 assets / 169 groups
-  HN 235 assets / 235 groups / 4 sources                 PASS
+  HN 235 assets / 235 groups / 4 sources                PASS
 
 TIRE_SQUEAL
   14 assets / 10 groups / 344.600098 s / 2 sources
   BIGSOUNDBANK 5 / FREESOUND 9
   train 11/8, validation 0/0, test 3/2
-  HN 25 assets / 12 groups / 2 sources                   PASS
+  HN 25 assets / 12 groups / 2 sources                  PASS
 
 VEHICLE_HORN
   235 assets / 235 groups
-  HN 142 assets / 142 groups / 3 sources                 PASS
+  HN 142 assets / 142 groups / 3 sources                PASS
 ```
 
-Coverage is `FAIL` with exactly 16 detailed gap codes: seven FIRE positive/split gaps, one GLASS concentration gap and eight TIRE positive/split gaps. `FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN` is closed. Asset-quality stop lines remain zero.
+Coverage is `FAIL` with exactly 16 empirical gap codes: seven FIRE positive/split gaps, one GLASS concentration gap and eight TIRE positive/split gaps. Asset-quality stop lines remain zero.
+
+## Current empirical lower bounds
+
+```text
+FIRE_ALARM   +31 assets, +9 groups minimum
+TIRE_SQUEAL  +36 assets, +15 groups minimum
+GLASS        +47 surviving non-Freesound positives minimum if Freesound remains 280
+```
+
+These are mathematical/evidence lower bounds. They do not authorize manual split placement, source-family inflation or bypass of rights/dedup/grouping gates.
 
 ## Machine-readable readiness
 
-At `48af9f220b30f2197aa376bff025195cb0a2a13b`:
+At `896398c90b0170189cdadd19c12396348e89a37a`:
 
 ```text
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
-evidence_identity_sha256 = 85dee5596dbc9c88e0430e32b5e8eec7c014d526d132974542b2e4a36a108a50
+evidence_identity_sha256 = 955375c9cc29f2ac5019bb7b2d71090b90734bfe3a8332e5a34698a73ca2d45d
 ```
 
 Exact readiness gaps:
@@ -135,6 +156,8 @@ REPRODUCIBILITY_NOT_PASS
 TIRE_SQUEAL_ASSETS_14_LT_50
 ```
 
+Freeze #1 and #2 are blocked only by coverage. Reproducibility is blocked only because freeze is not eligible.
+
 ## Evidence-only acquisition boundary
 
 A public source may be scouted and materialized before corpus admission only if the lane is explicitly evidence-only. Such a lane may verify rights/provenance, fetch bytes, probe and fingerprint them, but it must not be connected to Canonical Ledger or receive source-diversity/coverage credit until a later reviewed admission change.
@@ -144,7 +167,7 @@ Hosting/wrapper identity is not acoustic-origin identity. Derivatives and mirror
 ## Product critical path
 
 ```text
-CERT-ECHO-000 + CERT-DOC-012 + ECHO-FREE-TIER-001
+CERT-ECHO-000 + CERT-DOC-013 + ECHO-FREE-TIER-001
         ↓
 CERT-MK1-DF-SPEC-001
         ↓
