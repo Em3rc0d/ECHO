@@ -11,11 +11,11 @@ READINESS_ID = "EMP-MK1-CORPUS-READINESS-001"
 DATASET_EMPIRICAL_ID = "EMP-DATASET-001"
 DATA_QUALITY_EMPIRICAL_ID = "EMP-DATA-QUALITY-001"
 TOOLCHAIN_CERTIFICATE_ID = "CERT-MK1-DF-TOOLCHAIN-005"
-DOCUMENTATION_CERTIFICATE_ID = "CERT-DOC-015"
+HANDOFF_CERTIFICATE_ID = "CERT-MK1-DF-HANDOFF-001"
 FREE_TIER_POLICY_ID = "ECHO-FREE-TIER-001"
 CERTIFICATE_PATH = "MK1/mining-site/materialization/cert-mk1-df-corpus-001.json"
 TOOLCHAIN_CERTIFICATE_PATH = "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md"
-DOCUMENTATION_CERTIFICATE_PATH = "governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-HANDOFF-015.md"
+HANDOFF_CERTIFICATE_PATH = "MK1/build/data-foundry/CORPUS-CERTIFICATE-HANDOFF.md"
 FREE_TIER_POLICY_PATH = "configs/data_foundry/free_tier_boundary.v1.json"
 CERTIFICATE_ONLY_GAP = "CORPUS_CERTIFICATE_NOT_CERTIFIED"
 
@@ -151,7 +151,7 @@ def build_corpus_certificate(
     generated_at_utc: str,
     free_tier_policy_sha256: str,
     toolchain_certificate_sha256: str,
-    documentation_certificate_sha256: str,
+    handoff_certificate_sha256: str,
     github_run_id: str | None = None,
 ) -> dict[str, Any]:
     failures = validate_pre_certificate_readiness(readiness)
@@ -162,7 +162,7 @@ def build_corpus_certificate(
     for name, digest in (
         ("free-tier policy", free_tier_policy_sha256),
         ("toolchain certificate", toolchain_certificate_sha256),
-        ("documentation certificate", documentation_certificate_sha256),
+        ("handoff certificate", handoff_certificate_sha256),
     ):
         if not _is_sha256(digest):
             raise ValueError(f"{name} sha256 is missing or malformed")
@@ -216,10 +216,10 @@ def build_corpus_certificate(
         "scope": "MK1 release_safe frozen acoustic corpus",
         "semantic_evidence_identity_sha256": readiness["evidence_identity_sha256"],
         "semantic_evidence_identity_material": dict(readiness["evidence_identity_material"]),
-        "documentation": {
-            "certificate": DOCUMENTATION_CERTIFICATE_ID,
-            "path": DOCUMENTATION_CERTIFICATE_PATH,
-            "sha256": documentation_certificate_sha256,
+        "handoff_authority": {
+            "certificate": HANDOFF_CERTIFICATE_ID,
+            "path": HANDOFF_CERTIFICATE_PATH,
+            "sha256": handoff_certificate_sha256,
             "status": "CERTIFIED",
         },
         "free_tier_boundary": {
@@ -253,7 +253,7 @@ def build_corpus_certificate(
             {"id": "ALL_CLOSURE_EVIDENCE_PASS", "result": "PASS"},
             {"id": "ONLY_CERTIFICATE_GAP_REMAINED", "result": "PASS"},
             {"id": TOOLCHAIN_CERTIFICATE_ID, "result": "PASS"},
-            {"id": DOCUMENTATION_CERTIFICATE_ID, "result": "PASS"},
+            {"id": HANDOFF_CERTIFICATE_ID, "result": "PASS"},
             {"id": FREE_TIER_POLICY_ID, "result": "PASS"},
         ],
         "issuance_provenance": {
@@ -261,8 +261,8 @@ def build_corpus_certificate(
             "generated_at_utc": generated_at_utc,
             "github_run_id": github_run_id,
             "note": (
-                "Issuance provenance is auditable. Certificate validity is additionally bound to "
-                "semantic evidence identity and current certified ancestor hashes."
+                "Issuance provenance is auditable. Certificate validity is bound to semantic evidence "
+                "identity and stable certified ancestors, not to a rolling documentation-current pointer."
             ),
         },
         "evidence": evidence,
@@ -276,7 +276,7 @@ def build_corpus_certificate(
             "any dedup, recording-family, split, coverage, freeze or reproducibility evidence changes",
             "source, asset, rights, mapping, grouping, fingerprint or freeze semantics change",
             "CERT-MK1-DF-TOOLCHAIN-005 changes or invalidates",
-            "CERT-DOC-015 changes or invalidates",
+            "CERT-MK1-DF-HANDOFF-001 changes or invalidates",
             "ECHO-FREE-TIER-001 policy changes or is violated",
         ],
         "hash_contract": (
@@ -294,7 +294,7 @@ def validate_corpus_certificate(
     evidence_identity_sha256: str,
     free_tier_policy_sha256: str | None = None,
     toolchain_certificate_sha256: str | None = None,
-    documentation_certificate_sha256: str | None = None,
+    handoff_certificate_sha256: str | None = None,
 ) -> list[str]:
     failures: list[str] = []
 
@@ -338,16 +338,16 @@ def validate_corpus_certificate(
         if toolchain_certificate_sha256 is not None and toolchain.get("sha256") != toolchain_certificate_sha256:
             failures.append("toolchain certificate ancestor hash drifted")
 
-    documentation = certificate.get("documentation")
-    if not isinstance(documentation, Mapping) or documentation.get("certificate") != DOCUMENTATION_CERTIFICATE_ID:
-        failures.append("required documentation certificate ancestor is missing")
+    handoff = certificate.get("handoff_authority")
+    if not isinstance(handoff, Mapping) or handoff.get("certificate") != HANDOFF_CERTIFICATE_ID:
+        failures.append("required handoff certificate ancestor is missing")
     else:
-        if str(documentation.get("status") or "").upper() != "CERTIFIED":
-            failures.append("documentation certificate ancestor is not certified")
-        if not _is_sha256(documentation.get("sha256")):
-            failures.append("documentation certificate ancestor hash is malformed")
-        if documentation_certificate_sha256 is not None and documentation.get("sha256") != documentation_certificate_sha256:
-            failures.append("documentation certificate ancestor hash drifted")
+        if str(handoff.get("status") or "").upper() != "CERTIFIED":
+            failures.append("handoff certificate ancestor is not certified")
+        if not _is_sha256(handoff.get("sha256")):
+            failures.append("handoff certificate ancestor hash is malformed")
+        if handoff_certificate_sha256 is not None and handoff.get("sha256") != handoff_certificate_sha256:
+            failures.append("handoff certificate ancestor hash drifted")
 
     empirical = certificate.get("empirical_outputs")
     if not isinstance(empirical, Mapping):
@@ -383,7 +383,7 @@ def apply_corpus_certificate(
     *,
     free_tier_policy_sha256: str | None = None,
     toolchain_certificate_sha256: str | None = None,
-    documentation_certificate_sha256: str | None = None,
+    handoff_certificate_sha256: str | None = None,
 ) -> dict[str, Any]:
     result = dict(readiness)
     failures = validate_corpus_certificate(
@@ -391,7 +391,7 @@ def apply_corpus_certificate(
         evidence_identity_sha256=str(readiness.get("evidence_identity_sha256") or ""),
         free_tier_policy_sha256=free_tier_policy_sha256,
         toolchain_certificate_sha256=toolchain_certificate_sha256,
-        documentation_certificate_sha256=documentation_certificate_sha256,
+        handoff_certificate_sha256=handoff_certificate_sha256,
     )
 
     if failures:
