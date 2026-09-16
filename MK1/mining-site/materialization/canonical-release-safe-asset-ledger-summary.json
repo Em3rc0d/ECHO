@@ -1,5 +1,5 @@
 {
-  "baseline_commit": "050f2ebc39fea0d1e6903190ad471fd97d1487dc",
+  "baseline_commit": "57869db92f9b8d691d8e7390dd0629e759928b03",
   "blocking_reason_counts": {},
   "canonical_fingerprint_count": 1141,
   "canonical_fingerprint_missing_count": 0,
@@ -75,19 +75,27 @@
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
     "asset_count": 1141,
-    "component_count": 992,
+    "candidate_edges_rejected_by_length_count": 835,
+    "candidate_near_duplicate_threshold": 0.02,
+    "component_count": 1075,
+    "confirmed_group_max_distance": 0.002,
+    "confirmed_group_max_relative_sample_count_delta": 0.01,
+    "confirmed_near_duplicate_cross_group_edge_count": 2,
+    "confirmed_near_duplicate_grouping_edge_count": 2,
     "content_deleted": false,
     "content_merge_performed": false,
-    "cross_source_group_near_duplicate_edge_count": 851,
+    "exact_media_grouping_edge_count": 0,
+    "exact_pcm_grouping_edge_count": 0,
     "fallback_asset_count_after": 0,
     "fallback_asset_count_before": 415,
-    "global_acoustic_component_count": 12,
-    "members_reassigned_to_global_acoustic_component": 118,
-    "near_duplicate_edge_count": 855,
-    "near_duplicate_threshold": 0.02,
-    "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
-    "schema_version": "echo.global-recording-group-resolution.v1",
-    "screened_fallback_source_group_count": 323,
+    "global_acoustic_component_count": 2,
+    "members_reassigned_to_global_acoustic_component": 4,
+    "near_duplicate_candidate_cross_group_edge_count": 851,
+    "near_duplicate_candidate_edge_count": 855,
+    "policy_note": "Broad RMS-envelope proximity is screening evidence only. Shared split protection requires exact byte/PCM identity or a separately confirmed near-duplicate edge with strict distance and decoded-length compatibility. Review-only screening edges never union components.",
+    "review_only_near_duplicate_edge_count": 853,
+    "schema_version": "echo.global-recording-group-resolution.v2",
+    "screened_fallback_source_group_count": 411,
     "status": "PASS"
   },
   "hard_negative_counts": {
@@ -166,7 +174,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "1ab3712452f42205fe9004f1d6cb9e778297487891bb373e5c42d635854f1d85",
+  "ledger_sha256": "cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
