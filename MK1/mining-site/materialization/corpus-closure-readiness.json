@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "9b74fc57a84d2873dfe42d033b1a2c7b7c0bac430aecbe736497c3fdf6fbdbbc",
+      "sha256": "607618dad2d8a604a05be0cb1ad489536f45f5afe87a3991bc54437546719f3b",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "53a8d7aa389fb8adf1b713a0531885ccddf511ee372fb3ae0993f5d217615313",
+      "sha256": "1b2a9a0ed8d3155afb554ad663a079227ab1ed74f5fcef290ce376c1a7e18cee",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "1b3c4722bf858cc8a314f4ae59731b2f45ecea39a4873d9767b9ffc9faa5e1ee",
+      "sha256": "f03a8ccb7565043db9c147035b2d9f916263b9129e272f6aa7f48a445b2d2fbe",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "2d70a533cf14e24d8fc8c65ee173b4ba4159b8472078227e8f3f8ba36c8be0f2",
+      "sha256": "1f401c6a64b32d19e0968aa0fc0db9ef2ae79f8805ae5279036ee7fe458b8c5e",
       "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "f6e17b6031253a6dcb85bb70fbc6e5b7c0a6a0a9eb8a61aecaad2eaa337fde29",
+      "sha256": "bd96e639cb1faaa47329e8445cdabe70e0a58c02887ba2da25c388d8c6a2f8fc",
       "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "fa63611d60b873bd4547d9f4dffe12fe4a253725179272bea2b7c8e5026a2ef8",
+      "sha256": "04ae4cd4de3580a0b49fd8874129a5c5d3e137bf458b97946cf4f2aea331cd12",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": true,
       "present": true,
-      "sha256": "855d7cb09c0ca346f2a300fe87dcb050f4c89847e0bc856d565362c408f5f917",
+      "sha256": "5d72d181e9e7597dabcee521e4e7af3bc362250738a71a0951452c10a722d7de",
       "status": "PASS"
     }
   },
@@ -55,24 +55,24 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "9b6da43da378dbf546a3961c6ed47b8e7218b5135bbe84680f58eecf86030559",
+  "evidence_identity_sha256": "85dee5596dbc9c88e0430e32b5e8eec7c014d526d132974542b2e4a36a108a50",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
     "COVERAGE_GATE_STATUS_NOT_PASS",
-    "FIRE_ALARM_ASSETS_12_LT_50",
+    "FIRE_ALARM_ASSETS_19_LT_50",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
-    "TIRE_SQUEAL_ASSETS_11_LT_50"
+    "TIRE_SQUEAL_ASSETS_14_LT_50"
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7",
-      "entry_count": 1162,
-      "ledger_sha256": "b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab",
-      "sha256": "79a6d97b3b27842ecce833d408581940437472e9b58b1a7c6dfa7beb530a3ebf"
+      "baseline_commit": "050f2ebc39fea0d1e6903190ad471fd97d1487dc",
+      "entry_count": 1141,
+      "ledger_sha256": "1ab3712452f42205fe9004f1d6cb9e778297487891bb373e5c42d635854f1d85",
+      "sha256": "191081959c7fc515185383f68658eb987d17c4b61972de0ae2bcde5bbe654218"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -91,11 +91,11 @@
   "target_readiness": {
     "FIRE_ALARM": {
       "hard_negative_assets_floor": 20,
-      "hard_negative_assets_pre_final_dedup": 206,
+      "hard_negative_assets_pre_final_dedup": 202,
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 4,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 12,
+      "positive_assets_pre_final_dedup": 19,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
       "precheck_status": "FAIL",
@@ -107,7 +107,7 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 2,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 320,
+      "positive_assets_pre_final_dedup": 303,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 4,
       "precheck_status": "PASS",
@@ -115,11 +115,11 @@
     },
     "SIREN": {
       "hard_negative_assets_floor": 20,
-      "hard_negative_assets_pre_final_dedup": 245,
+      "hard_negative_assets_pre_final_dedup": 235,
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 4,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 173,
+      "positive_assets_pre_final_dedup": 169,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
       "precheck_status": "PASS",
@@ -131,7 +131,7 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 2,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 11,
+      "positive_assets_pre_final_dedup": 14,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 2,
       "precheck_status": "FAIL",
@@ -139,11 +139,11 @@
     },
     "VEHICLE_HORN": {
       "hard_negative_assets_floor": 20,
-      "hard_negative_assets_pre_final_dedup": 146,
+      "hard_negative_assets_pre_final_dedup": 142,
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 3,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 245,
+      "positive_assets_pre_final_dedup": 235,
       "positive_source_floor": 2,
       "positive_underlying_source_families": 3,
       "precheck_status": "PASS",
