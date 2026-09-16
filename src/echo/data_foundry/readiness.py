@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA_VERSION = "echo.corpus-closure-readiness.v1"
+SCHEMA_VERSION = "echo.corpus-closure-readiness.v2"
 READINESS_ID = "EMP-MK1-CORPUS-READINESS-001"
 CORPUS_CERTIFICATE_ID = "CERT-MK1-DF-CORPUS-001"
 
@@ -76,6 +76,37 @@ def _artifact_pass(payload: dict[str, Any] | None) -> bool:
         return False
     gaps = payload.get("gap_codes")
     return gaps in (None, [])
+
+
+def _semantic_identity(
+    *,
+    ledger_summary: dict[str, Any],
+    evidence_hashes: dict[str, str | None],
+) -> tuple[str, dict[str, Any]]:
+    """Return corpus readiness identity without volatile execution provenance.
+
+    `baseline_commit` and the byte hash of the summary file remain recorded under
+    `inputs` for provenance, but neither may change the semantic corpus identity.
+    The canonical ledger's own `ledger_sha256` is the corpus-content identity.
+    """
+
+    ledger_sha256 = str(ledger_summary.get("ledger_sha256") or "")
+    if len(ledger_sha256) != 64 or any(ch not in "0123456789abcdef" for ch in ledger_sha256):
+        raise ValueError("canonical ledger summary is missing a valid semantic ledger_sha256")
+
+    identity_material = {
+        "canonical_ledger_semantic_sha256": ledger_sha256,
+        "coverage_policy_sha256": evidence_hashes.get("coverage_policy"),
+        "closure_evidence_sha256": {
+            node: evidence_hashes.get(node) for node in sorted(REQUIRED_EVIDENCE_NODES)
+        },
+    }
+    identity = hashlib.sha256(
+        json.dumps(identity_material, sort_keys=True, separators=(",", ":")).encode(
+            "utf-8"
+        )
+    ).hexdigest()
+    return identity, identity_material
 
 
 def evaluate_readiness(
@@ -206,18 +237,10 @@ def evaluate_readiness(
         and not gap_codes
     )
 
-    identity_material = {
-        "ledger_sha256": evidence_hashes.get("canonical_ledger_summary"),
-        "coverage_policy_sha256": evidence_hashes.get("coverage_policy"),
-        "closure_evidence_sha256": {
-            node: evidence_hashes.get(node) for node in sorted(REQUIRED_EVIDENCE_NODES)
-        },
-    }
-    identity = hashlib.sha256(
-        json.dumps(identity_material, sort_keys=True, separators=(",", ":")).encode(
-            "utf-8"
-        )
-    ).hexdigest()
+    identity, identity_material = _semantic_identity(
+        ledger_summary=ledger_summary,
+        evidence_hashes=evidence_hashes,
+    )
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -232,12 +255,17 @@ def evaluate_readiness(
         ),
         "corpus_certificate": cert,
         "evidence_identity_sha256": identity,
+        "evidence_identity_material": identity_material,
         "inputs": {
             "canonical_ledger_summary": {
                 "sha256": evidence_hashes.get("canonical_ledger_summary"),
                 "baseline_commit": ledger_summary.get("baseline_commit"),
                 "ledger_sha256": ledger_summary.get("ledger_sha256"),
                 "entry_count": ledger_summary.get("entry_count"),
+                "provenance_note": (
+                    "summary sha256 and baseline_commit are auditable execution provenance; "
+                    "semantic readiness identity binds canonical ledger_sha256 instead"
+                ),
             },
             "coverage_policy": {
                 "sha256": evidence_hashes.get("coverage_policy"),
