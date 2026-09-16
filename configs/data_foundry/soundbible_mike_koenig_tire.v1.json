@@ -3,7 +3,7 @@
   "checked_at": "2026-09-16",
   "phase": "EVIDENCE_MATERIALIZATION_ONLY",
   "target": "TIRE_SQUEAL",
-  "policy": "This manifest materializes and fingerprints one explicit tire-squeal/skid source but grants zero corpus, split, coverage or source-diversity credit. Admission requires a later reviewed source-certification/ledger change after durable evidence exists.",
+  "policy": "This manifest materializes and fingerprints the complete three-member audio payload of one explicit Mike Koenig / SoundBible tire-squeal derivative archive, but grants zero corpus, split, coverage or source-diversity credit. All members inherit one candidate acoustic-origin family. Admission requires a later reviewed source-certification/ledger change after durable evidence exists.",
   "source_id_candidate": "echo-soundbible-mike-koenig-tire-v1",
   "underlying_source_family_candidate": "SOUNDBIBLE_MIKE_KOENIG",
   "creator": "Mike Koenig",
@@ -30,14 +30,15 @@
     ]
   },
   "asset": {
-    "asset_key": "mike-koenig-tires-squealing-opengameart-edit",
+    "asset_key_prefix": "mike-koenig-tires-squealing-opengameart-edit",
     "semantic_candidate": "tire_squeal",
     "recording_family_candidate": "soundbible:mike-koenig:tires-squealing-1178",
-    "expected_audio_file_count": 1,
+    "expected_audio_file_count": 3,
     "allowed_extensions": [".wav", ".mp3", ".ogg", ".flac", ".aif", ".aiff"]
   },
   "stop_lines": [
     "OpenGameArt is transport/derivative-publication evidence and never receives a second source-family credit.",
+    "All archive members remain one candidate recording family unless independent-origin evidence proves otherwise.",
     "The underlying acoustic-origin candidate is Mike Koenig / SoundBible.",
     "CC-BY attribution obligations must remain attached to any later admitted corpus row.",
     "A successful download/probe/fingerprint is not corpus admission.",

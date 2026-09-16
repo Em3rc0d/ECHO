@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Materialize the Mike Koenig / SoundBible tire-squeal evidence candidate.
+"""Materialize Mike Koenig / SoundBible tire-squeal evidence without corpus credit.
 
-This is deliberately evidence-only. It verifies origin and transport pages,
-fetches the OpenGameArt derivative archive, extracts exactly one audio asset,
-and records hashes, probe data and a codec-independent fingerprint. It does
-not register the source in the canonical corpus or grant coverage credit.
+The OpenGameArt transport archive is a derivative publication of one SoundBible
+origin. Every audio member is hashed, probed and codec-independently
+fingerprinted. Members remain one candidate recording family; this lane never
+registers the source in the canonical corpus or grants coverage credit.
 """
 
 from __future__ import annotations
@@ -53,14 +53,32 @@ def require_markers(*, page_name: str, body: str, markers: list[str]) -> None:
         raise RuntimeError(f"{page_name} missing required evidence markers: {missing}")
 
 
+def materialize_member(path: Path, *, extract_root: Path, asset_cfg: dict) -> dict:
+    probe = probe_audio(path)
+    if not probe.ok:
+        raise RuntimeError(f"audio probe failed for {path.name}: {probe.reason}")
+    media_bytes = path.read_bytes()
+    relative = str(path.relative_to(extract_root))
+    member_digest = hashlib.sha256(relative.encode("utf-8")).hexdigest()[:12]
+    return {
+        "asset_key": f"{asset_cfg['asset_key_prefix']}-{member_digest}",
+        "archive_member": relative,
+        "semantic_candidate": asset_cfg["semantic_candidate"],
+        "recording_family_candidate": asset_cfg["recording_family_candidate"],
+        "media_sha256": hashlib.sha256(media_bytes).hexdigest(),
+        "size_bytes": len(media_bytes),
+        "audio_probe": probe.to_dict(),
+        "canonical_fingerprint": canonical_audio_fingerprint(path),
+        "admission_status": "DISCOVERY_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED",
+    }
+
+
 def main() -> int:
     cfg = json.loads(CONFIG.read_text(encoding="utf-8"))
     if cfg.get("schema_version") != "echo.soundbible-mike-koenig-tire.v1":
         raise SystemExit("unsupported Mike Koenig tire manifest schema")
-    if cfg.get("phase") != "EVIDENCE_MATERIALIZATION_ONLY":
-        raise SystemExit("manifest phase must remain evidence-only")
-    if cfg.get("target") != "TIRE_SQUEAL":
-        raise SystemExit("unexpected target")
+    if cfg.get("phase") != "EVIDENCE_MATERIALIZATION_ONLY" or cfg.get("target") != "TIRE_SQUEAL":
+        raise SystemExit("SoundBible evidence-only target contract drift")
     if cfg.get("underlying_source_family_candidate") != "SOUNDBIBLE_MIKE_KOENIG":
         raise SystemExit("underlying source-family candidate drift")
 
@@ -68,7 +86,7 @@ def main() -> int:
     transport = cfg["transport"]
     asset_cfg = cfg["asset"]
     if origin.get("declared_license") != "CC-BY-3.0" or transport.get("declared_license") != "CC-BY-3.0":
-        raise SystemExit("both origin and transport evidence must agree on CC-BY-3.0")
+        raise SystemExit("origin and transport evidence must agree on CC-BY-3.0")
 
     OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
     extract_root = OUTPUT_ROOT / "extracted"
@@ -100,15 +118,14 @@ def main() -> int:
     if len(audio_files) != expected_count:
         raise RuntimeError(f"expected {expected_count} extracted audio file(s), found {len(audio_files)}")
 
-    audio_path = audio_files[0]
-    probe = probe_audio(audio_path)
-    if not probe.ok:
-        raise RuntimeError(f"audio probe failed: {probe.reason}")
-    fingerprint = canonical_audio_fingerprint(audio_path)
-    media_bytes = audio_path.read_bytes()
+    assets = [materialize_member(path, extract_root=extract_root, asset_cfg=asset_cfg) for path in audio_files]
+    pcm_groups: dict[str, list[str]] = {}
+    for asset in assets:
+        pcm = str(asset["canonical_fingerprint"]["canonical_pcm_sha256"])
+        pcm_groups.setdefault(pcm, []).append(asset["archive_member"])
 
     payload = {
-        "schema_version": "echo.soundbible-mike-koenig-tire-materialization.v1",
+        "schema_version": "echo.soundbible-mike-koenig-tire-materialization.v2",
         "status": "PASS",
         "phase": "EVIDENCE_MATERIALIZED_NO_CORPUS_CREDIT",
         "target": "TIRE_SQUEAL",
@@ -132,29 +149,22 @@ def main() -> int:
             "archive_content_type": archive_content_type,
             "archive_sha256": hashlib.sha256(archive_bytes).hexdigest(),
             "archive_size_bytes": len(archive_bytes),
+            "audio_member_count": len(assets),
         },
-        "asset": {
-            "asset_key": asset_cfg["asset_key"],
-            "archive_member": str(audio_path.relative_to(extract_root)),
-            "semantic_candidate": asset_cfg["semantic_candidate"],
-            "recording_family_candidate": asset_cfg["recording_family_candidate"],
-            "media_sha256": hashlib.sha256(media_bytes).hexdigest(),
-            "size_bytes": len(media_bytes),
-            "audio_probe": probe.to_dict(),
-            "canonical_fingerprint": fingerprint,
-            "admission_status": "DISCOVERY_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED",
-        },
+        "assets": assets,
+        "exact_pcm_identity_groups": [members for members in pcm_groups.values() if len(members) > 1],
         "stop_lines": list(cfg["stop_lines"]),
-        "certification_note": "PASS proves public origin/rights/bytes/probe/fingerprint evidence only. A later reviewed source registration and ledger admission is required before any corpus or coverage credit.",
+        "certification_note": "PASS proves public origin/rights/archive-member bytes/probes/fingerprints only. All members remain one candidate recording family and receive zero corpus credit until a later reviewed admission.",
     }
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps({
         "status": payload["status"],
-        "asset": payload["asset"]["asset_key"],
-        "duration_seconds": payload["asset"]["audio_probe"]["duration_seconds"],
+        "audio_members": len(assets),
+        "unique_pcm_identities": len(pcm_groups),
+        "duration_seconds": round(sum(float(asset["audio_probe"]["duration_seconds"]) for asset in assets), 6),
         "archive_bytes": payload["transport"]["archive_size_bytes"],
-        "media_bytes": payload["asset"]["size_bytes"],
+        "media_bytes": sum(int(asset["size_bytes"]) for asset in assets),
     }, sort_keys=True))
     return 0
 

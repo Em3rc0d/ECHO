@@ -57,19 +57,26 @@ jobs:
           scratch = sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
           limit = int(policy['github_actions']['project_max_working_set_bytes'])
 
+          assert report['schema_version'] == 'echo.soundbible-mike-koenig-tire-materialization.v2'
           assert report['status'] == 'PASS'
           assert report['phase'] == 'EVIDENCE_MATERIALIZED_NO_CORPUS_CREDIT'
           assert report['target'] == 'TIRE_SQUEAL'
           assert report['underlying_source_family_candidate'] == 'SOUNDBIBLE_MIKE_KOENIG'
           assert report['license_id'] == 'CC-BY-3.0'
-          assert report['asset']['admission_status'] == 'DISCOVERY_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED'
-          assert report['asset']['audio_probe']['ok'] is True
-          assert report['asset']['canonical_fingerprint']['vector_sha256']
-          assert len(report['asset']['media_sha256']) == 64
+          assets = report['assets']
+          assert len(assets) == 3
+          families = {asset['recording_family_candidate'] for asset in assets}
+          assert families == {'soundbible:mike-koenig:tires-squealing-1178'}
+          for asset in assets:
+              assert asset['admission_status'] == 'DISCOVERY_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED'
+              assert asset['audio_probe']['ok'] is True
+              assert asset['canonical_fingerprint']['vector_sha256']
+              assert len(asset['media_sha256']) == 64
+          assert report['transport']['audio_member_count'] == 3
           assert len(report['transport']['archive_sha256']) == 64
           assert scratch <= limit, (scratch, limit)
-          assert report_path.stat().st_size <= 1_000_000
-          print({'scratch_bytes': scratch, 'working_set_limit': limit, 'report_bytes': report_path.stat().st_size})
+          assert report_path.stat().st_size <= 2_000_000
+          print({'audio_members': len(assets), 'scratch_bytes': scratch, 'working_set_limit': limit, 'report_bytes': report_path.stat().st_size})
           PY
       - name: Commit durable evidence only if baseline is unchanged
         run: |
@@ -90,6 +97,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No SoundBible/Mike Koenig evidence changes.'
           else
-            git commit -m 'evidence(mk1): materialize Mike Koenig tire candidate [skip ci]'
+            git commit -m 'evidence(mk1): materialize Mike Koenig tire candidates [skip ci]'
             git push origin HEAD:main
           fi
