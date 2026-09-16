@@ -1,0 +1,95 @@
+name: MK1 SoundBible Mike Koenig Tire Evidence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/data_foundry/soundbible_mike_koenig_tire.v1.json'
+      - 'scripts/data_foundry/materialize_soundbible_mike_koenig_tire.py'
+      - 'configs/data_foundry/free_tier_boundary.v1.json'
+      - '.github/workflows/mk1-soundbible-mike-koenig-tire-materialization.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mk1-soundbible-mike-koenig-tire-main
+  cancel-in-progress: false
+
+jobs:
+  materialize-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce ECHO-FREE-TIER-001
+        run: python scripts/check_free_tier_boundary.py
+      - name: Install deterministic media and archive tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg p7zip-full
+          ffprobe -version | head -n 1
+          7z | head -n 2
+      - name: Materialize origin-bound tire-squeal evidence
+        env:
+          PYTHONPATH: src
+          ECHO_SOUNDBIBLE_TIRE_ROOT: ${{ runner.temp }}/echo-soundbible-mike-koenig-tire
+        run: python scripts/data_foundry/materialize_soundbible_mike_koenig_tire.py
+      - name: Validate evidence and free-tier boundary
+        env:
+          ECHO_SOUNDBIBLE_TIRE_ROOT: ${{ runner.temp }}/echo-soundbible-mike-koenig-tire
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+
+          policy = json.loads(Path('configs/data_foundry/free_tier_boundary.v1.json').read_text())
+          report_path = Path('MK1/mining-site/materialization/soundbible-mike-koenig-tire-materialization.json')
+          report = json.loads(report_path.read_text())
+          root = Path(os.environ['ECHO_SOUNDBIBLE_TIRE_ROOT'])
+          scratch = sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+          limit = int(policy['github_actions']['project_max_working_set_bytes'])
+
+          assert report['status'] == 'PASS'
+          assert report['phase'] == 'EVIDENCE_MATERIALIZED_NO_CORPUS_CREDIT'
+          assert report['target'] == 'TIRE_SQUEAL'
+          assert report['underlying_source_family_candidate'] == 'SOUNDBIBLE_MIKE_KOENIG'
+          assert report['license_id'] == 'CC-BY-3.0'
+          assert report['asset']['admission_status'] == 'DISCOVERY_REAL_BYTES_MATERIALIZED_REVIEW_REQUIRED'
+          assert report['asset']['audio_probe']['ok'] is True
+          assert report['asset']['canonical_fingerprint']['vector_sha256']
+          assert len(report['asset']['media_sha256']) == 64
+          assert len(report['transport']['archive_sha256']) == 64
+          assert scratch <= limit, (scratch, limit)
+          assert report_path.stat().st_size <= 1_000_000
+          print({'scratch_bytes': scratch, 'working_set_limit': limit, 'report_bytes': report_path.stat().st_size})
+          PY
+      - name: Commit durable evidence only if baseline is unchanged
+        run: |
+          REPORT='MK1/mining-site/materialization/soundbible-mike-koenig-tire-materialization.json'
+          cp "$REPORT" /tmp/soundbible-mike-koenig-tire-materialization.json
+          git reset --hard "${GITHUB_SHA}"
+          git fetch origin main --depth=1
+          RUN_SHA="$(git rev-parse HEAD)"
+          REMOTE_MAIN_SHA="$(git rev-parse origin/main)"
+          if [[ "$RUN_SHA" != "$REMOTE_MAIN_SHA" ]]; then
+            echo "main moved from ${RUN_SHA} to ${REMOTE_MAIN_SHA}; refusing to persist stale evidence"
+            exit 1
+          fi
+          cp /tmp/soundbible-mike-koenig-tire-materialization.json "$REPORT"
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git add "$REPORT"
+          if git diff --cached --quiet; then
+            echo 'No SoundBible/Mike Koenig evidence changes.'
+          else
+            git commit -m 'evidence(mk1): materialize Mike Koenig tire candidate [skip ci]'
+            git push origin HEAD:main
+          fi
