@@ -3,7 +3,7 @@
 **Fecha de corte:** 2026-09-15  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
 **Global execution invariant:** `ECHO-FREE-TIER-001`  
-**Audited readiness:** `ecf76528d5cd722757782cc54311c3f02038b2b9`
+**Audited readiness:** `60dfa361eb344172973a96949d38e137fbfaf822`
 
 ## 1. Promise
 
@@ -76,51 +76,35 @@ CERT-MK1-DF-TOOLCHAIN-005      = CANDIDATE
 CERT-MK1-DF-SONYC-001          = CERTIFIED / scoped
 CERT-MK1-DF-CORPUS-001         = OPEN
 
-CERT-DOC-001..008              = historical / invalidated
-CERT-DOC-009                   = CERTIFIED / current
+CERT-DOC-001..009              = historical / invalidated
+CERT-DOC-010                   = CERTIFIED / current
 ```
 
 `TOOLCHAIN-005` remains candidate while active corpus-closure work can still change Foundry semantics. `SONYC-001` remains independently valid within its scope.
 
 ## 5. Durable corpus-facing truth
 
-Latest public-gap evidence baseline:
-
-```text
-48e938034b98cf4d02588879b28ddec00c4666dd
-```
-
-Canonical-ledger evidence commit:
-
-```text
-8ff9c53aa6ce0b286f9414f56d7590bdf2f9609a
-```
-
-Closure evidence commit:
-
-```text
-b572d5ec1f3015dea1f010c7fd10cf30d653dc09
-```
-
 Current durable readiness commit:
 
 ```text
-ecf76528d5cd722757782cc54311c3f02038b2b9
+60dfa361eb344172973a96949d38e137fbfaf822
 ```
 
 Canonical ledger:
 
 ```text
-entry_count                           1158
-canonical fingerprints                1158 / 1158
+baseline_commit                       05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa
+entry_count                           1159
+canonical fingerprints                1159 / 1159
 missing fingerprints                     0
 ledger blockers                          0
 BigSoundBank rows                        53
+Wikimedia rows                            4
 fallback assets after grouping            0
 global acoustic components               14
 members reassigned to components         125
 content merge/delete                   false
-ledger_sha256  cb152b83ca2a205d81c52e55ed326f7688d0febfb6330c33581b8f2ed3a20a08
+ledger_sha256  d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a
 ```
 
 Structural closure:
@@ -137,17 +121,17 @@ corpus-reproducibility        FAIL
 
 ## 6. Split integrity
 
-Empirical global acoustic grouping currently exposes two complete components with incompatible protected upstream splits:
+Empirical global acoustic grouping exposes two complete components with incompatible protected upstream splits:
 
 ```text
 original split conflicts detected       2
 complete groups quarantined             2
 assets quarantined                     93
-eligible development assets          1065
+eligible development assets          1066
 split-integrity status                PASS
 ```
 
-One quarantined component contains 91 assets spanning BigSoundBank GLASS variants, Freesound rows and OpenGameArt rubberduck evidence. This relationship is retained rather than hidden to improve coverage. No member is manually remapped.
+Conflicting components remain quarantined as whole acoustic groups. No member is manually remapped or deleted to improve coverage.
 
 ## 7. Current final coverage truth
 
@@ -164,11 +148,12 @@ FIRE_ALARM
   HN 206 assets / 206 groups / 4 sources  PASS
 
 GLASS_SHATTER
-  final assets 238 / groups 221
+  final assets 239 / groups 222
   BIGSOUNDBANK 6
   FREESOUND 226
   OPENGAMEART_RUBBERDUCK 6
-  max single-source fraction 0.94958       FAIL <= 0.80 required
+  OPENGAMEART_TILL_BEHREND 1
+  max single-source fraction 0.945607      FAIL <= 0.80 required
   HN 428 assets / 408 groups / 2 sources   PASS
 
 SIREN
@@ -218,7 +203,7 @@ All former background and target-specific hard-negative gaps remain closed.
 
 ## 9. Machine-readable readiness
 
-Authoritative artifact at `ecf76528d5cd722757782cc54311c3f02038b2b9`:
+Authoritative artifact at `60dfa361eb344172973a96949d38e137fbfaf822`:
 
 ```text
 readiness_id = EMP-MK1-CORPUS-READINESS-001
@@ -227,7 +212,7 @@ eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
-evidence_identity_sha256 = 9e7325ad5790a6a1448a2a8cbceb0f314ef1cbf7164c9079e65313a405bf2ce8
+evidence_identity_sha256 = 7c3dd6d518d8bc088a419b39e4dfb4894482def44906ca4561a4cc84f631f389
 ```
 
 Exact readiness gaps:
@@ -277,6 +262,8 @@ modeling_allowed = true
 Benchmark A/B/C
 ```
 
+PR #33 proposes additional exact Wikimedia FIRE candidates and hardens Public Gap persistence. These candidates have **zero durable coverage credit** until post-merge real-byte materialization and the full ledger/group/dedup/split/coverage cascade complete.
+
 ## 12. Release law
 
 ```text
@@ -293,9 +280,9 @@ NO real camera progression
 ## 13. Documentation state
 
 ```text
-governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-009.md
-CERT-DOC-009 = CERTIFIED / current
-Markdown corpus = 213 files
+governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-010.md
+CERT-DOC-010 = CERTIFIED / current
+Markdown corpus = 214 files
 ```
 
 ## 14. Invalidation
