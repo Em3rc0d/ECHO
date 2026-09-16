@@ -64,12 +64,20 @@ def extension_for(url: str, content_type: str | None) -> str:
 
 def license_marker_ok(source_id: str, expected_license: str, page_text: str) -> bool:
     lower = page_text.casefold()
+    expected = expected_license.casefold().replace("_", "-").strip()
     if source_id == "echo-bigsoundbank-cc0-gap-v1":
         return "cc0" in lower and ("public domain" in lower or "free and royalty-free" in lower)
-    if expected_license.casefold() in {"public-domain", "public domain", "cc0"}:
+    if expected in {"public-domain", "public domain", "cc0", "cc0-1.0"}:
         return "public domain" in lower or "cc0" in lower or "cc-zero" in lower
-    if "cc-by-sa" in expected_license.casefold():
+    if "cc-by-sa" in expected:
         return "share alike" in lower or "cc-by-sa" in lower or "attribution-share alike" in lower
+    if expected in {"cc-by", "cc by", "cc-by-4.0", "cc by 4.0"}:
+        return (
+            "cc by 4.0" in lower
+            or "cc-by-4.0" in lower
+            or "creative commons attribution 4.0" in lower
+            or "attribution 4.0 international" in lower
+        )
     return False
 
 
