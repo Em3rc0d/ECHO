@@ -4,36 +4,36 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "34730e6d0ecd8db4c9be10a29beb7c24b91b30911ec7330e625a3e5f75551154",
+      "sha256": "43e94cca9d13829fdb22e0c6c1f4b658bc9cc3275e911ab67aea1277e79e144d",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "60d08e50d17a93f581475fa6b14d88d2b8a3f97dd791764796ef402701ef24cc",
+      "sha256": "8e5bf18221ea512e698ce627307fc5853a6b147e023c21f4a13207addb4d8a12",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "94cb871ab3817702682a52bf11e4210df5383b77e4b6218567e344e741b7f622",
+      "sha256": "15ab39c4517ebb9616fdac433632609112eca28c48deb28f779550794074333a",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
-      "pass": false,
+      "pass": true,
       "present": true,
-      "sha256": "3f66a59ee05fbc2e4fe31e9cd93adafad012a84fe12a7c5d01a18c452012cc77",
-      "status": "FAIL"
+      "sha256": "9817b67e348cdf39697ecc07ba412b8f8e24185e11c76a5935a8495b4f12f6b3",
+      "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
-      "pass": false,
+      "pass": true,
       "present": true,
-      "sha256": "8a3135a0004a5de9dd4e0d93611eb6b85f4ef31a4d4e9ec1cacc4d2637ebb2fc",
-      "status": "FAIL"
+      "sha256": "739cea38926528496437965f76e55a216fc4eba99d53fee15778d9188b3512c5",
+      "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
@@ -44,10 +44,10 @@
     },
     "split_integrity": {
       "filename": "split-integrity.json",
-      "pass": false,
+      "pass": true,
       "present": true,
-      "sha256": "48fb6f5128e6b2e6c04ab5e79837b8ca97525f838f96ee2c38f54f6e1bc1bfa4",
-      "status": "FAIL"
+      "sha256": "690d184283667b970f50c052b9bf0315b6b96026f7f0518ec1889457880ec646",
+      "status": "PASS"
     }
   },
   "corpus_certificate": {
@@ -55,7 +55,7 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "dec1190e707b1855c1becaf3f40c764291fbcc2b245ff118c19982472041611f",
+  "evidence_identity_sha256": "955375c9cc29f2ac5019bb7b2d71090b90734bfe3a8332e5a34698a73ca2d45d",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -64,10 +64,7 @@
     "FIRE_ALARM_ASSETS_19_LT_50",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
-    "GLOBAL_DEDUP_AUDIT_NOT_PASS",
-    "RECORDING_FAMILY_AUDIT_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
-    "SPLIT_INTEGRITY_NOT_PASS",
     "TIRE_SQUEAL_ASSETS_14_LT_50"
   ],
   "inputs": {
