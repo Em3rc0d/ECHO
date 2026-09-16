@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa",
+  "baseline_commit": "0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1159,
+  "canonical_fingerprint_count": 1162,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -60,22 +60,22 @@
     "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination.",
     "inputs": {
       "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "c1630cc003aa9e06548feed6891ce3f10b874e0efb241dd72e030d411e7eaacf",
-      "MK1/mining-site/materialization/public-gap-assets-report.json": "7102dbcbd335f50fbb06027ffeb40f955a953dfb09b247d88cd9703294e0289d",
+      "MK1/mining-site/materialization/public-gap-assets-report.json": "a6fcbf29d91c87612f8bb020296e7037c2cab610cbe3ceec565311ceb232b800",
       "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
       "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
       "configs/data_foundry/hard_negative_mapping.v1.json": "148f218bbe56bd342713b4e262443e6bbc9da0328aa40e20c2a3ea99eb8e8cd8"
     },
-    "matched_asset_count": 1116,
+    "matched_asset_count": 1117,
     "status": "PASS",
-    "technical_evidence_asset_count": 1116
+    "technical_evidence_asset_count": 1117
   },
-  "entry_count": 1159,
+  "entry_count": 1162,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1159,
-    "component_count": 1012,
+    "asset_count": 1162,
+    "component_count": 1015,
     "content_deleted": false,
     "content_merge_performed": false,
     "cross_source_group_near_duplicate_edge_count": 853,
@@ -147,7 +147,7 @@
     },
     "public_gap": {
       "path": "MK1/mining-site/materialization/public-gap-assets-report.json",
-      "sha256": "7102dbcbd335f50fbb06027ffeb40f955a953dfb09b247d88cd9703294e0289d"
+      "sha256": "a6fcbf29d91c87612f8bb020296e7037c2cab610cbe3ceec565311ceb232b800"
     },
     "singapura_summary": {
       "path": "MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json",
@@ -166,7 +166,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a",
+  "ledger_sha256": "b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -217,14 +217,14 @@
     "underlying_source_family": "OPENGAMEART_TILL_BEHREND"
   },
   "positive_counts": {
-    "FIRE_ALARM": 9,
+    "FIRE_ALARM": 12,
     "GLASS_SHATTER": 320,
     "SIREN": 173,
     "TIRE_SQUEAL": 11,
     "VEHICLE_HORN": 245
   },
   "positive_underlying_source_family_counts": {
-    "FIRE_ALARM": 2,
+    "FIRE_ALARM": 3,
     "GLASS_SHATTER": 4,
     "SIREN": 3,
     "TIRE_SQUEAL": 2,
@@ -241,13 +241,13 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1245,
+    "input_rows": 1246,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 57,
       "LICENSE_NOT_RELEASE_SAFE": 1,
-      "NO_EXACT_SEMANTIC_ROLE": 83,
+      "NO_EXACT_SEMANTIC_ROLE": 81,
       "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
       "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
       "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
@@ -255,25 +255,25 @@
     "removed_non_release_safe_rows": 1,
     "removed_rejection_counts": {
       "NOT_RELEASE_SAFE": 1,
-      "REVIEW_ONLY_NO_GOVERNED_ROLE": 83,
+      "REVIEW_ONLY_NO_GOVERNED_ROLE": 81,
       "UNRESOLVED_ADMISSION_BLOCKER": 2
     },
-    "removed_review_only_rows": 83,
+    "removed_review_only_rows": 81,
     "removed_rights_status_counts": {
-      "ALLOW_RELEASE_SAFE": 85,
+      "ALLOW_RELEASE_SAFE": 83,
       "RESEARCH_ONLY": 1
     },
-    "removed_rows": 86,
+    "removed_rows": 84,
     "removed_source_counts": {
       "echo-bigsoundbank-cc0-gap-v1": 7,
       "echo-freesound-release-safe-v1": 74,
-      "echo-wikimedia-fire-alarm-v1": 5
+      "echo-wikimedia-fire-alarm-v1": 3
     },
     "removed_unresolved_blocker_rows": 2,
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 446
     },
-    "retained_rows": 1159,
+    "retained_rows": 1162,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
@@ -283,7 +283,7 @@
     "echo-freesound-release-safe-v1": 457,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
-    "echo-wikimedia-fire-alarm-v1": 4,
+    "echo-wikimedia-fire-alarm-v1": 7,
     "sonyc-ust-v2": 599
   },
   "source_input_stats": {
@@ -296,9 +296,9 @@
       "status:RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED": 59
     },
     "public_gap": {
-      "exact_semantic_rows": 32,
+      "exact_semantic_rows": 35,
       "source:echo-bigsoundbank-cc0-gap-v1": 60,
-      "source:echo-wikimedia-fire-alarm-v1": 9
+      "source:echo-wikimedia-fire-alarm-v1": 10
     },
     "sonyc": {
       "confuser_rows": 428,
@@ -308,7 +308,7 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1159
+    "READY_FOR_GLOBAL_DEDUP": 1162
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
@@ -317,6 +317,6 @@
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
     "SONYC_UST": 599,
-    "WIKIMEDIA_COMMONS": 4
+    "WIKIMEDIA_COMMONS": 7
   }
 }
