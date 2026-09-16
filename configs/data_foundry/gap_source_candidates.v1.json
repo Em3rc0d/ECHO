@@ -1,6 +1,6 @@
 {
   "schema_version": "echo.gap-source-candidates.v1",
-  "checked_at": "2026-09-13",
+  "checked_at": "2026-09-15",
   "policy": "Candidate discovery is not admission. Every real asset still requires bytes, SHA-256, technical probe, semantic review, grouping and rights verification before corpus use.",
   "sources": {
     "echo-freesound-exact-gap-v1": {
@@ -73,14 +73,15 @@
       "license_model": "per_asset_public_domain_or_cc",
       "targets": {
         "FIRE_ALARM": [
-          {"asset_key": "commons-smoke-alarm", "url": "https://commons.wikimedia.org/wiki/File:Smoke_alarm.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Smoke_alarm.ogg", "license": "Public-Domain", "semantic": "smoke_alarm_review_required", "recording_family": "pdsounds-695"},
-          {"asset_key": "commons-fire-alarm-voice", "url": "https://commons.wikimedia.org/wiki/File:Fire_alarm_activated_voice.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fire_alarm_activated_voice.ogg", "license": "Public-Domain", "semantic": "fire_alarm_with_voice_review_required", "recording_family": "drb400atx-fire-alarm"},
+          {"asset_key": "commons-smoke-alarm", "url": "https://commons.wikimedia.org/wiki/File:Smoke_alarm.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Smoke_alarm.ogg", "license": "Public-Domain", "semantic": "fire_alarm", "recording_family": "pdsounds-695"},
+          {"asset_key": "commons-fire-alarm-voice", "url": "https://commons.wikimedia.org/wiki/File:Fire_alarm_activated_voice.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fire_alarm_activated_voice.ogg", "license": "Public-Domain", "semantic": "fire_alarm", "recording_family": "drb400atx-fire-alarm"},
+          {"asset_key": "commons-wws-firealarm", "url": "https://commons.wikimedia.org/wiki/File:WWS_Firealarm.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/WWS_Firealarm.ogg", "license": "CC-BY-4.0", "semantic": "fire_alarm", "recording_family": "work-with-sounds-museum-of-work-firealarm"},
           {"asset_key": "commons-nfpa-fire-alarm", "url": "https://commons.wikimedia.org/wiki/File:NFPA_Fire_Alarm.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/NFPA_Fire_Alarm.ogg", "license": "Public-Domain", "semantic": "synthetic_standard_pattern_augmentation_only", "recording_family": "nfpa-synth-family"},
           {"asset_key": "commons-nfpa-fire-alarm-variant-1", "url": "https://commons.wikimedia.org/wiki/File:NFPA_Fire_Alarm_Variant_1.ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/NFPA_Fire_Alarm_Variant_1.ogg", "license": "Public-Domain", "semantic": "synthetic_standard_pattern_augmentation_only", "recording_family": "nfpa-synth-family"},
           {"asset_key": "commons-activated-fire-alarm", "url": "https://commons.wikimedia.org/wiki/File:Activated_fire_alarm_(sound).ogg", "media_url": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Activated_fire_alarm_(sound).ogg", "license": "CC-BY-SA-3.0-AU", "semantic": "fire_alarm", "recording_family": "bidgee-fire-alarm"}
         ]
       },
-      "admission": "Public-domain assets are release-safe candidates subject to probe/review/dedup. ShareAlike assets remain conditional until ECHO distribution-policy review. Synthetic NFPA tones are augmentation only and do not receive real-source/group credit."
+      "admission": "Public-domain and attribution-only CC-BY assets are release-safe candidates subject to probe/review/dedup. ShareAlike assets remain conditional until ECHO distribution-policy review. Synthetic NFPA tones are augmentation only and do not receive real-source/group credit."
     },
     "shantycam-smoke-synth": {
       "kind": "augmentation_only",
