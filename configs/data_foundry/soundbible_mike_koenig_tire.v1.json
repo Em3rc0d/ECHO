@@ -1,0 +1,46 @@
+{
+  "schema_version": "echo.soundbible-mike-koenig-tire.v1",
+  "checked_at": "2026-09-16",
+  "phase": "EVIDENCE_MATERIALIZATION_ONLY",
+  "target": "TIRE_SQUEAL",
+  "policy": "This manifest materializes and fingerprints one explicit tire-squeal/skid source but grants zero corpus, split, coverage or source-diversity credit. Admission requires a later reviewed source-certification/ledger change after durable evidence exists.",
+  "source_id_candidate": "echo-soundbible-mike-koenig-tire-v1",
+  "underlying_source_family_candidate": "SOUNDBIBLE_MIKE_KOENIG",
+  "creator": "Mike Koenig",
+  "origin": {
+    "canonical_page": "https://soundbible.com/1178-Tires-Squealing.html",
+    "declared_license": "CC-BY-3.0",
+    "page_markers": [
+      "Tires Squealing",
+      "Mike Koenig",
+      "Attribution 3.0",
+      "tires squealing"
+    ]
+  },
+  "transport": {
+    "page": "https://opengameart.org/content/car-tire-skid-squealing",
+    "archive_url": "https://opengameart.org/sites/default/files/carskid.7z",
+    "declared_license": "CC-BY-3.0",
+    "page_markers": [
+      "Car Tire Skid Squealing",
+      "Mike Koenig (Soundbible)",
+      "CC-BY 3.0",
+      "Edited a sound from Soundbible",
+      "carskid.7z"
+    ]
+  },
+  "asset": {
+    "asset_key": "mike-koenig-tires-squealing-opengameart-edit",
+    "semantic_candidate": "tire_squeal",
+    "recording_family_candidate": "soundbible:mike-koenig:tires-squealing-1178",
+    "expected_audio_file_count": 1,
+    "allowed_extensions": [".wav", ".mp3", ".ogg", ".flac", ".aif", ".aiff"]
+  },
+  "stop_lines": [
+    "OpenGameArt is transport/derivative-publication evidence and never receives a second source-family credit.",
+    "The underlying acoustic-origin candidate is Mike Koenig / SoundBible.",
+    "CC-BY attribution obligations must remain attached to any later admitted corpus row.",
+    "A successful download/probe/fingerprint is not corpus admission.",
+    "Global exact/near dedup, recording-family resolution, split integrity and coverage remain mandatory after any later admission."
+  ]
+}
