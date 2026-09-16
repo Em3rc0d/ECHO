@@ -55,7 +55,20 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "955375c9cc29f2ac5019bb7b2d71090b90734bfe3a8332e5a34698a73ca2d45d",
+  "evidence_identity_material": {
+    "canonical_ledger_semantic_sha256": "cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1",
+    "closure_evidence_sha256": {
+      "coverage_gate": "43e94cca9d13829fdb22e0c6c1f4b658bc9cc3275e911ab67aea1277e79e144d",
+      "freeze_1_validation": "8e5bf18221ea512e698ce627307fc5853a6b147e023c21f4a13207addb4d8a12",
+      "freeze_2_validation": "15ab39c4517ebb9616fdac433632609112eca28c48deb28f779550794074333a",
+      "global_dedup_audit": "9817b67e348cdf39697ecc07ba412b8f8e24185e11c76a5935a8495b4f12f6b3",
+      "recording_family_audit": "739cea38926528496437965f76e55a216fc4eba99d53fee15778d9188b3512c5",
+      "reproducibility": "8e0144a2601e5cfda9aaf1c128eb50f8506c99e7f7ee16e990518d156e5c120c",
+      "split_integrity": "690d184283667b970f50c052b9bf0315b6b96026f7f0518ec1889457880ec646"
+    },
+    "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36"
+  },
+  "evidence_identity_sha256": "4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
@@ -69,10 +82,11 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "57869db92f9b8d691d8e7390dd0629e759928b03",
+      "baseline_commit": "7cabdceecec9389153af4335e5e3b4564259776b",
       "entry_count": 1141,
       "ledger_sha256": "cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1",
-      "sha256": "36b717b432aa5c7e494d9625e0f8486e1d5b7b59aa89025f3f3b0d061ba6f55a"
+      "provenance_note": "summary sha256 and baseline_commit are auditable execution provenance; semantic readiness identity binds canonical ledger_sha256 instead",
+      "sha256": "31211c2f4d974555868ab02a2bb311118aa5ed9165dce017e704b9a023569e4a"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -86,7 +100,7 @@
   "profile": "release_safe",
   "readiness_id": "EMP-MK1-CORPUS-READINESS-001",
   "release_law": "NO CERT-MK1-DF-CORPUS-001 = NO Benchmark A/B/C, no YAMNet/PANNs/CNN, no EMP-MODEL-001, no threshold calibration, no replay pipeline, no real camera.",
-  "schema_version": "echo.corpus-closure-readiness.v1",
+  "schema_version": "echo.corpus-closure-readiness.v2",
   "status": "BLOCKED",
   "target_readiness": {
     "FIRE_ALARM": {
