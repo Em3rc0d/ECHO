@@ -1,7 +1,7 @@
 {
   "schema_version": "echo.near-duplicate-policy.v1",
   "policy_id": "MK1-NEAR-DUP-001",
-  "status": "CANDIDATE_PENDING_CI_FIXTURE_GATE",
+  "status": "CANDIDATE_PENDING_POST_MERGE_EVIDENCE",
   "canonical_decode": {
     "backend": "ffmpeg-local",
     "audio_stream": "first",
