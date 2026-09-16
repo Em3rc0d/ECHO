@@ -10,13 +10,24 @@
   "origin": {
     "canonical_page": "https://soundbible.com/1178-Tires-Squealing.html",
     "declared_license": "CC-BY-3.0",
-    "page_markers": ["Tires Squealing", "Mike Koenig", "Attribution 3.0", "tires squealing"]
+    "page_markers": [
+      "Tires Squealing",
+      "Mike Koenig",
+      "Attribution 3.0",
+      "tires squealing"
+    ]
   },
   "transport": {
     "page": "https://opengameart.org/content/car-tire-skid-squealing",
     "archive_url": "https://opengameart.org/sites/default/files/carskid.7z",
     "declared_license": "CC-BY-3.0",
-    "page_markers": ["Car Tire Skid Squealing", "Mike Koenig (Soundbible)", "CC-BY 3.0", "Edited a sound from Soundbible", "carskid.7z"]
+    "page_markers": [
+      "Car Tire Skid Squealing",
+      "Mike Koenig (Soundbible)",
+      "CC-BY 3.0",
+      "Edited a sound from Soundbible",
+      "carskid.7z"
+    ]
   },
   "asset": {
     "asset_key_prefix": "mike-koenig-tires-squealing-opengameart-edit",
