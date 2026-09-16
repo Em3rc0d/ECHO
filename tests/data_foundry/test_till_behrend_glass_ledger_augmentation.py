@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-import shutil
 import tempfile
 import unittest
 
@@ -70,15 +69,32 @@ class TillBehrendGlassLedgerAugmentationTests(unittest.TestCase):
         self.assertEqual(source["evidence_urls"], ["https://opengameart.org/content/glass-break"])
 
     def test_real_augmentation_adds_exactly_one_ready_glass_row(self) -> None:
+        """Exercise the augmentation from an explicit pre-augmentation fixture.
+
+        The durable ledger now legitimately contains the Till row. Reusing that
+        post-augmentation ledger as the test input makes the test depend on repo
+        history rather than the augmentation contract. Build the pre-state by
+        removing exactly the governed row and recomputing its summary.
+        """
         with tempfile.TemporaryDirectory() as temp_dir:
             temp = Path(temp_dir)
             ledger = temp / "ledger.jsonl"
             summary = temp / "summary.json"
-            shutil.copy2(augmentation.LEDGER, ledger)
-            shutil.copy2(augmentation.SUMMARY, summary)
 
-            before_rows = augmentation.read_jsonl(ledger)
-            before_summary = augmentation.read_json(summary)
+            durable_rows = augmentation.read_jsonl(augmentation.LEDGER)
+            ledger_id = f"{augmentation.SOURCE_ID}:{augmentation.ASSET_ID}"
+            till_rows = [row for row in durable_rows if row["ledger_asset_id"] == ledger_id]
+            self.assertEqual(len(till_rows), 1)
+            before_rows = [row for row in durable_rows if row["ledger_asset_id"] != ledger_id]
+            with ledger.open("w", encoding="utf-8") as handle:
+                for row in before_rows:
+                    handle.write(json.dumps(row, sort_keys=True, separators=(",", ":"), ensure_ascii=False) + "\n")
+            before_summary = augmentation.summarize_ledger(before_rows)
+            summary.write_text(
+                json.dumps(before_summary, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+
             old_ledger, old_summary = augmentation.LEDGER, augmentation.SUMMARY
             try:
                 augmentation.LEDGER = ledger
@@ -100,7 +116,7 @@ class TillBehrendGlassLedgerAugmentationTests(unittest.TestCase):
             till_rows = [
                 row
                 for row in after_rows
-                if row["ledger_asset_id"] == f"{augmentation.SOURCE_ID}:{augmentation.ASSET_ID}"
+                if row["ledger_asset_id"] == ledger_id
             ]
             self.assertEqual(len(till_rows), 1)
             till = till_rows[0]
