@@ -4,49 +4,49 @@
       "filename": "coverage-gate.json",
       "pass": false,
       "present": true,
-      "sha256": "04f28b4ec7ce82285e01fdcdbbd09400b55e218f42b61e81a3d3eada2bc8b297",
+      "sha256": "9b74fc57a84d2873dfe42d033b1a2c7b7c0bac430aecbe736497c3fdf6fbdbbc",
       "status": "FAIL"
     },
     "freeze_1_validation": {
       "filename": "corpus-freeze-1.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "4c7484638ffb510447680d4faddc32795eaa84c35ba74733b9b94f871979e24a",
+      "sha256": "53a8d7aa389fb8adf1b713a0531885ccddf511ee372fb3ae0993f5d217615313",
       "status": "FAIL"
     },
     "freeze_2_validation": {
       "filename": "corpus-freeze-2.validation.json",
       "pass": false,
       "present": true,
-      "sha256": "22d175ca3b416bb2a5dcad588f2ddc65a17b8a21108098e49bd9a5ee971f3ddc",
+      "sha256": "1b3c4722bf858cc8a314f4ae59731b2f45ecea39a4873d9767b9ffc9faa5e1ee",
       "status": "FAIL"
     },
     "global_dedup_audit": {
       "filename": "global-dedup-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "91bce94acda3b84a051c6400d0411755faba0835930cebc6323dc3883e8e2042",
+      "sha256": "2d70a533cf14e24d8fc8c65ee173b4ba4159b8472078227e8f3f8ba36c8be0f2",
       "status": "PASS"
     },
     "recording_family_audit": {
       "filename": "recording-family-audit.json",
       "pass": true,
       "present": true,
-      "sha256": "e2c7bb54f6a44c9a0bb3a3f9809464018ddcc9cc64afa0e0a74c932c6a9f5919",
+      "sha256": "f6e17b6031253a6dcb85bb70fbc6e5b7c0a6a0a9eb8a61aecaad2eaa337fde29",
       "status": "PASS"
     },
     "reproducibility": {
       "filename": "corpus-reproducibility.json",
       "pass": false,
       "present": true,
-      "sha256": "28861431fab95a0bba1118df7816812f43f6bb5556a271f1f7644a839af1aa77",
+      "sha256": "fa63611d60b873bd4547d9f4dffe12fe4a253725179272bea2b7c8e5026a2ef8",
       "status": "FAIL"
     },
     "split_integrity": {
       "filename": "split-integrity.json",
       "pass": true,
       "present": true,
-      "sha256": "ec9419b25f1d08461e8a02922db9bd85c60d0e3aac76852d440a1ccea24bb13d",
+      "sha256": "855d7cb09c0ca346f2a300fe87dcb050f4c89847e0bc856d565362c408f5f917",
       "status": "PASS"
     }
   },
@@ -55,13 +55,13 @@
     "status": "OPEN"
   },
   "eligible_for_certificate_review": false,
-  "evidence_identity_sha256": "7c3dd6d518d8bc088a419b39e4dfb4894482def44906ca4561a4cc84f631f389",
+  "evidence_identity_sha256": "9b6da43da378dbf546a3961c6ed47b8e7218b5135bbe84680f58eecf86030559",
   "gap_codes": [
     "CORPUS_CERTIFICATE_NOT_CERTIFIED",
     "COVERAGE_GATE_GAP_CODES_NOT_EMPTY",
     "COVERAGE_GATE_NOT_PASS",
     "COVERAGE_GATE_STATUS_NOT_PASS",
-    "FIRE_ALARM_ASSETS_9_LT_50",
+    "FIRE_ALARM_ASSETS_12_LT_50",
     "FREEZE_1_VALIDATION_NOT_PASS",
     "FREEZE_2_VALIDATION_NOT_PASS",
     "REPRODUCIBILITY_NOT_PASS",
@@ -69,10 +69,10 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa",
-      "entry_count": 1159,
-      "ledger_sha256": "d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a",
-      "sha256": "ddcbee772e567527025c2914e0eca08ea3f4baf0f66ef02821e4f93c570c1f49"
+      "baseline_commit": "0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7",
+      "entry_count": 1162,
+      "ledger_sha256": "b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab",
+      "sha256": "79a6d97b3b27842ecce833d408581940437472e9b58b1a7c6dfa7beb530a3ebf"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
@@ -95,9 +95,9 @@
       "hard_negative_source_floor": 2,
       "hard_negative_underlying_source_families": 4,
       "positive_assets_floor": 50,
-      "positive_assets_pre_final_dedup": 9,
+      "positive_assets_pre_final_dedup": 12,
       "positive_source_floor": 2,
-      "positive_underlying_source_families": 2,
+      "positive_underlying_source_families": 3,
       "precheck_status": "FAIL",
       "scope_note": "Precheck only; final coverage also requires groups, duration, per-split floors, source concentration, quality, rights and duplicate controls."
     },
