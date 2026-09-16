@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fail closed when ECHO documentation/certification truth drifts.
 
-DOC-013 binds the human documentation layer to the durable post-confirmed-grouping
-corpus-closure evidence. Exact observed identities/counts and the screen->confirm->group
-contract are intentionally frozen; empirical or semantic change requires a fresh audit.
+DOC-013 binds documentation to the durable post-confirmed-grouping closure state.
+Exact observed identities/counts and the screen->confirm->group contract are frozen;
+any empirical or semantic change requires a fresh documentation audit.
 """
 
 from __future__ import annotations
@@ -125,14 +125,12 @@ def main() -> int:
     freeze2 = load_json("freeze2")
     repro = load_json("repro")
 
-    # Immutable product and governance ancestors.
     require(PROMISE in docs["charter"], "immutable promise missing from charter", failures)
     require(PROMISE in docs["state"], "immutable promise missing from CURRENT-STATE", failures)
     require("FROZEN_DOCUMENTATION_GOVERNANCE" in docs["doc_standard"], "documentation governance is not frozen", failures)
     require("ECHO-FREE-TIER-001" in docs["doc_standard"], "documentation standard lost free-tier ancestor", failures)
     require("FROZEN_GLOBAL_POLICY" in docs["free_tier"] and "0 USD" in docs["free_tier"], "free-tier invariant drift", failures)
 
-    # DOC-013 lineage and human authorities.
     require("CERT-DOC-013" in docs["doc_coverage"] and "Current certificate" in docs["doc_coverage"], "DOCUMENTATION-COVERAGE does not name DOC-013 current", failures)
     require("CERT-DOC-013                   = CERTIFIED / current" in docs["state"], "CURRENT-STATE does not mark DOC-013 current", failures)
     require("**Certificate:** `CERT-DOC-013`" in docs["doc_audit"] and "**Status:** `CERTIFIED`" in docs["doc_audit"], "DOC-013 audit is not certified", failures)
@@ -146,7 +144,6 @@ def main() -> int:
     require(ledger_state(docs["cert_ledger"], "CERT-MK1-DF-CORPUS-001", "OPEN"), "corpus certificate must remain OPEN", failures)
     require("CERT-MK1-DF-TOOLCHAIN-005 = CANDIDATE" in docs["foundry_gates"], "FOUNDRY-GATES lost TOOLCHAIN-005 candidate state", failures)
 
-    # Scoped SONYC certificate remains exact and independently certified.
     require(sonyc.get("artifact_id") == "CERT-MK1-DF-SONYC-001", "SONYC certificate id drift", failures)
     require(sonyc.get("status") == "CERTIFIED", "SONYC certificate status drift", failures)
     require(sonyc.get("implementation_baseline") == "ab8c47ba6aabb25390644954a2a06945ca7a81bb", "SONYC implementation baseline drift", failures)
@@ -157,14 +154,14 @@ def main() -> int:
     require(ss.get("probe_failures") == 0 and ss.get("fingerprint_failures") == 0, "SONYC technical failures reappeared", failures)
     require(sonyc.get("free_tier_boundary", {}).get("result") == "PASS", "SONYC free-tier result drift", failures)
 
-    # Frozen near-duplicate semantic contract: screen != identity.
     comparison = near_policy.get("comparison") or {}
     require(float(comparison.get("candidate_max_distance", -1)) == 0.02, "candidate screening threshold drift", failures)
     require(float(comparison.get("confirmed_group_max_distance", -1)) == 0.002, "confirmed grouping threshold drift", failures)
     require(float(comparison.get("confirmed_group_max_relative_sample_count_delta", -1)) == 0.01, "confirmed sample-count compatibility drift", failures)
-    require((near_policy.get("review_policy") or {}).get("automatic_merge") is False, "near-duplicate automatic merge must remain false", failures)
+    require(comparison.get("automatic_merge") is False, "near-duplicate automatic merge must remain false", failures)
+    require(comparison.get("action") == "SCREEN_THEN_CONFIRM_FOR_SPLIT_PROTECTION", "screen/confirm action drift", failures)
+    require("review-only screening edges never union components" in str(comparison.get("transitive_rule") or ""), "transitive screening stop-line drift", failures)
 
-    # Canonical ledger and global grouping resolver.
     require(ledger.get("baseline_commit") == EXPECTED_LEDGER_BASELINE, "canonical ledger baseline drift", failures)
     require(ledger.get("entry_count") == 1141, "canonical ledger entry count drift", failures)
     require(ledger.get("ledger_sha256") == EXPECTED_LEDGER_SHA256, "canonical ledger identity drift", failures)
@@ -186,7 +183,6 @@ def main() -> int:
     require(ledger.get("hard_negative_counts") == {"FIRE_ALARM": 202, "GLASS_SHATTER": 440, "SIREN": 235, "TIRE_SQUEAL": 25, "VEHICLE_HORN": 142}, "ledger hard-negative counts drift", failures)
     require(ledger.get("hard_negative_underlying_source_family_counts") == {"FIRE_ALARM": 4, "GLASS_SHATTER": 2, "SIREN": 4, "TIRE_SQUEAL": 2, "VEHICLE_HORN": 3}, "hard-negative source-family counts drift", failures)
 
-    # Durable global dedup audit v2: broad candidates remain observable, only confirmed conflicts block.
     require(dedup.get("schema_version") == "echo.global-dedup-audit.v2", "global dedup schema drift", failures)
     require(dedup.get("status") == "PASS" and dedup.get("gap_codes") == [], "global dedup must remain PASS", failures)
     require(dedup.get("fingerprinted_asset_count") == 1141 and dedup.get("missing_fingerprint_count") == 0, "global dedup fingerprint coverage drift", failures)
@@ -198,7 +194,6 @@ def main() -> int:
     require(dedup.get("exact_cross_recording_group_conflict_count") == 0, "exact duplicate identity crosses groups", failures)
     require(dedup.get("exact_media_duplicate_group_count") == 0 and dedup.get("exact_canonical_pcm_duplicate_group_count") == 0, "exact duplicate groups reappeared", failures)
 
-    # Recording-family and split closure.
     require(group_audit.get("schema_version") == "echo.recording-family-audit.v2", "recording-family audit schema drift", failures)
     require(group_audit.get("status") == "PASS" and group_audit.get("gap_codes") == [], "recording-family audit must remain PASS", failures)
     require(group_audit.get("recording_family_count") == 1075, "recording-family count drift", failures)
@@ -211,7 +206,6 @@ def main() -> int:
     require(split.get("eligible_asset_count") == 1141 and split.get("ready_candidate_asset_count") == 1141, "split eligible asset count drift", failures)
     require(split.get("split_asset_counts") == {"test": 463, "train": 439, "validation": 239}, "global split counts drift", failures)
 
-    # Exact final coverage snapshot.
     require(coverage.get("status") == "FAIL", "coverage status changed; fresh audit required", failures)
     require(coverage.get("ledger_sha256") == EXPECTED_COVERAGE_LEDGER_SHA256, "coverage ledger identity drift", failures)
     require(set(coverage.get("gap_codes") or []) == EXPECTED_COVERAGE_GAPS, "coverage detailed gap set drift", failures)
@@ -254,12 +248,10 @@ def main() -> int:
     require((siren.get("asset_count"), siren.get("independent_group_count")) == (169, 169), "SIREN closure drift", failures)
     require((horn.get("asset_count"), horn.get("independent_group_count")) == (235, 235), "VEHICLE_HORN closure drift", failures)
 
-    # Freeze/reproducibility remain blocked solely by empirical coverage.
     require(freeze1.get("status") == "FAIL" and freeze1.get("gap_codes") == ["UPSTREAM_COVERAGE_NOT_PASS"], "freeze #1 gate drift", failures)
     require(freeze2.get("status") == "FAIL" and freeze2.get("gap_codes") == ["UPSTREAM_COVERAGE_NOT_PASS"], "freeze #2 gate drift", failures)
     require(repro.get("status") == "FAIL" and repro.get("gap_codes") == ["UPSTREAM_FREEZE_NOT_ELIGIBLE"], "reproducibility gate drift", failures)
 
-    # Readiness/model entry remains locked until corpus certification.
     require(readiness.get("readiness_id") == "EMP-MK1-CORPUS-READINESS-001", "readiness id drift", failures)
     require(readiness.get("status") == "BLOCKED", "readiness must remain BLOCKED", failures)
     require(readiness.get("evidence_identity_sha256") == EXPECTED_EVIDENCE_IDENTITY, "readiness evidence identity drift", failures)
@@ -275,7 +267,6 @@ def main() -> int:
     require((targets.get("TIRE_SQUEAL") or {}).get("positive_assets_pre_final_dedup") == 14, "readiness TIRE count drift", failures)
     require((targets.get("GLASS_SHATTER") or {}).get("positive_assets_pre_final_dedup") == 303, "readiness GLASS count drift", failures)
 
-    # Human docs preserve downstream stop line and current evidence identity.
     for name in ("state", "doc_coverage", "cert_ledger", "doc_audit"):
         body = docs[name]
         require("CERT-MK1-DF-CORPUS-001" in body, f"{name} lost corpus certificate stop line", failures)
@@ -283,7 +274,6 @@ def main() -> int:
         require(EXPECTED_EVIDENCE_IDENTITY in body, f"{name} lost current evidence identity", failures)
     require("modeling_allowed = false" in docs["state"], "CURRENT-STATE lost modeling lock", failures)
 
-    # Markdown inventory and repository hygiene are certificate inputs.
     markdown_files = sorted(path for path in ROOT.rglob("*.md") if ".git" not in path.parts)
     require(len(markdown_files) == EXPECTED_MD_COUNT, f"Markdown corpus count drift: expected {EXPECTED_MD_COUNT}, got {len(markdown_files)}", failures)
     for path in markdown_files:
