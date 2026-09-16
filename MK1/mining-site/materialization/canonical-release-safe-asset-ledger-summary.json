@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7",
+  "baseline_commit": "050f2ebc39fea0d1e6903190ad471fd97d1487dc",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1162,
+  "canonical_fingerprint_count": 1141,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -23,20 +23,20 @@
     "semantic_stop_line": "Only explicit fire_alarm/tire_squeal supplemental decisions become positives; all broader/composite candidates remain review-only.",
     "source_diversity_stop_line": "CC0 gap acquisition is another Freesound path and never creates a second source-family credit versus FSD50K/direct Freesound.",
     "stats": {
-      "exact_positive_rows": 11,
+      "exact_positive_rows": 21,
       "materialized_rows": 85,
-      "merged_existing_rows": 2,
-      "review_rows": 74,
+      "merged_existing_rows": 1,
+      "review_rows": 64,
       "status:CC0_REAL_PREVIEW_MATERIALIZED_REVIEW_REQUIRED": 85,
       "status:METADATA_ONLY_NON_CC0_OR_UNCONFIRMED": 47,
       "status:PAGE_FETCH_FAILED": 1,
-      "target:FIRE_ALARM:exact": 5,
+      "target:FIRE_ALARM:exact": 12,
       "target:FIRE_ALARM:materialized": 56,
-      "target:TIRE_SQUEAL:exact": 6,
+      "target:TIRE_SQUEAL:exact": 9,
       "target:TIRE_SQUEAL:materialized": 29
     },
     "status": "PASS",
-    "supplemental_sha256": "fd3273f16195be850625c75ef6cfdd27828aa88c20a8a99686ee7f4cac925951",
+    "supplemental_sha256": "c9bd5362d385cc2b7808588f694327454daf3d261d750b17581f6239a88a9a3c",
     "underlying_source_family": "FREESOUND"
   },
   "certification_boundary": "The corpus-facing canonical ledger contains only explicitly release-safe assets with exact positive or governed hard-negative roles and no unresolved admission blockers other than the explicitly deferred pre-grouping marker. Quarantined rows remain durable source evidence and are not silently relabeled. The following grouping resolver must clear the deferred marker; READY_FOR_GLOBAL_DEDUP still does not mean ADMITTED_RELEASE_SAFE or CERTIFIED.",
@@ -45,7 +45,7 @@
     "status": "OPEN"
   },
   "enrichment": {
-    "cross_target_hard_negative_roles_attached": 532,
+    "cross_target_hard_negative_roles_attached": 512,
     "cross_target_mapping": {
       "SIREN": [
         "FIRE_ALARM",
@@ -59,43 +59,43 @@
     "fingerprint_stop_line": "Every exact positive or hard-negative role requires a canonical fingerprint before global near-duplicate audit readiness.",
     "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination.",
     "inputs": {
-      "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "c1630cc003aa9e06548feed6891ce3f10b874e0efb241dd72e030d411e7eaacf",
+      "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "0bc874ecbae37b60c83f5662e909ba0e4c9b6d7f9c58ff9f4b128ead95e425ec",
       "MK1/mining-site/materialization/public-gap-assets-report.json": "a6fcbf29d91c87612f8bb020296e7037c2cab610cbe3ceec565311ceb232b800",
       "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
       "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
       "configs/data_foundry/hard_negative_mapping.v1.json": "148f218bbe56bd342713b4e262443e6bbc9da0328aa40e20c2a3ea99eb8e8cd8"
     },
-    "matched_asset_count": 1117,
+    "matched_asset_count": 1085,
     "status": "PASS",
-    "technical_evidence_asset_count": 1117
+    "technical_evidence_asset_count": 1085
   },
-  "entry_count": 1162,
+  "entry_count": 1141,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1162,
-    "component_count": 1015,
+    "asset_count": 1141,
+    "component_count": 992,
     "content_deleted": false,
     "content_merge_performed": false,
-    "cross_source_group_near_duplicate_edge_count": 853,
+    "cross_source_group_near_duplicate_edge_count": 851,
     "fallback_asset_count_after": 0,
-    "fallback_asset_count_before": 446,
-    "global_acoustic_component_count": 14,
-    "members_reassigned_to_global_acoustic_component": 125,
-    "near_duplicate_edge_count": 857,
+    "fallback_asset_count_before": 415,
+    "global_acoustic_component_count": 12,
+    "members_reassigned_to_global_acoustic_component": 118,
+    "near_duplicate_edge_count": 855,
     "near_duplicate_threshold": 0.02,
     "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
     "schema_version": "echo.global-recording-group-resolution.v1",
-    "screened_fallback_source_group_count": 351,
+    "screened_fallback_source_group_count": 323,
     "status": "PASS"
   },
   "hard_negative_counts": {
-    "FIRE_ALARM": 206,
+    "FIRE_ALARM": 202,
     "GLASS_SHATTER": 440,
-    "SIREN": 245,
+    "SIREN": 235,
     "TIRE_SQUEAL": 25,
-    "VEHICLE_HORN": 146
+    "VEHICLE_HORN": 142
   },
   "hard_negative_underlying_source_family_counts": {
     "FIRE_ALARM": 4,
@@ -115,11 +115,11 @@
     },
     "freesound_cc0_supplemental": {
       "path": "configs/data_foundry/freesound_cc0_supplemental.v1.json",
-      "sha256": "fd3273f16195be850625c75ef6cfdd27828aa88c20a8a99686ee7f4cac925951"
+      "sha256": "c9bd5362d385cc2b7808588f694327454daf3d261d750b17581f6239a88a9a3c"
     },
     "freesound_release_safe": {
       "path": "MK1/mining-site/materialization/freesound-release-safe-materialization.json",
-      "sha256": "c1630cc003aa9e06548feed6891ce3f10b874e0efb241dd72e030d411e7eaacf"
+      "sha256": "0bc874ecbae37b60c83f5662e909ba0e4c9b6d7f9c58ff9f4b128ead95e425ec"
     },
     "fsd50k_exact_candidates": {
       "path": "MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json",
@@ -166,7 +166,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab",
+  "ledger_sha256": "1ab3712452f42205fe9004f1d6cb9e778297487891bb373e5c42d635854f1d85",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -217,11 +217,11 @@
     "underlying_source_family": "OPENGAMEART_TILL_BEHREND"
   },
   "positive_counts": {
-    "FIRE_ALARM": 12,
-    "GLASS_SHATTER": 320,
-    "SIREN": 173,
-    "TIRE_SQUEAL": 11,
-    "VEHICLE_HORN": 245
+    "FIRE_ALARM": 19,
+    "GLASS_SHATTER": 303,
+    "SIREN": 169,
+    "TIRE_SQUEAL": 14,
+    "VEHICLE_HORN": 235
   },
   "positive_underlying_source_family_counts": {
     "FIRE_ALARM": 3,
@@ -241,46 +241,45 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1246,
+    "input_rows": 1215,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
-      "GROUPING_GLOBAL_AUDIT_REQUIRED": 57,
+      "GROUPING_GLOBAL_AUDIT_REQUIRED": 49,
       "LICENSE_NOT_RELEASE_SAFE": 1,
-      "NO_EXACT_SEMANTIC_ROLE": 81,
+      "NO_EXACT_SEMANTIC_ROLE": 72,
       "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
-      "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
-      "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
+      "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1
     },
     "removed_non_release_safe_rows": 1,
     "removed_rejection_counts": {
       "NOT_RELEASE_SAFE": 1,
-      "REVIEW_ONLY_NO_GOVERNED_ROLE": 81,
-      "UNRESOLVED_ADMISSION_BLOCKER": 2
+      "REVIEW_ONLY_NO_GOVERNED_ROLE": 72,
+      "UNRESOLVED_ADMISSION_BLOCKER": 1
     },
-    "removed_review_only_rows": 81,
+    "removed_review_only_rows": 72,
     "removed_rights_status_counts": {
-      "ALLOW_RELEASE_SAFE": 83,
+      "ALLOW_RELEASE_SAFE": 73,
       "RESEARCH_ONLY": 1
     },
-    "removed_rows": 84,
+    "removed_rows": 74,
     "removed_source_counts": {
       "echo-bigsoundbank-cc0-gap-v1": 7,
-      "echo-freesound-release-safe-v1": 74,
+      "echo-freesound-release-safe-v1": 64,
       "echo-wikimedia-fire-alarm-v1": 3
     },
-    "removed_unresolved_blocker_rows": 2,
+    "removed_unresolved_blocker_rows": 1,
     "retained_deferred_blocker_counts": {
-      "GROUPING_GLOBAL_AUDIT_REQUIRED": 446
+      "GROUPING_GLOBAL_AUDIT_REQUIRED": 415
     },
-    "retained_rows": 1162,
+    "retained_rows": 1141,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
   "schema_version": "echo.canonical-asset-ledger-summary.v1",
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 53,
-    "echo-freesound-release-safe-v1": 457,
+    "echo-freesound-release-safe-v1": 436,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
     "echo-wikimedia-fire-alarm-v1": 7,
@@ -288,12 +287,12 @@
   },
   "source_input_stats": {
     "freesound": {
-      "exact_semantic_rows": 448,
-      "materialized_rows": 448,
-      "status:MATERIALIZATION_FAILED": 441,
+      "exact_semantic_rows": 416,
+      "materialized_rows": 416,
+      "status:MATERIALIZATION_FAILED": 475,
       "status:RELEASE_SAFE_PREVIEW_FETCH_OR_PROBE_FAILED": 1,
-      "status:RELEASE_SAFE_REAL_PREVIEW_MATERIALIZED": 448,
-      "status:RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED": 59
+      "status:RELEASE_SAFE_REAL_PREVIEW_MATERIALIZED": 416,
+      "status:RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED": 57
     },
     "public_gap": {
       "exact_semantic_rows": 35,
@@ -308,12 +307,12 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1162
+    "READY_FOR_GLOBAL_DEDUP": 1141
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
     "BIGSOUNDBANK": 53,
-    "FREESOUND": 457,
+    "FREESOUND": 436,
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
     "SONYC_UST": 599,
