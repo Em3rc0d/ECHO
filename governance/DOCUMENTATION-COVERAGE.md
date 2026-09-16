@@ -1,27 +1,25 @@
 # Documentation Coverage Audit
 
 **Status:** `PASS_CURRENT_HEAD`  
-**Current certificate:** `CERT-DOC-010`  
-**Current Markdown corpus:** `214 files`  
-**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-010.md`
+**Current certificate:** `CERT-DOC-011`  
+**Current Markdown corpus:** `215 files`  
+**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-011.md`
 
 ## Rule
 
-ECHO is documentation-first and evidence-first. Documentation preserves the distinction `FACT/EVIDENCE`, `INFERENCE`, `HYPOTHESIS`, `DECISION`, and `TARGET`. Green CI never manufactures empirical corpus/model evidence. All current truth inherits `ECHO-FREE-TIER-001`.
+ECHO is documentation-first and evidence-first. Documentation preserves `FACT/EVIDENCE`, `INFERENCE`, `HYPOTHESIS`, `DECISION`, and `TARGET`. Green CI never manufactures empirical corpus/model evidence. All current truth inherits `ECHO-FREE-TIER-001`.
 
 ## Certificate lineage
 
 ```text
-CERT-DOC-001..009  historical / invalidated
-CERT-DOC-010       current / 214 files / CERTIFIED
+CERT-DOC-001..010  historical / invalidated
+CERT-DOC-011       current / 215 files / CERTIFIED
 ```
-
-DOC-010 adds exactly one Markdown record relative to the 213-file DOC-009 corpus and re-audits the durable post-Till corpus evidence.
 
 ## Current audited truth
 
 ```text
-CERT-DOC-010                    = CERTIFIED
+CERT-DOC-011                    = CERTIFIED
 CERT-MK1-DF-TOOLCHAIN-004       = INVALIDATED
 CERT-MK1-DF-TOOLCHAIN-005       = CANDIDATE
 CERT-MK1-DF-SONYC-001           = CERTIFIED
@@ -36,15 +34,13 @@ Benchmark A/B/C                  = LOCKED
 ECHO-FREE-TIER-001               = PASS
 ```
 
-The authoritative durable readiness artifact is `MK1/mining-site/materialization/corpus-closure-readiness.json` at `main@60dfa361eb344172973a96949d38e137fbfaf822`, evidence identity `7c3dd6d518d8bc088a419b39e4dfb4894482def44906ca4561a4cc84f631f389`.
+The authoritative durable readiness artifact is at `main@2088c93d65b5d4dff58bb5cdb91b0e76e6288afb`, evidence identity `9b6da43da378dbf546a3961c6ed47b8e7218b5135bbe84680f58eecf86030559`.
 
-Canonical ledger truth is 1159 corpus-facing rows with 1159/1159 canonical fingerprints and zero unresolved corpus-facing blockers. The summary baseline is `05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa`, ledger identity `d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a`. Dedup, recording-family and split-integrity are PASS.
+Canonical ledger truth is 1162 corpus-facing rows with 1162/1162 canonical fingerprints, zero blockers, baseline `0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7`, ledger identity `b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab`. Dedup, recording-family and split-integrity are PASS.
 
-Final coverage remains FAIL with exactly 17 detailed gaps. They reduce to FIRE positive/group/split coverage, TIRE positive/group/split coverage and GLASS source concentration. Background and governed hard-negative floors remain closed.
+Final coverage remains FAIL with exactly 17 detailed gaps. FIRE improved durably to 12 assets / 9 groups / 3 source families / 311.05767 s, with train 10/7 groups, validation 2/2 and test 0/0. TIRE remains 11/11; GLASS remains 239/222 with 0.945607 largest-source fraction.
 
 ## Product-direction audit
-
-The repository remains aligned with the immutable promise. The active critical path is:
 
 ```text
 release-safe corpus
@@ -59,29 +55,30 @@ release-safe corpus
 
 Supporting camera/UI/transport work must not redefine or preempt the acoustic detection/classification core.
 
-## Candidate acquisition boundary
+## Freesound orchestration boundary
 
-PR #33 changes Public Gap acquisition/persistence and proposes additional exact Wikimedia FIRE candidates. That branch-level intent is documented, but candidate rows receive zero durable corpus credit until `main` materializes real bytes and the canonical ledger → grouping/dedup → split → coverage cascade is recomputed.
+The next authorized acquisition is exact, release-safe FIRE/TIRE audio. Generated Freesound evidence is bound to the triggering SHA and must fail closed when `main` moves. Workflow YAML edits do not self-trigger materialization. Raw supplemental semantic-config pushes trigger the release-safe Freesound materializer, not Canonical Ledger directly; the ledger waits for durable materialization evidence/successful materialization workflow. The narrower CC0 materializer does not race supplemental changes.
 
-Consequently DOC-010 freezes the existing durable counts, not predicted post-merge counts.
+Future Freesound candidates receive zero corpus credit until the durable materialization → ledger → grouping/dedup → split → coverage → readiness cascade completes.
 
 ## Automated governance
 
 `scripts/check_documentation_governance.py` validates:
 
 - immutable promise and `ECHO-FREE-TIER-001`;
-- DOC-010 current / DOC-001..009 invalidated;
+- DOC-011 current / DOC-001..010 invalidated;
 - SONYC-001 scoped certification;
 - TOOLCHAIN-004 invalidated / TOOLCHAIN-005 candidate;
-- exact audited ledger and readiness identities;
-- 1159/1159 canonical fingerprints and zero ledger blockers;
-- global dedup, recording-family and split-integrity PASS;
+- audited ledger/readiness identities and 1162/1162 fingerprints;
+- zero ledger blockers;
+- grouping, dedup and split integrity PASS;
 - exactly 17 detailed coverage gaps and nine readiness blockers;
-- GLASS final 239 assets / 222 groups / four positive source families / 0.945607 largest-source fraction;
-- TIRE hard-negative closure 25 assets / 12 groups / two source families;
+- FIRE final 12 assets / 9 groups / 3 sources;
+- GLASS final 239 / 222 / 0.945607 concentration;
+- TIRE HN 25 / 12 / 2 closure;
 - corpus certificate OPEN and `modeling_allowed=false`;
-- 214-file Markdown inventory and absence of merge-conflict markers.
+- 215-file Markdown inventory and no merge-conflict markers.
 
 ## Invalidation
 
-DOC-010 becomes stale if the 214-file inventory, machine-readable ledger/closure/readiness evidence, certificate/policy truth, rights/semantics/grouping/split/coverage/freeze logic, immutable promise, product critical path or free-tier boundary changes without a fresh audit.
+DOC-011 becomes stale if the 215-file inventory, durable ledger/coverage/readiness evidence, certificate/policy truth, rights/semantics/grouping/split/coverage/freeze logic, immutable promise, product critical path or free-tier boundary changes without a fresh audit.

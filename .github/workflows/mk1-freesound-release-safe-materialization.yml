@@ -9,7 +9,6 @@ on:
       - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
       - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
-      - '.github/workflows/mk1-freesound-release-safe-materialization.yml'
   workflow_dispatch:
 
 permissions:
@@ -26,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -64,8 +63,14 @@ jobs:
       - name: Commit durable rights/hash/probe evidence only
         run: |
           cp MK1/mining-site/materialization/freesound-release-safe-materialization.json /tmp/freesound-release-safe-materialization.json
-          git reset --hard HEAD
-          git pull --rebase origin main
+          git reset --hard "${GITHUB_SHA}"
+          git fetch origin main --depth=1
+          RUN_SHA="$(git rev-parse HEAD)"
+          REMOTE_MAIN_SHA="$(git rev-parse origin/main)"
+          if [[ "$RUN_SHA" != "$REMOTE_MAIN_SHA" ]]; then
+            echo "main moved during release-safe Freesound materialization; refusing to persist stale evidence"
+            exit 1
+          fi
           cp /tmp/freesound-release-safe-materialization.json MK1/mining-site/materialization/freesound-release-safe-materialization.json
           git config user.name 'echo-data-foundry-bot'
           git config user.email '123134857+Em3rc0d@users.noreply.github.com'
