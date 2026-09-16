@@ -10,9 +10,12 @@ on:
       - 'schemas/data_foundry/**'
       - 'scripts/data_foundry/**'
       - 'scripts/check_modeling_gate_wiring.py'
+      - 'scripts/check_corpus_pipeline_wiring.py'
       - 'MK1/build/data-foundry/**'
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
+      - '.github/workflows/mk1-canonical-ledger.yml'
+      - '.github/workflows/mk1-corpus-closure-evidence.yml'
       - '.github/workflows/mk1-corpus-readiness.yml'
       - '.github/workflows/mk1-model-entry-gate.yml'
   pull_request:
@@ -23,9 +26,12 @@ on:
       - 'schemas/data_foundry/**'
       - 'scripts/data_foundry/**'
       - 'scripts/check_modeling_gate_wiring.py'
+      - 'scripts/check_corpus_pipeline_wiring.py'
       - 'MK1/build/data-foundry/**'
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
+      - '.github/workflows/mk1-canonical-ledger.yml'
+      - '.github/workflows/mk1-corpus-closure-evidence.yml'
       - '.github/workflows/mk1-corpus-readiness.yml'
       - '.github/workflows/mk1-model-entry-gate.yml'
 
@@ -44,7 +50,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile source and tests
-        run: python -m compileall -q src tests scripts/data_foundry
+        run: python -m compileall -q src tests scripts/data_foundry scripts/check_corpus_pipeline_wiring.py
       - name: Validate registries, policies and schemas
         run: |
           python -m json.tool configs/data_foundry/source_registry.v1.json >/dev/null
@@ -98,6 +104,8 @@ jobs:
         run: |
           python scripts/data_foundry/build_corpus_closure_readiness.py --output /tmp/corpus-closure-readiness.json
           python -m json.tool /tmp/corpus-closure-readiness.json >/dev/null
+      - name: Validate corpus pipeline wiring
+        run: python scripts/check_corpus_pipeline_wiring.py
       - name: Validate model-entry guard wiring
         run: python scripts/check_modeling_gate_wiring.py
       - name: Run Foundry unit and synthetic E2E tests
