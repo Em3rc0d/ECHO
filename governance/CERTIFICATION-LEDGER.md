@@ -2,7 +2,7 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-009`
+**Documentation ancestor:** `CERT-DOC-010`
 
 `CERTIFIED` is always scope-bounded. Green CI is execution evidence, not a substitute for missing empirical corpus evidence. No certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
@@ -20,14 +20,14 @@
 | CERT-MK1-DF-SPEC-001 | Data Foundry architecture/contracts/policies | CERTIFIED | Foundry docs/config/schema/foundation | semantic contract changes |
 | CERT-MK1-DF-TOOLCHAIN-001..003 | Historical toolchains | INVALIDATED | historical evidence | superseded |
 | CERT-MK1-DF-TOOLCHAIN-004 | SONYC persistence/fingerprint Foundry baseline | INVALIDATED | baseline `ab8c47ba...` | invalidated by closure semantic changes |
-| CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | PR #10-#15 + fresh CI/cascade | certify only after active closure implementation stabilizes |
+| CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | active closure CI + deterministic evidence cascade | certify only after active closure implementation stabilizes |
 | CERT-MK1-DF-SONYC-001 | SONYC v2.3 materialization/fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...` | SONYC evidence/materialization/fingerprint/free-tier changes |
-| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `d94eff29...` | recomputed when input evidence/policy changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `60dfa361...` | recomputed when input evidence/policy changes |
 | EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | release-safe closure | produced only from closed corpus |
 | EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | dedup/group/split/coverage closure | produced only from real closure |
 | CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | dataset + quality + all closure gates + reproducibility + free-tier | material corpus ancestor changes |
-| CERT-DOC-001..008 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
-| CERT-DOC-009 | Current corpus-closure documentation truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-009.md` | audited truth changes |
+| CERT-DOC-001..009 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
+| CERT-DOC-010 | Current post-Till corpus-closure documentation truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-010.md` | audited truth changes |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized field evidence | closes only with field evidence + upstream authorization |
 | EMP-MODEL-001 | Model winner | BLOCKED | corpus cert + Benchmark A/B/C | cannot run before corpus cert |
 | EMP-THRESH-001 | Event thresholds | BLOCKED | certified corpus + model/replay | cannot run before upstream gates |
@@ -46,69 +46,82 @@ durable evidence          78fc019839f1c9dad1a58a70d439605d887361d7
 
 Its scope does not certify the final corpus.
 
-## Current empirical chain
+## Current durable corpus evidence
+
+At `main@60dfa361eb344172973a96949d38e137fbfaf822`:
 
 ```text
-PR #15 merge / implementation baseline  4b261bd10d6578a6256fca8ec848ea1055c24b32
-Data Foundry CI                          34980804090 PASS
-canonical ledger run                     34980804004 PASS
-canonical ledger durable evidence        5239447e91915deef30b814c6b172010bd73d2ff
-closure evidence run                     34980883811 PASS
-closure evidence durable commit          b4086d7eb02df67091ac77cd519590abf336b70e
-readiness durable commit                 d94eff2958bbe57076610524cbb192d14ec95739
-```
-
-## Canonical corpus-facing ledger
-
-```text
-entry_count                         1078
-canonical fingerprints              1078 / 1078
+canonical ledger baseline              05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa
+canonical ledger entries               1159
+canonical fingerprints                 1159 / 1159
 missing fingerprints                   0
 unresolved ledger blockers             0
-fallback assets after grouping          0
-global acoustic components             17
-assets moved into acoustic components  97
-content merge/delete                false
-ledger sha256                        36ef8e19198a296d7806106adc2c4ee43b7827d893e78b6bbd2d1ffd83b3743a
+ledger sha256                          d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a
+fallback assets after grouping         0
+global acoustic components             14
+members reassigned to components       125
+content merge/delete                   false
 ```
 
-The former non-release-safe/semantic-conflict rows are quarantined from corpus credit without altering their source evidence.
-
-## Closed structural gates
+Closed structural gates:
 
 ```text
 global-dedup-audit.json       PASS / gap_codes=[]
 recording-family-audit.json   PASS / gap_codes=[]
 split-integrity.json          PASS / gap_codes=[]
+protected split conflicts     2
+quarantined assets            93
 ```
 
-Split PASS is achieved by deterministic whole-group quarantine for the three incompatible protected upstream split components. The 62 quarantined assets cannot satisfy coverage/freeze membership and are not remapped individually.
-
-## Current coverage/readiness truth
-
-Current target precheck:
+## Current final coverage truth
 
 ```text
-FIRE_ALARM      positive 9/50     HN 34/20    HN sources 1/2
-GLASS_SHATTER   positive 304/50   HN 401/20   HN sources 1/2
-SIREN           positive 173/50   HN 32/20    HN sources 1/2
-TIRE_SQUEAL     positive 11/50    HN 0/20     HN sources 0/2
-VEHICLE_HORN    positive 245/50   HN 0/20     HN sources 0/2
+BACKGROUND
+  416 assets / 383 groups / 4 sources                   PASS
+
+FIRE_ALARM
+  9 assets / 6 groups / 190.18 s
+  train 7/4, validation 2/2, test 0/0
+  HN 206 assets / 206 groups / 4 sources                 PASS
+
+GLASS_SHATTER
+  239 assets / 222 groups
+  BIGSOUNDBANK 6
+  FREESOUND 226
+  OPENGAMEART_RUBBERDUCK 6
+  OPENGAMEART_TILL_BEHREND 1
+  max single-source fraction 0.945607                    FAIL <= 0.80
+  HN 428 assets / 408 groups / 2 sources                 PASS
+
+SIREN
+  173 assets / 173 groups
+  HN 245 assets / 244 groups / 4 sources                 PASS
+
+TIRE_SQUEAL
+  11 assets / 11 groups / 280.54 s
+  train 9/9, validation 0/0, test 2/2
+  HN 25 assets / 12 groups / 2 sources                   PASS
+
+VEHICLE_HORN
+  245 assets / 244 groups
+  HN 146 assets / 146 groups / 3 sources                 PASS
 ```
 
-Coverage remains FAIL because these prechecks are only a subset of the full solidity law; groups, duration, splits, concentration, quality and rights remain enforced. Floors may not be reduced.
+Coverage is `FAIL` with exactly 17 detailed gap codes: eight FIRE positive/split gaps, one GLASS concentration gap and eight TIRE positive/split gaps. Former background and hard-negative gaps remain closed. Asset-quality stop lines remain zero.
 
-At `d94eff2958bbe57076610524cbb192d14ec95739`:
+## Machine-readable readiness
+
+At `60dfa361eb344172973a96949d38e137fbfaf822`:
 
 ```text
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
-evidence_identity_sha256 = 90f2dd006cfbacfe9dc1bdc5cb81c7d9411ccf5322d6ca2dd53f334e76c209e8
+evidence_identity_sha256 = 7c3dd6d518d8bc088a419b39e4dfb4894482def44906ca4561a4cc84f631f389
 ```
 
-Exact readiness gap codes:
+Exact readiness gaps:
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -116,23 +129,22 @@ COVERAGE_GATE_GAP_CODES_NOT_EMPTY
 COVERAGE_GATE_NOT_PASS
 COVERAGE_GATE_STATUS_NOT_PASS
 FIRE_ALARM_ASSETS_9_LT_50
-FIRE_ALARM_HARD_NEGATIVE_SOURCES_1_LT_2
 FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
-GLASS_SHATTER_HARD_NEGATIVE_SOURCES_1_LT_2
 REPRODUCIBILITY_NOT_PASS
-SIREN_HARD_NEGATIVE_SOURCES_1_LT_2
 TIRE_SQUEAL_ASSETS_11_LT_50
-TIRE_SQUEAL_HARD_NEGATIVES_0_LT_20
-TIRE_SQUEAL_HARD_NEGATIVE_SOURCES_0_LT_2
-VEHICLE_HORN_HARD_NEGATIVES_0_LT_20
-VEHICLE_HORN_HARD_NEGATIVE_SOURCES_0_LT_2
 ```
+
+## Candidate acquisition boundary
+
+PR #33 may add/reclassify Public Gap candidates, but candidate intent is not empirical corpus credit. The current durable counts above remain authoritative until a post-merge materialization → canonical ledger → grouping/dedup → split → coverage → readiness cascade persists new evidence.
+
+No predicted candidate is allowed to certify coverage, freeze or modeling readiness.
 
 ## Product critical path
 
 ```text
-CERT-ECHO-000 + CERT-DOC-009 + ECHO-FREE-TIER-001
+CERT-ECHO-000 + CERT-DOC-010 + ECHO-FREE-TIER-001
         ↓
 CERT-MK1-DF-SPEC-001
         ↓
@@ -140,7 +152,7 @@ TOOLCHAIN-005 = CANDIDATE + SONYC-001 = CERTIFIED
         ↓
 GLOBAL DEDUP + RECORDING FAMILY + SPLIT INTEGRITY = PASS
         ↓
-real coverage / source-diversity / HN acquisition
+real coverage / source-diversity acquisition
         ↓
 coverage PASS → freeze #1 → freeze #2 → reproducibility PASS
         ↓
