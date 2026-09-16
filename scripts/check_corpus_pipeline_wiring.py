@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 """Fail-closed static audit for the MK1 corpus release pipeline wiring.
 
-Durable corpus evidence is produced by one atomic orchestrator. This is deliberate:
-commits pushed by the repository GITHUB_TOKEN do not recursively trigger ordinary
-push workflows, so ledger -> closure -> readiness must not depend on bot-push
-recursion. Source materializers hand off through workflow_run; the orchestrator
-resolves the current durable main commit once, builds ledger + closure + readiness
-from that exact baseline, verifies determinism, refuses persistence if main moved,
-and commits the complete evidence cascade atomically.
-
-The standalone closure/readiness workflows are diagnostics only and must remain
-read-only. Model entry remains read-only and fail-closed on certified readiness.
+Durable corpus evidence and certificate issuance are owned by one atomic orchestrator.
+This avoids recursive GITHUB_TOKEN trigger assumptions and prevents a split-brain
+ledger -> closure -> readiness -> certificate transition. Standalone closure/readiness
+workflows remain read-only diagnostics. Model entry remains read-only and requires
+certified readiness.
 """
 
 from pathlib import Path
@@ -22,6 +17,11 @@ CANONICAL = WORKFLOWS / "mk1-canonical-ledger.yml"
 CLOSURE = WORKFLOWS / "mk1-corpus-closure-evidence.yml"
 READINESS = WORKFLOWS / "mk1-corpus-readiness.yml"
 MODEL_ENTRY = WORKFLOWS / "mk1-model-entry-gate.yml"
+HANDOFF = ROOT / "MK1/build/data-foundry/CORPUS-CERTIFICATE-HANDOFF.md"
+TOOLCHAIN = ROOT / "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md"
+CERTIFICATION = ROOT / "src/echo/data_foundry/certification.py"
+EMITTER = ROOT / "scripts/data_foundry/emit_corpus_certificate.py"
+CERT_SCHEMA = ROOT / "schemas/data_foundry/corpus-certificate.schema.json"
 
 EXACT_CHECKOUT = "ref: ${{ github.sha }}"
 ATOMIC_CHECKOUT = "ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}"
@@ -41,6 +41,8 @@ ATOMIC_BUILD_COMMANDS = (
     "python scripts/data_foundry/resolve_global_recording_groups.py",
     "python scripts/data_foundry/build_corpus_closure_evidence.py",
     "python scripts/data_foundry/apply_split_conflict_quarantine.py",
+    "build_corpus_closure_readiness.py --ignore-corpus-certificate",
+    "emit_corpus_certificate.py --readiness /tmp/corpus-readiness.pre-cert.json --if-eligible",
     "python scripts/data_foundry/build_corpus_closure_readiness.py",
 )
 
@@ -55,12 +57,13 @@ DURABLE_OUTPUTS = (
     "corpus-freeze-2.validation.json",
     "corpus-reproducibility.json",
     "corpus-closure-readiness.json",
+    "cert-mk1-df-corpus-001.json",
 )
 
 
 def read(path: Path) -> str:
     if not path.is_file():
-        raise SystemExit(f"missing workflow: {path.relative_to(ROOT)}")
+        raise SystemExit(f"missing authority/workflow: {path.relative_to(ROOT)}")
     return path.read_text(encoding="utf-8")
 
 
@@ -72,6 +75,51 @@ def require(text: str, needle: str, label: str) -> None:
 def forbid(text: str, needle: str, label: str) -> None:
     if needle in text:
         raise SystemExit(f"{label}: forbidden wiring present: {needle}")
+
+
+def audit_certificate_authorities() -> None:
+    handoff = read(HANDOFF)
+    toolchain = read(TOOLCHAIN)
+    certification = read(CERTIFICATION)
+    emitter = read(EMITTER)
+    schema = read(CERT_SCHEMA)
+
+    for needle in (
+        "CERT-MK1-DF-HANDOFF-001",
+        "**Status:** `CERTIFIED`",
+        "gap_codes = [CORPUS_CERTIFICATE_NOT_CERTIFIED]",
+        "same atomic orchestrator",
+        "rolling documentation-current certificate is deliberately not a runtime ancestor",
+    ):
+        require(handoff, needle, HANDOFF.name)
+
+    for needle in (
+        "CERT-MK1-DF-TOOLCHAIN-005",
+        "**Status:** `CERTIFIED`",
+        "35159518112",
+        "40b1fb44921dfa98cf4fba03e652c1b0fa5abd2f",
+    ):
+        require(toolchain, needle, TOOLCHAIN.name)
+
+    for needle in (
+        'CERTIFICATE_SCHEMA_VERSION = "echo.corpus-certificate.v2"',
+        'TOOLCHAIN_CERTIFICATE_ID = "CERT-MK1-DF-TOOLCHAIN-005"',
+        'HANDOFF_CERTIFICATE_ID = "CERT-MK1-DF-HANDOFF-001"',
+        "validate_pre_certificate_readiness",
+        "validate_corpus_certificate",
+        "apply_corpus_certificate",
+        "REFUSE_OVERWRITE_INVALID_HISTORY",
+    ):
+        haystack = emitter if needle == "REFUSE_OVERWRITE_INVALID_HISTORY" else certification
+        require(haystack, needle, "certificate implementation")
+
+    for needle in (
+        '"schema_version": {"const": "echo.corpus-certificate.v2"}',
+        '"artifact_id": {"const": "CERT-MK1-DF-CORPUS-001"}',
+        '"certificate": {"const": "CERT-MK1-DF-HANDOFF-001"}',
+        '"id": {"const": "CERT-MK1-DF-TOOLCHAIN-005"}',
+    ):
+        require(schema, needle, CERT_SCHEMA.name)
 
 
 def audit_atomic_orchestrator() -> None:
@@ -94,6 +142,13 @@ def audit_atomic_orchestrator() -> None:
         "ECHO_PIPELINE_BASELINE=$(git rev-parse HEAD)",
         "python scripts/check_free_tier_boundary.py",
         "python scripts/check_corpus_pipeline_wiring.py",
+        "schemas/data_foundry/corpus-certificate.schema.json",
+        "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md",
+        "MK1/build/data-foundry/CORPUS-CERTIFICATE-HANDOFF.md",
+        "REFUSE_OVERWRITE_INVALID_HISTORY" if False else "cert-mk1-df-corpus-001.json",
+        "assert final.get('modeling_allowed') is True",
+        "assert final.get('modeling_allowed') is False",
+        "cmp /tmp/echo-cascade-first/corpus-readiness.pre-cert.json /tmp/corpus-readiness.pre-cert.json",
         "git fetch origin main --depth=1",
         'test "$ECHO_PIPELINE_BASELINE" = "$(git rev-parse HEAD)"',
         'test "$ECHO_PIPELINE_BASELINE" = "$(git rev-parse origin/main)"',
@@ -111,8 +166,6 @@ def audit_atomic_orchestrator() -> None:
     for output in DURABLE_OUTPUTS:
         require(text, output, f"{label} durable output")
 
-    # Floating main is allowed only inside the workflow_run selector where the
-    # exact resolved commit is captured immediately and guarded before persist.
     forbid(text, "ref: main\n", label)
 
 
@@ -137,6 +190,7 @@ def audit_diagnostic(path: Path, required_commands: tuple[str, ...]) -> None:
         "contents: write",
         PERSIST_TO_MAIN,
         "git commit -m",
+        "emit_corpus_certificate.py",
     ):
         forbid(text, forbidden, label)
 
@@ -158,11 +212,13 @@ def audit_model_entry() -> None:
         "contents: write",
         PERSIST_TO_MAIN,
         "git commit -m",
+        "emit_corpus_certificate.py",
     ):
         forbid(text, forbidden, label)
 
 
 def main() -> int:
+    audit_certificate_authorities()
     audit_atomic_orchestrator()
     audit_diagnostic(
         CLOSURE,
@@ -177,7 +233,7 @@ def main() -> int:
     )
     audit_model_entry()
 
-    print("MK1 corpus pipeline wiring PASS: atomic durable cascade + read-only diagnostics")
+    print("MK1 corpus pipeline wiring PASS: atomic evidence + certificate handoff + read-only model entry")
     return 0
 
 
