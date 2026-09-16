@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Resolve leakage-safe recording groups from source groups + acoustic identity.
+"""Resolve leakage-safe recording groups from source groups + acoustic evidence.
 
-This step never merges or deletes acoustic content. It only strengthens the split
-protection relation: existing source/curated groups are preserved, while exact or
-near-duplicate acoustic relationships are unioned into deterministic global groups.
-Fallback clip IDs with no detected acoustic relation become explicitly screened
-singletons rather than silently claiming curated recording-family provenance.
+Exact byte or canonical-PCM identity is sufficient for shared split protection.
+The normalized RMS envelope is deliberately weaker: it first screens candidate
+relations, then only a stricter distance + decoded-length confirmation may join
+recording groups. Review-only screening edges never participate in transitive
+connected-component closure.
+
+This step never merges or deletes acoustic content.
 """
 
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 import hashlib
 import json
 from pathlib import Path
@@ -63,12 +65,52 @@ def _is_fallback(row: Mapping[str, Any]) -> bool:
     )
 
 
-def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def _decoded_sample_count(fp: Mapping[str, Any]) -> int:
+    try:
+        return max(0, int(fp.get("decoded_sample_count") or 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def _relative_sample_count_delta(left: Mapping[str, Any], right: Mapping[str, Any]) -> float:
+    a = _decoded_sample_count(left)
+    b = _decoded_sample_count(right)
+    if a <= 0 or b <= 0:
+        return 1.0
+    return abs(a - b) / float(max(a, b))
+
+
+def resolve_groups(
+    rows: list[dict[str, Any]],
+    *,
+    threshold: float,
+    confirmed_threshold: float | None = None,
+    max_relative_sample_count_delta: float = 0.01,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Resolve split-protection groups without promoting screening to identity.
+
+    ``threshold`` is the broad candidate-screening threshold retained for audit
+    compatibility. ``confirmed_threshold`` is the stricter threshold allowed to
+    create a grouping edge; when omitted it defaults to the candidate threshold
+    for backwards-compatible direct callers/tests.
+    """
+
+    if not 0 <= threshold <= 1:
+        raise ValueError("threshold must be in [0, 1]")
+    if confirmed_threshold is None:
+        confirmed_threshold = threshold
+    if not 0 <= confirmed_threshold <= threshold:
+        raise ValueError("confirmed_threshold must be in [0, threshold]")
+    if not 0 <= max_relative_sample_count_delta <= 1:
+        raise ValueError("max_relative_sample_count_delta must be in [0, 1]")
+
     rows = [dict(row) for row in rows]
     uf = UnionFind(len(rows))
     by_existing: dict[str, int] = {}
     by_media: dict[str, int] = {}
     by_pcm: dict[str, int] = {}
+    exact_media_edges = 0
+    exact_pcm_edges = 0
 
     for index, row in enumerate(rows):
         group = str(row.get("recording_group_id") or "")
@@ -77,23 +119,34 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
                 uf.union(index, by_existing[group])
             else:
                 by_existing[group] = index
+
         media = str(row.get("media_sha256") or "")
         if media:
             if media in by_media:
+                if uf.find(index) != uf.find(by_media[media]):
+                    exact_media_edges += 1
                 uf.union(index, by_media[media])
             else:
                 by_media[media] = index
+
         fp = row.get("canonical_fingerprint")
         pcm = str(fp.get("canonical_pcm_sha256") or "") if isinstance(fp, Mapping) else ""
         if pcm:
             if pcm in by_pcm:
+                if uf.find(index) != uf.find(by_pcm[pcm]):
+                    exact_pcm_edges += 1
                 uf.union(index, by_pcm[pcm])
             else:
                 by_pcm[pcm] = index
 
     fp_indexes = [i for i, row in enumerate(rows) if isinstance(row.get("canonical_fingerprint"), Mapping)]
-    near_edges = 0
-    cross_group_edges = 0
+    candidate_edges = 0
+    candidate_cross_group_edges = 0
+    confirmed_edges = 0
+    confirmed_cross_group_edges = 0
+    review_only_edges = 0
+    rejected_by_length = 0
+
     for offset, left_i in enumerate(fp_indexes):
         left = rows[left_i]
         left_fp = left["canonical_fingerprint"]
@@ -102,12 +155,28 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
             right_fp = right["canonical_fingerprint"]
             if left_fp.get("canonical_pcm_sha256") == right_fp.get("canonical_pcm_sha256"):
                 continue
+
             distance = fingerprint_distance(left_fp, right_fp)
             if distance > threshold:
                 continue
-            near_edges += 1
-            if str(left.get("recording_group_id") or "") != str(right.get("recording_group_id") or ""):
-                cross_group_edges += 1
+
+            candidate_edges += 1
+            cross_group = str(left.get("recording_group_id") or "") != str(right.get("recording_group_id") or "")
+            if cross_group:
+                candidate_cross_group_edges += 1
+
+            relative_delta = _relative_sample_count_delta(left_fp, right_fp)
+            if relative_delta > max_relative_sample_count_delta:
+                rejected_by_length += 1
+                review_only_edges += 1
+                continue
+            if distance > confirmed_threshold:
+                review_only_edges += 1
+                continue
+
+            confirmed_edges += 1
+            if cross_group:
+                confirmed_cross_group_edges += 1
             uf.union(left_i, right_i)
 
     components: dict[int, list[int]] = defaultdict(list)
@@ -121,7 +190,11 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
 
     for indexes in components.values():
         member_ids = [str(rows[i].get("ledger_asset_id") or "") for i in indexes]
-        existing_groups = {str(rows[i].get("recording_group_id") or "") for i in indexes if rows[i].get("recording_group_id")}
+        existing_groups = {
+            str(rows[i].get("recording_group_id") or "")
+            for i in indexes
+            if rows[i].get("recording_group_id")
+        }
         has_fallback = any(_is_fallback(rows[i]) for i in indexes)
         needs_global = len(existing_groups) > 1
 
@@ -134,8 +207,6 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
                 rows[i]["recording_group_id"] = global_id
                 rows[i]["grouping_status"] = "GLOBAL_ACOUSTIC_COMPONENT"
         elif has_fallback:
-            # A component with one source group and no cross-group acoustic edge is
-            # conservatively accepted only as a screened source-asset family.
             screened_singletons += 1
             for i in indexes:
                 if _is_fallback(rows[i]):
@@ -143,7 +214,8 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
 
         for i in indexes:
             rows[i]["blocking_reasons"] = [
-                str(reason) for reason in (rows[i].get("blocking_reasons") or [])
+                str(reason)
+                for reason in (rows[i].get("blocking_reasons") or [])
                 if str(reason) != "GROUPING_GLOBAL_AUDIT_REQUIRED"
             ]
 
@@ -152,13 +224,21 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
         recompute_stage(row, source_policy)
 
     audit = {
-        "schema_version": "echo.global-recording-group-resolution.v1",
+        "schema_version": "echo.global-recording-group-resolution.v2",
         "status": "PASS",
-        "near_duplicate_threshold": threshold,
+        "candidate_near_duplicate_threshold": threshold,
+        "confirmed_group_max_distance": confirmed_threshold,
+        "confirmed_group_max_relative_sample_count_delta": max_relative_sample_count_delta,
         "asset_count": len(rows),
         "component_count": len(components),
-        "near_duplicate_edge_count": near_edges,
-        "cross_source_group_near_duplicate_edge_count": cross_group_edges,
+        "exact_media_grouping_edge_count": exact_media_edges,
+        "exact_pcm_grouping_edge_count": exact_pcm_edges,
+        "near_duplicate_candidate_edge_count": candidate_edges,
+        "near_duplicate_candidate_cross_group_edge_count": candidate_cross_group_edges,
+        "confirmed_near_duplicate_grouping_edge_count": confirmed_edges,
+        "confirmed_near_duplicate_cross_group_edge_count": confirmed_cross_group_edges,
+        "review_only_near_duplicate_edge_count": review_only_edges,
+        "candidate_edges_rejected_by_length_count": rejected_by_length,
         "global_acoustic_component_count": acoustic_components,
         "screened_fallback_source_group_count": screened_singletons,
         "fallback_asset_count_before": fallback_before,
@@ -166,21 +246,33 @@ def resolve_groups(rows: list[dict[str, Any]], *, threshold: float) -> tuple[lis
         "members_reassigned_to_global_acoustic_component": members_reassigned,
         "content_merge_performed": False,
         "content_deleted": False,
-        "policy_note": "Acoustic candidates force shared split protection; they do not prove content identity or authorize deletion.",
+        "policy_note": "Broad RMS-envelope proximity is screening evidence only. Shared split protection requires exact byte/PCM identity or a separately confirmed near-duplicate edge with strict distance and decoded-length compatibility. Review-only screening edges never union components.",
     }
     return rows, audit
 
 
 def main() -> int:
     near_policy = json.loads(NEAR_POLICY.read_text(encoding="utf-8"))
-    threshold = float(near_policy.get("comparison", {}).get("candidate_max_distance", 0.02))
+    comparison = near_policy.get("comparison", {})
+    threshold = float(comparison.get("candidate_max_distance", 0.02))
+    confirmed_threshold = float(comparison.get("confirmed_group_max_distance", threshold))
+    max_relative_sample_count_delta = float(
+        comparison.get("confirmed_group_max_relative_sample_count_delta", 0.01)
+    )
+
     rows: list[dict[str, Any]] = []
     with LEDGER.open("r", encoding="utf-8") as handle:
         for line in handle:
             if line.strip():
                 rows.append(json.loads(line))
     rows = validate_ledger(rows)
-    resolved, audit = resolve_groups(rows, threshold=threshold)
+
+    resolved, audit = resolve_groups(
+        rows,
+        threshold=threshold,
+        confirmed_threshold=confirmed_threshold,
+        max_relative_sample_count_delta=max_relative_sample_count_delta,
+    )
     resolved = validate_ledger(resolved)
 
     previous = json.loads(SUMMARY.read_text(encoding="utf-8"))
