@@ -32,14 +32,23 @@ def write_wave(path: Path, *, frequency: float, modulation: float, sample_rate: 
         wav.writeframes(array("h", values).tobytes())
 
 
+def relative_sample_count_delta(left: dict, right: dict) -> float:
+    a = int(left["decoded_sample_count"])
+    b = int(right["decoded_sample_count"])
+    return abs(a - b) / float(max(a, b))
+
+
 @unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg required for canonical fingerprint fixtures")
 class CanonicalFingerprintTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         policy = json.loads(Path("configs/data_foundry/near_duplicate_policy.v1.json").read_text(encoding="utf-8"))
-        cls.max_distance = float(policy["comparison"]["candidate_max_distance"])
+        comparison = policy["comparison"]
+        cls.candidate_max_distance = float(comparison["candidate_max_distance"])
+        cls.confirmed_max_distance = float(comparison["confirmed_group_max_distance"])
+        cls.confirmed_max_sample_delta = float(comparison["confirmed_group_max_relative_sample_count_delta"])
 
-    def test_transforms_stay_close_and_independent_audio_stays_far(self) -> None:
+    def test_transforms_pass_confirmation_and_independent_audio_stays_outside_screen(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             original = root / "original.wav"
@@ -54,10 +63,17 @@ class CanonicalFingerprintTests(unittest.TestCase):
             subprocess.run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-i", str(original), "-ar", "44100", "-ac", "2", str(stereo_resampled)], check=True)
 
             base = canonical_audio_fingerprint(original)
-            self.assertLessEqual(fingerprint_distance(base, canonical_audio_fingerprint(mp3)), self.max_distance)
-            self.assertLessEqual(fingerprint_distance(base, canonical_audio_fingerprint(gain)), self.max_distance)
-            self.assertLessEqual(fingerprint_distance(base, canonical_audio_fingerprint(stereo_resampled)), self.max_distance)
-            self.assertGreater(fingerprint_distance(base, canonical_audio_fingerprint(independent)), self.max_distance)
+            transforms = [
+                canonical_audio_fingerprint(mp3),
+                canonical_audio_fingerprint(gain),
+                canonical_audio_fingerprint(stereo_resampled),
+            ]
+            for transformed in transforms:
+                self.assertLessEqual(fingerprint_distance(base, transformed), self.confirmed_max_distance)
+                self.assertLessEqual(relative_sample_count_delta(base, transformed), self.confirmed_max_sample_delta)
+
+            independent_fp = canonical_audio_fingerprint(independent)
+            self.assertGreater(fingerprint_distance(base, independent_fp), self.candidate_max_distance)
 
     def test_repeated_decode_is_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
