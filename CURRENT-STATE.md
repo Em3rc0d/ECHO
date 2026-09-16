@@ -3,7 +3,7 @@
 **Fecha de corte:** 2026-09-16  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
 **Global execution invariant:** `ECHO-FREE-TIER-001`  
-**Audited readiness:** `896398c90b0170189cdadd19c12396348e89a37a`
+**Documentation certificate:** `CERT-DOC-014`
 
 ## 1. Promise
 
@@ -71,28 +71,15 @@ CERT-MK1-DF-TOOLCHAIN-005      = CANDIDATE
 CERT-MK1-DF-SONYC-001          = CERTIFIED / scoped
 CERT-MK1-DF-CORPUS-001         = OPEN
 
-CERT-DOC-001..012              = historical / invalidated
-CERT-DOC-013                   = CERTIFIED / current
+CERT-DOC-001..013              = historical / invalidated
+CERT-DOC-014                   = CERTIFIED / current
 ```
 
 ## 5. Durable corpus-facing truth
 
-Current durable readiness commit:
+Canonical semantic ledger:
 
 ```text
-896398c90b0170189cdadd19c12396348e89a37a
-```
-
-Closure evidence commit:
-
-```text
-e7436a62c518de105f700564340b3cdaa6d06080
-```
-
-Canonical ledger:
-
-```text
-baseline_commit                       57869db92f9b8d691d8e7390dd0629e759928b03
 entry_count                           1141
 canonical fingerprints                1141 / 1141
 missing fingerprints                     0
@@ -101,11 +88,39 @@ fallback assets after grouping            0
 global acoustic components                2
 members reassigned to components           4
 content merge/delete                   false
-ledger-summary sha256  cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1
-coverage ledger sha256 93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
+semantic ledger sha256  cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1
+coverage ledger sha256  93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
 ```
 
-## 6. Near-duplicate and split integrity
+`baseline_commit` and the byte hash of the generated ledger summary are **execution provenance**. They remain auditable and must be internally consistent, but they are not the acoustic corpus identity. Readiness v2 binds the semantic `ledger_sha256`, the coverage policy and closure evidence instead.
+
+Current projected readiness semantic identity under DOC-014:
+
+```text
+4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405
+```
+
+## 6. Atomic corpus pipeline
+
+The durable corpus evidence path now has one authoritative writer:
+
+```text
+governed source materialization
+  ↓
+MK1 Canonical Corpus Ledger / atomic orchestrator
+  ↓
+ledger → grouping → dedup/family/split → coverage
+  ↓
+freeze #1 → freeze #2 → reproducibility → readiness
+  ↓
+one atomic durable evidence commit
+```
+
+The orchestrator resolves one durable `main` baseline, repeats the complete cascade for byte-level determinism, verifies that `main` did not move, and only then persists the complete evidence set. Repository-token push recursion is not used to chain durable stages.
+
+Standalone closure/readiness workflows are exact-SHA, read-only diagnostics.
+
+## 7. Near-duplicate and split integrity
 
 The broad normalized-RMS threshold is screening only. It is not acoustic identity.
 
@@ -131,7 +146,7 @@ eligible development assets   1141
 
 Review-only screening edges never enter transitive connected-component closure. Exact byte/PCM identity and strict confirmed relations remain split-protection evidence. No split is manually remapped.
 
-## 7. Current final coverage truth
+## 8. Current final coverage truth
 
 ```text
 BACKGROUND
@@ -178,7 +193,7 @@ VEHICLE_HORN
 
 Asset quality remains clean: 0 unknown licenses, 0 missing label provenance, 0 invalid probes, 0 non-positive durations, 0 exact duplicate groups and 0 near-duplicate groups in final coverage.
 
-## 8. Detailed coverage gaps
+## 9. Detailed coverage gaps
 
 Exactly 16 remain:
 
@@ -203,22 +218,16 @@ TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN
 
 All upstream structural audit failures are closed. Background and all target hard-negative floors remain closed.
 
-## 9. Quantified acquisition deficit
+## 10. Quantified acquisition deficit
 
 ```text
 FIRE_ALARM
   assets 19/50       minimum asset deficit 31
   groups 16/25       minimum group deficit 9
-  train 17/14        needs >=3 assets
-  validation 2/2     needs >=3 assets and >=1 group
-  test 0/0           needs >=5 assets and >=3 groups
 
 TIRE_SQUEAL
   assets 14/50       minimum asset deficit 36
   groups 10/25       minimum group deficit 15
-  train 11/8         needs >=9 assets and >=2 groups
-  validation 0/0     needs >=5 assets and >=3 groups
-  test 3/2           needs >=2 assets and >=1 group
 
 GLASS_SHATTER
   current Freesound assets 280
@@ -230,19 +239,20 @@ GLASS_SHATTER
 
 These are lower bounds, not permission to manufacture split/source diversity. Every new asset must survive rights, semantics, probe, fingerprint, grouping, dedup and deterministic split assignment.
 
-## 10. Machine-readable readiness
+## 11. Machine-readable readiness
 
 ```text
 readiness_id = EMP-MK1-CORPUS-READINESS-001
+schema = echo.corpus-closure-readiness.v2
 status = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
-evidence_identity_sha256 = 955375c9cc29f2ac5019bb7b2d71090b90734bfe3a8332e5a34698a73ca2d45d
+semantic evidence identity = 4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405
 ```
 
-Exact readiness gaps:
+Exact readiness gaps remain:
 
 ```text
 CORPUS_CERTIFICATE_NOT_CERTIFIED
@@ -256,7 +266,7 @@ REPRODUCIBILITY_NOT_PASS
 TIRE_SQUEAL_ASSETS_14_LT_50
 ```
 
-## 11. Freeze/reproducibility state
+## 12. Freeze/reproducibility state
 
 ```text
 freeze #1       FAIL / UPSTREAM_COVERAGE_NOT_PASS only
@@ -266,11 +276,11 @@ reproducibility FAIL / UPSTREAM_FREEZE_NOT_ELIGIBLE
 
 No freeze is promoted while coverage remains red.
 
-## 12. Frozen solidity law
+## 13. Frozen solidity law
 
 `MK1-CORPUS-SOLIDITY-001` is unchanged. Per target: >=50 assets, >=25 groups, >=2 independent underlying sources, >=180 s, largest-source fraction <=0.80; train >=20 assets/10 groups, validation >=5/3, test >=5/3. Per-target hard negatives require >=20 assets/10 groups/2 sources. Global negatives require >=200 assets/50 groups/3 sources.
 
-## 13. Active closure sequence
+## 14. Active closure sequence
 
 ```text
 structural gates              PASS
@@ -283,7 +293,7 @@ independent exact FIRE acquisition
 independent exact TIRE acquisition
 release-safe non-Freesound GLASS acquisition
   ↓
-canonical ledger → grouping → dedup → family → split → coverage
+atomic canonical corpus cascade
   ↓
 coverage PASS / gap_codes=[]
   ↓
@@ -298,9 +308,9 @@ modeling_allowed = true
 Benchmark A/B/C
 ```
 
-Evidence-only source materialization is allowed as scouting, but it earns zero corpus credit until reviewed registration/admission and the complete ledger/closure cascade succeed.
+Evidence-only source materialization is allowed as scouting, but it earns zero corpus credit until reviewed registration/admission and the complete atomic closure cascade succeeds.
 
-## 14. Release law
+## 15. Release law
 
 ```text
 NO CERT-MK1-DF-CORPUS-001
@@ -313,14 +323,16 @@ NO replay progression
 NO real camera progression
 ```
 
-## 15. Documentation state
+## 16. Documentation state
 
 ```text
-governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-CLOSURE-013.md
-CERT-DOC-013 = CERTIFIED / current
-Markdown corpus = 217 files
+governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-PIPELINE-014.md
+CERT-DOC-014 = CERTIFIED / current
+Markdown corpus = 218 files
 ```
 
-## 16. Invalidation
+## 17. Invalidation
 
-Changes to promise, taxonomy, source/audio/event contracts, acquisition/mapping/rights/probe/fingerprint/dedup/group/split/coverage/freeze semantics, machine-readable closure evidence, SONYC persistence, model-entry wiring, `ECHO-FREE-TIER-001`, certificate state or audited documentation require dependency review and selective recertification.
+Changes to promise, taxonomy, source/audio/event contracts, acquisition/mapping/rights/probe/fingerprint/dedup/group/split/coverage/freeze semantics, semantic corpus identity, readiness identity contract, SONYC persistence, model-entry wiring, `ECHO-FREE-TIER-001`, certificate state or audited documentation require dependency review and selective recertification.
+
+A pure execution provenance change does not by itself redefine the corpus when all semantic identities and governed evidence remain identical; provenance must nevertheless remain valid and internally consistent.

@@ -2,28 +2,12 @@ name: MK1 Corpus Closure Evidence
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl'
-      - 'MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json'
-      - 'configs/data_foundry/near_duplicate_policy.v1.json'
-      - 'configs/data_foundry/split_policy.v1.json'
-      - 'configs/data_foundry/coverage_policy.v1.json'
-      - 'src/echo/data_foundry/canonical_fingerprints.py'
-      - 'src/echo/data_foundry/coverage_policy.py'
-      - 'src/echo/data_foundry/splits.py'
-      - 'scripts/data_foundry/build_corpus_closure_evidence.py'
-      - 'scripts/data_foundry/apply_split_conflict_quarantine.py'
-      - 'tests/data_foundry/test_corpus_closure_evidence.py'
-      - 'tests/data_foundry/test_split_conflict_quarantine.py'
-      - '.github/workflows/mk1-corpus-closure-evidence.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: mk1-corpus-closure-evidence-main
+  group: mk1-corpus-closure-diagnostic-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -40,7 +24,9 @@ jobs:
           python-version: '3.12'
       - name: Enforce ECHO-FREE-TIER-001
         run: python scripts/check_free_tier_boundary.py
-      - name: Produce closure evidence with protected split quarantine
+      - name: Validate pipeline wiring
+        run: python scripts/check_corpus_pipeline_wiring.py
+      - name: Produce diagnostic closure evidence
         env:
           PYTHONPATH: src:.
         run: |
@@ -63,7 +49,7 @@ jobs:
           for name in global-dedup-audit.json recording-family-audit.json split-integrity.json coverage-gate.json corpus-freeze-1.validation.json corpus-freeze-2.validation.json corpus-reproducibility.json; do
             cmp "/tmp/echo-closure-first/$name" "MK1/mining-site/materialization/$name"
           done
-      - name: Validate evidence JSON and compactness
+      - name: Validate diagnostic evidence JSON and compactness
         run: |
           total=0
           for name in global-dedup-audit.json recording-family-audit.json split-integrity.json coverage-gate.json corpus-freeze-1.validation.json corpus-freeze-2.validation.json corpus-reproducibility.json; do
@@ -71,30 +57,9 @@ jobs:
             bytes="$(stat -c%s "MK1/mining-site/materialization/$name")"
             total=$((total + bytes))
           done
-          echo "closure evidence bytes=$total"
+          echo "closure diagnostic evidence bytes=$total"
           test "$total" -le 10000000
-      - name: Fail if evidence baseline moved
+      - name: Assert diagnostic workflow is side-effect free
         run: |
-          git fetch origin main --depth=1
-          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
-      - name: Commit durable closure evidence
-        run: |
-          paths=(
-            MK1/mining-site/materialization/global-dedup-audit.json
-            MK1/mining-site/materialization/recording-family-audit.json
-            MK1/mining-site/materialization/split-integrity.json
-            MK1/mining-site/materialization/coverage-gate.json
-            MK1/mining-site/materialization/corpus-freeze-1.validation.json
-            MK1/mining-site/materialization/corpus-freeze-2.validation.json
-            MK1/mining-site/materialization/corpus-reproducibility.json
-          )
-          if [ -z "$(git status --porcelain -- "${paths[@]}")" ]; then
-            echo 'Closure evidence already current.'
-            exit 0
-          fi
-          git config user.name 'echo-data-foundry-bot'
-          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
-          git add "${paths[@]}"
-          git diff --cached --quiet && exit 0
-          git commit -m 'evidence(mk1): refresh corpus closure audits'
-          git push origin HEAD:main
+          test -z "$(git status --porcelain --untracked-files=no -- .github configs src scripts tests)"
+          echo 'Diagnostic closure workflow never persists to main; durable persistence belongs to MK1 Canonical Corpus Ledger.'

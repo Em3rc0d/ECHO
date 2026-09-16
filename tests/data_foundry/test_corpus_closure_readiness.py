@@ -47,9 +47,9 @@ class CorpusClosureReadinessTests(unittest.TestCase):
             "TIRE_SQUEAL",
         )
         return {
-            "baseline_commit": "abc",
+            "baseline_commit": "a" * 40,
             "entry_count": 500,
-            "ledger_sha256": "ledger",
+            "ledger_sha256": "d" * 64,
             "corpus_certificate": {
                 "id": "CERT-MK1-DF-CORPUS-001",
                 "status": "CERTIFIED" if certified else "OPEN",
