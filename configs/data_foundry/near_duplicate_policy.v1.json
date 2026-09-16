@@ -1,7 +1,7 @@
 {
   "schema_version": "echo.near-duplicate-policy.v1",
   "policy_id": "MK1-NEAR-DUP-001",
-  "status": "CANDIDATE_PENDING_CI_FIXTURE_GATE",
+  "status": "CANDIDATE_PENDING_POST_MERGE_EVIDENCE",
   "canonical_decode": {
     "backend": "ffmpeg-local",
     "audio_stream": "first",
@@ -18,8 +18,13 @@
   "comparison": {
     "metric": "mean-absolute-quantized-distance-normalized",
     "candidate_max_distance": 0.02,
+    "confirmed_group_max_distance": 0.002,
+    "confirmed_group_max_relative_sample_count_delta": 0.01,
     "automatic_merge": false,
-    "action": "FLAG_AND_GROUP_OR_REVIEW"
+    "action": "SCREEN_THEN_CONFIRM_FOR_SPLIT_PROTECTION",
+    "candidate_rule": "distance <= candidate_max_distance flags a possible acoustic relation for audit only; it never establishes recording identity by itself",
+    "confirmed_group_rule": "non-exact assets may share split protection only when distance <= confirmed_group_max_distance AND decoded sample-count relative delta <= confirmed_group_max_relative_sample_count_delta",
+    "transitive_rule": "only exact byte/PCM identity and confirmed grouping edges participate in connected-component closure; review-only screening edges never union components"
   },
   "fixture_gate": {
     "expected_duplicates": [
@@ -30,7 +35,7 @@
     "expected_independent": [
       "different_frequency_and_temporal_envelope"
     ],
-    "pass_rule": "all transformed-copy fixtures <= candidate_max_distance AND all known-independent fixtures > candidate_max_distance"
+    "pass_rule": "all transformed-copy fixtures <= confirmed_group_max_distance with compatible decoded duration AND all known-independent fixtures > candidate_max_distance"
   },
-  "certification_boundary": "This policy is a leakage-screening mechanism, not acoustic identity truth. Exact SHA-256 remains byte identity. Candidate near-duplicates are conservatively grouped/reviewed before protected split assignment."
+  "certification_boundary": "This policy is a leakage-screening mechanism, not acoustic identity truth. Exact SHA-256 remains byte identity. The broad candidate threshold produces review evidence only. Split-protection grouping requires exact byte/PCM identity or a separately confirmed near-duplicate edge satisfying both the strict distance and decoded-length constraints. No grouping decision authorizes content merge or deletion."
 }
