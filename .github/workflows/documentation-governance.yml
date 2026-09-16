@@ -6,6 +6,9 @@ on:
     paths:
       - '**/*.md'
       - 'configs/data_foundry/**'
+      - 'schemas/data_foundry/corpus-closure-readiness.schema.json'
+      - 'src/echo/data_foundry/readiness.py'
+      - 'scripts/data_foundry/build_corpus_closure_readiness.py'
       - 'scripts/check_documentation_governance.py'
       - 'scripts/check_free_tier_boundary.py'
       - '.github/workflows/documentation-governance.yml'
@@ -14,6 +17,9 @@ on:
     paths:
       - '**/*.md'
       - 'configs/data_foundry/**'
+      - 'schemas/data_foundry/corpus-closure-readiness.schema.json'
+      - 'src/echo/data_foundry/readiness.py'
+      - 'scripts/data_foundry/build_corpus_closure_readiness.py'
       - 'scripts/check_documentation_governance.py'
       - 'scripts/check_free_tier_boundary.py'
       - '.github/workflows/documentation-governance.yml'
@@ -31,6 +37,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Recompute current readiness projection without persisting
+        env:
+          PYTHONPATH: src
+        run: python scripts/data_foundry/build_corpus_closure_readiness.py
       - name: Validate documentation and certification truth
         run: python scripts/check_documentation_governance.py
       - name: Re-validate global zero-cost boundary
