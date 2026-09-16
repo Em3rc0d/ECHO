@@ -102,7 +102,29 @@ def _group_by(rows: Iterable[Mapping[str, Any]], key_fn) -> dict[str, list[str]]
     return {key: sorted(ids) for key, ids in sorted(grouped.items()) if len(ids) > 1}
 
 
+def _decoded_sample_count(fp: Mapping[str, Any]) -> int:
+    try:
+        return max(0, int(fp.get("decoded_sample_count") or 0))
+    except (TypeError, ValueError):
+        return 0
+
+
+def _relative_sample_count_delta(left: Mapping[str, Any], right: Mapping[str, Any]) -> float:
+    a = _decoded_sample_count(left)
+    b = _decoded_sample_count(right)
+    if a <= 0 or b <= 0:
+        return 1.0
+    return abs(a - b) / float(max(a, b))
+
+
 def build_dedup(rows: list[dict[str, Any]], near_policy: Mapping[str, Any]) -> dict[str, Any]:
+    """Audit exact identity and confirmed near-duplicate grouping separately.
+
+    Broad RMS-envelope proximity is screening evidence only. It remains visible
+    in the durable audit but can block corpus closure only when the pair also
+    satisfies the stricter confirmation distance and decoded-length contract.
+    """
+
     scope = [row for row in rows if row.get("rights_status") == "ALLOW_RELEASE_SAFE" and _meaningful(row)]
     missing_fp = [str(row["ledger_asset_id"]) for row in scope if not isinstance(row.get("canonical_fingerprint"), Mapping)]
     exact_media = _group_by(scope, lambda row: row.get("media_sha256"))
@@ -113,30 +135,61 @@ def build_dedup(rows: list[dict[str, Any]], near_policy: Mapping[str, Any]) -> d
         else None,
     )
 
+    comparison = near_policy.get("comparison", {}) if isinstance(near_policy.get("comparison"), Mapping) else {}
+    candidate_threshold = float(comparison.get("candidate_max_distance", 0.02))
+    confirmed_threshold = float(comparison.get("confirmed_group_max_distance", candidate_threshold))
+    max_relative_sample_count_delta = float(
+        comparison.get("confirmed_group_max_relative_sample_count_delta", 0.01)
+    )
+    if not 0 <= confirmed_threshold <= candidate_threshold <= 1:
+        raise ValueError("near-duplicate thresholds must satisfy 0 <= confirmed <= candidate <= 1")
+    if not 0 <= max_relative_sample_count_delta <= 1:
+        raise ValueError("confirmed_group_max_relative_sample_count_delta must be in [0, 1]")
+
     fp_rows = [row for row in scope if isinstance(row.get("canonical_fingerprint"), Mapping)]
-    threshold = float(near_policy.get("comparison", {}).get("candidate_max_distance", 0.02))
+    candidate_count = 0
+    candidate_cross_group_count = 0
+    confirmed_count = 0
+    confirmed_cross_group_count = 0
+    review_only_count = 0
+    rejected_by_length_count = 0
     candidates: list[dict[str, Any]] = []
-    unresolved = 0
+
     for i, left in enumerate(fp_rows):
         left_fp = left["canonical_fingerprint"]
         for right in fp_rows[i + 1 :]:
             right_fp = right["canonical_fingerprint"]
-            # Exact canonical PCM equality is already accounted for above.
             if left_fp.get("canonical_pcm_sha256") == right_fp.get("canonical_pcm_sha256"):
                 continue
             distance = fingerprint_distance(left_fp, right_fp)
-            if distance > threshold:
+            if distance > candidate_threshold:
                 continue
+
+            candidate_count += 1
             same_group = str(left.get("recording_group_id") or "") == str(right.get("recording_group_id") or "")
             if not same_group:
-                unresolved += 1
+                candidate_cross_group_count += 1
+
+            relative_delta = _relative_sample_count_delta(left_fp, right_fp)
+            confirmed = distance <= confirmed_threshold and relative_delta <= max_relative_sample_count_delta
+            if confirmed:
+                confirmed_count += 1
+                if not same_group:
+                    confirmed_cross_group_count += 1
+            else:
+                review_only_count += 1
+                if relative_delta > max_relative_sample_count_delta:
+                    rejected_by_length_count += 1
+
             if len(candidates) < 500:
                 candidates.append(
                     {
                         "left": left["ledger_asset_id"],
                         "right": right["ledger_asset_id"],
                         "distance": round(distance, 8),
+                        "decoded_sample_count_relative_delta": round(relative_delta, 8),
                         "same_recording_group": same_group,
+                        "confirmation": "CONFIRMED" if confirmed else "SCREEN_ONLY",
                     }
                 )
 
@@ -153,11 +206,11 @@ def build_dedup(rows: list[dict[str, Any]], near_policy: Mapping[str, Any]) -> d
         gaps.append("CANONICAL_FINGERPRINT_COVERAGE_INCOMPLETE")
     if exact_cross_group:
         gaps.append("EXACT_DUPLICATE_RECORDING_GROUP_CONFLICTS")
-    if unresolved:
-        gaps.append("NEAR_DUPLICATE_CANDIDATES_REQUIRE_GROUP_OR_REVIEW")
+    if confirmed_cross_group_count:
+        gaps.append("CONFIRMED_NEAR_DUPLICATE_RECORDING_GROUP_CONFLICTS")
 
     return {
-        "schema_version": "echo.global-dedup-audit.v1",
+        "schema_version": "echo.global-dedup-audit.v2",
         "status": "PASS" if not gaps else "FAIL",
         "scope_asset_count": len(scope),
         "fingerprinted_asset_count": len(fp_rows),
@@ -166,14 +219,23 @@ def build_dedup(rows: list[dict[str, Any]], near_policy: Mapping[str, Any]) -> d
         "exact_media_duplicate_group_count": len(exact_media),
         "exact_canonical_pcm_duplicate_group_count": len(exact_pcm),
         "exact_cross_recording_group_conflict_count": exact_cross_group,
-        "near_duplicate_threshold": threshold,
-        "near_duplicate_candidate_count": sum(1 for _ in candidates) if unresolved <= 500 else len(candidates),
-        "near_duplicate_unresolved_cross_group_count": unresolved,
+        "candidate_near_duplicate_threshold": candidate_threshold,
+        "confirmed_group_max_distance": confirmed_threshold,
+        "confirmed_group_max_relative_sample_count_delta": max_relative_sample_count_delta,
+        "near_duplicate_candidate_count": candidate_count,
+        "near_duplicate_candidate_cross_group_count": candidate_cross_group_count,
+        "confirmed_near_duplicate_count": confirmed_count,
+        "confirmed_near_duplicate_cross_group_count": confirmed_cross_group_count,
+        "review_only_near_duplicate_count": review_only_count,
+        "candidate_edges_rejected_by_length_count": rejected_by_length_count,
         "near_duplicate_candidate_sample": candidates,
         "gap_codes": sorted(gaps),
         "policy_sha256": _sha(NEAR_POLICY),
         "ledger_sha256": _sha(LEDGER),
-        "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
+        "note": (
+            "Broad RMS-envelope candidates are durable screening evidence only. "
+            "Only exact byte/PCM identity or strict distance plus decoded-length confirmation may require shared split protection."
+        ),
     }
 
 
@@ -194,11 +256,11 @@ def build_group_audit(rows: list[dict[str, Any]], dedup: Mapping[str, Any]) -> d
         gaps.append("RECORDING_FAMILY_GLOBAL_AUDIT_PENDING")
     if int(dedup.get("exact_cross_recording_group_conflict_count") or 0) > 0:
         gaps.append("DUPLICATE_IDENTITY_CROSSES_RECORDING_FAMILIES")
-    if int(dedup.get("near_duplicate_unresolved_cross_group_count") or 0) > 0:
-        gaps.append("NEAR_DUPLICATE_RELATIONSHIPS_CROSS_RECORDING_FAMILIES")
+    if int(dedup.get("confirmed_near_duplicate_cross_group_count") or 0) > 0:
+        gaps.append("CONFIRMED_NEAR_DUPLICATES_CROSS_RECORDING_FAMILIES")
 
     return {
-        "schema_version": "echo.recording-family-audit.v1",
+        "schema_version": "echo.recording-family-audit.v2",
         "status": "PASS" if not gaps else "FAIL",
         "scope_asset_count": len(scope),
         "recording_family_count": len(group_counts),
@@ -206,8 +268,11 @@ def build_group_audit(rows: list[dict[str, Any]], dedup: Mapping[str, Any]) -> d
         "missing_recording_group_count": len(missing_group),
         "pending_global_group_audit_count": len(pending),
         "pending_global_group_audit_sample": pending[:50],
+        "screening_candidate_cross_group_count": int(dedup.get("near_duplicate_candidate_cross_group_count") or 0),
+        "confirmed_near_duplicate_cross_group_count": int(dedup.get("confirmed_near_duplicate_cross_group_count") or 0),
         "gap_codes": sorted(gaps),
         "ledger_sha256": _sha(LEDGER),
+        "note": "Review-only screening candidates may cross recording families; confirmed identity-protection relations may not.",
     }
 
 
