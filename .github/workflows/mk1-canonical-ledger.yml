@@ -29,7 +29,6 @@ on:
       - 'configs/data_foundry/dataset_certification.v1.json'
       - 'configs/data_foundry/source_registry.v1.json'
       - 'configs/data_foundry/underlying_source_families.v1.json'
-      - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'configs/data_foundry/opengameart_rubberduck_cc0.v1.json'
       - 'configs/data_foundry/opengameart_glass_expansion.v1.json'
       - 'configs/data_foundry/bigsoundbank_confusers.v1.json'
