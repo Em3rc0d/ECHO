@@ -7,10 +7,8 @@ on:
       - 'scripts/materialize_freesound_cc0_gap_assets.py'
       - 'scripts/data_foundry/enrich_freesound_cc0_fingerprints.py'
       - 'src/echo/data_foundry/canonical_fingerprints.py'
-      - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
-      - '.github/workflows/mk1-freesound-cc0-free-materialization.yml'
   workflow_dispatch:
 
 permissions:
