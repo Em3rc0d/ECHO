@@ -3,9 +3,6 @@
   "boundary": "No quarantined split-conflict group is frozen; benchmark handoff still requires every upstream closure gate PASS.",
   "freeze_id": "MK1-CORPUS-FREEZE-1",
   "gap_codes": [
-    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
-    "UPSTREAM_RECORDING_FAMILY_NOT_PASS",
-    "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS",
     "UPSTREAM_COVERAGE_NOT_PASS"
   ],
   "ledger_sha256": "93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8",

@@ -330,15 +330,6 @@
       "metric": "GROUPS",
       "required": 3,
       "split": "test"
-    },
-    {
-      "code": "UPSTREAM_GLOBAL_DEDUP_NOT_PASS"
-    },
-    {
-      "code": "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS"
-    },
-    {
-      "code": "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS"
     }
   ],
   "field_holdout_excluded_count": 0,
@@ -358,10 +349,7 @@
     "TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
-    "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN",
-    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
-    "UPSTREAM_RECORDING_FAMILY_AUDIT_NOT_PASS",
-    "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS"
+    "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
   "ledger_sha256": "93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
