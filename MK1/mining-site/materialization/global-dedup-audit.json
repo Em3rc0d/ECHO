@@ -2,9 +2,9 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1162,
+  "fingerprinted_asset_count": 1141,
   "gap_codes": [],
-  "ledger_sha256": "9ca05a6c2a405f5e2003a06349f048fe0c6cb65454e64f42cd2c34c0556a3dc5",
+  "ledger_sha256": "72039f7f11b08fcadbe19ee1cf639f929491a67f59bce36d3ee953f366364f14",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 500,
@@ -151,12 +151,6 @@
       "distance": 0.01023284,
       "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2045",
       "right": "echo-freesound-release-safe-v1:216290",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.01369485,
-      "left": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-2249",
-      "right": "echo-freesound-release-safe-v1:258169",
       "same_recording_group": true
     },
     {
@@ -853,12 +847,6 @@
       "distance": 0.01969975,
       "left": "echo-freesound-release-safe-v1:219847",
       "right": "echo-freesound-release-safe-v1:981",
-      "same_recording_group": true
-    },
-    {
-      "distance": 0.00318627,
-      "left": "echo-freesound-release-safe-v1:239030",
-      "right": "echo-freesound-release-safe-v1:239031",
       "same_recording_group": true
     },
     {
@@ -3008,6 +2996,18 @@
       "left": "echo-freesound-release-safe-v1:88925",
       "right": "echo-freesound-release-safe-v1:89890",
       "same_recording_group": true
+    },
+    {
+      "distance": 0.0169424,
+      "left": "echo-freesound-release-safe-v1:88925",
+      "right": "echo-freesound-release-safe-v1:89891",
+      "same_recording_group": true
+    },
+    {
+      "distance": 0.00677083,
+      "left": "echo-freesound-release-safe-v1:88925",
+      "right": "echo-freesound-release-safe-v1:89894",
+      "same_recording_group": true
     }
   ],
   "near_duplicate_threshold": 0.02,
@@ -3015,6 +3015,6 @@
   "note": "Near-duplicate candidates are screening evidence only; automatic merge is forbidden by policy.",
   "policy_sha256": "f299e98026769466e3e89f4a54749297771ccfe00452ce2c52ae473e8fa7f5ba",
   "schema_version": "echo.global-dedup-audit.v1",
-  "scope_asset_count": 1162,
+  "scope_asset_count": 1141,
   "status": "PASS"
 }
