@@ -88,7 +88,7 @@ def audit_certificate_authorities() -> None:
         "CERT-MK1-DF-HANDOFF-001",
         "**Status:** `CERTIFIED`",
         "gap_codes = [CORPUS_CERTIFICATE_NOT_CERTIFIED]",
-        "same atomic orchestrator",
+        "canonical corpus orchestrator is the only durable writer",
         "rolling documentation-current certificate is deliberately not a runtime ancestor",
     ):
         require(handoff, needle, HANDOFF.name)
@@ -108,10 +108,10 @@ def audit_certificate_authorities() -> None:
         "validate_pre_certificate_readiness",
         "validate_corpus_certificate",
         "apply_corpus_certificate",
-        "REFUSE_OVERWRITE_INVALID_HISTORY",
     ):
-        haystack = emitter if needle == "REFUSE_OVERWRITE_INVALID_HISTORY" else certification
-        require(haystack, needle, "certificate implementation")
+        require(certification, needle, CERTIFICATION.name)
+    require(emitter, "REFUSE_OVERWRITE_INVALID_HISTORY", EMITTER.name)
+    require(emitter, "--if-eligible", EMITTER.name)
 
     for needle in (
         '"schema_version": {"const": "echo.corpus-certificate.v2"}',
@@ -145,7 +145,7 @@ def audit_atomic_orchestrator() -> None:
         "schemas/data_foundry/corpus-certificate.schema.json",
         "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md",
         "MK1/build/data-foundry/CORPUS-CERTIFICATE-HANDOFF.md",
-        "REFUSE_OVERWRITE_INVALID_HISTORY" if False else "cert-mk1-df-corpus-001.json",
+        "cert-mk1-df-corpus-001.json",
         "assert final.get('modeling_allowed') is True",
         "assert final.get('modeling_allowed') is False",
         "cmp /tmp/echo-cascade-first/corpus-readiness.pre-cert.json /tmp/corpus-readiness.pre-cert.json",
