@@ -3,7 +3,7 @@
 **Fecha de corte:** 2026-09-15  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
 **Global execution invariant:** `ECHO-FREE-TIER-001`  
-**Audited readiness:** `60dfa361eb344172973a96949d38e137fbfaf822`
+**Audited readiness:** `2088c93d65b5d4dff58bb5cdb91b0e76e6288afb`
 
 ## 1. Promise
 
@@ -76,35 +76,32 @@ CERT-MK1-DF-TOOLCHAIN-005      = CANDIDATE
 CERT-MK1-DF-SONYC-001          = CERTIFIED / scoped
 CERT-MK1-DF-CORPUS-001         = OPEN
 
-CERT-DOC-001..009              = historical / invalidated
-CERT-DOC-010                   = CERTIFIED / current
+CERT-DOC-001..010              = historical / invalidated
+CERT-DOC-011                   = CERTIFIED / current
 ```
-
-`TOOLCHAIN-005` remains candidate while active corpus-closure work can still change Foundry semantics. `SONYC-001` remains independently valid within its scope.
 
 ## 5. Durable corpus-facing truth
 
 Current durable readiness commit:
 
 ```text
-60dfa361eb344172973a96949d38e137fbfaf822
+2088c93d65b5d4dff58bb5cdb91b0e76e6288afb
 ```
 
 Canonical ledger:
 
 ```text
-baseline_commit                       05433347ebc35e67ab9f3bbd78a9e3a64c0bb9aa
-entry_count                           1159
-canonical fingerprints                1159 / 1159
+baseline_commit                       0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7
+entry_count                           1162
+canonical fingerprints                1162 / 1162
 missing fingerprints                     0
 ledger blockers                          0
-BigSoundBank rows                        53
-Wikimedia rows                            4
+Wikimedia rows                            7
 fallback assets after grouping            0
 global acoustic components               14
 members reassigned to components         125
 content merge/delete                   false
-ledger_sha256  d4c0e78ef9111ef2cf3f2a44a9aea9d1e009afb5424dc7c851cbc9883186d19a
+ledger_sha256  b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab
 ```
 
 Structural closure:
@@ -121,13 +118,11 @@ corpus-reproducibility        FAIL
 
 ## 6. Split integrity
 
-Empirical global acoustic grouping exposes two complete components with incompatible protected upstream splits:
-
 ```text
 original split conflicts detected       2
 complete groups quarantined             2
 assets quarantined                     93
-eligible development assets          1066
+eligible development assets          1069
 split-integrity status                PASS
 ```
 
@@ -140,9 +135,12 @@ BACKGROUND
   assets 416 / groups 383 / sources 4     PASS
 
 FIRE_ALARM
-  assets 9 / groups 6 / duration 190.18 s
-  positive sources 2
-  train 7 assets / 4 groups
+  assets 12 / groups 9 / duration 311.05767 s
+  positive sources 3
+    BIGSOUNDBANK 4
+    FREESOUND 5
+    WIKIMEDIA_COMMONS 3
+  train 10 assets / 7 groups
   validation 2 / 2
   test 0 / 0
   HN 206 assets / 206 groups / 4 sources  PASS
@@ -161,7 +159,7 @@ SIREN
   HN 245 assets / 244 groups / 4 sources   PASS
 
 TIRE_SQUEAL
-  assets 11 / groups 11 / duration 280.54 s
+  assets 11 / groups 11 / duration 280.544098 s
   positive sources 2
   train 9 / 9
   validation 0 / 0
@@ -199,11 +197,7 @@ TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN
 TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN
 ```
 
-All former background and target-specific hard-negative gaps remain closed.
-
 ## 9. Machine-readable readiness
-
-Authoritative artifact at `60dfa361eb344172973a96949d38e137fbfaf822`:
 
 ```text
 readiness_id = EMP-MK1-CORPUS-READINESS-001
@@ -212,7 +206,7 @@ eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
-evidence_identity_sha256 = 7c3dd6d518d8bc088a419b39e4dfb4894482def44906ca4561a4cc84f631f389
+evidence_identity_sha256 = 9b6da43da378dbf546a3961c6ed47b8e7218b5135bbe84680f58eecf86030559
 ```
 
 Exact readiness gaps:
@@ -222,7 +216,7 @@ CORPUS_CERTIFICATE_NOT_CERTIFIED
 COVERAGE_GATE_GAP_CODES_NOT_EMPTY
 COVERAGE_GATE_NOT_PASS
 COVERAGE_GATE_STATUS_NOT_PASS
-FIRE_ALARM_ASSETS_9_LT_50
+FIRE_ALARM_ASSETS_12_LT_50
 FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
 REPRODUCIBILITY_NOT_PASS
@@ -241,9 +235,8 @@ hard-negative floors          PASS
 background                    PASS
 ledger blockers               CLOSED
   ↓
-GLASS: add genuine non-Freesound positives without hiding quarantine
-FIRE_ALARM: add real exact positives/groups and split coverage
-TIRE_SQUEAL: add real exact positives/groups and split coverage
+Freesound exact real FIRE/TIRE acquisition with SHA-bound evidence
+GLASS genuine non-Freesound acquisition
   ↓
 coverage PASS / gap_codes=[]
   ↓
@@ -262,7 +255,7 @@ modeling_allowed = true
 Benchmark A/B/C
 ```
 
-PR #33 proposes additional exact Wikimedia FIRE candidates and hardens Public Gap persistence. These candidates have **zero durable coverage credit** until post-merge real-byte materialization and the full ledger/group/dedup/split/coverage cascade complete.
+The Wikimedia FIRE expansion is now durable empirical evidence, not a candidate projection. Future Freesound rows receive zero credit until their own materialization/ledger/closure cascade completes.
 
 ## 12. Release law
 
@@ -280,9 +273,9 @@ NO real camera progression
 ## 13. Documentation state
 
 ```text
-governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-010.md
-CERT-DOC-010 = CERTIFIED / current
-Markdown corpus = 214 files
+governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-011.md
+CERT-DOC-011 = CERTIFIED / current
+Markdown corpus = 215 files
 ```
 
 ## 14. Invalidation
