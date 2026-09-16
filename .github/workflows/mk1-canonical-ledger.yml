@@ -2,6 +2,15 @@ name: MK1 Canonical Corpus Ledger
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - 'MK1 Freesound Release Safe Materialization'
+      - 'MK1 Freesound CC0 Free Materialization'
+      - 'MK1 SONYC Free Materialization'
+      - 'MK1 OpenGameArt Rubberduck CC0 Materialization'
+      - 'MK1 OpenGameArt Glass Expansion Materialization'
+      - 'MK1 Public Gap Materialization'
+    types: [completed]
   push:
     branches: [main]
     paths:
@@ -25,8 +34,15 @@ on:
       - 'configs/data_foundry/bigsoundbank_confusers.v1.json'
       - 'configs/data_foundry/hard_negative_mapping.v1.json'
       - 'configs/data_foundry/near_duplicate_policy.v1.json'
+      - 'configs/data_foundry/split_policy.v1.json'
+      - 'configs/data_foundry/coverage_policy.v1.json'
       - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
+      - 'schemas/data_foundry/corpus-closure-readiness.schema.json'
       - 'src/echo/data_foundry/ledger.py'
+      - 'src/echo/data_foundry/canonical_fingerprints.py'
+      - 'src/echo/data_foundry/coverage_policy.py'
+      - 'src/echo/data_foundry/splits.py'
+      - 'src/echo/data_foundry/readiness.py'
       - 'scripts/data_foundry/build_canonical_asset_ledger.py'
       - 'scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py'
@@ -37,30 +53,50 @@ on:
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
       - 'scripts/data_foundry/enforce_canonical_ledger_role_boundary.py'
       - 'scripts/data_foundry/resolve_global_recording_groups.py'
+      - 'scripts/data_foundry/build_corpus_closure_evidence.py'
+      - 'scripts/data_foundry/apply_split_conflict_quarantine.py'
+      - 'scripts/data_foundry/build_corpus_closure_readiness.py'
+      - 'scripts/check_corpus_pipeline_wiring.py'
+      - 'scripts/check_modeling_gate_wiring.py'
       - 'scripts/check_free_tier_boundary.py'
       - '.github/workflows/mk1-canonical-ledger.yml'
+      - '.github/workflows/mk1-corpus-closure-evidence.yml'
+      - '.github/workflows/mk1-corpus-readiness.yml'
+      - '.github/workflows/mk1-model-entry-gate.yml'
 
 permissions:
   contents: write
 
 concurrency:
-  group: mk1-canonical-corpus-ledger-main
+  group: mk1-corpus-evidence-pipeline-main
   cancel-in-progress: false
 
 jobs:
   build-ledger:
+    if: >-
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main') ||
+      (github.event_name != 'workflow_run' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}
           fetch-depth: 1
+      - name: Resolve exact durable baseline
+        run: |
+          echo "ECHO_PIPELINE_BASELINE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "pipeline baseline=$(git rev-parse HEAD)"
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Enforce global zero-cost boundary
         run: python scripts/check_free_tier_boundary.py
-      - name: Validate ledger contracts
+      - name: Validate pipeline wiring
+        run: python scripts/check_corpus_pipeline_wiring.py
+      - name: Validate ledger and readiness contracts
         run: |
           python -m json.tool configs/data_foundry/dataset_certification.v1.json >/dev/null
           python -m json.tool configs/data_foundry/source_registry.v1.json >/dev/null
@@ -72,8 +108,11 @@ jobs:
           python -m json.tool configs/data_foundry/bigsoundbank_confusers.v1.json >/dev/null
           python -m json.tool configs/data_foundry/hard_negative_mapping.v1.json >/dev/null
           python -m json.tool configs/data_foundry/near_duplicate_policy.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/split_policy.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/coverage_policy.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
-      - name: Build and resolve canonical release-safe corpus ledger
+          python -m json.tool schemas/data_foundry/corpus-closure-readiness.schema.json >/dev/null
+      - name: Build canonical release-safe corpus ledger
         env:
           PYTHONPATH: src:.
         run: |
@@ -87,12 +126,33 @@ jobs:
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
-      - name: Verify deterministic rebuild
+      - name: Build closure evidence and readiness from the same ledger
         env:
           PYTHONPATH: src:.
         run: |
-          cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl /tmp/ledger.first.jsonl
-          cp MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json /tmp/ledger.first.summary.json
+          python scripts/data_foundry/build_corpus_closure_evidence.py
+          python scripts/data_foundry/apply_split_conflict_quarantine.py
+          python scripts/data_foundry/build_corpus_closure_readiness.py
+      - name: Verify process-level deterministic full cascade
+        env:
+          PYTHONPATH: src:.
+        run: |
+          mkdir -p /tmp/echo-cascade-first
+          paths=(
+            canonical-release-safe-asset-ledger.jsonl
+            canonical-release-safe-asset-ledger-summary.json
+            global-dedup-audit.json
+            recording-family-audit.json
+            split-integrity.json
+            coverage-gate.json
+            corpus-freeze-1.validation.json
+            corpus-freeze-2.validation.json
+            corpus-reproducibility.json
+            corpus-closure-readiness.json
+          )
+          for name in "${paths[@]}"; do
+            cp "MK1/mining-site/materialization/$name" "/tmp/echo-cascade-first/$name"
+          done
           python scripts/data_foundry/build_canonical_asset_ledger.py
           python scripts/data_foundry/enrich_ledger_with_freesound_hard_negatives.py
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
@@ -103,25 +163,50 @@ jobs:
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
-          cmp /tmp/ledger.first.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl
-          cmp /tmp/ledger.first.summary.json MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
-      - name: Enforce compact durable output
+          python scripts/data_foundry/build_corpus_closure_evidence.py
+          python scripts/data_foundry/apply_split_conflict_quarantine.py
+          python scripts/data_foundry/build_corpus_closure_readiness.py
+          for name in "${paths[@]}"; do
+            cmp "/tmp/echo-cascade-first/$name" "MK1/mining-site/materialization/$name"
+          done
+      - name: Validate durable JSON and compactness
         run: |
-          test "$(stat -c%s MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl)" -le 25000000
-          test "$(stat -c%s MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json)" -le 1000000
-      - name: Fail if baseline moved before evidence commit
+          total=0
+          for name in canonical-release-safe-asset-ledger-summary.json global-dedup-audit.json recording-family-audit.json split-integrity.json coverage-gate.json corpus-freeze-1.validation.json corpus-freeze-2.validation.json corpus-reproducibility.json corpus-closure-readiness.json; do
+            python -m json.tool "MK1/mining-site/materialization/$name" >/dev/null
+            bytes="$(stat -c%s "MK1/mining-site/materialization/$name")"
+            total=$((total + bytes))
+          done
+          ledger_bytes="$(stat -c%s MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl)"
+          echo "atomic corpus evidence bytes=$((total + ledger_bytes))"
+          test "$ledger_bytes" -le 25000000
+          test "$total" -le 12000000
+      - name: Fail if exact baseline moved before durable commit
         run: |
           git fetch origin main --depth=1
-          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
-      - name: Commit durable ledger evidence
+          test "$ECHO_PIPELINE_BASELINE" = "$(git rev-parse HEAD)"
+          test "$ECHO_PIPELINE_BASELINE" = "$(git rev-parse origin/main)"
+      - name: Commit atomic corpus evidence cascade
         run: |
-          if [ -z "$(git status --porcelain -- MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json)" ]; then
-            echo "Canonical ledger already current"
+          paths=(
+            MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl
+            MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
+            MK1/mining-site/materialization/global-dedup-audit.json
+            MK1/mining-site/materialization/recording-family-audit.json
+            MK1/mining-site/materialization/split-integrity.json
+            MK1/mining-site/materialization/coverage-gate.json
+            MK1/mining-site/materialization/corpus-freeze-1.validation.json
+            MK1/mining-site/materialization/corpus-freeze-2.validation.json
+            MK1/mining-site/materialization/corpus-reproducibility.json
+            MK1/mining-site/materialization/corpus-closure-readiness.json
+          )
+          if [ -z "$(git status --porcelain -- "${paths[@]}")" ]; then
+            echo 'Atomic corpus evidence already current.'
             exit 0
           fi
-          git config user.name "echo-data-foundry-bot"
-          git config user.email "123134857+Em3rc0d@users.noreply.github.com"
-          git add MK1/mining-site/materialization/canonical-release-safe-asset-ledger.jsonl MK1/mining-site/materialization/canonical-release-safe-asset-ledger-summary.json
-          git diff --cached --quiet && { echo "No staged ledger evidence changes"; exit 0; }
-          git commit -m "evidence(mk1): consolidate canonical corpus ledger"
+          git config user.name 'echo-data-foundry-bot'
+          git config user.email '123134857+Em3rc0d@users.noreply.github.com'
+          git add "${paths[@]}"
+          git diff --cached --quiet && exit 0
+          git commit -m 'evidence(mk1): refresh atomic corpus evidence cascade [skip ci]'
           git push origin HEAD:main
