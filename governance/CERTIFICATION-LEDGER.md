@@ -2,7 +2,7 @@
 
 **Status:** `ACTIVE_SOURCE_OF_CERTIFICATION_TRUTH`  
 **Global execution ancestor:** `ECHO-FREE-TIER-001`  
-**Documentation ancestor:** `CERT-DOC-013`
+**Documentation ancestor:** `CERT-DOC-014`
 
 `CERTIFIED` is always scope-bounded. Green CI is execution evidence, not a substitute for missing empirical corpus evidence. No certificate may depend on a path that violates `ECHO-FREE-TIER-001`.
 
@@ -20,14 +20,14 @@
 | CERT-MK1-DF-SPEC-001 | Data Foundry architecture/contracts/policies | CERTIFIED | Foundry docs/config/schema/foundation | semantic contract changes |
 | CERT-MK1-DF-TOOLCHAIN-001..003 | Historical toolchains | INVALIDATED | historical evidence | superseded |
 | CERT-MK1-DF-TOOLCHAIN-004 | SONYC persistence/fingerprint Foundry baseline | INVALIDATED | baseline `ab8c47ba...` | invalidated by closure semantic changes |
-| CERT-MK1-DF-TOOLCHAIN-005 | Closure-era Foundry toolchain | CANDIDATE | active closure CI + deterministic evidence cascade | certify only after active closure implementation stabilizes |
+| CERT-MK1-DF-TOOLCHAIN-005 | Atomic closure-era Foundry toolchain | CANDIDATE | active CI + deterministic atomic evidence cascade | certify after active closure/certificate implementation stabilizes |
 | CERT-MK1-DF-SONYC-001 | SONYC v2.3 materialization/fingerprint closure | CERTIFIED | run `34922010537`; durable `78fc0198...` | SONYC evidence/materialization/fingerprint/free-tier changes |
-| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness | BLOCKED | readiness `896398c9...` | recomputed when input evidence/policy changes |
+| EMP-MK1-CORPUS-READINESS-001 | Machine-readable corpus closure readiness v2 | BLOCKED | semantic ledger + policy + closure evidence | recomputed when semantic evidence/policy changes |
 | EMP-DATASET-001 | Exact admitted real corpus identity/counts/durations/groups | OPEN | release-safe closure | produced only from closed corpus |
 | EMP-DATA-QUALITY-001 | Duplicate/quality/diversity evidence | OPEN | dedup/group/split/coverage closure | produced only from real closure |
 | CERT-MK1-DF-CORPUS-001 | Named release-safe frozen corpus | OPEN | dataset + quality + all closure gates + reproducibility + free-tier | material corpus ancestor changes |
-| CERT-DOC-001..012 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
-| CERT-DOC-013 | Current confirmed-grouping closure truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-16-CORPUS-CLOSURE-013.md` | audited truth changes |
+| CERT-DOC-001..013 | Historical documentation certificates | INVALIDATED | historical audits | superseded |
+| CERT-DOC-014 | Current atomic-pipeline + semantic-identity truth | CERTIFIED | `DOCUMENTATION-AUDIT-2026-09-16-CORPUS-PIPELINE-014.md` | audited semantic truth changes |
 | EXT-CAMERA-001 | Real camera integration | EXTERNAL_GATE_OPEN | authorized field evidence | closes only with field evidence + upstream authorization |
 | EMP-MODEL-001 | Model winner | BLOCKED | corpus cert + Benchmark A/B/C | cannot run before corpus cert |
 | EMP-THRESH-001 | Event thresholds | BLOCKED | certified corpus + model/replay | cannot run before upstream gates |
@@ -44,18 +44,43 @@ fingerprint failures      0
 durable evidence          78fc019839f1c9dad1a58a70d439605d887361d7
 ```
 
-## Current durable corpus evidence
+## Corpus identity boundary
 
-At `main@896398c90b0170189cdadd19c12396348e89a37a`:
+The canonical semantic corpus identity is:
 
 ```text
-canonical ledger baseline              57869db92f9b8d691d8e7390dd0629e759928b03
+ledger semantic sha256    cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1
+coverage material sha256  93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
+readiness-v2 identity     4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405
+```
+
+`baseline_commit` and raw generated-summary hashes are execution provenance. They remain mandatory and auditable, but they do not redefine the acoustic corpus when semantic ledger/policy/closure identities remain unchanged.
+
+## Atomic durable corpus evidence
+
+The active TOOLCHAIN-005 candidate uses one durable writer:
+
+```text
+governed source materialization
+  ↓
+atomic corpus orchestrator
+  ↓
+canonical ledger → grouping → dedup/family/split → coverage
+  ↓
+freeze #1 → freeze #2 → reproducibility → readiness v2
+  ↓
+one durable evidence commit
+```
+
+The full cascade is repeated and byte-compared for determinism. Persistence is refused if the exact execution baseline no longer equals `origin/main`. Closure/readiness standalone workflows are diagnostics only and cannot write to `main`.
+
+Current semantic ledger truth:
+
+```text
 canonical ledger entries               1141
 canonical fingerprints                 1141 / 1141
 missing fingerprints                   0
 unresolved ledger blockers             0
-ledger-summary sha256                  cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1
-coverage ledger sha256                 93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
 fallback assets after grouping         0
 global acoustic components             2
 members reassigned to components       4
@@ -132,14 +157,13 @@ These are mathematical/evidence lower bounds. They do not authorize manual split
 
 ## Machine-readable readiness
 
-At `896398c90b0170189cdadd19c12396348e89a37a`:
-
 ```text
+schema = echo.corpus-closure-readiness.v2
 EMP-MK1-CORPUS-READINESS-001 = BLOCKED
 eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
-evidence_identity_sha256 = 955375c9cc29f2ac5019bb7b2d71090b90734bfe3a8332e5a34698a73ca2d45d
+semantic evidence identity = 4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405
 ```
 
 Exact readiness gaps:
@@ -167,7 +191,7 @@ Hosting/wrapper identity is not acoustic-origin identity. Derivatives and mirror
 ## Product critical path
 
 ```text
-CERT-ECHO-000 + CERT-DOC-013 + ECHO-FREE-TIER-001
+CERT-ECHO-000 + CERT-DOC-014 + ECHO-FREE-TIER-001
         ↓
 CERT-MK1-DF-SPEC-001
         ↓
@@ -206,4 +230,6 @@ Until then there is no model training, threshold calibration, replay progression
 
 ## Invalidation
 
-Material changes to promise, taxonomy, source/acquisition, rights/mapping/review/probe/fingerprint, grouping/dedup, split/coverage/freeze/handoff semantics, SONYC evidence, model-entry wiring, free-tier policy, machine-readable readiness, certificate states or governing documentation require dependency review and selective recertification.
+Material changes to promise, taxonomy, source/acquisition, rights/mapping/review/probe/fingerprint, grouping/dedup, split/coverage/freeze/handoff semantics, semantic corpus identity, SONYC evidence, model-entry wiring, free-tier policy, readiness identity contract, certificate states or governing documentation require dependency review and selective recertification.
+
+A pure execution provenance change does not by itself redefine the corpus when all semantic identities remain identical, but provenance must remain valid and internally consistent.
