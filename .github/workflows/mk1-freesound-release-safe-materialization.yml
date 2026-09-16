@@ -9,7 +9,6 @@ on:
       - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
       - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
-      - '.github/workflows/mk1-freesound-release-safe-materialization.yml'
   workflow_dispatch:
 
 permissions:
