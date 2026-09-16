@@ -1,9 +1,9 @@
 # Estado actual de ECHO
 
-**Fecha de corte:** 2026-09-15  
+**Fecha de corte:** 2026-09-16  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
 **Global execution invariant:** `ECHO-FREE-TIER-001`  
-**Audited readiness:** `2088c93d65b5d4dff58bb5cdb91b0e76e6288afb`
+**Audited readiness:** `48af9f220b30f2197aa376bff025195cb0a2a13b`
 
 ## 1. Promise
 
@@ -55,7 +55,7 @@ MK1 build = IN_PROGRESS
   global dedup               = PASS
   recording-family audit     = PASS
   split integrity            = PASS
-  coverage                   = FAIL / 17 detailed gaps
+  coverage                   = FAIL / 16 detailed gaps
   freeze #1                  = FAIL / gated by coverage
   freeze #2                  = FAIL / gated by freeze #1
   reproducibility            = FAIL / gated by frozen corpus
@@ -76,8 +76,8 @@ CERT-MK1-DF-TOOLCHAIN-005      = CANDIDATE
 CERT-MK1-DF-SONYC-001          = CERTIFIED / scoped
 CERT-MK1-DF-CORPUS-001         = OPEN
 
-CERT-DOC-001..010              = historical / invalidated
-CERT-DOC-011                   = CERTIFIED / current
+CERT-DOC-001..011              = historical / invalidated
+CERT-DOC-012                   = CERTIFIED / current
 ```
 
 ## 5. Durable corpus-facing truth
@@ -85,24 +85,25 @@ CERT-DOC-011                   = CERTIFIED / current
 Current durable readiness commit:
 
 ```text
-2088c93d65b5d4dff58bb5cdb91b0e76e6288afb
+48af9f220b30f2197aa376bff025195cb0a2a13b
 ```
 
 Canonical ledger:
 
 ```text
-baseline_commit                       0e05b9ce7ef9afdbd6d0d327922f9811fa0a50d7
-entry_count                           1162
-canonical fingerprints                1162 / 1162
+baseline_commit                       050f2ebc39fea0d1e6903190ad471fd97d1487dc
+entry_count                           1141
+canonical fingerprints                1141 / 1141
 missing fingerprints                     0
 ledger blockers                          0
-Wikimedia rows                            7
 fallback assets after grouping            0
-global acoustic components               14
-members reassigned to components         125
+global acoustic components               12
+members reassigned to components         118
 content merge/delete                   false
-ledger_sha256  b250b18e8ccef3776cdc38d42f240a057bcf99b260cc6cb58a77aad93e9d0cab
+ledger_sha256  1ab3712452f42205fe9004f1d6cb9e778297487891bb373e5c42d635854f1d85
 ```
+
+The count reduction versus DOC-011 is accepted external-evidence drift from live Freesound rematerialization. Stale pages/previews were not preserved just to keep corpus counts high.
 
 Structural closure:
 
@@ -110,7 +111,7 @@ Structural closure:
 global-dedup-audit.json       PASS / gap_codes=[]
 recording-family-audit.json   PASS / gap_codes=[]
 split-integrity.json          PASS / gap_codes=[]
-coverage-gate.json            FAIL / 17 gaps
+coverage-gate.json            FAIL / 16 gaps
 corpus-freeze-1.validation    FAIL
 corpus-freeze-2.validation    FAIL
 corpus-reproducibility        FAIL
@@ -122,7 +123,7 @@ corpus-reproducibility        FAIL
 original split conflicts detected       2
 complete groups quarantined             2
 assets quarantined                     93
-eligible development assets          1069
+eligible development assets          1048
 split-integrity status                PASS
 ```
 
@@ -135,47 +136,49 @@ BACKGROUND
   assets 416 / groups 383 / sources 4     PASS
 
 FIRE_ALARM
-  assets 12 / groups 9 / duration 311.05767 s
+  assets 19 / groups 16 / duration 460.864037 s
   positive sources 3
     BIGSOUNDBANK 4
-    FREESOUND 5
+    FREESOUND 12
     WIKIMEDIA_COMMONS 3
-  train 10 assets / 7 groups
+  train 17 assets / 14 groups
   validation 2 / 2
   test 0 / 0
-  HN 206 assets / 206 groups / 4 sources  PASS
+  HN 202 assets / 202 groups / 4 sources  PASS
 
 GLASS_SHATTER
-  final assets 239 / groups 222
+  final assets 222 / groups 205
   BIGSOUNDBANK 6
-  FREESOUND 226
+  FREESOUND 209
   OPENGAMEART_RUBBERDUCK 6
   OPENGAMEART_TILL_BEHREND 1
-  max single-source fraction 0.945607      FAIL <= 0.80 required
+  max single-source fraction 0.941441      FAIL <= 0.80 required
   HN 428 assets / 408 groups / 2 sources   PASS
 
 SIREN
-  assets 173 / groups 173
-  HN 245 assets / 244 groups / 4 sources   PASS
+  assets 169 / groups 169
+  HN 235 assets / 235 groups / 4 sources   PASS
 
 TIRE_SQUEAL
-  assets 11 / groups 11 / duration 280.544098 s
+  assets 14 / groups 10 / duration 344.600098 s
   positive sources 2
-  train 9 / 9
+    BIGSOUNDBANK 5
+    FREESOUND 9
+  train 11 assets / 8 groups
   validation 0 / 0
-  test 2 / 2
+  test 3 assets / 2 groups
   HN 25 assets / 12 groups / 2 sources     PASS
 
 VEHICLE_HORN
-  assets 245 / groups 244
-  HN 146 assets / 146 groups / 3 sources   PASS
+  assets 235 / groups 235
+  HN 142 assets / 142 groups / 3 sources   PASS
 ```
 
 Asset quality remains clean: 0 unknown licenses, 0 missing label provenance, 0 invalid probes, 0 non-positive durations, 0 exact duplicate groups and 0 near-duplicate groups in final coverage.
 
 ## 8. Detailed coverage gaps
 
-Exactly 17 remain:
+Exactly 16 remain:
 
 ```text
 FIRE_ALARM_ASSETS_BELOW_MIN
@@ -183,7 +186,6 @@ FIRE_ALARM_GROUPS_BELOW_MIN
 FIRE_ALARM_TEST_ASSETS_BELOW_MIN
 FIRE_ALARM_TEST_GROUPS_BELOW_MIN
 FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN
-FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN
 FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN
 FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN
 GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH
@@ -197,6 +199,8 @@ TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN
 TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN
 ```
 
+`FIRE_ALARM_TRAIN_GROUPS_BELOW_MIN` is now closed. Background and all target hard-negative floors remain closed.
+
 ## 9. Machine-readable readiness
 
 ```text
@@ -206,7 +210,7 @@ eligible_for_certificate_review = false
 modeling_allowed = false
 CERT-MK1-DF-CORPUS-001 = OPEN
 next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
-evidence_identity_sha256 = 9b6da43da378dbf546a3961c6ed47b8e7218b5135bbe84680f58eecf86030559
+evidence_identity_sha256 = 85dee5596dbc9c88e0430e32b5e8eec7c014d526d132974542b2e4a36a108a50
 ```
 
 Exact readiness gaps:
@@ -216,11 +220,11 @@ CORPUS_CERTIFICATE_NOT_CERTIFIED
 COVERAGE_GATE_GAP_CODES_NOT_EMPTY
 COVERAGE_GATE_NOT_PASS
 COVERAGE_GATE_STATUS_NOT_PASS
-FIRE_ALARM_ASSETS_12_LT_50
+FIRE_ALARM_ASSETS_19_LT_50
 FREEZE_1_VALIDATION_NOT_PASS
 FREEZE_2_VALIDATION_NOT_PASS
 REPRODUCIBILITY_NOT_PASS
-TIRE_SQUEAL_ASSETS_11_LT_50
+TIRE_SQUEAL_ASSETS_14_LT_50
 ```
 
 ## 10. Frozen solidity law
@@ -235,7 +239,8 @@ hard-negative floors          PASS
 background                    PASS
 ledger blockers               CLOSED
   ↓
-Freesound exact real FIRE/TIRE acquisition with SHA-bound evidence
+independent exact FIRE acquisition / split coverage
+independent exact TIRE acquisition / split coverage
 GLASS genuine non-Freesound acquisition
   ↓
 coverage PASS / gap_codes=[]
@@ -255,7 +260,7 @@ modeling_allowed = true
 Benchmark A/B/C
 ```
 
-The Wikimedia FIRE expansion is now durable empirical evidence, not a candidate projection. Future Freesound rows receive zero credit until their own materialization/ledger/closure cascade completes.
+Evidence-only source materialization is allowed as scouting, but it earns zero corpus credit until reviewed registration/admission and the complete ledger/closure cascade succeed.
 
 ## 12. Release law
 
@@ -273,9 +278,9 @@ NO real camera progression
 ## 13. Documentation state
 
 ```text
-governance/DOCUMENTATION-AUDIT-2026-09-15-CORPUS-CLOSURE-011.md
-CERT-DOC-011 = CERTIFIED / current
-Markdown corpus = 215 files
+governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-CLOSURE-012.md
+CERT-DOC-012 = CERTIFIED / current
+Markdown corpus = 216 files
 ```
 
 ## 14. Invalidation
