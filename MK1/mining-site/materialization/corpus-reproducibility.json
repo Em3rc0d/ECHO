@@ -1,12 +1,12 @@
 {
-  "freeze_1_identity": "3b40448eed311d71377a86f568b796eb4fa7b5ed8494b9226287c41d33f6ee2b",
-  "freeze_2_identity": "3b40448eed311d71377a86f568b796eb4fa7b5ed8494b9226287c41d33f6ee2b",
+  "freeze_1_identity": "fb6098a266b31cf34ed680831d144e702121697e42bdb3f43751f00e49e7897f",
+  "freeze_2_identity": "fb6098a266b31cf34ed680831d144e702121697e42bdb3f43751f00e49e7897f",
   "gap_codes": [
     "UPSTREAM_FREEZE_NOT_ELIGIBLE"
   ],
   "identity_match": true,
   "note": "Both freezes use identical whole-group split quarantine semantics; final certificate review binds these identities to exact durable evidence.",
-  "quarantine_identity_sha256": "063724253b8dc84199c2cd7aa577e81b7e85aa1c994dbb14c6531ef4685e5b78",
+  "quarantine_identity_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   "schema_version": "echo.corpus-reproducibility.v2",
   "status": "FAIL"
 }

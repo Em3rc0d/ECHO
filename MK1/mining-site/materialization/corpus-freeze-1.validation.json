@@ -1,15 +1,18 @@
 {
-  "asset_count": 1048,
+  "asset_count": 1141,
   "boundary": "No quarantined split-conflict group is frozen; benchmark handoff still requires every upstream closure gate PASS.",
   "freeze_id": "MK1-CORPUS-FREEZE-1",
   "gap_codes": [
+    "UPSTREAM_GLOBAL_DEDUP_NOT_PASS",
+    "UPSTREAM_RECORDING_FAMILY_NOT_PASS",
+    "UPSTREAM_SPLIT_INTEGRITY_NOT_PASS",
     "UPSTREAM_COVERAGE_NOT_PASS"
   ],
-  "ledger_sha256": "72039f7f11b08fcadbe19ee1cf639f929491a67f59bce36d3ee953f366364f14",
-  "quarantined_asset_count": 93,
+  "ledger_sha256": "93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8",
+  "quarantined_asset_count": 0,
   "schema_version": "echo.corpus-freeze-validation.v2",
-  "semantic_identity_sha256": "3b40448eed311d71377a86f568b796eb4fa7b5ed8494b9226287c41d33f6ee2b",
-  "split_assignment_sha256": "f4d412b0cff9f7293ae4e55260678ac128c0bc7e9e855b93229fbae149dfac61",
+  "semantic_identity_sha256": "fb6098a266b31cf34ed680831d144e702121697e42bdb3f43751f00e49e7897f",
+  "split_assignment_sha256": "43e7bb561e7783734e602dc7f475e783e6bd4a5da1f6c8ee828d292b0513f016",
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "FAIL"
 }
