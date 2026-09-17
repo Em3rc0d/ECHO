@@ -1,9 +1,9 @@
 # Documentation Coverage Audit
 
 **Status:** `PASS_CURRENT_HEAD`  
-**Current certificate:** `CERT-DOC-014`  
-**Current Markdown corpus:** `218 files`  
-**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-PIPELINE-014.md`
+**Current certificate:** `CERT-DOC-015`  
+**Current Markdown corpus:** `221 files`  
+**Latest audit:** `governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-HANDOFF-015.md`
 
 ## Rule
 
@@ -12,17 +12,18 @@ ECHO is documentation-first and evidence-first. Documentation preserves `FACT/EV
 ## Certificate lineage
 
 ```text
-CERT-DOC-001..013  historical / invalidated
-CERT-DOC-014       current / 218 files / CERTIFIED
+CERT-DOC-001..014  historical / invalidated
+CERT-DOC-015       current / 221 files / CERTIFIED
 ```
 
 ## Current audited truth
 
 ```text
-CERT-DOC-014                    = CERTIFIED
+CERT-DOC-015                    = CERTIFIED
 CERT-MK1-DF-TOOLCHAIN-004       = INVALIDATED
-CERT-MK1-DF-TOOLCHAIN-005       = CANDIDATE
+CERT-MK1-DF-TOOLCHAIN-005       = CERTIFIED
 CERT-MK1-DF-SONYC-001           = CERTIFIED
+CERT-MK1-DF-HANDOFF-001         = CERTIFIED
 GLOBAL_DEDUP                     = PASS
 RECORDING_FAMILY_AUDIT           = PASS
 SPLIT_INTEGRITY                  = PASS
@@ -37,8 +38,6 @@ ECHO-FREE-TIER-001               = PASS
 
 ## Semantic identity and execution provenance
 
-DOC-014 explicitly separates corpus identity from execution provenance.
-
 The canonical semantic ledger identity is:
 
 ```text
@@ -51,30 +50,45 @@ Closure/coverage binds material ledger identity:
 93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
 ```
 
-Readiness v2 projects semantic evidence identity:
+Readiness v2 semantic evidence identity is:
 
 ```text
 4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405
 ```
 
-`baseline_commit` and the raw summary-file SHA remain execution provenance. They must be valid and internally consistent but are not treated as corpus-content identity.
+`baseline_commit` and raw generated-summary SHA values remain execution provenance. They must be valid and auditable, but they do not redefine corpus identity when semantic ledger, policy and closure identities are unchanged.
 
-## Atomic durable pipeline
+## Atomic durable pipeline and certificate handoff
 
-One authoritative writer now owns durable corpus evidence:
+One authoritative writer owns corpus evidence and the conditional certificate transition:
 
 ```text
-governed materialization
+governed source evidence
 → canonical ledger
 → grouping
 → dedup / recording-family / split
 → coverage
 → freeze #1 / freeze #2 / reproducibility
-→ readiness
-→ one atomic evidence commit
+→ pre-certificate readiness
+→ conditional CERT-MK1-DF-CORPUS-001 emitter
+→ final readiness
+→ one atomic durable commit
 ```
 
-The complete cascade is repeated and byte-compared for determinism before persistence. The resolved baseline is checked against `origin/main` immediately before the commit. Standalone closure/readiness workflows are read-only diagnostics.
+The complete cascade is rebuilt twice and byte-compared for determinism. The exact baseline is checked against `origin/main` immediately before persistence. Standalone closure/readiness/model-entry diagnostics remain read-only.
+
+`CERT-MK1-DF-HANDOFF-001` authorizes certificate issuance only when pre-certificate readiness has exactly:
+
+```text
+schema_version = echo.corpus-closure-readiness.v2
+status = BLOCKED
+eligible_for_certificate_review = true
+modeling_allowed = false
+next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
+gap_codes = [CORPUS_CERTIFICATE_NOT_CERTIFIED]
+```
+
+Any additional gap makes issuance a successful no-op. A valid certificate may unlock final readiness only for the exact matching semantic evidence identity and stable Toolchain-005 / Handoff-001 / Free-Tier ancestors.
 
 ## Structural closure
 
@@ -131,7 +145,7 @@ Asset-quality stop lines are all zero.
 
 ## Quantified remaining evidence
 
-Current lower bounds remain FIRE +31 assets and +9 independent groups; TIRE +36 assets and +15 groups; GLASS requires at least +47 surviving non-Freesound positives if the Freesound numerator remains 280. Split requirements are never filled by manual remapping: evidence enters the canonical pipeline and deterministic split assignment remains authoritative.
+Current lower bounds remain FIRE +31 assets and +9 independent groups; TIRE +36 assets and +15 groups; GLASS requires at least +47 surviving non-Freesound positives if the Freesound numerator remains 280. These are lower bounds only. No manual split placement, source-family inflation, label coercion or floor weakening is authorized.
 
 ## Freeze/readiness state
 
@@ -145,7 +159,7 @@ modeling_allowed=false
 Benchmark A/B/C LOCKED
 ```
 
-## Product-direction audit
+## Product direction
 
 ```text
 release-safe corpus
@@ -160,33 +174,10 @@ release-safe corpus
 
 Supporting camera/UI/transport work must not redefine or preempt the acoustic detection/classification core.
 
-## Acquisition boundary
-
-New source lanes may materialize public rights/provenance/bytes/probe/fingerprint evidence before admission, but they receive zero corpus, split, coverage or diversity credit until source identity is reviewed, canonical-ledger integration is explicit, and the complete atomic grouping/dedup/split/coverage/readiness cascade succeeds.
-
-Wrapper datasets/hosting sites never create independent acoustic-source credit by themselves.
-
 ## Automated governance
 
-`scripts/check_documentation_governance.py` validates:
-
-- immutable promise and `ECHO-FREE-TIER-001`;
-- DOC-014 current / DOC-001..013 invalidated;
-- SONYC-001 scoped certification;
-- TOOLCHAIN-004 invalidated / TOOLCHAIN-005 candidate;
-- canonical semantic ledger identity and 1141/1141 fingerprints;
-- valid internally consistent execution provenance without treating it as data identity;
-- readiness v2 semantic identity material;
-- `screen -> confirm -> group` evidence counters and zero confirmed cross-family conflicts;
-- dedup/family/split PASS and zero split quarantine;
-- exactly 16 detailed coverage gaps and nine readiness blockers;
-- current FIRE/GLASS/TIRE/background/hard-negative truth;
-- final asset-quality stop lines all zero;
-- corpus certificate OPEN and `modeling_allowed=false`;
-- 218-file Markdown inventory and absence of merge-conflict markers.
+`scripts/check_documentation_governance.py` validates the immutable promise, Free Tier, DOC-015 lineage, TOOLCHAIN-005 and HANDOFF-001 authority, exact semantic corpus/readiness identities, structural PASS gates, zero split quarantine, exactly 16 coverage gaps, nine current readiness blockers, current FIRE/GLASS/TIRE/background truth, corpus certificate OPEN, `modeling_allowed=false`, the 221-file Markdown inventory and absence of merge-conflict markers.
 
 ## Invalidation
 
-DOC-014 becomes stale if semantic corpus identity, durable closure/readiness evidence, certificate/policy truth, rights/semantics/grouping/split/coverage/freeze logic, immutable promise, product critical path or free-tier boundary changes without a fresh audit.
-
-A pure execution provenance change does not redefine the corpus when all semantic evidence is identical, but provenance must still be valid and consistent.
+DOC-015 becomes stale when semantic corpus facts, coverage/freeze/reproducibility semantics, Toolchain-005, Handoff-001, certificate state, model-entry wiring, immutable promise or `ECHO-FREE-TIER-001` materially changes. Execution-provenance-only churn does not by itself constitute semantic corpus drift.
