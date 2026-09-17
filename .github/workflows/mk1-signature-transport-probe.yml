@@ -76,3 +76,5 @@ jobs:
           for link_type in ('normal_download','direct_download'):
               summarize(f'get_links:{link_type}', f'https://www.mediafire.com/api/file/get_links.php?{urlencode({"quick_key": key, "link_type": link_type, "response_format": "json"})}')
           PY
+
+# Probe is intentionally metadata-only and grants zero corpus credit.
