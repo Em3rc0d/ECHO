@@ -22,7 +22,7 @@ import re
 import time
 from typing import Any, Mapping
 from urllib.error import HTTPError, URLError
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote, urlencode, urlparse
 from urllib.request import Request, urlopen
 import zipfile
 
@@ -170,6 +170,14 @@ def _validate_mediafire_direct_zip_url(raw_url: str) -> str:
     return candidate
 
 
+def _validate_mediafire_page_url(raw_url: str) -> str:
+    candidate = unescape(raw_url).replace("\\/", "/").strip()
+    parsed = urlparse(candidate)
+    if parsed.scheme.casefold() != "https" or (parsed.hostname or "").casefold() != "www.mediafire.com":
+        raise ValueError("MediaFire page URL must remain on governed www.mediafire.com HTTPS origin")
+    return candidate
+
+
 def _decode_scrambled_mediafire_url(value: str) -> str:
     cleaned = unescape(value).strip()
     padding = "=" * (-len(cleaned) % 4)
@@ -197,8 +205,6 @@ def direct_mediafire_download_url(landing_html: str) -> str:
         else:
             candidates.append(value)
 
-    # MediaFire has historically emitted a JS variable for the same public
-    # download-button destination. It is still validated against the exact CDN.
     candidates.extend(
         match.group(1)
         for match in re.finditer(
@@ -208,8 +214,18 @@ def direct_mediafire_download_url(landing_html: str) -> str:
         )
     )
 
-    # Final compatibility fallback: accept a literal direct CDN URL anywhere
-    # in the public landing page, but never an arbitrary off-domain URL.
+    # Current MediaFire pages/API responses may embed link fields as JSON.
+    # They are still accepted only after the strict CDN + ZIP validator below.
+    for key in ("direct_download", "normal_download", "download_link"):
+        candidates.extend(
+            match.group(1).replace("\\/", "/")
+            for match in re.finditer(
+                rf"[\"']{key}[\"']\s*:\s*[\"'](https?://[^\"']+)[\"']",
+                decoded,
+                flags=re.IGNORECASE,
+            )
+        )
+
     candidates.extend(
         re.findall(
             r"https://download[^\"'<>\s]+\.mediafire\.com/[^\"'<>\s]+",
@@ -224,6 +240,88 @@ def direct_mediafire_download_url(landing_html: str) -> str:
         except ValueError:
             continue
     raise ValueError("MediaFire public download button did not expose a governed direct ZIP URL")
+
+
+def _mediafire_quickkey(landing_url: str) -> str:
+    parsed = urlparse(_validate_mediafire_page_url(landing_url))
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) < 2 or parts[0].casefold() not in {"file", "download", "view"}:
+        raise ValueError("MediaFire landing page does not expose a governed file quickkey")
+    key = parts[1]
+    if not re.fullmatch(r"[A-Za-z0-9]+", key):
+        raise ValueError("MediaFire quickkey contains unsupported characters")
+    return key
+
+
+def _json_urls(value: Any) -> list[str]:
+    urls: list[str] = []
+    if isinstance(value, Mapping):
+        for nested in value.values():
+            urls.extend(_json_urls(nested))
+    elif isinstance(value, list):
+        for nested in value:
+            urls.extend(_json_urls(nested))
+    elif isinstance(value, str) and value.startswith("https://"):
+        urls.append(value)
+    return urls
+
+
+def mediafire_api_direct_zip_url(landing_url: str, *, referer: str) -> str:
+    """Use MediaFire's public metadata/link APIs only as a transport fallback.
+
+    Every URL returned by the API remains untrusted until it passes the same
+    strict origin/CDN validators used for the public landing page. No API host,
+    mirror or transport endpoint receives source-family or licensing authority.
+    """
+
+    key = _mediafire_quickkey(landing_url)
+    endpoint_specs = [
+        ("https://www.mediafire.com/api/file/get_info.php", {"quick_key": key, "response_format": "json"}),
+        ("https://www.mediafire.com/api/file/get_links.php", {"quick_key": key, "link_type": "normal_download", "response_format": "json"}),
+        ("https://www.mediafire.com/api/file/get_links.php", {"quick_key": key, "link_type": "direct_download", "response_format": "json"}),
+    ]
+    page_candidates: list[str] = []
+    errors: list[str] = []
+
+    for endpoint, params in endpoint_specs:
+        api_url = endpoint + "?" + urlencode(params)
+        try:
+            body, _, resolved = fetch(api_url, user_agent=BROWSER_USER_AGENT, referer=referer)
+            if urlparse(resolved).hostname != "www.mediafire.com":
+                raise ValueError("MediaFire API redirected outside governed origin")
+            payload = json.loads(body.decode("utf-8"))
+        except Exception as exc:
+            errors.append(f"{endpoint.rsplit('/', 1)[-1]}:{type(exc).__name__}")
+            continue
+
+        response = payload.get("response") if isinstance(payload, Mapping) else None
+        if not isinstance(response, Mapping) or response.get("result") != "Success":
+            errors.append(f"{endpoint.rsplit('/', 1)[-1]}:NON_SUCCESS")
+            continue
+
+        for candidate in _json_urls(response):
+            try:
+                return _validate_mediafire_direct_zip_url(candidate)
+            except ValueError:
+                try:
+                    page_candidates.append(_validate_mediafire_page_url(candidate))
+                except ValueError:
+                    continue
+
+    for page_url in dict.fromkeys(page_candidates):
+        try:
+            body, _, resolved_page = fetch(
+                page_url,
+                user_agent=BROWSER_USER_AGENT,
+                referer=referer,
+            )
+            _validate_mediafire_page_url(resolved_page)
+            return direct_mediafire_download_url(body.decode("utf-8", errors="replace"))
+        except Exception as exc:
+            errors.append(f"page_fallback:{type(exc).__name__}")
+
+    suffix = ",".join(errors[-6:]) if errors else "NO_API_CANDIDATES"
+    raise ValueError(f"MediaFire public API did not expose a governed direct ZIP URL: {suffix}")
 
 
 def safe_audio_members(archive_bytes: bytes, minimum_count: int) -> tuple[list[zipfile.ZipInfo], list[str], int]:
@@ -334,7 +432,13 @@ def main() -> int:
         referer=str(config["canonical_source_page"]),
     )
     landing_text = landing_bytes.decode("utf-8", errors="replace")
-    direct_url = direct_mediafire_download_url(landing_text)
+    try:
+        direct_url = direct_mediafire_download_url(landing_text)
+    except ValueError:
+        direct_url = mediafire_api_direct_zip_url(
+            landing_url,
+            referer=str(config["canonical_source_page"]),
+        )
     archive_bytes, content_type, resolved_archive = fetch(
         direct_url,
         user_agent=BROWSER_USER_AGENT,
