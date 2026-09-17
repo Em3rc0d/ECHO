@@ -6,6 +6,7 @@
     "CC0": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": false},
     "PUBLIC-DOMAIN": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": false},
     "CC-BY-4.0": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": true},
+    "CC-BY-3.0": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": true},
     "CC-BY": {"release_safe": "ALLOW_RELEASE_SAFE", "research_extended": "ALLOW_RELEASE_SAFE", "attribution_required": true},
     "CC-BY-SA-4.0": {"release_safe": "REVIEW_REQUIRED", "research_extended": "ALLOW_RESEARCH_ONLY", "attribution_required": true},
     "CC-BY-NC": {"release_safe": "RESEARCH_ONLY", "research_extended": "ALLOW_RESEARCH_ONLY", "attribution_required": true},
@@ -20,6 +21,7 @@
     "Per-asset license overrides a dataset-level headline license when the dataset contains mixed media licenses.",
     "Unknown terms fail closed into quarantine.",
     "Research-only assets must never be silently included in a release-safe lineage.",
+    "Attribution-only Creative Commons variants, including CC-BY-3.0 and CC-BY-4.0, remain release-safe only when exact license/version provenance and attribution obligations are preserved.",
     "ShareAlike/custom terms require intended-use review before release-safe admission.",
     "Policy classification is engineering governance and must be re-reviewed when intended distribution changes."
   ]
