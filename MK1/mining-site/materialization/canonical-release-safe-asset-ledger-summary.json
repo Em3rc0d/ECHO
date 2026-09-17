@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "776283825cd87f164d0359481819e2fc265621b1",
+  "baseline_commit": "1d323cab5f2fe784bae96a914a73c8e1ab8594da",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1141,
+  "canonical_fingerprint_count": 1142,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -23,20 +23,20 @@
     "semantic_stop_line": "Only explicit fire_alarm/tire_squeal supplemental decisions become positives; all broader/composite candidates remain review-only.",
     "source_diversity_stop_line": "CC0 gap acquisition is another Freesound path and never creates a second source-family credit versus FSD50K/direct Freesound.",
     "stats": {
-      "exact_positive_rows": 21,
+      "exact_positive_rows": 22,
       "materialized_rows": 85,
       "merged_existing_rows": 1,
-      "review_rows": 64,
+      "review_rows": 63,
       "status:CC0_REAL_PREVIEW_MATERIALIZED_REVIEW_REQUIRED": 85,
       "status:METADATA_ONLY_NON_CC0_OR_UNCONFIRMED": 47,
       "status:PAGE_FETCH_FAILED": 1,
-      "target:FIRE_ALARM:exact": 12,
+      "target:FIRE_ALARM:exact": 13,
       "target:FIRE_ALARM:materialized": 56,
       "target:TIRE_SQUEAL:exact": 9,
       "target:TIRE_SQUEAL:materialized": 29
     },
     "status": "PASS",
-    "supplemental_sha256": "c9bd5362d385cc2b7808588f694327454daf3d261d750b17581f6239a88a9a3c",
+    "supplemental_sha256": "686f18cea86dbd8420f3f2914170ee339a26ff5180763b73e657ae81822b3539",
     "underlying_source_family": "FREESOUND"
   },
   "certification_boundary": "The corpus-facing canonical ledger contains only explicitly release-safe assets with exact positive or governed hard-negative roles and no unresolved admission blockers other than the explicitly deferred pre-grouping marker. Quarantined rows remain durable source evidence and are not silently relabeled. The following grouping resolver must clear the deferred marker; READY_FOR_GLOBAL_DEDUP still does not mean ADMITTED_RELEASE_SAFE or CERTIFIED.",
@@ -69,15 +69,15 @@
     "status": "PASS",
     "technical_evidence_asset_count": 1085
   },
-  "entry_count": 1141,
+  "entry_count": 1142,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1141,
+    "asset_count": 1142,
     "candidate_edges_rejected_by_length_count": 835,
     "candidate_near_duplicate_threshold": 0.02,
-    "component_count": 1075,
+    "component_count": 1076,
     "confirmed_group_max_distance": 0.002,
     "confirmed_group_max_relative_sample_count_delta": 0.01,
     "confirmed_near_duplicate_cross_group_edge_count": 2,
@@ -123,7 +123,7 @@
     },
     "freesound_cc0_supplemental": {
       "path": "configs/data_foundry/freesound_cc0_supplemental.v1.json",
-      "sha256": "c9bd5362d385cc2b7808588f694327454daf3d261d750b17581f6239a88a9a3c"
+      "sha256": "686f18cea86dbd8420f3f2914170ee339a26ff5180763b73e657ae81822b3539"
     },
     "freesound_release_safe": {
       "path": "MK1/mining-site/materialization/freesound-release-safe-materialization.json",
@@ -174,7 +174,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1",
+  "ledger_sha256": "14fd486216e6f43d6a78e988c4ffa10bec13c6d8b4d98ac1ae620cc6bc36366e",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -225,7 +225,7 @@
     "underlying_source_family": "OPENGAMEART_TILL_BEHREND"
   },
   "positive_counts": {
-    "FIRE_ALARM": 19,
+    "FIRE_ALARM": 20,
     "GLASS_SHATTER": 303,
     "SIREN": 169,
     "TIRE_SQUEAL": 14,
@@ -255,39 +255,39 @@
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 49,
       "LICENSE_NOT_RELEASE_SAFE": 1,
-      "NO_EXACT_SEMANTIC_ROLE": 72,
+      "NO_EXACT_SEMANTIC_ROLE": 71,
       "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
       "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1
     },
     "removed_non_release_safe_rows": 1,
     "removed_rejection_counts": {
       "NOT_RELEASE_SAFE": 1,
-      "REVIEW_ONLY_NO_GOVERNED_ROLE": 72,
+      "REVIEW_ONLY_NO_GOVERNED_ROLE": 71,
       "UNRESOLVED_ADMISSION_BLOCKER": 1
     },
-    "removed_review_only_rows": 72,
+    "removed_review_only_rows": 71,
     "removed_rights_status_counts": {
-      "ALLOW_RELEASE_SAFE": 73,
+      "ALLOW_RELEASE_SAFE": 72,
       "RESEARCH_ONLY": 1
     },
-    "removed_rows": 74,
+    "removed_rows": 73,
     "removed_source_counts": {
       "echo-bigsoundbank-cc0-gap-v1": 7,
-      "echo-freesound-release-safe-v1": 64,
+      "echo-freesound-release-safe-v1": 63,
       "echo-wikimedia-fire-alarm-v1": 3
     },
     "removed_unresolved_blocker_rows": 1,
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 415
     },
-    "retained_rows": 1141,
+    "retained_rows": 1142,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
   "schema_version": "echo.canonical-asset-ledger-summary.v1",
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 53,
-    "echo-freesound-release-safe-v1": 436,
+    "echo-freesound-release-safe-v1": 437,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
     "echo-wikimedia-fire-alarm-v1": 7,
@@ -315,12 +315,12 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1141
+    "READY_FOR_GLOBAL_DEDUP": 1142
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
     "BIGSOUNDBANK": 53,
-    "FREESOUND": 436,
+    "FREESOUND": 437,
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
     "SONYC_UST": 599,

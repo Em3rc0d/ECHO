@@ -20,8 +20,8 @@
   },
   "classes": {
     "FIRE_ALARM": {
-      "asset_count": 19,
-      "clip_duration_seconds": 460.864037,
+      "asset_count": 20,
+      "clip_duration_seconds": 475.910568,
       "hard_negatives": {
         "asset_count": 202,
         "independent_group_count": 202,
@@ -33,11 +33,11 @@
           "WIKIMEDIA_COMMONS"
         ]
       },
-      "independent_group_count": 16,
-      "max_single_source_fraction": 0.631579,
+      "independent_group_count": 17,
+      "max_single_source_fraction": 0.65,
       "source_asset_counts": {
         "BIGSOUNDBANK": 4,
-        "FREESOUND": 12,
+        "FREESOUND": 13,
         "WIKIMEDIA_COMMONS": 3
       },
       "source_count": 3,
@@ -48,12 +48,12 @@
       ],
       "split_assets": {
         "test": 0,
-        "train": 17,
+        "train": 18,
         "validation": 2
       },
       "split_groups": {
         "test": 0,
-        "train": 14,
+        "train": 15,
         "validation": 2
       }
     },
@@ -206,7 +206,7 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1141,
+  "development_asset_count": 1142,
   "failures": [
     {
       "actual": 0.924092,
@@ -216,14 +216,14 @@
       "required_max": 0.8
     },
     {
-      "actual": 19,
+      "actual": 20,
       "code": "FIRE_ALARM_ASSETS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "ASSETS",
       "required": 50
     },
     {
-      "actual": 16,
+      "actual": 17,
       "code": "FIRE_ALARM_GROUPS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "GROUPS",
@@ -244,7 +244,7 @@
       "required": 25
     },
     {
-      "actual": 17,
+      "actual": 18,
       "code": "FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "ASSETS",
@@ -351,7 +351,7 @@
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8",
+  "ledger_sha256": "a32ac5e63ee69a1d76ed0603ea32b4a61576a3d165efa4f88241b051f44a8a30",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
