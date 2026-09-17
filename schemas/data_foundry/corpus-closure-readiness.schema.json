@@ -6,147 +6,79 @@
     {
       "if": {
         "properties": {
-          "status": {
-            "const": "READY"
-          }
+          "status": {"const": "READY"}
         }
       },
       "then": {
         "properties": {
           "corpus_certificate": {
-            "properties": {
-              "status": {
-                "const": "CERTIFIED"
-              }
-            }
+            "properties": {"status": {"const": "CERTIFIED"}}
           },
-          "gap_codes": {
-            "maxItems": 0
-          },
-          "modeling_allowed": {
-            "const": true
-          },
-          "next_authorized_stage": {
-            "const": "BENCHMARK_A_B_C"
-          }
+          "gap_codes": {"maxItems": 0},
+          "modeling_allowed": {"const": true},
+          "next_authorized_stage": {"const": "BENCHMARK_A_B_C"}
         }
       }
     }
   ],
   "properties": {
-    "closure_evidence_nodes": {
-      "type": "object"
-    },
+    "closure_evidence_nodes": {"type": "object"},
     "corpus_certificate": {
       "additionalProperties": false,
       "properties": {
-        "id": {
-          "const": "CERT-MK1-DF-CORPUS-001"
-        },
-        "status": {
-          "enum": [
-            "OPEN",
-            "CANDIDATE",
-            "CERTIFIED",
-            "INVALIDATED"
-          ]
+        "id": {"const": "CERT-MK1-DF-CORPUS-001"},
+        "status": {"enum": ["OPEN", "CANDIDATE", "CERTIFIED", "INVALIDATED"]},
+        "certificate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "evidence_identity_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "path": {"type": "string", "minLength": 1},
+        "file_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "validation_failures": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
         }
       },
-      "required": [
-        "id",
-        "status"
-      ],
+      "required": ["id", "status"],
       "type": "object"
     },
-    "eligible_for_certificate_review": {
-      "type": "boolean"
-    },
-    "evidence_identity_sha256": {
-      "pattern": "^[0-9a-f]{64}$",
-      "type": "string"
-    },
+    "eligible_for_certificate_review": {"type": "boolean"},
+    "evidence_identity_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
     "evidence_identity_material": {
       "additionalProperties": false,
       "properties": {
-        "canonical_ledger_semantic_sha256": {
-          "pattern": "^[0-9a-f]{64}$",
-          "type": "string"
-        },
-        "coverage_policy_sha256": {
-          "pattern": "^[0-9a-f]{64}$",
-          "type": "string"
-        },
+        "canonical_ledger_semantic_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+        "coverage_policy_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
         "closure_evidence_sha256": {
           "additionalProperties": {
             "anyOf": [
-              {
-                "pattern": "^[0-9a-f]{64}$",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
+              {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+              {"type": "null"}
             ]
           },
           "type": "object"
         }
       },
-      "required": [
-        "canonical_ledger_semantic_sha256",
-        "coverage_policy_sha256",
-        "closure_evidence_sha256"
-      ],
+      "required": ["canonical_ledger_semantic_sha256", "coverage_policy_sha256", "closure_evidence_sha256"],
       "type": "object"
     },
     "gap_codes": {
-      "items": {
-        "minLength": 1,
-        "type": "string"
-      },
+      "items": {"minLength": 1, "type": "string"},
       "type": "array",
       "uniqueItems": true
     },
-    "inputs": {
-      "type": "object"
-    },
+    "inputs": {"type": "object"},
     "ledger_blocking_reason_counts": {
-      "additionalProperties": {
-        "minimum": 0,
-        "type": "integer"
-      },
+      "additionalProperties": {"minimum": 0, "type": "integer"},
       "type": "object"
     },
-    "modeling_allowed": {
-      "type": "boolean"
-    },
-    "next_authorized_stage": {
-      "enum": [
-        "CORPUS_FOUNDRY_CLOSURE",
-        "BENCHMARK_A_B_C"
-      ]
-    },
-    "profile": {
-      "const": "release_safe"
-    },
-    "readiness_id": {
-      "const": "EMP-MK1-CORPUS-READINESS-001"
-    },
-    "release_law": {
-      "minLength": 1,
-      "type": "string"
-    },
-    "schema_version": {
-      "const": "echo.corpus-closure-readiness.v2"
-    },
-    "status": {
-      "enum": [
-        "BLOCKED",
-        "READY"
-      ]
-    },
-    "target_readiness": {
-      "type": "object"
-    }
+    "modeling_allowed": {"type": "boolean"},
+    "next_authorized_stage": {"enum": ["CORPUS_FOUNDRY_CLOSURE", "BENCHMARK_A_B_C"]},
+    "profile": {"const": "release_safe"},
+    "readiness_id": {"const": "EMP-MK1-CORPUS-READINESS-001"},
+    "release_law": {"minLength": 1, "type": "string"},
+    "schema_version": {"const": "echo.corpus-closure-readiness.v2"},
+    "status": {"enum": ["BLOCKED", "READY"]},
+    "target_readiness": {"type": "object"}
   },
   "required": [
     "schema_version",

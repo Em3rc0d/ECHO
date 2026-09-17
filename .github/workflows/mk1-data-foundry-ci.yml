@@ -12,6 +12,7 @@ on:
       - 'scripts/check_modeling_gate_wiring.py'
       - 'scripts/check_corpus_pipeline_wiring.py'
       - 'MK1/build/data-foundry/**'
+      - 'MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md'
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
       - '.github/workflows/mk1-canonical-ledger.yml'
@@ -28,6 +29,7 @@ on:
       - 'scripts/check_modeling_gate_wiring.py'
       - 'scripts/check_corpus_pipeline_wiring.py'
       - 'MK1/build/data-foundry/**'
+      - 'MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md'
       - 'pyproject.toml'
       - '.github/workflows/mk1-data-foundry-ci.yml'
       - '.github/workflows/mk1-canonical-ledger.yml'
@@ -50,7 +52,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Compile source and tests
-        run: python -m compileall -q src tests scripts/data_foundry scripts/check_corpus_pipeline_wiring.py
+        run: python -m compileall -q src tests scripts/data_foundry scripts/check_corpus_pipeline_wiring.py scripts/check_modeling_gate_wiring.py
       - name: Validate registries, policies and schemas
         run: |
           python -m json.tool configs/data_foundry/source_registry.v1.json >/dev/null
@@ -74,6 +76,7 @@ jobs:
           python -m json.tool schemas/data_foundry/coverage-policy.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/corpus-closure-readiness.schema.json >/dev/null
+          python -m json.tool schemas/data_foundry/corpus-certificate.schema.json >/dev/null
       - name: Validate Foundry source registry
         env:
           PYTHONPATH: src
@@ -98,10 +101,13 @@ jobs:
           python -m echo.data_foundry.cli acquisition-plan fsd50k-1.0 --stage metadata >/dev/null
           python -m echo.data_foundry.cli acquisition-plan sonyc-ust-v2 --stage metadata >/dev/null
           python -m echo.data_foundry.cli acquisition-plan singapura-v1.0a --stage metadata >/dev/null
-      - name: Corpus closure readiness smoke test
+      - name: Corpus closure and certificate handoff smoke test
         env:
           PYTHONPATH: src
         run: |
+          python scripts/data_foundry/build_corpus_closure_readiness.py --ignore-corpus-certificate --output /tmp/corpus-readiness.pre-cert.json
+          python -m json.tool /tmp/corpus-readiness.pre-cert.json >/dev/null
+          python scripts/data_foundry/emit_corpus_certificate.py --readiness /tmp/corpus-readiness.pre-cert.json --output /tmp/corpus-certificate.smoke.json --if-eligible
           python scripts/data_foundry/build_corpus_closure_readiness.py --output /tmp/corpus-closure-readiness.json
           python -m json.tool /tmp/corpus-closure-readiness.json >/dev/null
       - name: Validate corpus pipeline wiring
