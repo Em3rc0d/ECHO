@@ -12,6 +12,7 @@
     "echo-wikimedia-fire-alarm-v1": {"family": "WIKIMEDIA_COMMONS", "diversity_credit": true},
     "echo-opengameart-rubberduck-cc0-v1": {"family": "OPENGAMEART_RUBBERDUCK", "diversity_credit": true, "note": "The canonical OpenGameArt submission identifies rubberduck as creator of the pack. The pinned GitHub mirror is byte transport only and never receives separate source-family credit."},
     "echo-opengameart-till-behrend-glass-v1": {"family": "OPENGAMEART_TILL_BEHREND", "diversity_credit": true, "note": "The canonical OpenGameArt page names Till Behrend as author and states the upload was made with permission from the author. OpenGameArt hosting is publication/byte transport context, not the acoustic-origin family identity."},
+    "echo-soundbible-mike-koenig-tire-v1": {"family": "SOUNDBIBLE_MIKE_KOENIG", "diversity_credit": true, "note": "All three OpenGameArt archive members derive from Mike Koenig's single SoundBible Tires Squealing recording family. OpenGameArt is transport/derivative-publication evidence only and receives no second diversity credit."},
     "singapura-v1.0a": {"family": "SINGAPURA", "diversity_credit": true},
     "esc50": {"family": "ESC50", "diversity_credit": true},
     "urbansound8k-1.0": {"family": "URBANSOUND8K", "diversity_credit": true},
@@ -23,6 +24,7 @@
     "The same SHA-256 or same upstream sound identity can never receive multiple source-family credits.",
     "Synthetic/reference-only sources never receive independent real-source credit.",
     "A mirror/host receives no source-family credit when the canonical creator/origin is already known.",
+    "Derived edits from one proven acoustic origin remain one family and one recording group unless stronger independent-origin evidence exists.",
     "When a stronger recording/session relationship becomes known, grouping must be upgraded and downstream evidence rerun."
   ]
 }
