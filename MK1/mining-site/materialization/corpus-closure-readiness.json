@@ -82,11 +82,11 @@
   ],
   "inputs": {
     "canonical_ledger_summary": {
-      "baseline_commit": "7cabdceecec9389153af4335e5e3b4564259776b",
+      "baseline_commit": "776283825cd87f164d0359481819e2fc265621b1",
       "entry_count": 1141,
       "ledger_sha256": "cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1",
       "provenance_note": "summary sha256 and baseline_commit are auditable execution provenance; semantic readiness identity binds canonical ledger_sha256 instead",
-      "sha256": "31211c2f4d974555868ab02a2bb311118aa5ed9165dce017e704b9a023569e4a"
+      "sha256": "9403a0b11bbf25d9f67b9207e81246ba2be2022005ec9022e700ad9d4651a470"
     },
     "coverage_policy": {
       "policy_id": "MK1-CORPUS-SOLIDITY-001",
