@@ -5,7 +5,8 @@ Durable corpus evidence and certificate issuance are owned by one atomic orchest
 This avoids recursive GITHUB_TOKEN trigger assumptions and prevents a split-brain
 ledger -> closure -> readiness -> certificate transition. Standalone closure/readiness
 workflows remain read-only diagnostics. Model entry remains read-only and requires
-certified readiness.
+certified readiness. Acquisition workflows that feed the orchestrator must also stay
+bound to the exact configuration files that govern their candidate set.
 """
 
 from pathlib import Path
@@ -17,6 +18,7 @@ CANONICAL = WORKFLOWS / "mk1-canonical-ledger.yml"
 CLOSURE = WORKFLOWS / "mk1-corpus-closure-evidence.yml"
 READINESS = WORKFLOWS / "mk1-corpus-readiness.yml"
 MODEL_ENTRY = WORKFLOWS / "mk1-model-entry-gate.yml"
+FREESOUND_CC0 = WORKFLOWS / "mk1-freesound-cc0-free-materialization.yml"
 HANDOFF = ROOT / "MK1/build/data-foundry/CORPUS-CERTIFICATE-HANDOFF.md"
 TOOLCHAIN = ROOT / "MK1/test/DATA-FOUNDRY-TOOLCHAIN-RECERTIFICATION-005.md"
 CERTIFICATION = ROOT / "src/echo/data_foundry/certification.py"
@@ -122,6 +124,28 @@ def audit_certificate_authorities() -> None:
         require(schema, needle, CERT_SCHEMA.name)
 
 
+def audit_freesound_cc0_acquisition() -> None:
+    label = FREESOUND_CC0.name
+    text = read(FREESOUND_CC0)
+    for needle in (
+        "push:",
+        "branches: [main]",
+        "workflow_dispatch:",
+        "contents: write",
+        EXACT_CHECKOUT,
+        "fetch-depth: 0",
+        "configs/data_foundry/freesound_cc0_supplemental.v1.json",
+        "MK1/mining-site/materialization/freesound-gap-discovery.json",
+        "python scripts/materialize_freesound_cc0_gap_assets.py",
+        "python scripts/data_foundry/enrich_freesound_cc0_fingerprints.py",
+        "main moved during Freesound CC0 materialization; refusing to persist stale evidence",
+        "evidence(mk1): materialize fingerprinted Freesound CC0 gap candidates",
+        PERSIST_TO_MAIN,
+    ):
+        require(text, needle, label)
+    forbid(text, "ref: main\n", label)
+
+
 def audit_atomic_orchestrator() -> None:
     label = CANONICAL.name
     text = read(CANONICAL)
@@ -219,6 +243,7 @@ def audit_model_entry() -> None:
 
 def main() -> int:
     audit_certificate_authorities()
+    audit_freesound_cc0_acquisition()
     audit_atomic_orchestrator()
     audit_diagnostic(
         CLOSURE,
@@ -233,7 +258,7 @@ def main() -> int:
     )
     audit_model_entry()
 
-    print("MK1 corpus pipeline wiring PASS: atomic evidence + certificate handoff + read-only model entry")
+    print("MK1 corpus pipeline wiring PASS: acquisition trigger + atomic evidence + certificate handoff + read-only model entry")
     return 0
 
 
