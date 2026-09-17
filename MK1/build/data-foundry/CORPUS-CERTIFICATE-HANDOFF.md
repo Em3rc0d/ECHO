@@ -50,7 +50,7 @@ The canonical corpus orchestrator is the only durable writer. It must:
 7. refuse persistence if `main` moved;
 8. persist corpus evidence, certificate and final readiness atomically.
 
-When the preconditions are not satisfied, certificate issuance is a successful no-op and readiness remains fail-closed.
+When the preconditions are not satisfied, certificate issuance is a no-op, the no-op is considered a successful fail-closed outcome, and readiness remains fail-closed.
 
 ## Certificate validity
 
