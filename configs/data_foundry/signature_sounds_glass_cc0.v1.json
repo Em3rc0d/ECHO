@@ -1,7 +1,7 @@
 {
   "schema_version": "echo.signature-sounds-glass-cc0.v1",
   "source_id": "echo-signature-sounds-glass-cc0-v1",
-  "checked_at": "2026-09-16",
+  "checked_at": "2026-09-17",
   "canonical_source_page": "https://signaturesounds.org/smashed-glass-one-shots-sample-pack-cc0-free-to-download",
   "creator_identity": "Signature Sounds / Phil",
   "declared_license": "CC0",
@@ -11,8 +11,8 @@
     "landing_page": "https://www.mediafire.com/file/6nv1mqnl6ci14e7/Glass_Smash_One_Shots.zip/file",
     "expected_archive_sha256": null,
     "source_credit": false,
-    "revalidated_at": "2026-09-16",
-    "revalidation_observation": "The governed MediaFire landing page currently exposes a public direct-download button for the 4.85 MB Glass Smash One Shots ZIP. This remains transport evidence only; the authoritative workflow must discover and persist the archive SHA-256 before admission.",
+    "revalidated_at": "2026-09-17",
+    "revalidation_observation": "The governed Signature Sounds source remains an explicit CC0 smashed-glass WAV pack. MediaFire remains byte transport only; the authoritative workflow must discover and persist the exact archive SHA-256 before admission.",
     "note": "MediaFire is byte transport only. The first authoritative run is evidence-discovery only and must persist the archive SHA-256 before any corpus admission is allowed."
   },
   "underlying_source_family_candidate": "SIGNATURE_SOUNDS",
