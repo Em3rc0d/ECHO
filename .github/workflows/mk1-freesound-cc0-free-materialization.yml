@@ -8,6 +8,7 @@ on:
       - 'scripts/data_foundry/enrich_freesound_cc0_fingerprints.py'
       - 'src/echo/data_foundry/canonical_fingerprints.py'
       - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
+      - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
   workflow_dispatch:
 
