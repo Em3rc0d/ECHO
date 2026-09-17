@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "1d323cab5f2fe784bae96a914a73c8e1ab8594da",
+  "baseline_commit": "db633ad052c1c0ec45bd8e328e7149f2d0576f35",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1142,
+  "canonical_fingerprint_count": 1145,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -60,7 +60,7 @@
     "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination.",
     "inputs": {
       "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "0bc874ecbae37b60c83f5662e909ba0e4c9b6d7f9c58ff9f4b128ead95e425ec",
-      "MK1/mining-site/materialization/public-gap-assets-report.json": "a6fcbf29d91c87612f8bb020296e7037c2cab610cbe3ceec565311ceb232b800",
+      "MK1/mining-site/materialization/public-gap-assets-report.json": "f2fdc2d529a0010b92507b835004a05c2c95e34167c1e0652c90bcd7f3a1c3c5",
       "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
       "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
       "configs/data_foundry/hard_negative_mapping.v1.json": "148f218bbe56bd342713b4e262443e6bbc9da0328aa40e20c2a3ea99eb8e8cd8"
@@ -69,15 +69,15 @@
     "status": "PASS",
     "technical_evidence_asset_count": 1085
   },
-  "entry_count": 1142,
+  "entry_count": 1145,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1142,
+    "asset_count": 1145,
     "candidate_edges_rejected_by_length_count": 835,
     "candidate_near_duplicate_threshold": 0.02,
-    "component_count": 1076,
+    "component_count": 1079,
     "confirmed_group_max_distance": 0.002,
     "confirmed_group_max_relative_sample_count_delta": 0.01,
     "confirmed_near_duplicate_cross_group_edge_count": 2,
@@ -155,7 +155,7 @@
     },
     "public_gap": {
       "path": "MK1/mining-site/materialization/public-gap-assets-report.json",
-      "sha256": "a6fcbf29d91c87612f8bb020296e7037c2cab610cbe3ceec565311ceb232b800"
+      "sha256": "f2fdc2d529a0010b92507b835004a05c2c95e34167c1e0652c90bcd7f3a1c3c5"
     },
     "singapura_summary": {
       "path": "MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json",
@@ -174,7 +174,7 @@
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
     }
   },
-  "ledger_sha256": "14fd486216e6f43d6a78e988c4ffa10bec13c6d8b4d98ac1ae620cc6bc36366e",
+  "ledger_sha256": "7761ca37d670346ff9c0f0cc3adbc03cbf2e82a4c89717df9f701192be93b110",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -225,7 +225,7 @@
     "underlying_source_family": "OPENGAMEART_TILL_BEHREND"
   },
   "positive_counts": {
-    "FIRE_ALARM": 20,
+    "FIRE_ALARM": 23,
     "GLASS_SHATTER": 303,
     "SIREN": 169,
     "TIRE_SQUEAL": 14,
@@ -255,24 +255,24 @@
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 49,
       "LICENSE_NOT_RELEASE_SAFE": 1,
-      "NO_EXACT_SEMANTIC_ROLE": 71,
+      "NO_EXACT_SEMANTIC_ROLE": 68,
       "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
       "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1
     },
     "removed_non_release_safe_rows": 1,
     "removed_rejection_counts": {
       "NOT_RELEASE_SAFE": 1,
-      "REVIEW_ONLY_NO_GOVERNED_ROLE": 71,
+      "REVIEW_ONLY_NO_GOVERNED_ROLE": 68,
       "UNRESOLVED_ADMISSION_BLOCKER": 1
     },
-    "removed_review_only_rows": 71,
+    "removed_review_only_rows": 68,
     "removed_rights_status_counts": {
-      "ALLOW_RELEASE_SAFE": 72,
+      "ALLOW_RELEASE_SAFE": 69,
       "RESEARCH_ONLY": 1
     },
-    "removed_rows": 73,
+    "removed_rows": 70,
     "removed_source_counts": {
-      "echo-bigsoundbank-cc0-gap-v1": 7,
+      "echo-bigsoundbank-cc0-gap-v1": 4,
       "echo-freesound-release-safe-v1": 63,
       "echo-wikimedia-fire-alarm-v1": 3
     },
@@ -280,13 +280,13 @@
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 415
     },
-    "retained_rows": 1142,
+    "retained_rows": 1145,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
   "schema_version": "echo.canonical-asset-ledger-summary.v1",
   "source_asset_counts": {
-    "echo-bigsoundbank-cc0-gap-v1": 53,
+    "echo-bigsoundbank-cc0-gap-v1": 56,
     "echo-freesound-release-safe-v1": 437,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
@@ -303,7 +303,7 @@
       "status:RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED": 57
     },
     "public_gap": {
-      "exact_semantic_rows": 35,
+      "exact_semantic_rows": 38,
       "source:echo-bigsoundbank-cc0-gap-v1": 60,
       "source:echo-wikimedia-fire-alarm-v1": 10
     },
@@ -315,11 +315,11 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1142
+    "READY_FOR_GLOBAL_DEDUP": 1145
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
-    "BIGSOUNDBANK": 53,
+    "BIGSOUNDBANK": 56,
     "FREESOUND": 437,
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,

@@ -20,8 +20,8 @@
   },
   "classes": {
     "FIRE_ALARM": {
-      "asset_count": 20,
-      "clip_duration_seconds": 475.910568,
+      "asset_count": 23,
+      "clip_duration_seconds": 569.705768,
       "hard_negatives": {
         "asset_count": 202,
         "independent_group_count": 202,
@@ -33,10 +33,10 @@
           "WIKIMEDIA_COMMONS"
         ]
       },
-      "independent_group_count": 17,
-      "max_single_source_fraction": 0.65,
+      "independent_group_count": 20,
+      "max_single_source_fraction": 0.565217,
       "source_asset_counts": {
-        "BIGSOUNDBANK": 4,
+        "BIGSOUNDBANK": 7,
         "FREESOUND": 13,
         "WIKIMEDIA_COMMONS": 3
       },
@@ -47,13 +47,13 @@
         "WIKIMEDIA_COMMONS"
       ],
       "split_assets": {
-        "test": 0,
-        "train": 18,
+        "test": 2,
+        "train": 19,
         "validation": 2
       },
       "split_groups": {
-        "test": 0,
-        "train": 15,
+        "test": 2,
+        "train": 16,
         "validation": 2
       }
     },
@@ -206,7 +206,7 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1142,
+  "development_asset_count": 1145,
   "failures": [
     {
       "actual": 0.924092,
@@ -216,14 +216,14 @@
       "required_max": 0.8
     },
     {
-      "actual": 20,
+      "actual": 23,
       "code": "FIRE_ALARM_ASSETS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "ASSETS",
       "required": 50
     },
     {
-      "actual": 17,
+      "actual": 20,
       "code": "FIRE_ALARM_GROUPS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "GROUPS",
@@ -244,7 +244,7 @@
       "required": 25
     },
     {
-      "actual": 18,
+      "actual": 19,
       "code": "FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "ASSETS",
@@ -300,7 +300,7 @@
       "split": "validation"
     },
     {
-      "actual": 0,
+      "actual": 2,
       "code": "FIRE_ALARM_TEST_ASSETS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "ASSETS",
@@ -308,7 +308,7 @@
       "split": "test"
     },
     {
-      "actual": 0,
+      "actual": 2,
       "code": "FIRE_ALARM_TEST_GROUPS_BELOW_MIN",
       "label": "FIRE_ALARM",
       "metric": "GROUPS",
@@ -351,7 +351,7 @@
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "a32ac5e63ee69a1d76ed0603ea32b4a61576a3d165efa4f88241b051f44a8a30",
+  "ledger_sha256": "8145079e9fd94d334694eedef9bb36f54c527ebd1fce5c9ca32ad0fbcdc2aded",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
