@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "db633ad052c1c0ec45bd8e328e7149f2d0576f35",
+  "baseline_commit": "8574bfc09312437513a25152176ac4b9d21fab4c",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1145,
+  "canonical_fingerprint_count": 1148,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -69,15 +69,15 @@
     "status": "PASS",
     "technical_evidence_asset_count": 1085
   },
-  "entry_count": 1145,
+  "entry_count": 1148,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1145,
+    "asset_count": 1148,
     "candidate_edges_rejected_by_length_count": 835,
     "candidate_near_duplicate_threshold": 0.02,
-    "component_count": 1079,
+    "component_count": 1080,
     "confirmed_group_max_distance": 0.002,
     "confirmed_group_max_relative_sample_count_delta": 0.01,
     "confirmed_near_duplicate_cross_group_edge_count": 2,
@@ -91,9 +91,9 @@
     "global_acoustic_component_count": 2,
     "members_reassigned_to_global_acoustic_component": 4,
     "near_duplicate_candidate_cross_group_edge_count": 851,
-    "near_duplicate_candidate_edge_count": 855,
+    "near_duplicate_candidate_edge_count": 856,
     "policy_note": "Broad RMS-envelope proximity is screening evidence only. Shared split protection requires exact byte/PCM identity or a separately confirmed near-duplicate edge with strict distance and decoded-length compatibility. Review-only screening edges never union components.",
-    "review_only_near_duplicate_edge_count": 853,
+    "review_only_near_duplicate_edge_count": 854,
     "schema_version": "echo.global-recording-group-resolution.v2",
     "screened_fallback_source_group_count": 411,
     "status": "PASS"
@@ -172,9 +172,17 @@
     "sonyc_targets": {
       "path": "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl",
       "sha256": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c"
+    },
+    "soundbible_mike_koenig_tire_manifest": {
+      "path": "configs/data_foundry/soundbible_mike_koenig_tire.v1.json",
+      "sha256": "5090f63c67052723b643f696ec9486b9fa85517a6a9535c8055a38012bb3d1bc"
+    },
+    "soundbible_mike_koenig_tire_report": {
+      "path": "MK1/mining-site/materialization/soundbible-mike-koenig-tire-materialization.json",
+      "sha256": "73cd07ef7aef86b685ef08c9b8fe2620df192e4a63bf6fc46e46033626410e45"
     }
   },
-  "ledger_sha256": "7761ca37d670346ff9c0f0cc3adbc03cbf2e82a4c89717df9f701192be93b110",
+  "ledger_sha256": "d877b247562f8a4612e42ee6dd02b5682edb85a0e57e3c426434e74d0b4d02aa",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -228,14 +236,14 @@
     "FIRE_ALARM": 23,
     "GLASS_SHATTER": 303,
     "SIREN": 169,
-    "TIRE_SQUEAL": 14,
+    "TIRE_SQUEAL": 17,
     "VEHICLE_HORN": 235
   },
   "positive_underlying_source_family_counts": {
     "FIRE_ALARM": 3,
     "GLASS_SHATTER": 4,
     "SIREN": 3,
-    "TIRE_SQUEAL": 2,
+    "TIRE_SQUEAL": 3,
     "VEHICLE_HORN": 3
   },
   "profile": "release_safe",
@@ -249,7 +257,7 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1215,
+    "input_rows": 1218,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
@@ -280,16 +288,28 @@
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 415
     },
-    "retained_rows": 1145,
+    "retained_rows": 1148,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
   "schema_version": "echo.canonical-asset-ledger-summary.v1",
+  "soundbible_mike_koenig_tire_augmentation": {
+    "asset_count": 3,
+    "license_stop_line": "CC-BY-3.0 attribution to Mike Koenig and exact version provenance must remain attached to all admitted rows.",
+    "manifest_sha256": "5090f63c67052723b643f696ec9486b9fa85517a6a9535c8055a38012bb3d1bc",
+    "recording_group_id": "soundbible:mike-koenig:tires-squealing-1178",
+    "report_sha256": "73cd07ef7aef86b685ef08c9b8fe2620df192e4a63bf6fc46e46033626410e45",
+    "source_diversity_stop_line": "Three derivative members receive exactly one acoustic-origin family and one recording-group identity.",
+    "source_id": "echo-soundbible-mike-koenig-tire-v1",
+    "status": "PASS",
+    "underlying_source_family": "SOUNDBIBLE_MIKE_KOENIG"
+  },
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 56,
     "echo-freesound-release-safe-v1": 437,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
+    "echo-soundbible-mike-koenig-tire-v1": 3,
     "echo-wikimedia-fire-alarm-v1": 7,
     "sonyc-ust-v2": 599
   },
@@ -315,7 +335,7 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1145
+    "READY_FOR_GLOBAL_DEDUP": 1148
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
@@ -324,6 +344,7 @@
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
     "SONYC_UST": 599,
+    "SOUNDBIBLE_MIKE_KOENIG": 3,
     "WIKIMEDIA_COMMONS": 7
   }
 }

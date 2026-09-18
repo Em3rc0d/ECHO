@@ -134,8 +134,8 @@
       }
     },
     "TIRE_SQUEAL": {
-      "asset_count": 14,
-      "clip_duration_seconds": 344.600098,
+      "asset_count": 17,
+      "clip_duration_seconds": 346.102955,
       "hard_negatives": {
         "asset_count": 25,
         "independent_group_count": 12,
@@ -145,25 +145,27 @@
           "WIKIMEDIA_COMMONS"
         ]
       },
-      "independent_group_count": 10,
-      "max_single_source_fraction": 0.642857,
+      "independent_group_count": 11,
+      "max_single_source_fraction": 0.529412,
       "source_asset_counts": {
         "BIGSOUNDBANK": 5,
-        "FREESOUND": 9
+        "FREESOUND": 9,
+        "SOUNDBIBLE_MIKE_KOENIG": 3
       },
-      "source_count": 2,
+      "source_count": 3,
       "sources": [
         "BIGSOUNDBANK",
-        "FREESOUND"
+        "FREESOUND",
+        "SOUNDBIBLE_MIKE_KOENIG"
       ],
       "split_assets": {
         "test": 3,
-        "train": 11,
+        "train": 14,
         "validation": 0
       },
       "split_groups": {
         "test": 2,
-        "train": 8,
+        "train": 9,
         "validation": 0
       }
     },
@@ -206,7 +208,7 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1145,
+  "development_asset_count": 1148,
   "failures": [
     {
       "actual": 0.924092,
@@ -230,14 +232,14 @@
       "required": 25
     },
     {
-      "actual": 14,
+      "actual": 17,
       "code": "TIRE_SQUEAL_ASSETS_BELOW_MIN",
       "label": "TIRE_SQUEAL",
       "metric": "ASSETS",
       "required": 50
     },
     {
-      "actual": 10,
+      "actual": 11,
       "code": "TIRE_SQUEAL_GROUPS_BELOW_MIN",
       "label": "TIRE_SQUEAL",
       "metric": "GROUPS",
@@ -252,7 +254,7 @@
       "split": "train"
     },
     {
-      "actual": 11,
+      "actual": 14,
       "code": "TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN",
       "label": "TIRE_SQUEAL",
       "metric": "ASSETS",
@@ -260,7 +262,7 @@
       "split": "train"
     },
     {
-      "actual": 8,
+      "actual": 9,
       "code": "TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN",
       "label": "TIRE_SQUEAL",
       "metric": "GROUPS",
@@ -351,7 +353,7 @@
     "TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "8145079e9fd94d334694eedef9bb36f54c527ebd1fce5c9ca32ad0fbcdc2aded",
+  "ledger_sha256": "8ca76d8b7bb916fdc9983f4dea5a54106c0561da0f43d13198cf86e3aa1077d0",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",
