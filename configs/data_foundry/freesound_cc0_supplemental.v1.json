@@ -1,7 +1,7 @@
 {
   "schema_version": "echo.freesound-cc0-supplemental.v1",
   "checked_at": "2026-09-17",
-  "policy": "Only assets whose live Freesound page confirms Creative Commons 0 are eligible for automated public-domain preview materialization. Exact positive semantics require explicit review against MK1/design/TAXONOMY.md plus durable page/title/bytes/probe/fingerprint evidence. Explicit smoke-detector/smoke-alarm recordings are FIRE_ALARM positives when the page clearly identifies an active alarm; battery-low chirps, generic alarms, sirens, braking, handbrake turns, burnouts, crash composites and broader/ambiguous rows remain review-required. Augmentation-only rows never receive real-source credit.",
+  "policy": "Only assets whose live Freesound page confirms Creative Commons 0 are eligible for automated public-domain preview materialization. Exact positive semantics require explicit review against MK1/design/TAXONOMY.md plus durable page/title/bytes/probe/fingerprint evidence. Explicit building fire alarms, active smoke-detector/smoke-alarm recordings, and recordings whose page explicitly identifies a tire squeal/screech from vehicle tires may become exact positives. Battery-low chirps, generic alarms/sirens, generic braking, burnouts, crash composites, ambiguous skids and augmentation/foley derivatives remain review-required or augmentation-only. Related perspectives/takes from one event/session must share a recording family.",
   "targets": {
     "FIRE_ALARM": [
       {
@@ -10,9 +10,19 @@
         "recording_family": "payattention-fire-alarm-building-announcement"
       },
       {
+        "sound_id": 124734,
+        "semantic": "fire_alarm",
+        "recording_family": "freeicecream12-apartment-interior-fire-alarm"
+      },
+      {
         "sound_id": 128021,
         "semantic": "fire_alarm",
         "recording_family": "neoge-feueralarm-schule"
+      },
+      {
+        "sound_id": 136482,
+        "semantic": "fire_alarm",
+        "recording_family": "erihamster-smoke-detector-going-off"
       },
       {
         "sound_id": 165542,
@@ -45,6 +55,11 @@
         "recording_family": "pushkin-building-fire-alarm"
       },
       {
+        "sound_id": 325367,
+        "semantic": "fire_alarm",
+        "recording_family": "MoonlightShadow-home-fire-alarm"
+      },
+      {
         "sound_id": 338355,
         "semantic": "fire_alarm",
         "recording_family": "ScouseMouseJB-fire-alarm"
@@ -75,6 +90,26 @@
         "recording_family": "totalcult-fire-alarm-field-recording"
       },
       {
+        "sound_id": 405590,
+        "semantic": "fire_alarm",
+        "recording_family": "JohnLaVine333-building-fire-alarm-session"
+      },
+      {
+        "sound_id": 405591,
+        "semantic": "fire_alarm",
+        "recording_family": "JohnLaVine333-building-fire-alarm-session"
+      },
+      {
+        "sound_id": 405592,
+        "semantic": "fire_alarm",
+        "recording_family": "JohnLaVine333-building-fire-alarm-session"
+      },
+      {
+        "sound_id": 434793,
+        "semantic": "fire_alarm",
+        "recording_family": "BladefuryDev-custom-fire-alarm-recording"
+      },
+      {
         "sound_id": 462262,
         "semantic": "fire_alarm",
         "recording_family": "Josherman4-fire-alarm-bell-contact"
@@ -85,14 +120,34 @@
         "recording_family": "Engineer815-industrial-fire-alarm"
       },
       {
+        "sound_id": 530094,
+        "semantic": "fire_alarm",
+        "recording_family": "Garuda1982-smoke-detector-fire-alarm"
+      },
+      {
+        "sound_id": 557484,
+        "semantic": "fire_alarm",
+        "recording_family": "LiftPizzas-real-smoke-alarm-unplug-session"
+      },
+      {
         "sound_id": 569842,
         "semantic": "fire_station_alarm_review_required",
         "recording_family": "monosfera-fire-station"
       },
       {
+        "sound_id": 577314,
+        "semantic": "fire_alarm",
+        "recording_family": "TRP-school-fire-alarm-2011"
+      },
+      {
         "sound_id": 612979,
-        "semantic": "fire_alarm_voice_message_review_required",
+        "semantic": "fire_alarm",
         "recording_family": "sit_walk-library-fire-alarm-message"
+      },
+      {
+        "sound_id": 623746,
+        "semantic": "fire_alarm",
+        "recording_family": "ilmari-nccu-dormitory-fire-alarm"
       },
       {
         "sound_id": 666761,
@@ -112,12 +167,22 @@
       {
         "sound_id": 699906,
         "semantic": "fire_alarm",
-        "recording_family": "Robo9418-school-fire-drill-P2R"
+        "recording_family": "Robo9418-school-P2R-fire-alarm-family"
       },
       {
         "sound_id": 703573,
         "semantic": "fire_alarm",
         "recording_family": "ikaku06-school-fire-drill-multiple-alarms"
+      },
+      {
+        "sound_id": 736926,
+        "semantic": "fire_alarm",
+        "recording_family": "Robo9418-school-P2R-fire-alarm-family"
+      },
+      {
+        "sound_id": 780508,
+        "semantic": "fire_alarm",
+        "recording_family": "adamcreeper-smoke-detector-tripped"
       },
       {
         "sound_id": 792484,
@@ -132,44 +197,44 @@
     ],
     "TIRE_SQUEAL": [
       {
-        "sound_id": 850041,
-        "semantic": "tire_squeal",
-        "recording_family": "JeffPearson-tire-squeal"
-      },
-      {
-        "sound_id": 752837,
-        "semantic": "tire_squeal",
-        "recording_family": "LukaCafuka-distant-tire-screech"
-      },
-      {
-        "sound_id": 350671,
-        "semantic": "tire_squeal",
-        "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session"
-      },
-      {
-        "sound_id": 350677,
-        "semantic": "tire_squeal",
-        "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session"
-      },
-      {
         "sound_id": 71736,
         "semantic": "tire_squeal",
-        "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session"
+        "recording_family": "audible-edge-2009-04-25-vehicle-dynamics-session"
       },
       {
         "sound_id": 71737,
         "semantic": "tire_squeal",
-        "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session"
+        "recording_family": "audible-edge-2009-04-25-vehicle-dynamics-session"
       },
       {
         "sound_id": 71738,
         "semantic": "tire_squeal",
-        "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session"
+        "recording_family": "audible-edge-2009-04-25-vehicle-dynamics-session"
       },
       {
         "sound_id": 71739,
         "semantic": "tire_squeal",
-        "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session"
+        "recording_family": "audible-edge-2009-04-25-vehicle-dynamics-session"
+      },
+      {
+        "sound_id": 71741,
+        "semantic": "tire_squeal",
+        "recording_family": "audible-edge-2009-04-25-vehicle-dynamics-session"
+      },
+      {
+        "sound_id": 76804,
+        "semantic": "tire_squeal",
+        "recording_family": "audible-edge-volvo-740-handbrake-session"
+      },
+      {
+        "sound_id": 76805,
+        "semantic": "tire_squeal",
+        "recording_family": "audible-edge-volvo-740-handbrake-session"
+      },
+      {
+        "sound_id": 76806,
+        "semantic": "tire_squeal",
+        "recording_family": "audible-edge-volvo-740-handbrake-session"
       },
       {
         "sound_id": 101347,
@@ -178,7 +243,7 @@
       },
       {
         "sound_id": 104026,
-        "semantic": "tire_squeal_semantic_review_required",
+        "semantic": "tire_squeal",
         "recording_family": "RutgerMuller-hilversum-tires-squeaking"
       },
       {
@@ -192,24 +257,29 @@
         "recording_family": "car-screech-233558"
       },
       {
+        "sound_id": 271337,
+        "semantic": "tire_squeal",
+        "recording_family": "therisingorder-car-peels-off-tire-squeal"
+      },
+      {
+        "sound_id": 350671,
+        "semantic": "tire_squeal",
+        "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session"
+      },
+      {
+        "sound_id": 350677,
+        "semantic": "tire_squeal",
+        "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session"
+      },
+      {
         "sound_id": 438023,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-vintage-ford-fast-screech-stop"
       },
       {
-        "sound_id": 438339,
-        "semantic": "contains_tire_squeal_temporal_review_required",
-        "recording_family": "craigsmith-vintage-crash-438339"
-      },
-      {
-        "sound_id": 481712,
-        "semantic": "contains_tire_squeal_temporal_review_required",
-        "recording_family": "craigsmith-vintage-car-481712"
-      },
-      {
-        "sound_id": 481715,
+        "sound_id": 438049,
         "semantic": "tire_squeal",
-        "recording_family": "craigsmith-vintage-car-start-drive-away-squeal"
+        "recording_family": "craigsmith-old-car-rough-road-peelout-squeal"
       },
       {
         "sound_id": 438335,
@@ -217,9 +287,39 @@
         "recording_family": "craigsmith-vintage-crash-438335"
       },
       {
-        "sound_id": 828733,
+        "sound_id": 438339,
         "semantic": "contains_tire_squeal_temporal_review_required",
-        "recording_family": "inspire153-drag-race"
+        "recording_family": "craigsmith-vintage-crash-438339"
+      },
+      {
+        "sound_id": 438638,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-vintage-assorted-tire-squeals"
+      },
+      {
+        "sound_id": 481668,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-old-auto-tire-skid"
+      },
+      {
+        "sound_id": 481699,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-tires-squealing"
+      },
+      {
+        "sound_id": 481712,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-vintage-car-squeaky-turn-around"
+      },
+      {
+        "sound_id": 481715,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-vintage-car-start-drive-away-squeal"
+      },
+      {
+        "sound_id": 536769,
+        "semantic": "derived_cc0_tire_squeal_augmentation_only",
+        "recording_family": "egomassive-derived-rutgermuller"
       },
       {
         "sound_id": 614627,
@@ -227,10 +327,25 @@
         "recording_family": "johnnydekk-foley"
       },
       {
-        "sound_id": 536769,
-        "semantic": "derived_cc0_tire_squeal_augmentation_only",
-        "recording_family": "egomassive-derived-rutgermuller"
+        "sound_id": 737192,
+        "semantic": "tire_squeal",
+        "recording_family": "field-recording-distant-car-tire-screech"
+      },
+      {
+        "sound_id": 752837,
+        "semantic": "tire_squeal",
+        "recording_family": "LukaCafuka-distant-tire-screech"
+      },
+      {
+        "sound_id": 828733,
+        "semantic": "contains_tire_squeal_temporal_review_required",
+        "recording_family": "inspire153-drag-race"
+      },
+      {
+        "sound_id": 850041,
+        "semantic": "tire_squeal",
+        "recording_family": "JeffPearson-tire-squeal"
       }
     ]
   }
-}
+}\n

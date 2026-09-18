@@ -1,0 +1,20 @@
+{
+  "schema_version": "echo.source-balance-policy.v1",
+  "policy_id": "MK1-SOURCE-BALANCE-001",
+  "coverage_policy_id": "MK1-CORPUS-SOLIDITY-001",
+  "targets": {
+    "GLASS_SHATTER": {
+      "enabled": true,
+      "dominant_underlying_source_family": "FREESOUND",
+      "selection": "deterministic_group_first_sha256_v1"
+    }
+  },
+  "rules": [
+    "Source balancing never changes coverage floors or source evidence.",
+    "Rows removed from the corpus-facing ledger remain durable in source materialization evidence.",
+    "Selection keeps at most the coverage-policy dominant-source fraction and prefers one asset per recording group before additional members.",
+    "Balancing must preserve the global min_assets, min_independent_groups, min_sources and min_clip_duration_seconds floors for the target.",
+    "A row losing the balanced target remains only when another governed positive or hard-negative role remains; otherwise it is removed from the corpus-facing ledger.",
+    "Changing selection semantics requires a new policy identity."
+  ]
+}\n

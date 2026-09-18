@@ -63,13 +63,27 @@ jobs:
       - name: Commit durable rights/hash/probe evidence only
         run: |
           cp MK1/mining-site/materialization/freesound-release-safe-materialization.json /tmp/freesound-release-safe-materialization.json
-          git reset --hard "${GITHUB_SHA}"
-          git fetch origin main --depth=1
-          RUN_SHA="$(git rev-parse HEAD)"
+          RUN_SHA="${GITHUB_SHA}"
+          git reset --hard "$RUN_SHA"
+          git fetch origin main --depth=50
           REMOTE_MAIN_SHA="$(git rev-parse origin/main)"
           if [[ "$RUN_SHA" != "$REMOTE_MAIN_SHA" ]]; then
-            echo "main moved during release-safe Freesound materialization; refusing to persist stale evidence"
-            exit 1
+            if ! git merge-base --is-ancestor "$RUN_SHA" "$REMOTE_MAIN_SHA"; then
+              echo "main no longer descends from the materialized commit; refusing to persist stale evidence"
+              exit 1
+            fi
+            INPUT_PATHS=(
+              scripts/data_foundry/materialize_freesound_release_safe.py
+              MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json
+              MK1/mining-site/materialization/freesound-gap-discovery.json
+              configs/data_foundry/freesound_cc0_supplemental.v1.json
+              configs/data_foundry/free_tier_boundary.v1.json
+            )
+            if ! git diff --quiet "$RUN_SHA" "$REMOTE_MAIN_SHA" -- "${INPUT_PATHS[@]}"; then
+              echo "release-safe Freesound materialization inputs changed while the run was active; refusing stale evidence"
+              exit 1
+            fi
+            git checkout --detach "$REMOTE_MAIN_SHA"
           fi
           cp /tmp/freesound-release-safe-materialization.json MK1/mining-site/materialization/freesound-release-safe-materialization.json
           git config user.name 'echo-data-foundry-bot'

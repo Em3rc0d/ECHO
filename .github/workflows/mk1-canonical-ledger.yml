@@ -38,7 +38,7 @@ on:
       - 'configs/data_foundry/hard_negative_mapping.v1.json'
       - 'configs/data_foundry/near_duplicate_policy.v1.json'
       - 'configs/data_foundry/split_policy.v1.json'
-      - 'configs/data_foundry/coverage_policy.v1.json'
+      - 'configs/data_foundry/coverage_policy.v1.json'\n      - 'configs/data_foundry/source_balance_policy.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
       - 'schemas/data_foundry/canonical-asset-ledger.schema.json'
       - 'schemas/data_foundry/corpus-closure-readiness.schema.json'
@@ -59,7 +59,7 @@ on:
       - 'scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py'
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
       - 'scripts/data_foundry/enforce_canonical_ledger_role_boundary.py'
-      - 'scripts/data_foundry/resolve_global_recording_groups.py'
+      - 'scripts/data_foundry/resolve_global_recording_groups.py'\n      - 'scripts/data_foundry/balance_release_safe_corpus_sources.py'
       - 'scripts/data_foundry/build_corpus_closure_evidence.py'
       - 'scripts/data_foundry/apply_split_conflict_quarantine.py'
       - 'scripts/data_foundry/build_corpus_closure_readiness.py'
@@ -120,7 +120,7 @@ jobs:
           python -m json.tool configs/data_foundry/hard_negative_mapping.v1.json >/dev/null
           python -m json.tool configs/data_foundry/near_duplicate_policy.v1.json >/dev/null
           python -m json.tool configs/data_foundry/split_policy.v1.json >/dev/null
-          python -m json.tool configs/data_foundry/coverage_policy.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/coverage_policy.v1.json >/dev/null\n          python -m json.tool configs/data_foundry/source_balance_policy.v1.json >/dev/null
           python -m json.tool schemas/data_foundry/canonical-asset-ledger.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/corpus-closure-readiness.schema.json >/dev/null
           python -m json.tool schemas/data_foundry/corpus-certificate.schema.json >/dev/null
