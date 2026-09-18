@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "7a6732c14e62746017dff3ac3dcff84a2891ec7d",
+  "baseline_commit": "24f6b72b1dcd83cd706870c44459c39374b6d115",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 990,
+  "canonical_fingerprint_count": 1003,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -14,26 +14,26 @@
       },
       "failure_count": 0,
       "failures": [],
-      "fingerprinted_count": 93,
-      "materialized_count": 93,
+      "fingerprinted_count": 106,
+      "materialized_count": 106,
       "schema_version": "echo.freesound-cc0-fingerprint-enrichment.v1",
       "status": "PASS"
     },
-    "report_sha256": "38b27ee9994d3e34b1b7bcb3e61289bc4d2654e3c58954697367476a856b60cb",
+    "report_sha256": "38cbddf7974798f4f7c90200ce576b2c137278734bb0f7a0cf6c007fb6ac1c93",
     "semantic_stop_line": "Only explicit fire_alarm/tire_squeal supplemental decisions become positives; all broader/composite candidates remain review-only.",
     "source_diversity_stop_line": "CC0 gap acquisition is another Freesound path and never creates a second source-family credit versus FSD50K/direct Freesound.",
     "stats": {
-      "exact_positive_rows": 46,
-      "materialized_rows": 93,
+      "exact_positive_rows": 59,
+      "materialized_rows": 106,
       "merged_existing_rows": 2,
       "review_rows": 47,
-      "status:CC0_REAL_PREVIEW_MATERIALIZED_REVIEW_REQUIRED": 93,
+      "status:CC0_REAL_PREVIEW_MATERIALIZED_REVIEW_REQUIRED": 106,
       "status:METADATA_ONLY_NON_CC0_OR_UNCONFIRMED": 47,
       "status:PAGE_FETCH_FAILED": 1,
-      "target:FIRE_ALARM:exact": 28,
-      "target:FIRE_ALARM:materialized": 62,
-      "target:TIRE_SQUEAL:exact": 18,
-      "target:TIRE_SQUEAL:materialized": 31
+      "target:FIRE_ALARM:exact": 36,
+      "target:FIRE_ALARM:materialized": 70,
+      "target:TIRE_SQUEAL:exact": 23,
+      "target:TIRE_SQUEAL:materialized": 36
     },
     "status": "PASS",
     "supplemental_sha256": "f6758b40c4486db65d47c523e498229f60829b23dabd8b69c4bc0612bd3a6d8b",
@@ -69,15 +69,15 @@
     "status": "PASS",
     "technical_evidence_asset_count": 1093
   },
-  "entry_count": 990,
+  "entry_count": 1003,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1179,
+    "asset_count": 1192,
     "candidate_edges_rejected_by_length_count": 835,
     "candidate_near_duplicate_threshold": 0.02,
-    "component_count": 1105,
+    "component_count": 1117,
     "confirmed_group_max_distance": 0.002,
     "confirmed_group_max_relative_sample_count_delta": 0.01,
     "confirmed_near_duplicate_cross_group_edge_count": 2,
@@ -119,7 +119,7 @@
     },
     "freesound_cc0_gap": {
       "path": "MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json",
-      "sha256": "38b27ee9994d3e34b1b7bcb3e61289bc4d2654e3c58954697367476a856b60cb"
+      "sha256": "38cbddf7974798f4f7c90200ce576b2c137278734bb0f7a0cf6c007fb6ac1c93"
     },
     "freesound_cc0_supplemental": {
       "path": "configs/data_foundry/freesound_cc0_supplemental.v1.json",
@@ -182,7 +182,7 @@
       "sha256": "73cd07ef7aef86b685ef08c9b8fe2620df192e4a63bf6fc46e46033626410e45"
     }
   },
-  "ledger_sha256": "191f9cc71a7e78791449991b87ca2bbfe89c32fba849741269a2d67d82260263",
+  "ledger_sha256": "d647332d770078b00f57a07563c231c9f22ca36e3fa86e17d00f8ed7ebce1ddb",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -233,10 +233,10 @@
     "underlying_source_family": "OPENGAMEART_TILL_BEHREND"
   },
   "positive_counts": {
-    "FIRE_ALARM": 38,
+    "FIRE_ALARM": 46,
     "GLASS_SHATTER": 115,
     "SIREN": 170,
-    "TIRE_SQUEAL": 26,
+    "TIRE_SQUEAL": 31,
     "VEHICLE_HORN": 240
   },
   "positive_underlying_source_family_counts": {
@@ -257,7 +257,7 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1233,
+    "input_rows": 1246,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
@@ -289,7 +289,7 @@
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 422
     },
-    "retained_rows": 1179,
+    "retained_rows": 1192,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
@@ -307,7 +307,7 @@
   },
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 56,
-    "echo-freesound-release-safe-v1": 279,
+    "echo-freesound-release-safe-v1": 292,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
     "echo-soundbible-mike-koenig-tire-v1": 3,
@@ -570,12 +570,12 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 990
+    "READY_FOR_GLOBAL_DEDUP": 1003
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
     "BIGSOUNDBANK": 56,
-    "FREESOUND": 279,
+    "FREESOUND": 292,
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
     "SONYC_UST": 599,
