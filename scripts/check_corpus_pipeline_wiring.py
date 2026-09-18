@@ -42,7 +42,8 @@ SOURCE_WORKFLOWS = (
 ATOMIC_BUILD_COMMANDS = (
     "python scripts/data_foundry/build_canonical_asset_ledger.py",
     "python scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py",
-    "python scripts/data_foundry/resolve_global_recording_groups.py",\n    "python scripts/data_foundry/balance_release_safe_corpus_sources.py",
+    "python scripts/data_foundry/resolve_global_recording_groups.py",
+    "python scripts/data_foundry/balance_release_safe_corpus_sources.py",
     "python scripts/data_foundry/build_corpus_closure_evidence.py",
     "python scripts/data_foundry/apply_split_conflict_quarantine.py",
     "build_corpus_closure_readiness.py --ignore-corpus-certificate",
