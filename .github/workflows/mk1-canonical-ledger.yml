@@ -142,6 +142,7 @@ jobs:
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
+          python scripts/data_foundry/balance_release_safe_corpus_sources.py
       - name: Build closure evidence and execute certificate handoff
         env:
           PYTHONPATH: src:.
@@ -211,6 +212,7 @@ jobs:
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
+          python scripts/data_foundry/balance_release_safe_corpus_sources.py
           python scripts/data_foundry/build_corpus_closure_evidence.py
           python scripts/data_foundry/apply_split_conflict_quarantine.py
           python scripts/data_foundry/build_corpus_closure_readiness.py --ignore-corpus-certificate --output /tmp/corpus-readiness.pre-cert.json
