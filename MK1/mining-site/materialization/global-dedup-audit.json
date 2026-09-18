@@ -1,5 +1,5 @@
 {
-  "candidate_edges_rejected_by_length_count": 103,
+  "candidate_edges_rejected_by_length_count": 99,
   "candidate_near_duplicate_threshold": 0.02,
   "confirmed_group_max_distance": 0.002,
   "confirmed_group_max_relative_sample_count_delta": 0.01,
@@ -8,13 +8,13 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 984,
+  "fingerprinted_asset_count": 990,
   "gap_codes": [],
-  "ledger_sha256": "fb5c2ba245fa39e617a48e40b82b079819f007283cad942c10f01dd7ba8c8060",
+  "ledger_sha256": "bd6c00cf6bfce4faa50b246ede2ade08a1e2985f5803206c2ba5cb531c5c5de6",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
-  "near_duplicate_candidate_count": 105,
-  "near_duplicate_candidate_cross_group_count": 100,
+  "near_duplicate_candidate_count": 102,
+  "near_duplicate_candidate_cross_group_count": 97,
   "near_duplicate_candidate_sample": [
     {
       "confirmation": "SCREEN_ONLY",
@@ -106,14 +106,6 @@
     },
     {
       "confirmation": "SCREEN_ONLY",
-      "decoded_sample_count_relative_delta": 0.0129581,
-      "distance": 0.01360294,
-      "left": "echo-freesound-release-safe-v1:219837",
-      "right": "echo-freesound-release-safe-v1:219847",
-      "same_recording_group": false
-    },
-    {
-      "confirmation": "SCREEN_ONLY",
       "decoded_sample_count_relative_delta": 0.53214583,
       "distance": 0.01847426,
       "left": "echo-freesound-release-safe-v1:219837",
@@ -186,26 +178,10 @@
     },
     {
       "confirmation": "SCREEN_ONLY",
-      "decoded_sample_count_relative_delta": 0.70357755,
-      "distance": 0.01875,
-      "left": "echo-freesound-release-safe-v1:219847",
-      "right": "echo-freesound-release-safe-v1:88932",
-      "same_recording_group": false
-    },
-    {
-      "confirmation": "SCREEN_ONLY",
-      "decoded_sample_count_relative_delta": 0.549603,
-      "distance": 0.0189951,
-      "left": "echo-freesound-release-safe-v1:219847",
-      "right": "echo-freesound-release-safe-v1:88936",
-      "same_recording_group": false
-    },
-    {
-      "confirmation": "SCREEN_ONLY",
-      "decoded_sample_count_relative_delta": 0.36134169,
-      "distance": 0.01969975,
-      "left": "echo-freesound-release-safe-v1:219847",
-      "right": "echo-freesound-release-safe-v1:981",
+      "decoded_sample_count_relative_delta": 0.0,
+      "distance": 0.00318627,
+      "left": "echo-freesound-release-safe-v1:239030",
+      "right": "echo-freesound-release-safe-v1:239031",
       "same_recording_group": false
     },
     {
@@ -859,8 +835,8 @@
   ],
   "note": "Broad RMS-envelope candidates are durable screening evidence only. Only exact byte/PCM identity or strict distance plus decoded-length confirmation may require shared split protection.",
   "policy_sha256": "71cf0bbd7aca26ea2c94c656f339feedfd50e066527d4359ad5bba6fdab6171f",
-  "review_only_near_duplicate_count": 105,
+  "review_only_near_duplicate_count": 102,
   "schema_version": "echo.global-dedup-audit.v2",
-  "scope_asset_count": 984,
+  "scope_asset_count": 990,
   "status": "PASS"
 }

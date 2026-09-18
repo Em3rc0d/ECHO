@@ -23,8 +23,8 @@
       "asset_count": 38,
       "clip_duration_seconds": 1113.584788,
       "hard_negatives": {
-        "asset_count": 202,
-        "independent_group_count": 202,
+        "asset_count": 203,
+        "independent_group_count": 203,
         "source_count": 4,
         "sources": [
           "BIGSOUNDBANK",
@@ -59,7 +59,7 @@
     },
     "GLASS_SHATTER": {
       "asset_count": 115,
-      "clip_duration_seconds": 469.998779,
+      "clip_duration_seconds": 468.235677,
       "hard_negatives": {
         "asset_count": 440,
         "independent_group_count": 410,
@@ -96,11 +96,11 @@
       }
     },
     "SIREN": {
-      "asset_count": 169,
-      "clip_duration_seconds": 2164.966801,
+      "asset_count": 170,
+      "clip_duration_seconds": 2174.758801,
       "hard_negatives": {
-        "asset_count": 235,
-        "independent_group_count": 235,
+        "asset_count": 240,
+        "independent_group_count": 240,
         "source_count": 4,
         "sources": [
           "BIGSOUNDBANK",
@@ -109,11 +109,11 @@
           "WIKIMEDIA_COMMONS"
         ]
       },
-      "independent_group_count": 169,
-      "max_single_source_fraction": 0.627219,
+      "independent_group_count": 170,
+      "max_single_source_fraction": 0.623529,
       "source_asset_counts": {
         "BIGSOUNDBANK": 4,
-        "FREESOUND": 59,
+        "FREESOUND": 60,
         "SONYC_UST": 106
       },
       "source_count": 3,
@@ -123,12 +123,12 @@
         "SONYC_UST"
       ],
       "split_assets": {
-        "test": 57,
+        "test": 58,
         "train": 49,
         "validation": 63
       },
       "split_groups": {
-        "test": 57,
+        "test": 58,
         "train": 49,
         "validation": 63
       }
@@ -170,11 +170,11 @@
       }
     },
     "VEHICLE_HORN": {
-      "asset_count": 235,
-      "clip_duration_seconds": 2305.680265,
+      "asset_count": 240,
+      "clip_duration_seconds": 2332.897406,
       "hard_negatives": {
-        "asset_count": 142,
-        "independent_group_count": 142,
+        "asset_count": 143,
+        "independent_group_count": 143,
         "source_count": 3,
         "sources": [
           "BIGSOUNDBANK",
@@ -182,11 +182,11 @@
           "SONYC_UST"
         ]
       },
-      "independent_group_count": 235,
-      "max_single_source_fraction": 0.668085,
+      "independent_group_count": 240,
+      "max_single_source_fraction": 0.654167,
       "source_asset_counts": {
         "BIGSOUNDBANK": 2,
-        "FREESOUND": 76,
+        "FREESOUND": 81,
         "SONYC_UST": 157
       },
       "source_count": 3,
@@ -196,19 +196,19 @@
         "SONYC_UST"
       ],
       "split_assets": {
-        "test": 126,
-        "train": 56,
+        "test": 129,
+        "train": 58,
         "validation": 53
       },
       "split_groups": {
-        "test": 126,
-        "train": 56,
+        "test": 129,
+        "train": 58,
         "validation": 53
       }
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 984,
+  "development_asset_count": 990,
   "failures": [
     {
       "actual": 38,
@@ -292,7 +292,7 @@
     "TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN",
     "TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN"
   ],
-  "ledger_sha256": "fb5c2ba245fa39e617a48e40b82b079819f007283cad942c10f01dd7ba8c8060",
+  "ledger_sha256": "bd6c00cf6bfce4faa50b246ede2ade08a1e2985f5803206c2ba5cb531c5c5de6",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",

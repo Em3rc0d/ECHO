@@ -1,7 +1,7 @@
 {
-  "baseline_commit": "341568432d371d79a1eb344f2f7381fe852dde49",
+  "baseline_commit": "7a6732c14e62746017dff3ac3dcff84a2891ec7d",
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 984,
+  "canonical_fingerprint_count": 990,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -25,7 +25,7 @@
     "stats": {
       "exact_positive_rows": 46,
       "materialized_rows": 93,
-      "merged_existing_rows": 1,
+      "merged_existing_rows": 2,
       "review_rows": 47,
       "status:CC0_REAL_PREVIEW_MATERIALIZED_REVIEW_REQUIRED": 93,
       "status:METADATA_ONLY_NON_CC0_OR_UNCONFIRMED": 47,
@@ -45,7 +45,7 @@
     "status": "OPEN"
   },
   "enrichment": {
-    "cross_target_hard_negative_roles_attached": 512,
+    "cross_target_hard_negative_roles_attached": 521,
     "cross_target_mapping": {
       "SIREN": [
         "FIRE_ALARM",
@@ -59,25 +59,25 @@
     "fingerprint_stop_line": "Every exact positive or hard-negative role requires a canonical fingerprint before global near-duplicate audit readiness.",
     "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination.",
     "inputs": {
-      "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "0bc874ecbae37b60c83f5662e909ba0e4c9b6d7f9c58ff9f4b128ead95e425ec",
+      "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "a5333d3d06271585cf3794c2d6728368ecef65036e72d8901b97ac806be6b3dd",
       "MK1/mining-site/materialization/public-gap-assets-report.json": "f2fdc2d529a0010b92507b835004a05c2c95e34167c1e0652c90bcd7f3a1c3c5",
       "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
       "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
       "configs/data_foundry/hard_negative_mapping.v1.json": "148f218bbe56bd342713b4e262443e6bbc9da0328aa40e20c2a3ea99eb8e8cd8"
     },
-    "matched_asset_count": 1085,
+    "matched_asset_count": 1093,
     "status": "PASS",
-    "technical_evidence_asset_count": 1085
+    "technical_evidence_asset_count": 1093
   },
-  "entry_count": 984,
+  "entry_count": 990,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1172,
+    "asset_count": 1179,
     "candidate_edges_rejected_by_length_count": 835,
     "candidate_near_duplicate_threshold": 0.02,
-    "component_count": 1098,
+    "component_count": 1105,
     "confirmed_group_max_distance": 0.002,
     "confirmed_group_max_relative_sample_count_delta": 0.01,
     "confirmed_near_duplicate_cross_group_edge_count": 2,
@@ -87,23 +87,23 @@
     "exact_media_grouping_edge_count": 0,
     "exact_pcm_grouping_edge_count": 0,
     "fallback_asset_count_after": 0,
-    "fallback_asset_count_before": 415,
+    "fallback_asset_count_before": 422,
     "global_acoustic_component_count": 2,
     "members_reassigned_to_global_acoustic_component": 4,
-    "near_duplicate_candidate_cross_group_edge_count": 851,
-    "near_duplicate_candidate_edge_count": 856,
+    "near_duplicate_candidate_cross_group_edge_count": 852,
+    "near_duplicate_candidate_edge_count": 857,
     "policy_note": "Broad RMS-envelope proximity is screening evidence only. Shared split protection requires exact byte/PCM identity or a separately confirmed near-duplicate edge with strict distance and decoded-length compatibility. Review-only screening edges never union components.",
-    "review_only_near_duplicate_edge_count": 854,
+    "review_only_near_duplicate_edge_count": 855,
     "schema_version": "echo.global-recording-group-resolution.v2",
-    "screened_fallback_source_group_count": 411,
+    "screened_fallback_source_group_count": 418,
     "status": "PASS"
   },
   "hard_negative_counts": {
-    "FIRE_ALARM": 202,
+    "FIRE_ALARM": 203,
     "GLASS_SHATTER": 440,
-    "SIREN": 235,
+    "SIREN": 240,
     "TIRE_SQUEAL": 25,
-    "VEHICLE_HORN": 142
+    "VEHICLE_HORN": 143
   },
   "hard_negative_underlying_source_family_counts": {
     "FIRE_ALARM": 4,
@@ -127,7 +127,7 @@
     },
     "freesound_release_safe": {
       "path": "MK1/mining-site/materialization/freesound-release-safe-materialization.json",
-      "sha256": "0bc874ecbae37b60c83f5662e909ba0e4c9b6d7f9c58ff9f4b128ead95e425ec"
+      "sha256": "a5333d3d06271585cf3794c2d6728368ecef65036e72d8901b97ac806be6b3dd"
     },
     "fsd50k_exact_candidates": {
       "path": "MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json",
@@ -182,7 +182,7 @@
       "sha256": "73cd07ef7aef86b685ef08c9b8fe2620df192e4a63bf6fc46e46033626410e45"
     }
   },
-  "ledger_sha256": "4b39b634d183672344370d33764880a6086cae12d88a3b447b134b4b12bea832",
+  "ledger_sha256": "191f9cc71a7e78791449991b87ca2bbfe89c32fba849741269a2d67d82260263",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -235,9 +235,9 @@
   "positive_counts": {
     "FIRE_ALARM": 38,
     "GLASS_SHATTER": 115,
-    "SIREN": 169,
+    "SIREN": 170,
     "TIRE_SQUEAL": 26,
-    "VEHICLE_HORN": 235
+    "VEHICLE_HORN": 240
   },
   "positive_underlying_source_family_counts": {
     "FIRE_ALARM": 3,
@@ -257,23 +257,24 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1226,
+    "input_rows": 1233,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 38,
       "LICENSE_NOT_RELEASE_SAFE": 1,
-      "NO_EXACT_SEMANTIC_ROLE": 52,
+      "NO_EXACT_SEMANTIC_ROLE": 51,
       "RIGHTS_TEXT_CONFLICT_REVIEW_REQUIRED": 1,
-      "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1
+      "SEMANTIC_STATUS_CONFLICT_FIRE_ALARM": 1,
+      "SEMANTIC_STATUS_CONFLICT_TIRE_SQUEAL": 1
     },
     "removed_non_release_safe_rows": 1,
     "removed_rejection_counts": {
       "NOT_RELEASE_SAFE": 1,
-      "REVIEW_ONLY_NO_GOVERNED_ROLE": 52,
-      "UNRESOLVED_ADMISSION_BLOCKER": 1
+      "REVIEW_ONLY_NO_GOVERNED_ROLE": 51,
+      "UNRESOLVED_ADMISSION_BLOCKER": 2
     },
-    "removed_review_only_rows": 52,
+    "removed_review_only_rows": 51,
     "removed_rights_status_counts": {
       "ALLOW_RELEASE_SAFE": 53,
       "RESEARCH_ONLY": 1
@@ -284,11 +285,11 @@
       "echo-freesound-release-safe-v1": 47,
       "echo-wikimedia-fire-alarm-v1": 3
     },
-    "removed_unresolved_blocker_rows": 1,
+    "removed_unresolved_blocker_rows": 2,
     "retained_deferred_blocker_counts": {
-      "GROUPING_GLOBAL_AUDIT_REQUIRED": 415
+      "GROUPING_GLOBAL_AUDIT_REQUIRED": 422
     },
-    "retained_rows": 1172,
+    "retained_rows": 1179,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
@@ -306,7 +307,7 @@
   },
   "source_asset_counts": {
     "echo-bigsoundbank-cc0-gap-v1": 56,
-    "echo-freesound-release-safe-v1": 273,
+    "echo-freesound-release-safe-v1": 279,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
     "echo-soundbible-mike-koenig-tire-v1": 3,
@@ -323,7 +324,7 @@
       "GLASS_SHATTER": {
         "after": {
           "asset_count": 115,
-          "clip_duration_seconds": 469.998778537415,
+          "clip_duration_seconds": 468.235676537415,
           "independent_group_count": 101,
           "max_single_source_fraction": 0.8,
           "source_asset_counts": {
@@ -335,13 +336,13 @@
           "source_count": 4
         },
         "before": {
-          "asset_count": 303,
-          "clip_duration_seconds": 1244.131192537415,
-          "independent_group_count": 287,
-          "max_single_source_fraction": 0.9240924092409241,
+          "asset_count": 304,
+          "clip_duration_seconds": 1245.176090537415,
+          "independent_group_count": 288,
+          "max_single_source_fraction": 0.9243421052631579,
           "source_asset_counts": {
             "BIGSOUNDBANK": 16,
-            "FREESOUND": 280,
+            "FREESOUND": 281,
             "OPENGAMEART_RUBBERDUCK": 6,
             "OPENGAMEART_TILL_BEHREND": 1
           },
@@ -480,6 +481,7 @@
           "echo-freesound-release-safe-v1:219844",
           "echo-freesound-release-safe-v1:219845",
           "echo-freesound-release-safe-v1:219846",
+          "echo-freesound-release-safe-v1:219847",
           "echo-freesound-release-safe-v1:221528",
           "echo-freesound-release-safe-v1:221532",
           "echo-freesound-release-safe-v1:231297",
@@ -539,7 +541,7 @@
           "echo-freesound-release-safe-v1:98055",
           "echo-freesound-release-safe-v1:98650"
         ],
-        "removed_target_credit_count": 188,
+        "removed_target_credit_count": 189,
         "rows_preserved_for_other_roles_count": 0,
         "selection": "deterministic_group_first_sha256_v1",
         "status": "PASS"
@@ -548,11 +550,11 @@
   },
   "source_input_stats": {
     "freesound": {
-      "exact_semantic_rows": 416,
-      "materialized_rows": 416,
-      "status:MATERIALIZATION_FAILED": 475,
-      "status:RELEASE_SAFE_PREVIEW_FETCH_OR_PROBE_FAILED": 1,
-      "status:RELEASE_SAFE_REAL_PREVIEW_MATERIALIZED": 416,
+      "exact_semantic_rows": 424,
+      "materialized_rows": 424,
+      "status:MATERIALIZATION_FAILED": 486,
+      "status:RELEASE_SAFE_PREVIEW_FETCH_OR_PROBE_FAILED": 3,
+      "status:RELEASE_SAFE_REAL_PREVIEW_MATERIALIZED": 424,
       "status:RIGHTS_NOT_RELEASE_SAFE_OR_UNCONFIRMED": 57
     },
     "public_gap": {
@@ -568,12 +570,12 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 984
+    "READY_FOR_GLOBAL_DEDUP": 990
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
     "BIGSOUNDBANK": 56,
-    "FREESOUND": 273,
+    "FREESOUND": 279,
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
     "SONYC_UST": 599,
