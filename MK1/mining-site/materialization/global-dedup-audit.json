@@ -8,9 +8,9 @@
   "exact_canonical_pcm_duplicate_group_count": 0,
   "exact_cross_recording_group_conflict_count": 0,
   "exact_media_duplicate_group_count": 0,
-  "fingerprinted_asset_count": 1148,
+  "fingerprinted_asset_count": 1159,
   "gap_codes": [],
-  "ledger_sha256": "8ca76d8b7bb916fdc9983f4dea5a54106c0561da0f43d13198cf86e3aa1077d0",
+  "ledger_sha256": "0b67e72e9c52feaedef8d4799a8495e1f1e980a249f4977a49479e6b1c82dce8",
   "missing_fingerprint_count": 0,
   "missing_fingerprint_sample": [],
   "near_duplicate_candidate_count": 856,
@@ -4021,6 +4021,6 @@
   "policy_sha256": "71cf0bbd7aca26ea2c94c656f339feedfd50e066527d4359ad5bba6fdab6171f",
   "review_only_near_duplicate_count": 854,
   "schema_version": "echo.global-dedup-audit.v2",
-  "scope_asset_count": 1148,
+  "scope_asset_count": 1159,
   "status": "PASS"
 }
