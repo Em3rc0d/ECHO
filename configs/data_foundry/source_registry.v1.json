@@ -1,6 +1,6 @@
 {
   "schema_version": "echo.source-registry.v1",
-  "evidence_checked_at": "2026-09-15",
+  "evidence_checked_at": "2026-09-17",
   "sources": [
     {
       "source_id": "fsd50k-1.0",
@@ -8,17 +8,44 @@
       "release": "1.0",
       "canonical_url": "https://zenodo.org/records/4060432",
       "companion_url": "https://fsannotator.upf.edu/fsd/release/FSD50K/",
-      "role": ["positive_pool", "hard_negative_pool", "environmental_context"],
+      "role": [
+        "positive_pool",
+        "hard_negative_pool",
+        "environmental_context"
+      ],
       "license_model": "mixed_per_asset_plus_dataset_level",
       "dataset_license": "CC-BY",
       "default_profile": "release_safe_filtered",
       "asset_license_required": true,
       "target_coverage": {
-        "GLASS_SHATTER": {"source_label": "Shatter", "relation": "BROADER", "review_required": true, "source_count_evidence": 510},
-        "SIREN": {"source_label": "Siren", "relation": "EXACT", "review_required": false, "source_count_evidence": 132},
-        "FIRE_ALARM": {"source_label": null, "relation": "UNAVAILABLE_IN_RELEASED_200", "review_required": true},
-        "VEHICLE_HORN": {"source_label": "Vehicle horn, car horn, honking", "relation": "EXACT", "review_required": false, "source_count_evidence": 183},
-        "TIRE_SQUEAL": {"source_label": null, "relation": "UNAVAILABLE_IN_RELEASED_200", "review_required": true}
+        "GLASS_SHATTER": {
+          "source_label": "Shatter",
+          "relation": "BROADER",
+          "review_required": true,
+          "source_count_evidence": 510
+        },
+        "SIREN": {
+          "source_label": "Siren",
+          "relation": "EXACT",
+          "review_required": false,
+          "source_count_evidence": 132
+        },
+        "FIRE_ALARM": {
+          "source_label": null,
+          "relation": "UNAVAILABLE_IN_RELEASED_200",
+          "review_required": true
+        },
+        "VEHICLE_HORN": {
+          "source_label": "Vehicle horn, car horn, honking",
+          "relation": "EXACT",
+          "review_required": false,
+          "source_count_evidence": 183
+        },
+        "TIRE_SQUEAL": {
+          "source_label": null,
+          "relation": "UNAVAILABLE_IN_RELEASED_200",
+          "review_required": true
+        }
       },
       "notes": "Default release-safe profile filters individual clip licenses; source headline counts are not admitted counts."
     },
@@ -27,19 +54,47 @@
       "name": "SONYC Urban Sound Tagging",
       "release": "2.3",
       "canonical_url": "https://zenodo.org/records/3966543",
-      "role": ["urban_sensor_positive", "hard_negative_pool", "domain_context"],
+      "role": [
+        "urban_sensor_positive",
+        "hard_negative_pool",
+        "domain_context"
+      ],
       "license_model": "uniform_dataset",
       "dataset_license": "CC-BY-4.0",
       "default_profile": "release_safe",
       "asset_license_required": false,
       "target_coverage": {
-        "GLASS_SHATTER": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true},
-        "SIREN": {"source_label": "siren", "relation": "EXACT", "review_required": false},
-        "FIRE_ALARM": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true},
-        "VEHICLE_HORN": {"source_label": "car-horn", "relation": "EXACT", "review_required": false},
-        "TIRE_SQUEAL": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true}
+        "GLASS_SHATTER": {
+          "source_label": null,
+          "relation": "UNAVAILABLE",
+          "review_required": true
+        },
+        "SIREN": {
+          "source_label": "siren",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "FIRE_ALARM": {
+          "source_label": null,
+          "relation": "UNAVAILABLE",
+          "review_required": true
+        },
+        "VEHICLE_HORN": {
+          "source_label": "car-horn",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "TIRE_SQUEAL": {
+          "source_label": null,
+          "relation": "UNAVAILABLE",
+          "review_required": true
+        }
       },
-      "group_keys": ["sensor_id", "recording_id", "split/time metadata"],
+      "group_keys": [
+        "sensor_id",
+        "recording_id",
+        "split/time metadata"
+      ],
       "notes": "Pinned to official Zenodo v2.3 release. Keep car-alarm/reverse-beeper as alert-family confusers rather than positives."
     },
     {
@@ -47,19 +102,49 @@
       "name": "SINGA:PURA",
       "release": "v1.0a strong-labelled subset",
       "canonical_url": "https://zenodo.org/records/5645825",
-      "role": ["strong_temporal_positive", "urban_sensor_context", "hard_negative_pool"],
+      "role": [
+        "strong_temporal_positive",
+        "urban_sensor_context",
+        "hard_negative_pool"
+      ],
       "license_model": "uniform_dataset",
       "dataset_license": "CC-BY-SA-4.0",
       "default_profile": "review_required",
       "asset_license_required": false,
       "target_coverage": {
-        "GLASS_SHATTER": {"source_label": "3-1", "source_label_name": "Glass breaking", "relation": "EXACT", "review_required": false},
-        "SIREN": {"source_label": "5-3", "source_label_name": "Siren", "relation": "EXACT", "review_required": false},
-        "FIRE_ALARM": {"source_label": null, "relation": "UNAVAILABLE", "review_required": true},
-        "VEHICLE_HORN": {"source_label": "5-1", "source_label_name": "Car horn", "relation": "EXACT", "review_required": false},
-        "TIRE_SQUEAL": {"source_label": null, "relation": "NO_EXACT_CLASS", "review_required": true}
+        "GLASS_SHATTER": {
+          "source_label": "3-1",
+          "source_label_name": "Glass breaking",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "SIREN": {
+          "source_label": "5-3",
+          "source_label_name": "Siren",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "FIRE_ALARM": {
+          "source_label": null,
+          "relation": "UNAVAILABLE",
+          "review_required": true
+        },
+        "VEHICLE_HORN": {
+          "source_label": "5-1",
+          "source_label_name": "Car horn",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "TIRE_SQUEAL": {
+          "source_label": null,
+          "relation": "NO_EXACT_CLASS",
+          "review_required": true
+        }
       },
-      "group_keys": ["sensor_id", "filename"],
+      "group_keys": [
+        "sensor_id",
+        "filename"
+      ],
       "notes": "Friction brake and generic screeching are confusers, not automatic tire-squeal positives; ShareAlike terms require release-policy review."
     },
     {
@@ -67,16 +152,29 @@
       "name": "ESC-50",
       "release": "official repository current dataset",
       "canonical_url": "https://github.com/karolpiczak/ESC-50",
-      "role": ["research_sanity"],
+      "role": [
+        "research_sanity"
+      ],
       "license_model": "uniform_dataset_with_subset_exception",
       "dataset_license": "CC-BY-NC",
       "default_profile": "research_extended",
       "asset_license_required": false,
       "target_coverage": {
-        "SIREN": {"source_label": "siren", "relation": "EXACT", "review_required": false},
-        "VEHICLE_HORN": {"source_label": "car_horn", "relation": "EXACT", "review_required": false}
+        "SIREN": {
+          "source_label": "siren",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "VEHICLE_HORN": {
+          "source_label": "car_horn",
+          "relation": "EXACT",
+          "review_required": false
+        }
       },
-      "group_keys": ["src_file", "take"],
+      "group_keys": [
+        "src_file",
+        "take"
+      ],
       "notes": "Full dataset is non-commercial; not part of default release-safe training lineage."
     },
     {
@@ -84,16 +182,29 @@
       "name": "UrbanSound8K",
       "release": "1.0",
       "canonical_url": "https://serv.cusp.nyu.edu/projects/urbansounddataset/urbansound8k.html",
-      "role": ["research_urban_contrast"],
+      "role": [
+        "research_urban_contrast"
+      ],
       "license_model": "uniform_dataset",
       "dataset_license": "CC-BY-NC-3.0",
       "default_profile": "research_extended",
       "asset_license_required": false,
       "target_coverage": {
-        "SIREN": {"source_label": "siren", "relation": "EXACT", "review_required": false},
-        "VEHICLE_HORN": {"source_label": "car_horn", "relation": "EXACT", "review_required": false}
+        "SIREN": {
+          "source_label": "siren",
+          "relation": "EXACT",
+          "review_required": false
+        },
+        "VEHICLE_HORN": {
+          "source_label": "car_horn",
+          "relation": "EXACT",
+          "review_required": false
+        }
       },
-      "group_keys": ["fsID", "occurrenceID"],
+      "group_keys": [
+        "fsID",
+        "occurrenceID"
+      ],
       "notes": "Preserve official folds and source/occurrence relationships; do not randomize slices independently."
     },
     {
@@ -101,18 +212,42 @@
       "name": "AudioSet ontology and annotations",
       "release": "ontology/current research release",
       "canonical_url": "https://research.google.com/audioset/ontology/",
-      "role": ["ontology_reference", "pretraining_provenance", "coverage_reference"],
+      "role": [
+        "ontology_reference",
+        "pretraining_provenance",
+        "coverage_reference"
+      ],
       "license_model": "metadata_ontology_separate_from_underlying_media",
       "dataset_license": "see official terms",
       "default_profile": "reference_only",
       "asset_license_required": true,
       "raw_media_auto_ingest": false,
       "target_coverage": {
-        "GLASS_SHATTER": {"source_label": "Shatter", "relation": "BROADER", "annotation_count_evidence": 368},
-        "SIREN": {"source_label": "Siren", "relation": "EXACT", "annotation_count_evidence": 8498},
-        "FIRE_ALARM": {"source_label": "Fire alarm", "relation": "EXACT", "annotation_count_evidence": 921},
-        "VEHICLE_HORN": {"source_label": "Vehicle horn, car horn, honking", "relation": "EXACT", "annotation_count_evidence": 3707},
-        "TIRE_SQUEAL": {"source_label": "Tire squeal", "relation": "EXACT", "annotation_count_evidence": 1557}
+        "GLASS_SHATTER": {
+          "source_label": "Shatter",
+          "relation": "BROADER",
+          "annotation_count_evidence": 368
+        },
+        "SIREN": {
+          "source_label": "Siren",
+          "relation": "EXACT",
+          "annotation_count_evidence": 8498
+        },
+        "FIRE_ALARM": {
+          "source_label": "Fire alarm",
+          "relation": "EXACT",
+          "annotation_count_evidence": 921
+        },
+        "VEHICLE_HORN": {
+          "source_label": "Vehicle horn, car horn, honking",
+          "relation": "EXACT",
+          "annotation_count_evidence": 3707
+        },
+        "TIRE_SQUEAL": {
+          "source_label": "Tire squeal",
+          "relation": "EXACT",
+          "annotation_count_evidence": 1557
+        }
       },
       "notes": "Ontology/annotation evidence does not authorize automatic acquisition/redistribution of underlying YouTube media."
     },
@@ -121,18 +256,31 @@
       "name": "ECHO Field Dataset",
       "release": "future-v1",
       "canonical_url": null,
-      "role": ["field_holdout", "domain_validation"],
+      "role": [
+        "field_holdout",
+        "domain_validation"
+      ],
       "license_model": "permission_specific",
       "dataset_license": null,
       "default_profile": "field_holdout",
       "asset_license_required": true,
       "external_gate": "EXT-CAMERA-001",
       "target_coverage": {
-        "GLASS_SHATTER": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
-        "SIREN": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
-        "FIRE_ALARM": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
-        "VEHICLE_HORN": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"},
-        "TIRE_SQUEAL": {"relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"}
+        "GLASS_SHATTER": {
+          "relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"
+        },
+        "SIREN": {
+          "relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"
+        },
+        "FIRE_ALARM": {
+          "relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"
+        },
+        "VEHICLE_HORN": {
+          "relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"
+        },
+        "TIRE_SQUEAL": {
+          "relation": "CONTROLLED_OR_PLAYBACK_EVIDENCE_ONLY_UNTIL_AUTHORIZED"
+        }
       },
       "notes": "Field capture requires authorization/privacy/retention metadata and remains untouched holdout initially."
     },
@@ -141,19 +289,42 @@
       "name": "ECHO curated current-rights Freesound pool",
       "release": "curation-2026-09-13-v1",
       "canonical_url": "https://freesound.org/",
-      "role": ["curated_per_asset_positive_pool", "hard_negative_candidate_pool", "gap_closure"],
+      "role": [
+        "curated_per_asset_positive_pool",
+        "hard_negative_candidate_pool",
+        "gap_closure"
+      ],
       "license_model": "per_asset_current_page_rights",
       "dataset_license": null,
       "default_profile": "release_safe_filtered",
       "asset_license_required": true,
       "target_coverage": {
-        "GLASS_SHATTER": {"relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED", "review_required": false},
-        "SIREN": {"relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED", "review_required": false},
-        "FIRE_ALARM": {"relation": "EXACT_CURATED_OR_REVIEW_REQUIRED_CATEGORY_CANDIDATE", "review_required": true},
-        "VEHICLE_HORN": {"relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED", "review_required": false},
-        "TIRE_SQUEAL": {"relation": "EXACT_CURATED_OR_REVIEW_REQUIRED_CATEGORY_CANDIDATE", "review_required": true}
+        "GLASS_SHATTER": {
+          "relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED",
+          "review_required": false
+        },
+        "SIREN": {
+          "relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED",
+          "review_required": false
+        },
+        "FIRE_ALARM": {
+          "relation": "EXACT_CURATED_OR_REVIEW_REQUIRED_CATEGORY_CANDIDATE",
+          "review_required": true
+        },
+        "VEHICLE_HORN": {
+          "relation": "EXACT_WHEN_FSD50K_GROUND_TRUTH_OR_EXACT_CURATED",
+          "review_required": false
+        },
+        "TIRE_SQUEAL": {
+          "relation": "EXACT_CURATED_OR_REVIEW_REQUIRED_CATEGORY_CANDIDATE",
+          "review_required": true
+        }
       },
-      "group_keys": ["sound_id", "uploader", "curated_recording_family"],
+      "group_keys": [
+        "sound_id",
+        "uploader",
+        "curated_recording_family"
+      ],
       "notes": "The curation version is source-certified, but every concrete asset still requires current page rights, real-byte hash/probe, semantic status, grouping and global dedup. FSD50K and direct Freesound views share underlying source family FREESOUND."
     },
     {
@@ -161,19 +332,41 @@
       "name": "ECHO curated BigSoundBank CC0 gap pool",
       "release": "curation-2026-09-13-v1",
       "canonical_url": "https://bigsoundbank.com/",
-      "role": ["curated_per_asset_positive_pool", "gap_closure", "hard_negative_candidate_pool"],
+      "role": [
+        "curated_per_asset_positive_pool",
+        "gap_closure",
+        "hard_negative_candidate_pool"
+      ],
       "license_model": "per_asset_page_cc0_verification",
       "dataset_license": "CC0 candidates only",
       "default_profile": "release_safe_filtered",
       "asset_license_required": true,
       "target_coverage": {
-        "GLASS_SHATTER": {"relation": "EXACT_CURATED", "review_required": false},
-        "SIREN": {"relation": "EXACT_CURATED", "review_required": false},
-        "FIRE_ALARM": {"relation": "MIXED_EXACT_AND_REVIEW_REQUIRED", "review_required": true},
-        "VEHICLE_HORN": {"relation": "EXACT_CURATED", "review_required": false},
-        "TIRE_SQUEAL": {"relation": "MIXED_EXACT_AND_REVIEW_REQUIRED", "review_required": true}
+        "GLASS_SHATTER": {
+          "relation": "EXACT_CURATED",
+          "review_required": false
+        },
+        "SIREN": {
+          "relation": "EXACT_CURATED",
+          "review_required": false
+        },
+        "FIRE_ALARM": {
+          "relation": "MIXED_EXACT_AND_REVIEW_REQUIRED",
+          "review_required": true
+        },
+        "VEHICLE_HORN": {
+          "relation": "EXACT_CURATED",
+          "review_required": false
+        },
+        "TIRE_SQUEAL": {
+          "relation": "MIXED_EXACT_AND_REVIEW_REQUIRED",
+          "review_required": true
+        }
       },
-      "group_keys": ["recording_family", "asset_key"],
+      "group_keys": [
+        "recording_family",
+        "asset_key"
+      ],
       "notes": "Only rows with verified CC0 page evidence, real bytes, exact semantics and defensible recording-family identity can advance to global dedup."
     },
     {
@@ -181,15 +374,25 @@
       "name": "ECHO curated Wikimedia Commons fire-alarm pool",
       "release": "curation-2026-09-13-v1",
       "canonical_url": "https://commons.wikimedia.org/",
-      "role": ["curated_per_asset_positive_candidate_pool", "gap_closure", "augmentation_candidate_pool"],
+      "role": [
+        "curated_per_asset_positive_candidate_pool",
+        "gap_closure",
+        "augmentation_candidate_pool"
+      ],
       "license_model": "per_asset_public_domain_or_creative_commons",
       "dataset_license": null,
       "default_profile": "release_safe_filtered",
       "asset_license_required": true,
       "target_coverage": {
-        "FIRE_ALARM": {"relation": "MIXED_REVIEW_REQUIRED_EXACT_AND_AUGMENTATION_ONLY", "review_required": true}
+        "FIRE_ALARM": {
+          "relation": "MIXED_REVIEW_REQUIRED_EXACT_AND_AUGMENTATION_ONLY",
+          "review_required": true
+        }
       },
-      "group_keys": ["recording_family", "asset_key"],
+      "group_keys": [
+        "recording_family",
+        "asset_key"
+      ],
       "notes": "Public-domain rows can be release-safe candidates after semantic review; ShareAlike rows remain non-release-safe under current default policy; synthetic pattern assets never receive independent real-source credit."
     },
     {
@@ -197,15 +400,25 @@
       "name": "ECHO curated OpenGameArt rubberduck CC0 break/impact pack",
       "release": "curation-2026-09-15-v1",
       "canonical_url": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
-      "role": ["curated_per_asset_positive_pool", "hard_negative_candidate_pool", "gap_closure"],
+      "role": [
+        "curated_per_asset_positive_pool",
+        "hard_negative_candidate_pool",
+        "gap_closure"
+      ],
       "license_model": "uniform_submission_cc0_with_real_byte_evidence",
       "dataset_license": "CC0",
       "default_profile": "release_safe",
       "asset_license_required": false,
       "target_coverage": {
-        "GLASS_SHATTER": {"relation": "SIX_EXPLICIT_GLASS_BREAKING_POSITIVES_PLUS_CURATED_CONFUSERS", "review_required": false}
+        "GLASS_SHATTER": {
+          "relation": "SIX_EXPLICIT_GLASS_BREAKING_POSITIVES_PLUS_CURATED_CONFUSERS",
+          "review_required": false
+        }
       },
-      "group_keys": ["creator", "recording_family"],
+      "group_keys": [
+        "creator",
+        "recording_family"
+      ],
       "notes": "Canonical OpenGameArt evidence attributes the pack to creator rubberduck and marks it CC0. The pinned GitHub mirror is byte transport only, not a second acoustic source. All six glass-breaking variants remain one conservative positive recording family; non-glass and glass-hit/fall rows are confusers only."
     },
     {
@@ -213,16 +426,51 @@
       "name": "ECHO curated OpenGameArt Till Behrend glass-break asset",
       "release": "curation-2026-09-15-v1",
       "canonical_url": "https://opengameart.org/content/glass-break",
-      "role": ["curated_per_asset_positive_pool", "gap_closure"],
+      "role": [
+        "curated_per_asset_positive_pool",
+        "gap_closure"
+      ],
       "license_model": "uniform_submission_cc0_with_real_byte_evidence",
       "dataset_license": "CC0",
       "default_profile": "release_safe",
       "asset_license_required": false,
       "target_coverage": {
-        "GLASS_SHATTER": {"relation": "ONE_EXPLICIT_GLASS_BREAK_POSITIVE", "review_required": false}
+        "GLASS_SHATTER": {
+          "relation": "ONE_EXPLICIT_GLASS_BREAK_POSITIVE",
+          "review_required": false
+        }
       },
-      "group_keys": ["creator", "recording_family"],
+      "group_keys": [
+        "creator",
+        "recording_family"
+      ],
       "notes": "Canonical OpenGameArt evidence names Till Behrend as author, states uploader permission, marks the asset CC0, and exposes glass_breaking.wav. This source receives one acoustic-origin family only; OpenGameArt hosting itself is not diversity credit."
+    },
+    {
+      "source_id": "echo-soundbible-mike-koenig-tire-v1",
+      "name": "ECHO curated SoundBible Mike Koenig tire-squeal source",
+      "release": "curation-2026-09-16-v1",
+      "canonical_url": "https://soundbible.com/1178-Tires-Squealing.html",
+      "companion_url": "https://opengameart.org/content/car-tire-skid-squealing",
+      "role": [
+        "curated_per_asset_positive_pool",
+        "gap_closure"
+      ],
+      "license_model": "single_origin_cc_by_3_with_derivative_transport",
+      "dataset_license": "CC-BY-3.0",
+      "default_profile": "release_safe",
+      "asset_license_required": false,
+      "target_coverage": {
+        "TIRE_SQUEAL": {
+          "relation": "THREE_DERIVED_ASSETS_ONE_RECORDING_FAMILY",
+          "review_required": false
+        }
+      },
+      "group_keys": [
+        "creator",
+        "upstream_recording_family"
+      ],
+      "notes": "The three archive members are derivative edits of one Mike Koenig / SoundBible tire-squeal recording. They may contribute asset evidence but exactly one recording-group and one acoustic-origin-family credit."
     }
   ]
 }

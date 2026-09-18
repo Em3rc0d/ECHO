@@ -10,6 +10,7 @@ on:
       - 'MK1 OpenGameArt Rubberduck CC0 Materialization'
       - 'MK1 OpenGameArt Glass Expansion Materialization'
       - 'MK1 Public Gap Materialization'
+      - 'MK1 SoundBible Mike Koenig Tire Materialization'
     types: [completed]
   push:
     branches: [main]
@@ -22,6 +23,7 @@ on:
       - 'MK1/mining-site/materialization/public-gap-assets-report.json'
       - 'MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json'
       - 'MK1/mining-site/materialization/opengameart-glass-expansion-materialization.json'
+      - 'MK1/mining-site/materialization/soundbible-mike-koenig-tire-materialization.json'
       - 'MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json'
       - 'MK1/mining-site/materialization/esc50-pinned-materialization-summary.json'
       - 'MK1/mining-site/materialization/fsd50k-metadata-inspection.json'
@@ -31,6 +33,7 @@ on:
       - 'configs/data_foundry/underlying_source_families.v1.json'
       - 'configs/data_foundry/opengameart_rubberduck_cc0.v1.json'
       - 'configs/data_foundry/opengameart_glass_expansion.v1.json'
+      - 'configs/data_foundry/soundbible_mike_koenig_tire.v1.json'
       - 'configs/data_foundry/bigsoundbank_confusers.v1.json'
       - 'configs/data_foundry/hard_negative_mapping.v1.json'
       - 'configs/data_foundry/near_duplicate_policy.v1.json'
@@ -51,6 +54,7 @@ on:
       - 'scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_opengameart_cc0.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_till_behrend_glass.py'
+      - 'scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py'
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
@@ -110,6 +114,7 @@ jobs:
           python -m json.tool configs/data_foundry/freesound_cc0_supplemental.v1.json >/dev/null
           python -m json.tool configs/data_foundry/opengameart_rubberduck_cc0.v1.json >/dev/null
           python -m json.tool configs/data_foundry/opengameart_glass_expansion.v1.json >/dev/null
+          python -m json.tool configs/data_foundry/soundbible_mike_koenig_tire.v1.json >/dev/null
           python -m json.tool configs/data_foundry/wikimedia_confusers.v1.json >/dev/null
           python -m json.tool configs/data_foundry/bigsoundbank_confusers.v1.json >/dev/null
           python -m json.tool configs/data_foundry/hard_negative_mapping.v1.json >/dev/null
@@ -128,6 +133,7 @@ jobs:
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/augment_canonical_ledger_with_opengameart_cc0.py
           python scripts/data_foundry/augment_canonical_ledger_with_till_behrend_glass.py
+          python scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py
           python scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py
           python scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
@@ -196,6 +202,7 @@ jobs:
           python scripts/data_foundry/augment_canonical_ledger_with_cc0_gaps.py
           python scripts/data_foundry/augment_canonical_ledger_with_opengameart_cc0.py
           python scripts/data_foundry/augment_canonical_ledger_with_till_behrend_glass.py
+          python scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py
           python scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py
           python scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
