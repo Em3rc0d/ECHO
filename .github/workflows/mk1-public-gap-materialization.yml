@@ -10,6 +10,7 @@ on:
       - 'configs/data_foundry/bigsoundbank_glass_expansion.v1.json'
       - 'configs/data_foundry/free_tier_boundary.v1.json'
       - 'scripts/materialize_public_gap_assets.py'
+      - 'scripts/audit_bigsoundbank_0500_segmentation.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py'
       - 'src/echo/data_foundry/probe.py'
@@ -49,9 +50,13 @@ jobs:
           PYTHONPATH: src
           ECHO_GAP_ASSET_ROOT: ${{ runner.temp }}/echo-public-gap-assets
         run: python scripts/materialize_public_gap_assets.py
-      - name: Validate evidence report
+      - name: Audit BigSoundBank s0500 temporal events without corpus credit
+        run: python scripts/audit_bigsoundbank_0500_segmentation.py
+      - name: Validate evidence reports
         if: ${{ always() }}
-        run: python -m json.tool MK1/mining-site/materialization/public-gap-assets-report.json >/dev/null
+        run: |
+          python -m json.tool MK1/mining-site/materialization/public-gap-assets-report.json >/dev/null
+          python -m json.tool MK1/mining-site/materialization/bigsoundbank-0500-segmentation-audit.json >/dev/null
       - name: Enforce free-tier artifact size budget
         if: ${{ always() }}
         env:
@@ -82,7 +87,9 @@ jobs:
         run: |
           set -euo pipefail
           REPORT='MK1/mining-site/materialization/public-gap-assets-report.json'
+          SEGMENT_REPORT='MK1/mining-site/materialization/bigsoundbank-0500-segmentation-audit.json'
           cp "$REPORT" /tmp/public-gap-assets-report.json
+          cp "$SEGMENT_REPORT" /tmp/bigsoundbank-0500-segmentation-audit.json
           RUN_SHA="${GITHUB_SHA}"
           git reset --hard "$RUN_SHA"
           git fetch origin main --depth=50
@@ -101,6 +108,7 @@ jobs:
               configs/data_foundry/bigsoundbank_glass_expansion.v1.json
               configs/data_foundry/free_tier_boundary.v1.json
               scripts/materialize_public_gap_assets.py
+              scripts/audit_bigsoundbank_0500_segmentation.py
               scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py
               scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py
               src/echo/data_foundry/probe.py
@@ -116,9 +124,10 @@ jobs:
           fi
 
           cp /tmp/public-gap-assets-report.json "$REPORT"
+          cp /tmp/bigsoundbank-0500-segmentation-audit.json "$SEGMENT_REPORT"
           git config user.name 'echo-data-foundry-bot'
           git config user.email '123134857+Em3rc0d@users.noreply.github.com'
-          git add "$REPORT"
+          git add "$REPORT" "$SEGMENT_REPORT"
           if git diff --cached --quiet; then
             echo 'No evidence changes.'
           else
@@ -132,8 +141,12 @@ jobs:
           import json
           from pathlib import Path
           report = json.loads(Path('MK1/mining-site/materialization/public-gap-assets-report.json').read_text())
+          segment = json.loads(Path('MK1/mining-site/materialization/bigsoundbank-0500-segmentation-audit.json').read_text())
           print('materialized_count=', report['materialized_count'])
           print('failure_count=', report['failure_count'])
+          print('s0500_segmentation_status=', segment['status'], 'detected=', segment['detected_event_count'])
           if report['status'] != 'PASS':
               raise SystemExit('public gap materialization remains PARTIAL; inspect committed evidence report')
+          if segment['status'] not in {'PASS_CANDIDATE', 'REVIEW_REQUIRED'}:
+              raise SystemExit('unexpected s0500 segmentation audit status')
           PY
