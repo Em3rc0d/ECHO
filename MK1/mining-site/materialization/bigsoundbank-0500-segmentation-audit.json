@@ -1,0 +1,204 @@
+{
+  "asset_key": "bigsoundbank-500",
+  "canonical_page": "https://bigsoundbank.com/tire-squeal-s0500.html",
+  "canonical_page_sha256": "96f0b666aa4f3bec6696e5ebee3d05f35594172262503fe0bb70eab7dc7c751f",
+  "decode": {
+    "channels": 1,
+    "sample_format": "s16le",
+    "sample_rate_hz": 16000
+  },
+  "detected_event_count": 17,
+  "events": [
+    {
+      "canonical_pcm_sha256": "3cc064fccd8d7d63eb2f842d9795ac0495442a28c9d46c162094c3fb42c8dca2",
+      "decoded_sample_count": 14640,
+      "duration_seconds": 0.915,
+      "end_seconds": 1.105,
+      "event_index": 1,
+      "recording_family": "tire_500",
+      "start_seconds": 0.19
+    },
+    {
+      "canonical_pcm_sha256": "2ffb365c3ccbb872491dd2d4e9dba848f168bcf2afea5005ac5ce8c467e9fe71",
+      "decoded_sample_count": 15440,
+      "duration_seconds": 0.965,
+      "end_seconds": 2.875,
+      "event_index": 2,
+      "recording_family": "tire_500",
+      "start_seconds": 1.91
+    },
+    {
+      "canonical_pcm_sha256": "0849fd8cab4859f1017ea55712878f860103eefa9fd3e7c0fbd3362337a193d5",
+      "decoded_sample_count": 17840,
+      "duration_seconds": 1.115,
+      "end_seconds": 4.725,
+      "event_index": 3,
+      "recording_family": "tire_500",
+      "start_seconds": 3.61
+    },
+    {
+      "canonical_pcm_sha256": "341e0d125ab3920818ecb4d280f5ea290fe059a7f824c2d9a97e3d41d9026660",
+      "decoded_sample_count": 15760,
+      "duration_seconds": 0.985,
+      "end_seconds": 6.335,
+      "event_index": 4,
+      "recording_family": "tire_500",
+      "start_seconds": 5.35
+    },
+    {
+      "canonical_pcm_sha256": "1276f0a644bc2f2c02abc17a5e841efc9a19e03c3c7cd5ef3f0f23e9caa63acd",
+      "decoded_sample_count": 15280,
+      "duration_seconds": 0.955,
+      "end_seconds": 7.975,
+      "event_index": 5,
+      "recording_family": "tire_500",
+      "start_seconds": 7.02
+    },
+    {
+      "canonical_pcm_sha256": "c48c31a47a57fb474f7b3cb5dc878835364de448babd182599fd48169b3c7486",
+      "decoded_sample_count": 14160,
+      "duration_seconds": 0.885,
+      "end_seconds": 9.695,
+      "event_index": 6,
+      "recording_family": "tire_500",
+      "start_seconds": 8.81
+    },
+    {
+      "canonical_pcm_sha256": "9e0f626739d4e30d861bf4aecdebb8480d7f4931699a93742f12d35006bfa4af",
+      "decoded_sample_count": 14000,
+      "duration_seconds": 0.875,
+      "end_seconds": 11.535,
+      "event_index": 7,
+      "recording_family": "tire_500",
+      "start_seconds": 10.66
+    },
+    {
+      "canonical_pcm_sha256": "71b6641fe33572871cee9e0f9d3f56253089e82d99486452cb1f85bb34800656",
+      "decoded_sample_count": 14160,
+      "duration_seconds": 0.885,
+      "end_seconds": 13.275,
+      "event_index": 8,
+      "recording_family": "tire_500",
+      "start_seconds": 12.39
+    },
+    {
+      "canonical_pcm_sha256": "5cb57e67d727177c632a6b5110d3e4b79c7e5643e9beff5d620320a98cc8a29b",
+      "decoded_sample_count": 14640,
+      "duration_seconds": 0.915,
+      "end_seconds": 15.095,
+      "event_index": 9,
+      "recording_family": "tire_500",
+      "start_seconds": 14.18
+    },
+    {
+      "canonical_pcm_sha256": "4559a8ceb77f6307a48417725ea2b9131d5ec06d493c2acf41fd9c44faec2261",
+      "decoded_sample_count": 16080,
+      "duration_seconds": 1.005,
+      "end_seconds": 17.045,
+      "event_index": 10,
+      "recording_family": "tire_500",
+      "start_seconds": 16.04
+    },
+    {
+      "canonical_pcm_sha256": "d8eb0aede7109e91e62656afbf3bdebe71793dca614337f8e135377868c2cbc2",
+      "decoded_sample_count": 15440,
+      "duration_seconds": 0.965,
+      "end_seconds": 18.605,
+      "event_index": 11,
+      "recording_family": "tire_500",
+      "start_seconds": 17.64
+    },
+    {
+      "canonical_pcm_sha256": "b577c71626a4365b950103bab238c2b077e4adc23d8e352a4670e27e5a40fbc5",
+      "decoded_sample_count": 14640,
+      "duration_seconds": 0.915,
+      "end_seconds": 20.445,
+      "event_index": 12,
+      "recording_family": "tire_500",
+      "start_seconds": 19.53
+    },
+    {
+      "canonical_pcm_sha256": "ee705baed8fe6cf792cdffd230658c764395d7468b296b309c34674883a0c400",
+      "decoded_sample_count": 13360,
+      "duration_seconds": 0.835,
+      "end_seconds": 21.975,
+      "event_index": 13,
+      "recording_family": "tire_500",
+      "start_seconds": 21.14
+    },
+    {
+      "canonical_pcm_sha256": "c21c6dd174148fae5ad5f695466fde2073d72f3279d98d65f08d3589c4c8b870",
+      "decoded_sample_count": 14320,
+      "duration_seconds": 0.895,
+      "end_seconds": 23.705,
+      "event_index": 14,
+      "recording_family": "tire_500",
+      "start_seconds": 22.81
+    },
+    {
+      "canonical_pcm_sha256": "37eae126b392dc03c9feee9f855efbe42fed9117b74f229a48fa141b6dad9964",
+      "decoded_sample_count": 13360,
+      "duration_seconds": 0.835,
+      "end_seconds": 25.875,
+      "event_index": 15,
+      "recording_family": "tire_500",
+      "start_seconds": 25.04
+    },
+    {
+      "canonical_pcm_sha256": "88f4f1de86a9d0bfdfe676a35bd5f07afd689dcdc8490759d5db8e483bbc7bda",
+      "decoded_sample_count": 14640,
+      "duration_seconds": 0.915,
+      "end_seconds": 27.875,
+      "event_index": 16,
+      "recording_family": "tire_500",
+      "start_seconds": 26.96
+    },
+    {
+      "canonical_pcm_sha256": "dafa400f0e1a1ed2742ce959584fdca91801ea51abbed8c2f4406f893230f32b",
+      "decoded_sample_count": 11600,
+      "duration_seconds": 0.725,
+      "end_seconds": 29.385,
+      "event_index": 17,
+      "recording_family": "tire_500",
+      "start_seconds": 28.66
+    }
+  ],
+  "expected_event_count_from_page": 17,
+  "media_sha256": "af16113a4a279ca8a87b41727684afba2840a7ff00e8e7ba6b3291e8fead01fa",
+  "media_size_bytes": 1188608,
+  "media_url": "https://bigsoundbank.com/UPLOAD/mp3/0500.mp3",
+  "page_markers_missing": [],
+  "page_markers_required": [
+    "tire squeal",
+    "17 screeching tire",
+    "cc0"
+  ],
+  "phase": "SEGMENTATION_EVIDENCE_ONLY_NO_CORPUS_CREDIT",
+  "recording_family": "tire_500",
+  "resolved_media_url": "https://bigsoundbank.com/UPLOAD/mp3/0500.mp3",
+  "resolved_page": "https://bigsoundbank.com/tire-squeal-s0500.html",
+  "schema_version": "echo.bigsoundbank-0500-segmentation-audit.v1",
+  "segmentation_policy": {
+    "frame_ms": 25,
+    "hop_ms": 10,
+    "max_rms": 11363.590901,
+    "max_rms_fraction": 0.05,
+    "merge_gap_seconds": 0.18,
+    "min_event_seconds": 0.12,
+    "noise_multiplier": 3.5,
+    "noise_percentile": 0.2,
+    "noise_rms": 0.0,
+    "pad_seconds": 0.08,
+    "threshold_rms": 568.179545
+  },
+  "source_dataset": "echo-bigsoundbank-cc0-gap-v1",
+  "status": "PASS_CANDIDATE",
+  "stop_lines": [
+    "This audit grants zero corpus, coverage, split, group or source-diversity credit.",
+    "All derived events inherit one recording family: tire_500.",
+    "A later admission must replace the overlapping full-source positive instead of double-counting it.",
+    "Admission requires canonical rendered bytes, standard fingerprints, global dedup, split integrity and coverage rerun."
+  ],
+  "target": "TIRE_SQUEAL",
+  "unique_segment_pcm_hash_count": 17
+}
