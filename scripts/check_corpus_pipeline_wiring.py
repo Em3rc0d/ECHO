@@ -141,8 +141,11 @@ def audit_freesound_cc0_acquisition() -> None:
         "MK1/mining-site/materialization/freesound-gap-discovery.json",
         "python scripts/materialize_freesound_cc0_gap_assets.py",
         "python scripts/data_foundry/enrich_freesound_cc0_fingerprints.py",
-        "main moved during Freesound CC0 materialization; refusing to persist stale evidence",
-        "evidence(mk1): materialize fingerprinted Freesound CC0 gap candidates",
+        'RUN_SHA="${GITHUB_SHA}"',
+        'git merge-base --is-ancestor "$RUN_SHA" "$REMOTE_MAIN_SHA"',
+        "Freesound CC0 materialization inputs changed while the run was active; refusing stale evidence",
+        'git checkout --detach "$REMOTE_MAIN_SHA"',
+        "evidence(mk1): materialize fingerprinted Freesound CC0 gap candidates [skip ci]",
         PERSIST_TO_MAIN,
     ):
         require(text, needle, label)
