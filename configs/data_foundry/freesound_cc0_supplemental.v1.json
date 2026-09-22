@@ -1,6 +1,6 @@
 {
   "schema_version": "echo.freesound-cc0-supplemental.v1",
-  "checked_at": "2026-09-17",
+  "checked_at": "2026-09-21",
   "policy": "Only assets whose live Freesound page confirms Creative Commons 0 are eligible for automated public-domain preview materialization. Exact positive semantics require explicit review against MK1/design/TAXONOMY.md plus durable page/title/bytes/probe/fingerprint evidence. Explicit building fire alarms, active smoke-detector/smoke-alarm recordings, and recordings whose page explicitly identifies a tire squeal/screech from vehicle tires may become exact positives. Battery-low chirps, generic alarms/sirens, generic braking, burnouts, crash composites, ambiguous skids and augmentation/foley derivatives remain review-required or augmentation-only. Related perspectives/takes from one event/session must share a recording family.",
   "targets": {
     "FIRE_ALARM": [
@@ -297,6 +297,16 @@
         "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session"
       },
       {
+        "sound_id": 437818,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-two-engine-prop-aircraft-tire-skid-437818"
+      },
+      {
+        "sound_id": 437840,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-c47-aircraft-tire-skid-437840"
+      },
+      {
         "sound_id": 438023,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-vintage-ford-fast-screech-stop"
@@ -350,6 +360,11 @@
         "sound_id": 438638,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-vintage-assorted-tire-squeals"
+      },
+      {
+        "sound_id": 479498,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-airplane-tire-skid-479498"
       },
       {
         "sound_id": 481668,
@@ -490,6 +505,16 @@
         "sound_id": 752837,
         "semantic": "tire_squeal",
         "recording_family": "LukaCafuka-distant-tire-screech"
+      },
+      {
+        "sound_id": 774264,
+        "semantic": "tire_squeal",
+        "recording_family": "loganzsound-bike-tire-skid-concrete-session"
+      },
+      {
+        "sound_id": 774265,
+        "semantic": "tire_squeal",
+        "recording_family": "loganzsound-bike-tire-skid-concrete-session"
       },
       {
         "sound_id": 828733,
