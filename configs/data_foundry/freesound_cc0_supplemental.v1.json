@@ -327,6 +327,11 @@
         "recording_family": "craigsmith-sports-cars-race-squeal-438060"
       },
       {
+        "sound_id": 438061,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-sports-cars-race-tire-squeals-438061"
+      },
+      {
         "sound_id": 438064,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-thunderbird-heavy-tire-squeal-session"
@@ -375,6 +380,11 @@
         "sound_id": 481676,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-old-auto-tire-skid-stop-481676"
+      },
+      {
+        "sound_id": 481677,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-old-auto-tire-skids-481677"
       },
       {
         "sound_id": 481678,
