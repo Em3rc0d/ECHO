@@ -25,6 +25,16 @@
         "recording_family": "erihamster-smoke-detector-going-off"
       },
       {
+        "sound_id": 136634,
+        "semantic": "fire_alarm",
+        "recording_family": "smmassuda-fire-alarm-136634"
+      },
+      {
+        "sound_id": 164686,
+        "semantic": "fire_alarm",
+        "recording_family": "deleted-user-2104797-recording-studio-fire-alarm"
+      },
+      {
         "sound_id": 165542,
         "semantic": "fire_alarm",
         "recording_family": "wrdSound-firealarm-feueralarm"
@@ -88,6 +98,11 @@
         "sound_id": 388709,
         "semantic": "fire_alarm",
         "recording_family": "totalcult-fire-alarm-field-recording"
+      },
+      {
+        "sound_id": 405585,
+        "semantic": "fire_alarm",
+        "recording_family": "JohnLaVine333-building-fire-alarm-session"
       },
       {
         "sound_id": 405590,
@@ -190,6 +205,11 @@
         "recording_family": "simonjeffery13-weekly-fire-alarm-test"
       },
       {
+        "sound_id": 828487,
+        "semantic": "fire_alarm",
+        "recording_family": "etki0000-school-fire-drill-russian-828487"
+      },
+      {
         "sound_id": 834335,
         "semantic": "license_text_conflict_review_required",
         "recording_family": "bangcorrupt-fire-alarm"
@@ -247,6 +267,11 @@
         "recording_family": "RutgerMuller-hilversum-tires-squeaking"
       },
       {
+        "sound_id": 141240,
+        "semantic": "tire_squeal",
+        "recording_family": "lovretta-renault19-tire-skid-acceleration-session"
+      },
+      {
         "sound_id": 233557,
         "semantic": "contains_tire_squeal_temporal_review_required",
         "recording_family": "car-screech-233557"
@@ -302,6 +327,16 @@
         "recording_family": "craigsmith-old-auto-tire-skid"
       },
       {
+        "sound_id": 481678,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-old-auto-tire-skid-sequence-481678"
+      },
+      {
+        "sound_id": 481692,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-old-auto-skid-stop-481692"
+      },
+      {
         "sound_id": 481699,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-car-tires-squealing"
@@ -325,6 +360,16 @@
         "sound_id": 614627,
         "semantic": "tire_squeal_foley_augmentation_only",
         "recording_family": "johnnydekk-foley"
+      },
+      {
+        "sound_id": 675277,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-skid-dirt-675277"
+      },
+      {
+        "sound_id": 675285,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-classic-car-skid-675285"
       },
       {
         "sound_id": 737192,
