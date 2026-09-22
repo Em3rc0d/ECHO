@@ -5,26 +5,198 @@
   "evidence_authority": "MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json",
   "policy": "A source-category hit is never sufficient by itself. ADMIT_EXACT requires release-safe materialized evidence plus source-page semantics that directly support the frozen ECHO target. KEEP_REVIEW_REQUIRED is the default for generic alarms, sirens, braking/maneuver names, synthesized/effect ambiguity or composite events lacking an isolated target claim. Recording-family decisions are conservative and may reduce group credit when clips are clearly from one session/series.",
   "decisions": [
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":128021,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - feueralarm_schule.wav by neoge","page_sha256":"c5c20a87f397694961d28607d8045ec746a3c6a17c1b8b3e9efba69cb68dbae4","reason":"Page title explicitly identifies a school fire alarm; CC0 bytes/probe/fingerprint are materialized."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":165542,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - Firealarm (Feueralarm) by wrdSound","page_sha256":"dd2fb1e5339a674437735f383fd9d8068f6b6d8e8cb56beecfff664a8eb8ce9d","reason":"Page title explicitly identifies fire alarm semantics; CC0 bytes/probe/fingerprint are materialized."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":338355,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - Fire alarm.wav by ScouseMouseJB","page_sha256":"bcaa9406e65239edf0a204941f3472909d843712c264c9699c893205deb0c8d6","reason":"Direct fire-alarm title with CC0 materialization."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":372087,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - fire alarm beeping in the morning by PostYourOwnBalls","page_sha256":"276abfbe080691029a867e0a26ea283278e3c39d92aaad859ce3b067aa301009","reason":"Direct fire-alarm title with CC0 materialization."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":386756,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - Fire_Alarm.wav by ken788","page_sha256":"0e5808b55e8ad0d428f4b44008dcdead56b30b3f1da26c4f3485cebf1cceb68e","reason":"Direct fire-alarm title with CC0 materialization."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":462262,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - Sound 14 fire alarm bell (contact).WAV by Josherman4","page_sha256":"ebe5864017750b7068c7653254bf09854330af9b36b404ea2c1d880057bc232d","reason":"The source explicitly identifies a fire-alarm bell; this is narrower evidence for the frozen FIRE_ALARM class, not a generic bell mapping."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":678345,"target":"FIRE_ALARM","decision":"ADMIT_EXACT","canonical_semantic":"fire_alarm","page_title":"Freesound - fire alarm bell by msx2plus","page_sha256":"df52f45e3477baaa7afc6c7ee53e2831628de941896ef6ffd367882ada2127eb","reason":"The source explicitly identifies a fire-alarm bell; CC0 bytes/probe/fingerprint are materialized."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":71736,"target":"TIRE_SQUEAL","decision":"ADMIT_EXACT","canonical_semantic":"tire_squeal","page_title":"Freesound - Chrysler LHS tire squeal 01 (04-25-2009).wav by audible-edge","page_sha256":"d24b49333d40ecc061a39a77ad1c3a7bb19b0ee288fe40b5beed190ce3a9b717","recording_family":"audible-edge-Chrysler-LHS-2009-04-25-session","reason":"Direct tire-squeal title and CC0 materialization. Same author/vehicle/date series is conservatively one recording family."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":71737,"target":"TIRE_SQUEAL","decision":"KEEP_EXACT_REGROUP","canonical_semantic":"tire_squeal","recording_family":"audible-edge-Chrysler-LHS-2009-04-25-session","reason":"Existing exact positive retained, but grouped with the same Chrysler/date recording series to prevent split leakage."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":71738,"target":"TIRE_SQUEAL","decision":"KEEP_EXACT_REGROUP","canonical_semantic":"tire_squeal","recording_family":"audible-edge-Chrysler-LHS-2009-04-25-session","reason":"Existing exact positive retained, but grouped with the same Chrysler/date recording series to prevent split leakage."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":71739,"target":"TIRE_SQUEAL","decision":"ADMIT_EXACT","canonical_semantic":"tire_squeal","page_title":"Freesound - Chrysler LHS tire squeal 04 (04-25-2009).wav by audible-edge","page_sha256":"646544a01dc2b4045f7bb5fed4865c4537be18dfdb39df373f47c5499ea563d5","recording_family":"audible-edge-Chrysler-LHS-2009-04-25-session","reason":"Direct tire-squeal title and CC0 materialization; grouped with same recording session."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":350671,"target":"TIRE_SQUEAL","decision":"KEEP_EXACT_REGROUP","canonical_semantic":"tire_squeal","recording_family":"Dominik_W-Nordschleife-VLN-tyre-squeal-session","reason":"Existing exact positive retained; paired Nordschleife/VLN series is conservatively one recording family."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":350677,"target":"TIRE_SQUEAL","decision":"KEEP_EXACT_REGROUP","canonical_semantic":"tire_squeal","recording_family":"Dominik_W-Nordschleife-VLN-tyre-squeal-session","reason":"Existing exact positive retained; paired Nordschleife/VLN series is conservatively one recording family."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":101347,"target":"TIRE_SQUEAL","decision":"ADMIT_EXACT","canonical_semantic":"tire_squeal","page_title":"Freesound - 57 chevy drive away and distant tire squeal_1-2.aif by aaronsawyer1","page_sha256":"129fd4eb50d1fdceb5970e275d978bd92b264afc777e6b4c787e6bddcd36cad1","reason":"Title explicitly states a distant tire squeal. Additional non-target vehicle audio does not negate the target under ECHO multilabel semantics."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":25032,"target":"FIRE_ALARM","decision":"KEEP_REVIEW_REQUIRED","reason":"Generic extreme_alarm title does not establish fire-alarm semantics."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":55031,"target":"FIRE_ALARM","decision":"KEEP_REVIEW_REQUIRED","reason":"Generic Alarm title is explicitly insufficient under frozen taxonomy."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":164686,"target":"FIRE_ALARM","decision":"KEEP_REVIEW_REQUIRED","reason":"Siren title is a distinct ECHO target/confuser, not direct fire-alarm evidence."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":415266,"target":"FIRE_ALARM","decision":"KEEP_REVIEW_REQUIRED","reason":"Emergency Alarm remains broader than FIRE_ALARM without stronger mapping evidence."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":271337,"target":"TIRE_SQUEAL","decision":"KEEP_REVIEW_REQUIRED","reason":"Car peels off does not explicitly prove audible tire squeal."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":367439,"target":"TIRE_SQUEAL","decision":"KEEP_REVIEW_REQUIRED","reason":"Car braking is an explicit TIRE_SQUEAL confuser unless squeal evidence is separately established."},
-    {"source_dataset":"echo-freesound-release-safe-v1","sound_id":426021,"target":"TIRE_SQUEAL","decision":"KEEP_REVIEW_REQUIRED","reason":"Composite accident+squeal SFX remains review-required pending isolation/real-recording evidence; no credit granted merely to raise coverage."}
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 128021,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - feueralarm_schule.wav by neoge",
+      "page_sha256": "c5c20a87f397694961d28607d8045ec746a3c6a17c1b8b3e9efba69cb68dbae4",
+      "reason": "Page title explicitly identifies a school fire alarm; CC0 bytes/probe/fingerprint are materialized."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 165542,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - Firealarm (Feueralarm) by wrdSound",
+      "page_sha256": "dd2fb1e5339a674437735f383fd9d8068f6b6d8e8cb56beecfff664a8eb8ce9d",
+      "reason": "Page title explicitly identifies fire alarm semantics; CC0 bytes/probe/fingerprint are materialized."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 338355,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - Fire alarm.wav by ScouseMouseJB",
+      "page_sha256": "bcaa9406e65239edf0a204941f3472909d843712c264c9699c893205deb0c8d6",
+      "reason": "Direct fire-alarm title with CC0 materialization."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 372087,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - fire alarm beeping in the morning by PostYourOwnBalls",
+      "page_sha256": "276abfbe080691029a867e0a26ea283278e3c39d92aaad859ce3b067aa301009",
+      "reason": "Direct fire-alarm title with CC0 materialization."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 386756,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - Fire_Alarm.wav by ken788",
+      "page_sha256": "0e5808b55e8ad0d428f4b44008dcdead56b30b3f1da26c4f3485cebf1cceb68e",
+      "reason": "Direct fire-alarm title with CC0 materialization."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 462262,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - Sound 14 fire alarm bell (contact).WAV by Josherman4",
+      "page_sha256": "ebe5864017750b7068c7653254bf09854330af9b36b404ea2c1d880057bc232d",
+      "reason": "The source explicitly identifies a fire-alarm bell; this is narrower evidence for the frozen FIRE_ALARM class, not a generic bell mapping."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 678345,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - fire alarm bell by msx2plus",
+      "page_sha256": "df52f45e3477baaa7afc6c7ee53e2831628de941896ef6ffd367882ada2127eb",
+      "reason": "The source explicitly identifies a fire-alarm bell; CC0 bytes/probe/fingerprint are materialized."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 71736,
+      "target": "TIRE_SQUEAL",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "tire_squeal",
+      "page_title": "Freesound - Chrysler LHS tire squeal 01 (04-25-2009).wav by audible-edge",
+      "page_sha256": "d24b49333d40ecc061a39a77ad1c3a7bb19b0ee288fe40b5beed190ce3a9b717",
+      "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session",
+      "reason": "Direct tire-squeal title and CC0 materialization. Same author/vehicle/date series is conservatively one recording family."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 71737,
+      "target": "TIRE_SQUEAL",
+      "decision": "KEEP_EXACT_REGROUP",
+      "canonical_semantic": "tire_squeal",
+      "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session",
+      "reason": "Existing exact positive retained, but grouped with the same Chrysler/date recording series to prevent split leakage."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 71738,
+      "target": "TIRE_SQUEAL",
+      "decision": "KEEP_EXACT_REGROUP",
+      "canonical_semantic": "tire_squeal",
+      "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session",
+      "reason": "Existing exact positive retained, but grouped with the same Chrysler/date recording series to prevent split leakage."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 71739,
+      "target": "TIRE_SQUEAL",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "tire_squeal",
+      "page_title": "Freesound - Chrysler LHS tire squeal 04 (04-25-2009).wav by audible-edge",
+      "page_sha256": "646544a01dc2b4045f7bb5fed4865c4537be18dfdb39df373f47c5499ea563d5",
+      "recording_family": "audible-edge-Chrysler-LHS-2009-04-25-session",
+      "reason": "Direct tire-squeal title and CC0 materialization; grouped with same recording session."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 350671,
+      "target": "TIRE_SQUEAL",
+      "decision": "KEEP_EXACT_REGROUP",
+      "canonical_semantic": "tire_squeal",
+      "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session",
+      "reason": "Existing exact positive retained; paired Nordschleife/VLN series is conservatively one recording family."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 350677,
+      "target": "TIRE_SQUEAL",
+      "decision": "KEEP_EXACT_REGROUP",
+      "canonical_semantic": "tire_squeal",
+      "recording_family": "Dominik_W-Nordschleife-VLN-tyre-squeal-session",
+      "reason": "Existing exact positive retained; paired Nordschleife/VLN series is conservatively one recording family."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 101347,
+      "target": "TIRE_SQUEAL",
+      "decision": "ADMIT_EXACT",
+      "canonical_semantic": "tire_squeal",
+      "page_title": "Freesound - 57 chevy drive away and distant tire squeal_1-2.aif by aaronsawyer1",
+      "page_sha256": "129fd4eb50d1fdceb5970e275d978bd92b264afc777e6b4c787e6bddcd36cad1",
+      "reason": "Title explicitly states a distant tire squeal. Additional non-target vehicle audio does not negate the target under ECHO multilabel semantics."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 25032,
+      "target": "FIRE_ALARM",
+      "decision": "KEEP_REVIEW_REQUIRED",
+      "reason": "Generic extreme_alarm title does not establish fire-alarm semantics."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 55031,
+      "target": "FIRE_ALARM",
+      "decision": "KEEP_REVIEW_REQUIRED",
+      "reason": "Generic Alarm title is explicitly insufficient under frozen taxonomy."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 164686,
+      "target": "FIRE_ALARM",
+      "decision": "ADMIT_EXACT",
+      "reason": "Source description explicitly states a fire alarm goes off in a recording studio; CC0 bytes, probe and fingerprint are materialized.",
+      "canonical_semantic": "fire_alarm",
+      "page_title": "Freesound - Siren.wav by deleted_user_2104797",
+      "page_sha256": "dd3f9bc9612dbff61ae97a3dd1c068a56e16e74ce95db14bb49959daa85c1938"
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 415266,
+      "target": "FIRE_ALARM",
+      "decision": "KEEP_REVIEW_REQUIRED",
+      "reason": "Emergency Alarm remains broader than FIRE_ALARM without stronger mapping evidence."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 271337,
+      "target": "TIRE_SQUEAL",
+      "decision": "ADMIT_EXACT",
+      "reason": "Source description explicitly states the recorded car tires skid and tags screech/squeal/tire; CC0 bytes, probe and fingerprint are materialized.",
+      "canonical_semantic": "tire_squeal",
+      "page_title": "Freesound - Car peels off by therisingorder",
+      "page_sha256": "ff6993985589d7c710ec4c4e2fbf2c77cc52e16a7a8bb1bc3111e04ca2a5844c"
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 367439,
+      "target": "TIRE_SQUEAL",
+      "decision": "KEEP_REVIEW_REQUIRED",
+      "reason": "Car braking is an explicit TIRE_SQUEAL confuser unless squeal evidence is separately established."
+    },
+    {
+      "source_dataset": "echo-freesound-release-safe-v1",
+      "sound_id": 426021,
+      "target": "TIRE_SQUEAL",
+      "decision": "KEEP_REVIEW_REQUIRED",
+      "reason": "Composite accident+squeal SFX remains review-required pending isolation/real-recording evidence; no credit granted merely to raise coverage."
+    }
   ]
 }
