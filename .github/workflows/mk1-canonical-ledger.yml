@@ -21,6 +21,8 @@ on:
       - 'MK1/mining-site/materialization/freesound-release-safe-materialization.json'
       - 'MK1/mining-site/materialization/freesound-cc0-gap-assets-report.json'
       - 'MK1/mining-site/materialization/public-gap-assets-report.json'
+      - 'MK1/mining-site/materialization/bigsoundbank-0500-segmentation-audit.json'
+      - 'MK1/mining-site/materialization/bigsoundbank-0500-segment-materialization.json'
       - 'MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json'
       - 'MK1/mining-site/materialization/opengameart-glass-expansion-materialization.json'
       - 'MK1/mining-site/materialization/soundbible-mike-koenig-tire-materialization.json'
@@ -58,6 +60,7 @@ on:
       - 'scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py'
       - 'scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py'
+      - 'scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_0500_segments.py'
       - 'scripts/data_foundry/enrich_canonical_asset_ledger.py'
       - 'scripts/data_foundry/enforce_canonical_ledger_role_boundary.py'
       - 'scripts/data_foundry/resolve_global_recording_groups.py'
@@ -139,6 +142,7 @@ jobs:
           python scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py
           python scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py
           python scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py
+          python scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_0500_segments.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
@@ -209,6 +213,7 @@ jobs:
           python scripts/data_foundry/augment_canonical_ledger_with_soundbible_tire.py
           python scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py
           python scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py
+          python scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_0500_segments.py
           python scripts/data_foundry/enrich_canonical_asset_ledger.py
           python scripts/data_foundry/enforce_canonical_ledger_role_boundary.py
           python scripts/data_foundry/resolve_global_recording_groups.py
