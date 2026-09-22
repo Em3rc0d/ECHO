@@ -1,9 +1,9 @@
 {
-  "assignment_sha256": "6ec354f9d2508f77bc2f8757e8fcd225369b95a4240df74edd7bda1e68a84d0c",
+  "assignment_sha256": "af374adb63cd7021ba6d2accc5ac5a13460f53e874032b83849d0ba1bb4d78dc",
   "boundary": "Conflicting protected original splits quarantine the complete acoustic recording group. No member is remapped; quarantined rows remain source/ledger evidence but cannot satisfy development coverage or frozen corpus membership.",
-  "eligible_asset_count": 1019,
+  "eligible_asset_count": 1028,
   "gap_codes": [],
-  "ledger_sha256": "dc1239ca64e63ee4f11f36d6eee110b0ab4876fb79b875d18e747d1409227b8a",
+  "ledger_sha256": "b5801c4782f109328ecb0cd91fe3aea246fcc576fb3828c61eb0c83054728d50",
   "original_split_conflict_count": 0,
   "original_split_conflicts_quarantined": 0,
   "policy_id": "MK1-SPLIT-INTEGRITY-002",
@@ -12,13 +12,13 @@
   "quarantine_identity_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
   "quarantined_asset_count": 0,
   "quarantined_recording_family_count": 0,
-  "ready_candidate_asset_count": 1019,
-  "recording_family_assignment_count": 930,
+  "ready_candidate_asset_count": 1028,
+  "recording_family_assignment_count": 938,
   "schema_version": "echo.split-integrity.v2",
   "split_asset_counts": {
     "test": 446,
-    "train": 337,
-    "validation": 236
+    "train": 345,
+    "validation": 237
   },
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "PASS"
