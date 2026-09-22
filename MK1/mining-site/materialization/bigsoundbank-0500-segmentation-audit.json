@@ -1,7 +1,7 @@
 {
   "asset_key": "bigsoundbank-500",
   "canonical_page": "https://bigsoundbank.com/tire-squeal-s0500.html",
-  "canonical_page_sha256": "96f0b666aa4f3bec6696e5ebee3d05f35594172262503fe0bb70eab7dc7c751f",
+  "canonical_page_sha256": "0ff0017742f2637bc4a5367d30a930d5584420f83fbb494d42aadc4f1333275c",
   "decode": {
     "channels": 1,
     "sample_format": "s16le",
