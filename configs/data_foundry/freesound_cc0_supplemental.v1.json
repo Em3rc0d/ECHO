@@ -307,6 +307,36 @@
         "recording_family": "craigsmith-old-car-rough-road-peelout-squeal"
       },
       {
+        "sound_id": 438057,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-wet-road-car-stop-squeal-438057"
+      },
+      {
+        "sound_id": 438060,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-sports-cars-race-squeal-438060"
+      },
+      {
+        "sound_id": 438064,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-thunderbird-heavy-tire-squeal-session"
+      },
+      {
+        "sound_id": 438065,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-thunderbird-heavy-tire-squeal-session"
+      },
+      {
+        "sound_id": 438066,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-muffled-cars-squealing-tires-438066"
+      },
+      {
+        "sound_id": 438333,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-mailbox-swerve-skid-438333"
+      },
+      {
         "sound_id": 438335,
         "semantic": "contains_tire_squeal_temporal_review_required",
         "recording_family": "craigsmith-vintage-crash-438335"
@@ -325,6 +355,11 @@
         "sound_id": 481668,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-old-auto-tire-skid"
+      },
+      {
+        "sound_id": 481676,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-old-auto-tire-skid-stop-481676"
       },
       {
         "sound_id": 481678,
@@ -362,14 +397,89 @@
         "recording_family": "johnnydekk-foley"
       },
       {
+        "sound_id": 675276,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-in-skids-connected-pieces-675276"
+      },
+      {
         "sound_id": 675277,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-car-skid-dirt-675277"
       },
       {
+        "sound_id": 675278,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-skids-corner-multiple-675278"
+      },
+      {
+        "sound_id": 675281,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-skids-motor-noise-675281"
+      },
+      {
+        "sound_id": 675282,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-skids-dirt-675282"
+      },
+      {
+        "sound_id": 675283,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-cars-skidding-corners-675283"
+      },
+      {
+        "sound_id": 675284,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-heavy-car-skids-several-675284"
+      },
+      {
         "sound_id": 675285,
         "semantic": "tire_squeal",
         "recording_family": "craigsmith-classic-car-skid-675285"
+      },
+      {
+        "sound_id": 675286,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-distorted-car-skids-loop-675286"
+      },
+      {
+        "sound_id": 675287,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-dull-car-skids-675287"
+      },
+      {
+        "sound_id": 675288,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-ford-parking-garage-skid-675288"
+      },
+      {
+        "sound_id": 675289,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-parking-structure-skids-collision-675289"
+      },
+      {
+        "sound_id": 675290,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-underground-parking-chase-skid-675290"
+      },
+      {
+        "sound_id": 675291,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-vw-mustang-skid-corner-675291"
+      },
+      {
+        "sound_id": 675838,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-car-skid-vacant-lot-675838"
+      },
+      {
+        "sound_id": 675840,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-classic-car-crash-skid-675840"
+      },
+      {
+        "sound_id": 675915,
+        "semantic": "tire_squeal",
+        "recording_family": "craigsmith-long-car-skid-crash-675915"
       },
       {
         "sound_id": 737192,
