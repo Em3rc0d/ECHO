@@ -134,8 +134,8 @@
       }
     },
     "TIRE_SQUEAL": {
-      "asset_count": 79,
-      "clip_duration_seconds": 1539.041979,
+      "asset_count": 81,
+      "clip_duration_seconds": 1776.737979,
       "hard_negatives": {
         "asset_count": 25,
         "independent_group_count": 12,
@@ -145,11 +145,11 @@
           "WIKIMEDIA_COMMONS"
         ]
       },
-      "independent_group_count": 52,
-      "max_single_source_fraction": 0.696203,
+      "independent_group_count": 54,
+      "max_single_source_fraction": 0.703704,
       "source_asset_counts": {
         "BIGSOUNDBANK": 21,
-        "FREESOUND": 55,
+        "FREESOUND": 57,
         "SOUNDBIBLE_MIKE_KOENIG": 3
       },
       "source_count": 3,
@@ -160,13 +160,13 @@
       ],
       "split_assets": {
         "test": 4,
-        "train": 64,
-        "validation": 11
+        "train": 65,
+        "validation": 12
       },
       "split_groups": {
         "test": 3,
-        "train": 42,
-        "validation": 7
+        "train": 43,
+        "validation": 8
       }
     },
     "VEHICLE_HORN": {
@@ -208,7 +208,7 @@
     }
   },
   "coverage_policy_sha256": "bc45947df58b22608e3f0a1aec682105efa3b0b949e99251076639ff98a81d36",
-  "development_asset_count": 1055,
+  "development_asset_count": 1057,
   "failures": [
     {
       "actual": 4,
@@ -223,7 +223,7 @@
   "gap_codes": [
     "TIRE_SQUEAL_TEST_ASSETS_BELOW_MIN"
   ],
-  "ledger_sha256": "2b2e5dc752751305a2ac37bfb34e69134c6e7a6e4a387cb628c158aabe95c684",
+  "ledger_sha256": "75effad01dd3e671494e3eb46475aceb4f0e958da32efcef0d02e36c6e9a816d",
   "note": "Coverage excludes whole acoustic groups quarantined by protected original-split conflicts and counts only release-safe ready rows by underlying acoustic source family.",
   "policy_id": "MK1-CORPUS-SOLIDITY-001",
   "profile": "release_safe",

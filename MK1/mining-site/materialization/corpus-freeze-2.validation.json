@@ -1,15 +1,15 @@
 {
-  "asset_count": 1055,
+  "asset_count": 1057,
   "boundary": "No quarantined split-conflict group is frozen; benchmark handoff still requires every upstream closure gate PASS.",
   "freeze_id": "MK1-CORPUS-FREEZE-2",
   "gap_codes": [
     "UPSTREAM_COVERAGE_NOT_PASS"
   ],
-  "ledger_sha256": "2b2e5dc752751305a2ac37bfb34e69134c6e7a6e4a387cb628c158aabe95c684",
+  "ledger_sha256": "75effad01dd3e671494e3eb46475aceb4f0e958da32efcef0d02e36c6e9a816d",
   "quarantined_asset_count": 0,
   "schema_version": "echo.corpus-freeze-validation.v2",
-  "semantic_identity_sha256": "f4af3ecf86227df473f843062ab617ef67e70c4d29d97832791eef0dd39e7651",
-  "split_assignment_sha256": "f7495bc1e7dc40c98c6a78d8fb7888237b4ed5730394b7faa3942eeee912d641",
+  "semantic_identity_sha256": "bd15414408ec924a11de0c892322f9751fe3d283bcbe3c3d7b6d61e35bcd4fbb",
+  "split_assignment_sha256": "dd1454753801c0c2e6eb51b2a2da815142c6bc8b2085bd966a9242d2dc98e8e3",
   "split_policy_sha256": "1174cbc1045493d830d961090d06e4c6284e41f3e3c1e1adc20976755c6f86b5",
   "status": "FAIL"
 }

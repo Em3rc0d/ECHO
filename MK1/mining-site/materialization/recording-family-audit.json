@@ -2,14 +2,14 @@
   "confirmed_near_duplicate_cross_group_count": 0,
   "gap_codes": [],
   "largest_recording_family_asset_count": 17,
-  "ledger_sha256": "2b2e5dc752751305a2ac37bfb34e69134c6e7a6e4a387cb628c158aabe95c684",
+  "ledger_sha256": "75effad01dd3e671494e3eb46475aceb4f0e958da32efcef0d02e36c6e9a816d",
   "missing_recording_group_count": 0,
   "note": "Review-only screening candidates may cross recording families; confirmed identity-protection relations may not.",
   "pending_global_group_audit_count": 0,
   "pending_global_group_audit_sample": [],
-  "recording_family_count": 963,
+  "recording_family_count": 965,
   "schema_version": "echo.recording-family-audit.v2",
-  "scope_asset_count": 1055,
+  "scope_asset_count": 1057,
   "screening_candidate_cross_group_count": 97,
   "status": "PASS"
 }
