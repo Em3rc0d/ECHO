@@ -1,7 +1,39 @@
 {
-  "baseline_commit": "24f6b72b1dcd83cd706870c44459c39374b6d115",
+  "baseline_commit": "727cbec1aef8ba695d6ffe6fe01de4da70830a01",
+  "bigsoundbank_0500_segmentation_augmentation": {
+    "audit_sha256": "c6e0be79c001e4b95b55c6dddecd024c9cf14698735af5f67eb546b798542f3d",
+    "child_count": 17,
+    "child_ledger_ids": [
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-01",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-02",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-03",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-04",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-05",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-06",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-07",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-08",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-09",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-10",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-11",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-12",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-13",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-14",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-15",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-16",
+      "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500:event-17"
+    ],
+    "diversity_stop_line": "All 17 child events retain exactly one BigSoundBank source family and one recording group.",
+    "overlap_stop_line": "The full s0500 parent positive is removed before child-event credit is added.",
+    "parent_removed": "echo-bigsoundbank-cc0-gap-v1:bigsoundbank-500",
+    "recording_group_id": "echo-bigsoundbank-cc0-gap-v1:tire_500",
+    "segment_report_sha256": "9adc8d82e149a5ea01a8d32f874deab8b72476d81593b4aea099f15029dd0387",
+    "source_id": "echo-bigsoundbank-cc0-gap-v1",
+    "status": "PASS",
+    "target": "TIRE_SQUEAL",
+    "underlying_source_family": "BIGSOUNDBANK"
+  },
   "blocking_reason_counts": {},
-  "canonical_fingerprint_count": 1003,
+  "canonical_fingerprint_count": 1019,
   "canonical_fingerprint_missing_count": 0,
   "cc0_gap_augmentation": {
     "canonical_source_id": "echo-freesound-release-safe-v1",
@@ -60,21 +92,21 @@
     "hard_negative_stop_line": "FSD50K source confusers and governed exact-positive cross-target confusers create hard-negative roles only; they never promote, remove or rewrite positive ECHO labels. Existing review/conflict semantics block cross-target credit for that destination.",
     "inputs": {
       "MK1/mining-site/materialization/freesound-release-safe-materialization.json": "a5333d3d06271585cf3794c2d6728368ecef65036e72d8901b97ac806be6b3dd",
-      "MK1/mining-site/materialization/public-gap-assets-report.json": "f2fdc2d529a0010b92507b835004a05c2c95e34167c1e0652c90bcd7f3a1c3c5",
+      "MK1/mining-site/materialization/public-gap-assets-report.json": "296f5c9b1250b25a5b678296dd0996494fdf2ac3fd0622022183e2667a195be0",
       "MK1/mining-site/materialization/sonyc-v2.3-confuser-candidates.jsonl": "0631706d1664d2f1f39c827f7c82c508b82e88d4fc5c0f1df0a4a439438af540",
       "MK1/mining-site/materialization/sonyc-v2.3-target-candidates.jsonl": "ed3b19ecfdc4cb5b50da128cf5c783d0550e6cd02e091d038981f35e4f5b971c",
       "configs/data_foundry/hard_negative_mapping.v1.json": "148f218bbe56bd342713b4e262443e6bbc9da0328aa40e20c2a3ea99eb8e8cd8"
     },
-    "matched_asset_count": 1093,
+    "matched_asset_count": 1092,
     "status": "PASS",
     "technical_evidence_asset_count": 1093
   },
-  "entry_count": 1003,
+  "entry_count": 1019,
   "exact_duplicate_sha256_group_count": 0,
   "exact_duplicate_sha256_groups": [],
   "global_invariant": "ECHO-FREE-TIER-001",
   "global_recording_group_resolution": {
-    "asset_count": 1192,
+    "asset_count": 1208,
     "candidate_edges_rejected_by_length_count": 835,
     "candidate_near_duplicate_threshold": 0.02,
     "component_count": 1117,
@@ -113,6 +145,14 @@
     "VEHICLE_HORN": 3
   },
   "input_digests": {
+    "bigsoundbank_0500_segment_materialization": {
+      "path": "MK1/mining-site/materialization/bigsoundbank-0500-segment-materialization.json",
+      "sha256": "9adc8d82e149a5ea01a8d32f874deab8b72476d81593b4aea099f15029dd0387"
+    },
+    "bigsoundbank_0500_segmentation_audit": {
+      "path": "MK1/mining-site/materialization/bigsoundbank-0500-segmentation-audit.json",
+      "sha256": "c6e0be79c001e4b95b55c6dddecd024c9cf14698735af5f67eb546b798542f3d"
+    },
     "esc50_summary": {
       "path": "MK1/mining-site/materialization/esc50-pinned-materialization-summary.json",
       "sha256": "6c091d154cd7b19e3e4c9e5ba1944870976918e796e2ec69f2272a42760543dd"
@@ -155,7 +195,7 @@
     },
     "public_gap": {
       "path": "MK1/mining-site/materialization/public-gap-assets-report.json",
-      "sha256": "f2fdc2d529a0010b92507b835004a05c2c95e34167c1e0652c90bcd7f3a1c3c5"
+      "sha256": "296f5c9b1250b25a5b678296dd0996494fdf2ac3fd0622022183e2667a195be0"
     },
     "singapura_summary": {
       "path": "MK1/mining-site/materialization/singapura-v1.0a-materialization-summary.json",
@@ -182,7 +222,7 @@
       "sha256": "73cd07ef7aef86b685ef08c9b8fe2620df192e4a63bf6fc46e46033626410e45"
     }
   },
-  "ledger_sha256": "d647332d770078b00f57a07563c231c9f22ca36e3fa86e17d00f8ed7ebce1ddb",
+  "ledger_sha256": "f02001d5b5a0163265e4245172b88d42333f1ab66d163d82d242c68af839aa0f",
   "open_global_gates": [
     "canonical fingerprint coverage for all ledger assets",
     "cross-format near-duplicate global audit",
@@ -236,7 +276,7 @@
     "FIRE_ALARM": 46,
     "GLASS_SHATTER": 115,
     "SIREN": 170,
-    "TIRE_SQUEAL": 31,
+    "TIRE_SQUEAL": 47,
     "VEHICLE_HORN": 240
   },
   "positive_underlying_source_family_counts": {
@@ -257,7 +297,7 @@
     "deferred_pre_grouping_blockers": [
       "GROUPING_GLOBAL_AUDIT_REQUIRED"
     ],
-    "input_rows": 1246,
+    "input_rows": 1262,
     "policy": "release_safe_exact_positive_or_governed_hard_negative_required",
     "removed_blocking_reason_counts": {
       "AUGMENTATION_ONLY_NO_REAL_SOURCE_CREDIT": 4,
@@ -289,7 +329,7 @@
     "retained_deferred_blocker_counts": {
       "GROUPING_GLOBAL_AUDIT_REQUIRED": 422
     },
-    "retained_rows": 1192,
+    "retained_rows": 1208,
     "schema_version": "echo.canonical-ledger-role-boundary.v3",
     "source_evidence_retained_elsewhere": true
   },
@@ -306,7 +346,7 @@
     "underlying_source_family": "SOUNDBIBLE_MIKE_KOENIG"
   },
   "source_asset_counts": {
-    "echo-bigsoundbank-cc0-gap-v1": 56,
+    "echo-bigsoundbank-cc0-gap-v1": 72,
     "echo-freesound-release-safe-v1": 292,
     "echo-opengameart-rubberduck-cc0-v1": 45,
     "echo-opengameart-till-behrend-glass-v1": 1,
@@ -570,11 +610,11 @@
     }
   },
   "stage_status_counts": {
-    "READY_FOR_GLOBAL_DEDUP": 1003
+    "READY_FOR_GLOBAL_DEDUP": 1019
   },
   "status": "PASS_CONSOLIDATED_WITH_OPEN_GATES",
   "underlying_source_family_counts": {
-    "BIGSOUNDBANK": 56,
+    "BIGSOUNDBANK": 72,
     "FREESOUND": 292,
     "OPENGAMEART_RUBBERDUCK": 45,
     "OPENGAMEART_TILL_BEHREND": 1,
