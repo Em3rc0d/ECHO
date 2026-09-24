@@ -28,7 +28,7 @@ from echo.data_foundry.probe import probe_audio
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs/data_foundry/opengameart_rubberduck_cc0.v1.json"
-REPORT = ROOT / "MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json"
+REPORT = Path(os.environ.get("ECHO_OPENGAMEART_CC0_REPORT", ROOT / "MK1/mining-site/materialization/opengameart-rubberduck-cc0-materialization.json"))
 OUTPUT_ROOT = Path(
     os.environ.get(
         "ECHO_OPENGAMEART_CC0_ROOT",
