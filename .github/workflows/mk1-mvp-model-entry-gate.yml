@@ -18,3 +18,17 @@ jobs:
         run: python scripts/check_free_tier_boundary.py
       - name: Require three-class MVP readiness
         run: python scripts/mvp/check_mvp_model_entry.py --require-ready --stdout
+      - name: Build aligned MVP benchmark manifest
+        run: python scripts/mvp/build_mvp_manifest.py --require-aligned
+      - name: Test temporal Event Engine
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests/runtime -p 'test_*.py'
+      - name: Upload MVP benchmark manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: echo-mvp-001-benchmark-manifest
+          path: |
+            MK1/mining-site/materialization/mvp-benchmark-manifest.jsonl
+            MK1/mining-site/materialization/mvp-benchmark-manifest-summary.json
+          if-no-files-found: error
