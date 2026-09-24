@@ -81,6 +81,32 @@ class EventEngineTest(unittest.TestCase):
         opened = engine.ingest(inference(2, 0.9, session="new"))
         self.assertEqual(len(opened), 1)
 
+    def test_close_session_flushes_active_event(self):
+        engine = self.engine()
+        engine.ingest(inference(0, 0.9))
+        opened = engine.ingest(inference(1, 0.9))[0]
+
+        closed = engine.close_session(
+            source_id="cam-1",
+            site_id="site-1",
+            stream_session_id="s1",
+            end_utc=BASE + timedelta(seconds=2),
+            model_version="mvp-test",
+        )
+        self.assertEqual(len(closed), 1)
+        self.assertEqual(closed[0].lifecycle, "CLOSED")
+        self.assertEqual(closed[0].event_id, opened.event_id)
+        self.assertEqual(
+            engine.close_session(
+                source_id="cam-1",
+                site_id="site-1",
+                stream_session_id="s1",
+                end_utc=BASE + timedelta(seconds=3),
+                model_version="mvp-test",
+            ),
+            [],
+        )
+
     def test_event_serialization_matches_event_schema_shape(self):
         engine = self.engine()
         engine.ingest(inference(0, 0.9))
