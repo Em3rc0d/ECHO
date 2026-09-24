@@ -1,15 +1,6 @@
 name: MK1 OpenGameArt Rubberduck CC0 Materialization
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/materialize_opengameart_rubberduck_cc0.py'
-      - 'configs/data_foundry/opengameart_rubberduck_cc0.v1.json'
-      - 'src/echo/data_foundry/canonical_fingerprints.py'
-      - 'src/echo/data_foundry/probe.py'
-      - 'configs/data_foundry/free_tier_boundary.v1.json'
-      - '.github/workflows/mk1-opengameart-rubberduck-cc0-materialization.yml'
   workflow_dispatch:
 
 permissions:
