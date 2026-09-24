@@ -71,6 +71,8 @@ def main() -> int:
     if args.backbone == "yamnet":
         backbone = YAMNetEmbeddingBackbone(model_handle=args.yamnet_handle)
     else:
+        if not args.panns_checkpoint:
+            raise SystemExit("--panns-checkpoint is required for the PANNs benchmark")
         backbone = PannsCnn14EmbeddingBackbone(
             checkpoint_path=args.panns_checkpoint,
             device=args.device,
