@@ -1,0 +1,20 @@
+name: MK1 MVP Model Entry Gate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mvp-model-entry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Enforce zero-cost boundary
+        run: python scripts/check_free_tier_boundary.py
+      - name: Require three-class MVP readiness
+        run: python scripts/mvp/check_mvp_model_entry.py --require-ready --stdout
