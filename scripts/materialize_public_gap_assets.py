@@ -28,7 +28,7 @@ WIKIMEDIA_CONFUSERS = ROOT / "configs/data_foundry/wikimedia_confusers.v1.json"
 BIGSOUNDBANK_CONFUSERS = ROOT / "configs/data_foundry/bigsoundbank_confusers.v1.json"
 BIGSOUNDBANK_GLASS_EXPANSION = ROOT / "configs/data_foundry/bigsoundbank_glass_expansion.v1.json"
 OUTPUT_ROOT = Path(os.environ.get("ECHO_GAP_ASSET_ROOT", ROOT / ".materialized-gap-assets"))
-REPORT = ROOT / "MK1/mining-site/materialization/public-gap-assets-report.json"
+REPORT = Path(os.environ.get("ECHO_GAP_ASSET_REPORT", ROOT / "MK1/mining-site/materialization/public-gap-assets-report.json"))
 
 
 def fetch(url: str, *, attempts: int = 6) -> tuple[bytes, str | None, str]:
