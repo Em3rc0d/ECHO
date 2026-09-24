@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -20,6 +21,14 @@ from echo.modeling.backbones import (
 )
 from echo.modeling.embedding_head import HeadTrainingConfig, train_embedding_head
 from echo.modeling.manifest import load_benchmark_manifest
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def load_media_index(path: Path) -> dict[str, str]:
@@ -79,7 +88,13 @@ def main() -> int:
         )
 
     output_dir = args.output_dir / args.backbone
-    feature_dir = output_dir / "features"
+    if args.backbone == "panns":
+        backbone_identity = sha256_file(Path(args.panns_checkpoint))
+    else:
+        backbone_identity = hashlib.sha256(
+            args.yamnet_handle.encode("utf-8")
+        ).hexdigest()
+    feature_dir = output_dir / "features" / backbone_identity
     feature_dir.mkdir(parents=True, exist_ok=True)
 
     vectors = []
@@ -133,6 +148,7 @@ def main() -> int:
             "validation_thresholds": report["validation_thresholds"],
             "hidden_dim": report["training"]["config"]["hidden_dim"],
             "dropout": report["training"]["config"]["dropout"],
+            "backbone_identity_sha256": backbone_identity,
             "seed": args.seed,
         },
         checkpoint,
@@ -147,6 +163,7 @@ def main() -> int:
         "asset_count": len(rows),
         "sample_rate_hz": backbone.sample_rate_hz,
         "embedding_dim": backbone.embedding_dim,
+        "backbone_identity_sha256": backbone_identity,
         "checkpoint": str(checkpoint),
         **report,
     }
