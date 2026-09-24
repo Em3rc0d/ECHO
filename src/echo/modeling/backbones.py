@@ -62,6 +62,11 @@ class PannsCnn14EmbeddingBackbone:
     embedding_dim: int = 2048
 
     def __post_init__(self) -> None:
+        if not self.checkpoint_path:
+            raise ValueError(
+                "PANNs requires an explicit checkpoint_path; implicit upstream "
+                "weight download is not allowed in ECHO benchmark/replay."
+            )
         try:
             from panns_inference import AudioTagging
         except ImportError as exc:
