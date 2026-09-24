@@ -1,21 +1,6 @@
 name: MK1 Public Gap Materialization
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'configs/data_foundry/gap_source_candidates.v1.json'
-      - 'configs/data_foundry/wikimedia_confusers.v1.json'
-      - 'configs/data_foundry/bigsoundbank_confusers.v1.json'
-      - 'configs/data_foundry/bigsoundbank_glass_expansion.v1.json'
-      - 'configs/data_foundry/free_tier_boundary.v1.json'
-      - 'scripts/materialize_public_gap_assets.py'
-      - 'scripts/audit_bigsoundbank_0500_segmentation.py'
-      - 'scripts/materialize_bigsoundbank_0500_segments.py'
-      - 'scripts/data_foundry/augment_canonical_ledger_with_wikimedia_confusers.py'
-      - 'scripts/data_foundry/augment_canonical_ledger_with_bigsoundbank_confusers.py'
-      - 'src/echo/data_foundry/probe.py'
-      - '.github/workflows/mk1-public-gap-materialization.yml'
   workflow_dispatch:
 
 permissions:
