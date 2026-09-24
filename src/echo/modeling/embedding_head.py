@@ -260,3 +260,27 @@ def train_embedding_head(
         )
 
     return model, report
+
+
+def tune_multilabel_thresholds(probabilities, y, mask):
+    """Public validation-only threshold tuning helper shared by A/B/C."""
+    thresholds, validation, macro_f1 = _tune(probabilities, y, mask)
+    return thresholds, {
+        "per_class": validation,
+        "macro_f1": macro_f1,
+        "macro_recall": (
+            sum(row["recall"] for row in validation.values()) / len(validation)
+        ),
+        "macro_precision": (
+            sum(row["precision"] for row in validation.values()) / len(validation)
+        ),
+        "macro_false_positive_rate": (
+            sum(row["false_positive_rate"] for row in validation.values())
+            / len(validation)
+        ),
+    }
+
+
+def evaluate_multilabel(probabilities, y, mask, thresholds):
+    """Evaluate one split using thresholds frozen outside that split."""
+    return _metrics_for_split(probabilities, y, mask, thresholds)
