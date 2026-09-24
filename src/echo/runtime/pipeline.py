@@ -75,6 +75,7 @@ class EchoReplayPipeline:
 
         window_count = 0
         event_messages = 0
+        last_window_end_utc = start_utc
         for window in iter_replay_windows(
             waveform,
             sample_rate_hz=self.scorer.sample_rate_hz,
@@ -84,6 +85,9 @@ class EchoReplayPipeline:
         ):
             window_count += 1
             scores = self.scorer.score(window.waveform)
+            last_window_end_utc = start_utc + timedelta(
+                seconds=window.end_sample / self.scorer.sample_rate_hz
+            )
             inference = RawInference(
                 source_id=source_id,
                 site_id=site_id,
@@ -92,14 +96,24 @@ class EchoReplayPipeline:
                 + timedelta(
                     seconds=window.start_sample / self.scorer.sample_rate_hz
                 ),
-                window_end_utc=start_utc
-                + timedelta(
-                    seconds=window.end_sample / self.scorer.sample_rate_hz
-                ),
+                window_end_utc=last_window_end_utc,
                 scores=scores,
                 model_version=self.scorer.model_version,
             )
             for event in self.event_engine.ingest(inference):
+                payload = event.to_dict()
+                for publisher in self.publishers:
+                    publisher.publish(payload)
+                event_messages += 1
+
+        if window_count:
+            for event in self.event_engine.close_session(
+                source_id=source_id,
+                site_id=site_id,
+                stream_session_id=stream_session_id,
+                end_utc=last_window_end_utc,
+                model_version=self.scorer.model_version,
+            ):
                 payload = event.to_dict()
                 for publisher in self.publishers:
                     publisher.publish(payload)
