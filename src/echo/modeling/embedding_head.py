@@ -33,6 +33,33 @@ def _require_stack():
     return np, torch
 
 
+def build_embedding_head(*, input_dim: int, hidden_dim: int, dropout: float):
+    """Build the reusable MLP head used by YAMNet/PANNs train and inference."""
+
+    _np, torch = _require_stack()
+    import torch.nn as nn
+
+    if input_dim <= 0 or hidden_dim <= 0:
+        raise ValueError("input_dim and hidden_dim must be positive")
+    if not 0.0 <= dropout < 1.0:
+        raise ValueError("dropout must be within [0, 1)")
+
+    class EmbeddingHead(nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.network = nn.Sequential(
+                nn.Linear(input_dim, hidden_dim),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(hidden_dim, len(MVP_TARGETS)),
+            )
+
+        def forward(self, x):
+            return self.network(x)
+
+    return EmbeddingHead()
+
+
 def supervision_arrays(rows: Sequence[BenchmarkRow]):
     np, _torch = _require_stack()
     y = np.zeros((len(rows), len(MVP_TARGETS)), dtype=np.float32)
@@ -47,7 +74,7 @@ def supervision_arrays(rows: Sequence[BenchmarkRow]):
     return y, mask
 
 
-def _metrics_for_split(probabilities, y, mask, thresholds: Mapping[str, float]):
+def evaluate_multilabel(probabilities, y, mask, thresholds: Mapping[str, float]):
     per_class = {}
     for j, target in enumerate(MVP_TARGETS):
         known = mask[:, j] > 0.5
@@ -76,7 +103,7 @@ def _metrics_for_split(probabilities, y, mask, thresholds: Mapping[str, float]):
     }
 
 
-def _tune(probabilities, y, mask):
+def tune_multilabel_thresholds(probabilities, y, mask):
     thresholds = {}
     validation = {}
     for j, target in enumerate(MVP_TARGETS):
@@ -86,8 +113,22 @@ def _tune(probabilities, y, mask):
         tuned = tune_threshold(probs, labels)
         thresholds[target] = tuned.threshold
         validation[target] = tuned.to_dict()
-    macro_f1 = sum(row["f1"] for row in validation.values()) / len(validation)
-    return thresholds, validation, macro_f1
+
+    report = {
+        "per_class": validation,
+        "macro_f1": sum(row["f1"] for row in validation.values()) / len(validation),
+        "macro_recall": (
+            sum(row["recall"] for row in validation.values()) / len(validation)
+        ),
+        "macro_precision": (
+            sum(row["precision"] for row in validation.values()) / len(validation)
+        ),
+        "macro_false_positive_rate": (
+            sum(row["false_positive_rate"] for row in validation.values())
+            / len(validation)
+        ),
+    }
+    return thresholds, report
 
 
 def train_embedding_head(
@@ -127,20 +168,11 @@ def train_embedding_head(
     y_tensor = torch.as_tensor(y, dtype=torch.float32)
     mask_tensor = torch.as_tensor(mask, dtype=torch.float32)
 
-    class EmbeddingHead(nn.Module):
-        def __init__(self):
-            super().__init__()
-            self.network = nn.Sequential(
-                nn.Linear(input_dim, config.hidden_dim),
-                nn.ReLU(),
-                nn.Dropout(config.dropout),
-                nn.Linear(config.hidden_dim, len(MVP_TARGETS)),
-            )
-
-        def forward(self, x):
-            return self.network(x)
-
-    model = EmbeddingHead().to(device)
+    model = build_embedding_head(
+        input_dim=input_dim,
+        hidden_dim=config.hidden_dim,
+        dropout=config.dropout,
+    ).to(device)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=config.learning_rate,
@@ -164,7 +196,7 @@ def train_embedding_head(
         "epoch": 0,
         "state_dict": None,
         "thresholds": None,
-        "validation_per_class": None,
+        "validation": None,
     }
     stale_epochs = 0
 
@@ -195,11 +227,10 @@ def train_embedding_head(
             val_idx = split_indices["validation"]
             val_logits = model(x_tensor[val_idx].to(device))
             val_probs = torch.sigmoid(val_logits).cpu().numpy()
-        val_y = y[val_idx]
-        val_mask = mask[val_idx]
-        thresholds, validation_per_class, macro_f1 = _tune(
-            val_probs, val_y, val_mask
+        thresholds, validation_report = tune_multilabel_thresholds(
+            val_probs, y[val_idx], mask[val_idx]
         )
+        macro_f1 = validation_report["macro_f1"]
 
         if macro_f1 > best["macro_f1"] + 1e-12:
             best = {
@@ -207,7 +238,7 @@ def train_embedding_head(
                 "epoch": epoch,
                 "state_dict": deepcopy(model.state_dict()),
                 "thresholds": thresholds,
-                "validation_per_class": validation_per_class,
+                "validation": validation_report,
             }
             stale_epochs = 0
         else:
@@ -225,10 +256,7 @@ def train_embedding_head(
         "targets": list(MVP_TARGETS),
         "selected_epoch": best["epoch"],
         "validation_thresholds": best["thresholds"],
-        "validation": {
-            "per_class": best["validation_per_class"],
-            "macro_f1": best["macro_f1"],
-        },
+        "validation": best["validation"],
         "training": {
             "config": {
                 "epochs": config.epochs,
@@ -247,40 +275,15 @@ def train_embedding_head(
         },
     }
 
-    for split in ("validation", "test"):
-        indices = split_indices[split]
-        with torch.no_grad():
-            logits = model(x_tensor[indices].to(device))
-            probabilities = torch.sigmoid(logits).cpu().numpy()
-        report[split] = _metrics_for_split(
-            probabilities,
-            y[indices],
-            mask[indices],
-            best["thresholds"],
-        )
+    test_idx = split_indices["test"]
+    with torch.no_grad():
+        test_logits = model(x_tensor[test_idx].to(device))
+        test_probabilities = torch.sigmoid(test_logits).cpu().numpy()
+    report["test"] = evaluate_multilabel(
+        test_probabilities,
+        y[test_idx],
+        mask[test_idx],
+        best["thresholds"],
+    )
 
     return model, report
-
-
-def tune_multilabel_thresholds(probabilities, y, mask):
-    """Public validation-only threshold tuning helper shared by A/B/C."""
-    thresholds, validation, macro_f1 = _tune(probabilities, y, mask)
-    return thresholds, {
-        "per_class": validation,
-        "macro_f1": macro_f1,
-        "macro_recall": (
-            sum(row["recall"] for row in validation.values()) / len(validation)
-        ),
-        "macro_precision": (
-            sum(row["precision"] for row in validation.values()) / len(validation)
-        ),
-        "macro_false_positive_rate": (
-            sum(row["false_positive_rate"] for row in validation.values())
-            / len(validation)
-        ),
-    }
-
-
-def evaluate_multilabel(probabilities, y, mask, thresholds):
-    """Evaluate one split using thresholds frozen outside that split."""
-    return _metrics_for_split(probabilities, y, mask, thresholds)
