@@ -70,7 +70,7 @@ def main() -> int:
     if locator_count != 428:
         gaps.append(f"DIRECT_LOCATOR_COUNT_DRIFT:{locator_count}!=428")
 
-    split_identity = str(split.get("split_assignment_sha256") or "")
+    split_identity = str(split.get("assignment_sha256") or "")
     expected_split_identity = str(summary.get("split_assignment_sha256") or "")
     if split_identity != expected_split_identity:
         gaps.append(
