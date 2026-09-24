@@ -58,6 +58,7 @@ class EchoReplayPipeline:
         hop_seconds: float,
         start_utc: datetime | None = None,
         ffmpeg_bin: str = "ffmpeg",
+        pad_final: bool = False,
     ) -> dict[str, int | str]:
         source = Path(path)
         if start_utc is None:
@@ -81,7 +82,7 @@ class EchoReplayPipeline:
             sample_rate_hz=self.scorer.sample_rate_hz,
             window_seconds=window_seconds,
             hop_seconds=hop_seconds,
-            pad_final=False,
+            pad_final=pad_final,
         ):
             window_count += 1
             scores = self.scorer.score(window.waveform)
