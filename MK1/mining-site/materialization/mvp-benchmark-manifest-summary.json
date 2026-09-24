@@ -1,0 +1,61 @@
+{
+  "schema_version": "echo.mvp-benchmark-manifest-summary.v2",
+  "profile_id": "ECHO-MVP-001",
+  "status": "ALIGNED",
+  "target_labels": [
+    "GLASS_SHATTER",
+    "SIREN",
+    "VEHICLE_HORN"
+  ],
+  "excluded_target_labels": [
+    "FIRE_ALARM",
+    "TIRE_SQUEAL"
+  ],
+  "row_count": 1027,
+  "excluded_positive_rows": 34,
+  "development_asset_count": 1061,
+  "quarantined_recording_group_count": 0,
+  "positive_counts_by_split": {
+    "train": {
+      "SIREN": 75,
+      "GLASS_SHATTER": 84,
+      "VEHICLE_HORN": 81
+    },
+    "validation": {
+      "VEHICLE_HORN": 60,
+      "GLASS_SHATTER": 14,
+      "SIREN": 70
+    },
+    "test": {
+      "GLASS_SHATTER": 17,
+      "SIREN": 76,
+      "VEHICLE_HORN": 149
+    }
+  },
+  "explicit_negative_counts_by_split": {
+    "train": {
+      "VEHICLE_HORN": 144,
+      "SIREN": 150,
+      "GLASS_SHATTER": 74
+    },
+    "validation": {
+      "GLASS_SHATTER": 124,
+      "SIREN": 158,
+      "VEHICLE_HORN": 168
+    },
+    "test": {
+      "VEHICLE_HORN": 310,
+      "GLASS_SHATTER": 289,
+      "SIREN": 383
+    }
+  },
+  "background_counts_by_split": {
+    "train": 73,
+    "validation": 111,
+    "test": 244
+  },
+  "alignment_gap_codes": [],
+  "ledger_blob_sha": "8c4e894a86afef8e3a26f856603e9b3060d4ca58",
+  "split_assignment_sha256": "5824786a0c18771212ad60cc4e451aeb14ea692220f24981a7d9500b22ecb134",
+  "supervision_contract": "Selected positives=1; canonical background and hard_negative_for=0; unobserved target labels remain null/masked. Excluded-target positives are absent."
+}
