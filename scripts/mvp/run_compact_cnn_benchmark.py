@@ -68,12 +68,13 @@ def main() -> int:
     rows = load_benchmark_manifest(args.manifest)
     media = load_media_index(args.media_index)
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    waveform_dir = args.output_dir / "waveforms"
-    waveform_dir.mkdir(parents=True, exist_ok=True)
-
     target_samples = int(round(args.sample_rate * args.clip_seconds))
     if target_samples <= 0:
         raise SystemExit("clip length must be positive")
+
+    waveform_identity = f"sr{args.sample_rate}-samples{target_samples}"
+    waveform_dir = args.output_dir / "waveforms" / waveform_identity
+    waveform_dir.mkdir(parents=True, exist_ok=True)
 
     for index, row in enumerate(rows, 1):
         path = media.get(row.media_sha256)
@@ -239,6 +240,7 @@ def main() -> int:
             "targets": list(MVP_TARGETS),
             "sample_rate_hz": args.sample_rate,
             "clip_seconds": args.clip_seconds,
+            "waveform_cache_identity": waveform_identity,
             "state_dict": model.state_dict(),
             "validation_thresholds": best["thresholds"],
             "seed": args.seed,
@@ -253,6 +255,7 @@ def main() -> int:
         "asset_count": len(rows),
         "sample_rate_hz": args.sample_rate,
         "clip_seconds": args.clip_seconds,
+        "waveform_cache_identity": waveform_identity,
         "selected_epoch": best["epoch"],
         "validation_thresholds": best["thresholds"],
         "validation": best["validation"],
