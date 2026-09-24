@@ -1,14 +1,6 @@
 name: MK1 Freesound Release Safe Materialization
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/data_foundry/materialize_freesound_release_safe.py'
-      - 'MK1/mining-site/materialization/fsd50k-exact-freesound-candidates.json'
-      - 'MK1/mining-site/materialization/freesound-gap-discovery.json'
-      - 'configs/data_foundry/freesound_cc0_supplemental.v1.json'
-      - 'configs/data_foundry/free_tier_boundary.v1.json'
   workflow_dispatch:
 
 permissions:
