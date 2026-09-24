@@ -51,6 +51,7 @@ def main() -> int:
     parser.add_argument("--site-id", required=True)
     parser.add_argument("--window-seconds", type=float, required=True)
     parser.add_argument("--hop-seconds", type=float, required=True)
+    parser.add_argument("--pad-final", action="store_true")
     parser.add_argument(
         "--events-jsonl",
         type=Path,
@@ -119,6 +120,7 @@ def main() -> int:
             window_seconds=args.window_seconds,
             hop_seconds=args.hop_seconds,
             start_utc=start,
+            pad_final=args.pad_final,
         )
     finally:
         if mqtt is not None:
