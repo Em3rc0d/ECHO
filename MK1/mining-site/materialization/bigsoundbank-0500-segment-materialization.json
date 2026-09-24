@@ -1,7 +1,7 @@
 {
-  "audit_sha256": "c6e0be79c001e4b95b55c6dddecd024c9cf14698735af5f67eb546b798542f3d",
+  "audit_sha256": "d192c5a220c3777f80d40952c8a8991ef561c3fafc21489d94ee90a9766f603b",
   "canonical_page": "https://bigsoundbank.com/tire-squeal-s0500.html",
-  "canonical_page_sha256": "0ff0017742f2637bc4a5367d30a930d5584420f83fbb494d42aadc4f1333275c",
+  "canonical_page_sha256": "44996b92be23eda179dddbc41a8ab13f01a5c73ceab35a48af7627647992f3b8",
   "parent_asset_key": "bigsoundbank-500",
   "parent_media_sha256": "af16113a4a279ca8a87b41727684afba2840a7ff00e8e7ba6b3291e8fead01fa",
   "phase": "SEGMENT_MATERIALIZED_NO_CORPUS_CREDIT",
