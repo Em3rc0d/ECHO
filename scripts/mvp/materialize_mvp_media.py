@@ -41,12 +41,7 @@ SONYC_DIGESTS = MAT / "sonyc-v2.3-shard-digests.json"
 SONYC_TARGETS = MAT / "sonyc-v2.3-target-candidates.jsonl"
 SONYC_CONFUSERS = MAT / "sonyc-v2.3-confuser-candidates.jsonl"
 
-DIRECT_EVIDENCE = (
-    MAT / "freesound-release-safe-materialization.json",
-    MAT / "public-gap-assets-report.json",
-    MAT / "opengameart-rubberduck-cc0-materialization.json",
-    MAT / "opengameart-glass-expansion-materialization.json",
-)
+DIRECT_LOCATORS = MAT / "mvp-direct-media-locators.json"
 
 USER_AGENT = "ECHO-MVP-Rehydrator/1.0 (+https://github.com/Em3rc0d/ECHO)"
 DIRECT_URL_KEYS = (
@@ -150,33 +145,24 @@ def download_to(
     raise RuntimeError(f"download failed after {attempts} attempts: {url}: {last}")
 
 
-def iter_objects(value: Any) -> Iterable[Mapping[str, Any]]:
-    if isinstance(value, Mapping):
-        yield value
-        for child in value.values():
-            yield from iter_objects(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from iter_objects(child)
-
-
 def direct_url_index() -> dict[str, str]:
-    index: dict[str, str] = {}
-    for path in DIRECT_EVIDENCE:
-        if not path.is_file():
-            raise FileNotFoundError(path)
-        payload = load_json(path)
-        for row in iter_objects(payload):
-            digest = str(row.get("media_sha256") or "")
-            if len(digest) != 64:
-                continue
-            for key in DIRECT_URL_KEYS:
-                raw = row.get(key)
-                if isinstance(raw, str) and raw.startswith(("https://", "http://")):
-                    index.setdefault(digest, raw)
-                    break
-    return index
-
+    payload = load_json(DIRECT_LOCATORS)
+    if payload.get("profile_id") != "ECHO-MVP-001":
+        raise ValueError("direct locator bundle is not ECHO-MVP-001")
+    raw = payload.get("locators")
+    if not isinstance(raw, Mapping):
+        raise ValueError("direct locator bundle missing locators")
+    result: dict[str, str] = {}
+    for digest, row in raw.items():
+        if len(str(digest)) != 64 or not isinstance(row, Mapping):
+            raise ValueError("invalid direct locator row")
+        url = str(row.get("url") or "")
+        if not url.startswith(("https://", "http://")):
+            raise ValueError(f"invalid direct locator URL for {digest}")
+        result[str(digest)] = url
+    if int(payload.get("locator_count", -1)) != len(result):
+        raise ValueError("direct locator count mismatch")
+    return result
 
 def extension_for_url(url: str, default: str = ".bin") -> str:
     suffix = PurePosixPath(urlparse(url).path).suffix.casefold()
