@@ -129,6 +129,8 @@ def main() -> int:
             "targets": ["GLASS_SHATTER", "SIREN", "VEHICLE_HORN"],
             "state_dict": model.state_dict(),
             "validation_thresholds": report["validation_thresholds"],
+            "hidden_dim": report["training"]["config"]["hidden_dim"],
+            "dropout": report["training"]["config"]["dropout"],
             "seed": args.seed,
         },
         checkpoint,
