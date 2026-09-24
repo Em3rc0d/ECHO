@@ -1,15 +1,6 @@
 name: MK1 OpenGameArt Glass Expansion Materialization
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'scripts/materialize_opengameart_glass_expansion.py'
-      - 'configs/data_foundry/opengameart_glass_expansion.v1.json'
-      - 'src/echo/data_foundry/canonical_fingerprints.py'
-      - 'src/echo/data_foundry/probe.py'
-      - 'configs/data_foundry/free_tier_boundary.v1.json'
-      - '.github/workflows/mk1-opengameart-glass-expansion-materialization.yml'
   workflow_dispatch:
 
 permissions:
