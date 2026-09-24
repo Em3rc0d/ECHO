@@ -197,6 +197,54 @@ class TemporalEventEngine:
             evidence_windows=len(state.active_scores),
         )
 
+    def close_session(
+        self,
+        *,
+        source_id: str,
+        site_id: str,
+        stream_session_id: str,
+        end_utc: datetime,
+        model_version: str,
+    ) -> list[ConfirmedEvent]:
+        """Close every active event for one stream session at EOF/disconnect.
+
+        Candidate-only evidence is discarded because it never reached the
+        configured confirmation rule. Confirmed events retain their event_id and
+        are emitted once with lifecycle=CLOSED.
+        """
+
+        if end_utc.tzinfo is None or end_utc.utcoffset() is None:
+            raise ValueError("end_utc must be timezone-aware")
+        outputs: list[ConfirmedEvent] = []
+        for label in self._thresholds:
+            key = (source_id, stream_session_id, label)
+            state = self._states.get(key)
+            if state is None:
+                continue
+            if state.active_event_id is not None:
+                synthetic = RawInference(
+                    source_id=source_id,
+                    site_id=site_id,
+                    stream_session_id=stream_session_id,
+                    window_start_utc=end_utc,
+                    window_end_utc=end_utc,
+                    scores={label: state.active_scores[-1]},
+                    model_version=state.active_model_version or model_version,
+                )
+                outputs.append(
+                    self._event(
+                        inference=synthetic,
+                        label=label,
+                        state=state,
+                        lifecycle="CLOSED",
+                        end_utc=end_utc,
+                    )
+                )
+            state.reset_active()
+            state.reset_candidate()
+            self._states.pop(key, None)
+        return outputs
+
     def ingest(self, inference: RawInference) -> list[ConfirmedEvent]:
         outputs: list[ConfirmedEvent] = []
 
