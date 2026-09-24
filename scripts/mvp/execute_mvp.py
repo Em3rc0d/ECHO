@@ -46,6 +46,8 @@ def main() -> int:
         raise SystemExit("ffmpeg is required on PATH")
 
     python = sys.executable
+    run([python, "scripts/mvp/check_frozen_mvp_snapshot.py"])
+
     media_index = args.media_root / "mvp-media-index.json"
     selection = args.benchmark_root / "selection.json"
     smoke_config = args.benchmark_root / "smoke-event-config.json"
