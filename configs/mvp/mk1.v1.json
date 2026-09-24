@@ -1,0 +1,32 @@
+{
+  "schema_version": "echo.mvp-profile.v1",
+  "profile_id": "ECHO-MVP-001",
+  "status": "ACTIVE",
+  "source_profile": "release_safe",
+  "target_labels": [
+    "GLASS_SHATTER",
+    "SIREN",
+    "VEHICLE_HORN"
+  ],
+  "excluded_target_labels": [
+    "FIRE_ALARM",
+    "TIRE_SQUEAL"
+  ],
+  "excluded_target_behavior": "EXCLUDE_FROM_MVP_TRAIN_VALIDATION_TEST_AND_NEVER_RELABEL_AS_BACKGROUND",
+  "coverage_policy_id": "MK1-CORPUS-SOLIDITY-001",
+  "required_structural_evidence": [
+    "global_dedup_audit",
+    "recording_family_audit",
+    "split_integrity"
+  ],
+  "mvp_contract": {
+    "benchmark_required": [
+      "YAMNET_EMBEDDINGS_HEAD",
+      "PANNS_CNN14_HEAD",
+      "COMPACT_LOGMEL_CNN"
+    ],
+    "event_output": "CONFIRMED_EVENT",
+    "delivery": "MQTT_QOS1",
+    "full_release_profile_unchanged": true
+  }
+}
