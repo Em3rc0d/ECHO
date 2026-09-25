@@ -46,6 +46,16 @@ def main() -> int:
         raise SystemExit("ffmpeg is required on PATH")
 
     python = sys.executable
+    run(
+        [
+            python,
+            "scripts/mvp/check_environment.py",
+            "--device",
+            args.device,
+            "--storage-root",
+            str(args.media_root.parent),
+        ]
+    )
     run([python, "scripts/mvp/smoke_core_synthetic.py"])
     run([python, "scripts/mvp/check_frozen_mvp_snapshot.py"])
 
