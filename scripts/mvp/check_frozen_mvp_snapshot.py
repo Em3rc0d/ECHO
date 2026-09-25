@@ -46,7 +46,7 @@ def tracked_blob_sha1(path: Path) -> tuple[str, bool]:
 
     try:
         dirty_probe = subprocess.run(
-            ["git", "diff", "--quiet", "--", relative],
+            ["git", "diff", "--quiet", "HEAD", "--", relative],
             cwd=ROOT,
             check=False,
         )
