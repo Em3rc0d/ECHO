@@ -72,7 +72,10 @@ def main() -> int:
 
     dependencies = {}
     for distribution, module in MODULES.items():
-        found = importlib.util.find_spec(module) is not None
+        try:
+            found = importlib.util.find_spec(module) is not None
+        except (ImportError, ModuleNotFoundError):
+            found = False
         dependencies[distribution] = {
             "module": module,
             "found": found,
