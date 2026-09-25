@@ -52,7 +52,15 @@ def main() -> int:
 
     if sys.version_info < (3, 10):
         gaps.append(f"PYTHON_TOO_OLD:{sys.version.split()[0]}")
-    checks["python"] = sys.version.split()[0]
+    if sys.version_info >= (3, 14):
+        gaps.append(
+            f"PYTHON_UNSUPPORTED_FOR_TENSORFLOW_STABLE:{sys.version.split()[0]}"
+        )
+    checks["python"] = {
+        "version": sys.version.split()[0],
+        "recommended_for_mvp": "3.12.x",
+        "supported_range": ">=3.10,<3.14",
+    }
 
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg is None:
