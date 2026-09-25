@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
 MAT = ROOT / "MK1/mining-site/materialization"
@@ -29,9 +30,38 @@ def load(path: Path) -> dict:
 
 
 def git_blob_sha1(path: Path) -> str:
+    """Fallback Git-blob identity for non-repository execution."""
     data = path.read_bytes()
     header = f"blob {len(data)}\0".encode("ascii")
     return hashlib.sha1(header + data).hexdigest()  # nosec B324 - Git object identity
+
+
+def tracked_blob_sha1(path: Path) -> tuple[str, bool]:
+    """Return the committed Git blob SHA and whether the worktree path is dirty.
+
+    Using HEAD:<path> avoids false drift on Windows checkouts where Git may
+    materialize LF-tracked text as CRLF bytes in the worktree.
+    """
+    relative = path.relative_to(ROOT).as_posix()
+
+    try:
+        dirty_probe = subprocess.run(
+            ["git", "diff", "--quiet", "--", relative],
+            cwd=ROOT,
+            check=False,
+        )
+        dirty = dirty_probe.returncode != 0
+
+        result = subprocess.run(
+            ["git", "rev-parse", f"HEAD:{relative}"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout.strip(), dirty
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        return git_blob_sha1(path), False
 
 
 def line_count(path: Path) -> int:
@@ -47,15 +77,19 @@ def main() -> int:
 
     gaps: list[str] = []
 
-    current_ledger_blob = git_blob_sha1(LEDGER)
+    current_ledger_blob, ledger_dirty = tracked_blob_sha1(LEDGER)
     expected_ledger_blob = str(summary.get("ledger_blob_sha") or "")
+    if ledger_dirty:
+        gaps.append("LEDGER_WORKTREE_MODIFIED")
     if current_ledger_blob != expected_ledger_blob:
         gaps.append(
             f"LEDGER_BLOB_DRIFT:{current_ledger_blob}!={expected_ledger_blob}"
         )
 
-    current_manifest_blob = git_blob_sha1(MANIFEST)
+    current_manifest_blob, manifest_dirty = tracked_blob_sha1(MANIFEST)
     expected_manifest_blob = str(locators.get("manifest_blob_sha") or "")
+    if manifest_dirty:
+        gaps.append("MANIFEST_WORKTREE_MODIFIED")
     if current_manifest_blob != expected_manifest_blob:
         gaps.append(
             f"MANIFEST_BLOB_DRIFT:{current_manifest_blob}!={expected_manifest_blob}"
