@@ -22,6 +22,14 @@ yamnet = [
 panns = [
   "panns-inference==0.1.1",
 ]
+mvp-full = [
+  "numpy>=1.26,<3",
+  "torch>=2.2,<3",
+  "paho-mqtt>=2.1,<3",
+  "tensorflow>=2.16,<3",
+  "tensorflow-hub==0.16.1",
+  "panns-inference==0.1.1",
+]
 
 [project.scripts]
 echo-data-foundry = "echo.data_foundry.cli:main"
