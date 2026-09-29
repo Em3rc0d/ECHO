@@ -34,7 +34,9 @@ def main() -> int:
         checkpoint_path=str(args.checkpoint),
         device=args.device,
     )
-    waveform = np.zeros(backbone.sample_rate_hz * 2, dtype=np.float32)
+    # Deliberately shorter than Cnn14's safe raw input so this smoke also
+    # verifies ECHO's right-zero-padding policy.
+    waveform = np.zeros(backbone.sample_rate_hz // 10, dtype=np.float32)
     embedding = np.asarray(backbone.embed(waveform), dtype=np.float32)
 
     if embedding.shape != (backbone.embedding_dim,):
@@ -52,6 +54,9 @@ def main() -> int:
                 "device": args.device,
                 "sample_rate_hz": backbone.sample_rate_hz,
                 "embedding_dim": int(embedding.shape[0]),
+                "input_seconds": 0.1,
+                "minimum_input_seconds": backbone.minimum_input_seconds,
+                "short_input_policy": backbone.short_input_policy,
                 "checkpoint": str(args.checkpoint),
             },
             indent=2,
