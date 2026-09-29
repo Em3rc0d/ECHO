@@ -29,7 +29,9 @@ class YAMNetEmbeddingBackbone:
             import tensorflow_hub as hub
         except ImportError as exc:
             raise RuntimeError(
-                "YAMNet requires the 'yamnet' optional dependencies"
+                "YAMNet TensorFlow Hub import failed. Install the 'yamnet' "
+                "dependencies and ensure setuptools<82 so pkg_resources remains "
+                "available for tensorflow-hub==0.16.1."
             ) from exc
         self._model = hub.load(self.model_handle)
 
