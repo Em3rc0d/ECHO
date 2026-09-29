@@ -21,6 +21,7 @@ from echo.modeling.backbones import (
 )
 from echo.modeling.embedding_head import HeadTrainingConfig, train_embedding_head
 from echo.modeling.manifest import load_benchmark_manifest
+from echo.modeling.media_index import load_media_index
 
 
 def sha256_file(path: Path) -> str:
@@ -29,18 +30,6 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
-
-
-def load_media_index(path: Path) -> dict[str, str]:
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    if payload.get("status") != "COMPLETE":
-        raise SystemExit(
-            f"media index is not COMPLETE: missing={payload.get('missing_sha256_count')}"
-        )
-    by_sha = payload.get("by_sha256")
-    if not isinstance(by_sha, dict):
-        raise ValueError("media index missing by_sha256")
-    return {str(k): str(v) for k, v in by_sha.items()}
 
 
 def main() -> int:
