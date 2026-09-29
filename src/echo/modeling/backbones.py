@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol, Sequence
 
+from .panns_assets import ensure_panns_labels
+
 
 class EmbeddingBackbone(Protocol):
     name: str
@@ -69,11 +71,13 @@ class PannsCnn14EmbeddingBackbone:
                 "PANNs requires an explicit checkpoint_path; implicit upstream "
                 "weight download is not allowed in ECHO benchmark/replay."
             )
+        ensure_panns_labels()
         try:
             from panns_inference import AudioTagging
         except ImportError as exc:
             raise RuntimeError(
-                "PANNs requires the 'panns' optional dependencies"
+                "PANNs import failed after ECHO prepared the pinned AudioSet "
+                "labels. Verify the 'panns' optional dependencies."
             ) from exc
         self._tagger = AudioTagging(
             checkpoint_path=self.checkpoint_path,
