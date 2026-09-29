@@ -92,6 +92,43 @@ def main() -> int:
         if not found:
             gaps.append(f"DEPENDENCY_MISSING:{distribution}")
 
+    setuptools_version = version_for("setuptools")
+    try:
+        pkg_resources_found = importlib.util.find_spec("pkg_resources") is not None
+    except (ImportError, ModuleNotFoundError):
+        pkg_resources_found = False
+    dependencies["setuptools"] = {
+        "module": "pkg_resources",
+        "found": pkg_resources_found,
+        "version": setuptools_version,
+        "compatibility": "tensorflow-hub==0.16.1 requires pkg_resources; setuptools>=82 removed it",
+    }
+    if not pkg_resources_found:
+        gaps.append(
+            f"TFHUB_COMPAT_PKG_RESOURCES_MISSING:setuptools={setuptools_version or 'unknown'}"
+        )
+
+    tfhub_probe = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import tensorflow_hub as hub; print(hub.__version__)",
+        ],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    tfhub_stdout = tfhub_probe.stdout.strip().splitlines()
+    tfhub_stderr = tfhub_probe.stderr.strip().splitlines()
+    checks["tensorflow_hub_import"] = {
+        "returncode": tfhub_probe.returncode,
+        "version": tfhub_stdout[-1] if tfhub_stdout else None,
+        "stderr_tail": tfhub_stderr[-3:],
+    }
+    if tfhub_probe.returncode != 0:
+        gaps.append(f"TENSORFLOW_HUB_IMPORT_FAILED:{tfhub_probe.returncode}")
+
     storage_root = args.storage_root.resolve()
     storage_root.mkdir(parents=True, exist_ok=True)
     usage = shutil.disk_usage(storage_root)
