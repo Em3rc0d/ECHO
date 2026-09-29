@@ -7,6 +7,7 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import time
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -26,10 +27,23 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--sent", type=Path, required=True)
     parser.add_argument("--received", type=Path, required=True)
+    parser.add_argument("--wait-seconds", type=float, default=10.0)
     args = parser.parse_args()
 
     sent = load_jsonl(args.sent)
-    received = load_jsonl(args.received)
+    sent_ids = {str(row["event_id"]) for row in sent}
+
+    deadline = time.monotonic() + max(0.0, args.wait_seconds)
+    received: list[dict] = []
+    while True:
+        if args.received.is_file():
+            received = load_jsonl(args.received)
+        received_ids = {str(row["event_id"]) for row in received}
+        if sent_ids and sent_ids.issubset(received_ids):
+            break
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(0.25)
 
     sent_by_id = {str(row["event_id"]): row for row in sent}
     received_by_id: dict[str, list[dict]] = {}
