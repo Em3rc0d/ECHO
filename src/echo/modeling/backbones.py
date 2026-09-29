@@ -64,6 +64,8 @@ class PannsCnn14EmbeddingBackbone:
     name: str = "PANNS_CNN14_HEAD"
     sample_rate_hz: int = 32000
     embedding_dim: int = 2048
+    minimum_input_seconds: float = 1.0
+    short_input_policy: str = "RIGHT_ZERO_PAD"
 
     def __post_init__(self) -> None:
         if not self.checkpoint_path:
@@ -93,6 +95,15 @@ class PannsCnn14EmbeddingBackbone:
         audio = np.asarray(waveform, dtype=np.float32)
         if audio.ndim != 1 or audio.size == 0:
             raise ValueError("PANNs waveform must be non-empty mono PCM")
+
+        minimum_samples = int(round(self.sample_rate_hz * self.minimum_input_seconds))
+        if audio.size < minimum_samples:
+            audio = np.pad(
+                audio,
+                (0, minimum_samples - audio.size),
+                mode="constant",
+            )
+
         _clipwise, embedding = self._tagger.inference(audio[None, :])
         values = np.asarray(embedding, dtype=np.float32)
         if values.ndim == 1:
