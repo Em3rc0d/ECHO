@@ -22,15 +22,7 @@ from echo.modeling.embedding_head import (
     tune_multilabel_thresholds,
 )
 from echo.modeling.manifest import MVP_TARGETS, load_benchmark_manifest
-
-
-def load_media_index(path: Path) -> dict[str, str]:
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    if payload.get("status") != "COMPLETE":
-        raise SystemExit(
-            f"media index is not COMPLETE: missing={payload.get('missing_sha256_count')}"
-        )
-    return {str(k): str(v) for k, v in (payload.get("by_sha256") or {}).items()}
+from echo.modeling.media_index import load_media_index
 
 
 def main() -> int:
