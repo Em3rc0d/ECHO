@@ -462,7 +462,10 @@ def main() -> int:
         "missing_sha256_count": len(missing),
         "failure_count": len(failures),
         "status": "COMPLETE" if not missing and not failures else "INCOMPLETE",
-        "by_sha256": dict(sorted(media_index.items())),
+        "by_sha256": {
+            digest: str(Path(value).resolve().relative_to(root))
+            for digest, value in sorted(media_index.items())
+        },
         "missing_sha256": missing,
         "failures": dict(sorted(failures.items())),
     }
