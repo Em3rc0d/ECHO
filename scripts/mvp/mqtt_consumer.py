@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from pathlib import Path
 
 
 REQUIRED = {
@@ -30,7 +31,14 @@ def main() -> int:
     parser.add_argument("--client-id", default="echo-mvp-smoke-consumer")
     parser.add_argument("--username", default=None)
     parser.add_argument("--password-env", default=None)
+    parser.add_argument("--output-jsonl", type=Path, default=None)
+    parser.add_argument("--clear-output", action="store_true")
     args = parser.parse_args()
+
+    if args.output_jsonl is not None:
+        args.output_jsonl.parent.mkdir(parents=True, exist_ok=True)
+        if args.clear_output:
+            args.output_jsonl.unlink(missing_ok=True)
 
     try:
         import paho.mqtt.client as mqtt
@@ -53,6 +61,9 @@ def main() -> int:
             return
         event_id = str(payload["event_id"])
         seen[event_id] = seen.get(event_id, 0) + 1
+        if args.output_jsonl is not None:
+            with args.output_jsonl.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(payload, sort_keys=True) + "\n")
         print(
             json.dumps(
                 {
