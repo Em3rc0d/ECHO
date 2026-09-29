@@ -89,7 +89,16 @@ def main() -> int:
 
     output_dir = args.output_dir / args.backbone
     if args.backbone == "panns":
-        backbone_identity = sha256_file(Path(args.panns_checkpoint))
+        checkpoint_sha256 = sha256_file(Path(args.panns_checkpoint))
+        preprocessing_identity = (
+            f"checkpoint={checkpoint_sha256}|"
+            f"sample_rate_hz={backbone.sample_rate_hz}|"
+            f"minimum_input_seconds={backbone.minimum_input_seconds}|"
+            f"short_input_policy={backbone.short_input_policy}|v1"
+        )
+        backbone_identity = hashlib.sha256(
+            preprocessing_identity.encode("utf-8")
+        ).hexdigest()
     else:
         backbone_identity = hashlib.sha256(
             args.yamnet_handle.encode("utf-8")
@@ -164,6 +173,19 @@ def main() -> int:
         "sample_rate_hz": backbone.sample_rate_hz,
         "embedding_dim": backbone.embedding_dim,
         "backbone_identity_sha256": backbone_identity,
+        "preprocessing": (
+            {
+                "sample_rate_hz": backbone.sample_rate_hz,
+                "minimum_input_seconds": backbone.minimum_input_seconds,
+                "short_input_policy": backbone.short_input_policy,
+                "checkpoint_sha256": checkpoint_sha256,
+            }
+            if args.backbone == "panns"
+            else {
+                "sample_rate_hz": backbone.sample_rate_hz,
+                "model_handle": args.yamnet_handle,
+            }
+        ),
         "checkpoint": str(checkpoint),
         **report,
     }
