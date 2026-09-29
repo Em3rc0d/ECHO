@@ -95,6 +95,16 @@ def main() -> int:
         run(
             [
                 python,
+                "scripts/mvp/smoke_panns_runtime.py",
+                "--checkpoint",
+                str(args.panns_checkpoint),
+                "--device",
+                args.device,
+            ]
+        )
+        run(
+            [
+                python,
                 "scripts/mvp/run_all_benchmarks.py",
                 "--media-index",
                 str(media_index),
