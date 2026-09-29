@@ -1,0 +1,119 @@
+name: echo-mvp
+
+x-echo-service: &echo-service
+  image: echo-mvp:local
+  build:
+    context: .
+    dockerfile: docker/mvp/Dockerfile
+  working_dir: /workspace
+  environment:
+    PYTHONUNBUFFERED: "1"
+  volumes:
+    - ./artifacts:/workspace/artifacts
+    - panns-data:/root/panns_data
+  networks:
+    - echo-mvp
+
+services:
+  broker:
+    image: eclipse-mosquitto:2.1.2-alpine
+    volumes:
+      - ./docker/mvp/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mosquitto_pub",
+          "-h",
+          "127.0.0.1",
+          "-p",
+          "1883",
+          "-t",
+          "echo/health",
+          "-m",
+          "ping"
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+      start_period: 2s
+    networks:
+      - echo-mvp
+
+  consumer:
+    <<: *echo-service
+    depends_on:
+      broker:
+        condition: service_healthy
+    command:
+      [
+        "python",
+        "scripts/mvp/mqtt_consumer.py",
+        "--host",
+        "broker",
+        "--port",
+        "1883",
+        "--topic",
+        "echo/events",
+        "--output-jsonl",
+        "/workspace/artifacts/mvp-mqtt/received.jsonl",
+        "--clear-output"
+      ]
+
+  smoke:
+    <<: *echo-service
+    depends_on:
+      broker:
+        condition: service_healthy
+      consumer:
+        condition: service_started
+    command:
+      [
+        "python",
+        "scripts/mvp/smoke_selected_model.py",
+        "--selection",
+        "/workspace/artifacts/mvp-benchmark/selection.json",
+        "--event-config",
+        "/workspace/artifacts/mvp-benchmark/smoke-event-config.json",
+        "--media-index",
+        "/workspace/artifacts/mvp-media/mvp-media-index.json",
+        "--panns-checkpoint",
+        "/workspace/artifacts/models/panns/Cnn14_mAP=0.431.pth",
+        "--device",
+        "cpu",
+        "--events-jsonl",
+        "/workspace/artifacts/mvp-mqtt/sent.jsonl",
+        "--report",
+        "/workspace/artifacts/mvp-mqtt/producer-report.json",
+        "--mqtt-host",
+        "broker",
+        "--mqtt-port",
+        "1883",
+        "--mqtt-topic",
+        "echo/events",
+        "--mqtt-client-id",
+        "echo-mvp-smoke"
+      ]
+    profiles:
+      - smoke
+
+  verify:
+    <<: *echo-service
+    command:
+      [
+        "python",
+        "scripts/mvp/verify_mqtt_roundtrip.py",
+        "--sent",
+        "/workspace/artifacts/mvp-mqtt/sent.jsonl",
+        "--received",
+        "/workspace/artifacts/mvp-mqtt/received.jsonl"
+      ]
+    profiles:
+      - smoke
+
+networks:
+  echo-mvp:
+    driver: bridge
+
+volumes:
+  panns-data:
