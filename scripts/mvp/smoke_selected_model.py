@@ -20,9 +20,10 @@ if str(SRC) not in sys.path:
 
 from echo.modeling.inference import CompactCnnScorer, EmbeddingHeadScorer
 from echo.modeling.manifest import MVP_TARGETS, load_benchmark_manifest
+from echo.modeling.media_index import load_media_index
 from echo.runtime.event_engine import TemporalEventEngine, ThresholdConfig
 from echo.runtime.pipeline import EchoReplayPipeline
-from echo.runtime.publishers import JsonlEventPublisher
+from echo.runtime.publishers import JsonlEventPublisher, MqttEventPublisher
 
 
 class CollectingPublisher:
@@ -48,13 +49,29 @@ def load_thresholds(path: Path):
     }
 
 
-def resolve_checkpoint(raw: str) -> Path:
+def resolve_checkpoint(raw: str, *, selection: Path, benchmark: str) -> Path:
     path = Path(raw)
+    candidates = [path]
     if not path.is_absolute():
-        path = (ROOT / path).resolve()
-    if not path.is_file():
-        raise SystemExit(f"winner checkpoint not found: {path}")
-    return path
+        candidates.append((ROOT / path).resolve())
+
+    folder_by_benchmark = {
+        "YAMNET_EMBEDDINGS_HEAD": "yamnet",
+        "PANNS_CNN14_HEAD": "panns",
+        "COMPACT_LOGMEL_CNN": "compact-cnn",
+    }
+    filename = Path(str(raw).replace("\\", "/")).name
+    folder = folder_by_benchmark.get(benchmark)
+    if folder:
+        candidates.append(selection.resolve().parent / folder / filename)
+
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate.resolve()
+    raise SystemExit(
+        "winner checkpoint not found in stored or relocatable benchmark paths: "
+        + ", ".join(str(candidate) for candidate in candidates)
+    )
 
 
 def main() -> int:
@@ -77,6 +94,10 @@ def main() -> int:
     parser.add_argument("--media-index", type=Path, required=True)
     parser.add_argument("--panns-checkpoint", type=Path, default=None)
     parser.add_argument("--device", default="cpu")
+    parser.add_argument("--mqtt-host", default=None)
+    parser.add_argument("--mqtt-port", type=int, default=1883)
+    parser.add_argument("--mqtt-topic", default=None)
+    parser.add_argument("--mqtt-client-id", default="echo-mvp-smoke")
     parser.add_argument("--clips-per-class", type=int, default=5)
     parser.add_argument("--window-seconds", type=float, default=6.0)
     parser.add_argument("--hop-seconds", type=float, default=3.0)
@@ -98,7 +119,11 @@ def main() -> int:
     selection = json.loads(args.selection.read_text(encoding="utf-8"))
     winner = selection["winner"]
     benchmark = str(winner["benchmark"])
-    checkpoint = resolve_checkpoint(str(winner["checkpoint"]))
+    checkpoint = resolve_checkpoint(
+        str(winner["checkpoint"]),
+        selection=args.selection,
+        benchmark=benchmark,
+    )
 
     if benchmark == "YAMNET_EMBEDDINGS_HEAD":
         scorer = EmbeddingHeadScorer(
@@ -120,13 +145,20 @@ def main() -> int:
     else:
         raise SystemExit(f"unsupported winner benchmark: {benchmark}")
 
-    media_payload = json.loads(args.media_index.read_text(encoding="utf-8"))
-    if media_payload.get("status") != "COMPLETE":
-        raise SystemExit("media index must be COMPLETE")
-    by_sha = {
-        str(key): str(value)
-        for key, value in (media_payload.get("by_sha256") or {}).items()
-    }
+    by_sha = load_media_index(args.media_index)
+
+    if args.mqtt_host is not None and not args.mqtt_topic:
+        raise SystemExit("--mqtt-topic is required when --mqtt-host is used")
+    mqtt = (
+        MqttEventPublisher(
+            host=args.mqtt_host,
+            port=args.mqtt_port,
+            topic=args.mqtt_topic,
+            client_id=args.mqtt_client_id,
+        )
+        if args.mqtt_host is not None
+        else None
+    )
 
     rows = load_benchmark_manifest(args.manifest)
     version, thresholds = load_thresholds(args.event_config)
@@ -162,10 +194,13 @@ def main() -> int:
                 thresholds=thresholds,
                 threshold_version=version,
             )
+            publishers = [collector, file_publisher]
+            if mqtt is not None:
+                publishers.append(mqtt)
             pipeline = EchoReplayPipeline(
                 scorer=scorer,
                 event_engine=engine,
-                publishers=[collector, file_publisher],
+                publishers=publishers,
             )
             summary = pipeline.run_file(
                 path,
@@ -201,6 +236,9 @@ def main() -> int:
             "clips": rows_report,
         }
 
+    if mqtt is not None:
+        mqtt.close()
+
     passed = all(row["status"] == "PASS" for row in report_classes.values())
     payload = {
         "schema_version": "echo.mvp-e2e-smoke.v1",
@@ -208,7 +246,9 @@ def main() -> int:
         "status": "PASS" if passed else "FAIL",
         "scope": (
             "Model -> replay windows -> RawInference -> TemporalEventEngine -> "
-            "echo.event.v1 JSONL. Smoke-only thresholds; not temporal calibration."
+            "echo.event.v1 JSONL"
+            + (" + MQTT QoS1 publish." if mqtt is not None else ".")
+            + " Smoke-only thresholds; not temporal calibration."
         ),
         "winner": benchmark,
         "checkpoint": str(checkpoint),
