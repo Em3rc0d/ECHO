@@ -181,6 +181,8 @@ def build_scenario(
 
     def append_background(seconds: float):
         nonlocal cursor, background_cursor
+        if seconds <= 0:
+            return
         wanted = int(round(seconds * builder.sample_rate_hz))
         remaining = wanted
         segment_start = cursor
