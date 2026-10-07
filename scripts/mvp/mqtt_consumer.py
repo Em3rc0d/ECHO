@@ -60,7 +60,9 @@ def main() -> int:
             print(json.dumps({"status": "invalid", "missing": missing}), flush=True)
             return
         event_id = str(payload["event_id"])
-        seen[event_id] = seen.get(event_id, 0) + 1
+        lifecycle = str((payload.get("provenance") or {}).get("lifecycle") or "UNKNOWN")
+        transition_key = f"{event_id}:{lifecycle}"
+        seen[transition_key] = seen.get(transition_key, 0) + 1
         if args.output_jsonl is not None:
             with args.output_jsonl.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(payload, sort_keys=True) + "\n")
@@ -69,8 +71,8 @@ def main() -> int:
                 {
                     "status": "event",
                     "event_id": event_id,
-                    "delivery_count_seen": seen[event_id],
-                    "lifecycle": (payload.get("provenance") or {}).get("lifecycle"),
+                    "delivery_count_seen": seen[transition_key],
+                    "lifecycle": lifecycle,
                     "event_type": payload.get("event_type"),
                     "source_id": payload.get("source_id"),
                 },
