@@ -111,6 +111,30 @@ services:
     profiles:
       - smoke
 
+  temporal-calibration:
+    <<: *echo-service
+    command:
+      [
+        "python",
+        "scripts/mvp/run_temporal_calibration.py",
+        "--media-index",
+        "/workspace/artifacts/mvp-media/mvp-media-index.json",
+        "--selection",
+        "/workspace/artifacts/mvp-benchmark/selection.json",
+        "--panns-checkpoint",
+        "/workspace/artifacts/models/panns/Cnn14_mAP=0.431.pth",
+        "--output-dir",
+        "/workspace/artifacts/mvp-temporal",
+        "--device",
+        "cpu",
+        "--window-seconds",
+        "6.0",
+        "--hop-seconds",
+        "1.0"
+      ]
+    profiles:
+      - calibration
+
 networks:
   echo-mvp:
     driver: bridge
