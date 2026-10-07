@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Verify ECHO MQTT QoS1 roundtrip by event_id and payload equality."""
+"""Verify ECHO MQTT QoS1 roundtrip by canonical event-message payload.
+
+event_id identifies one logical acoustic event across lifecycle transitions.
+Therefore CONFIRMED and CLOSED intentionally share event_id and must not be
+treated as duplicate MQTT deliveries. QoS 1 duplicates are exact repetitions
+of the same canonical payload and are allowed.
+"""
 
 from __future__ import annotations
 
@@ -23,6 +29,15 @@ def load_jsonl(path: Path) -> list[dict]:
     return rows
 
 
+def canonical(payload: dict) -> str:
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
+def transition_key(payload: dict) -> str:
+    lifecycle = str((payload.get("provenance") or {}).get("lifecycle") or "UNKNOWN")
+    return f"{payload['event_id']}:{lifecycle}"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--sent", type=Path, required=True)
@@ -31,51 +46,99 @@ def main() -> int:
     args = parser.parse_args()
 
     sent = load_jsonl(args.sent)
-    sent_ids = {str(row["event_id"]) for row in sent}
+    sent_counts = Counter(canonical(row) for row in sent)
 
     deadline = time.monotonic() + max(0.0, args.wait_seconds)
     received: list[dict] = []
     while True:
         if args.received.is_file():
             received = load_jsonl(args.received)
-        received_ids = {str(row["event_id"]) for row in received}
-        if sent_ids and sent_ids.issubset(received_ids):
+        received_counts = Counter(canonical(row) for row in received)
+        if sent_counts and all(
+            received_counts[payload] >= count
+            for payload, count in sent_counts.items()
+        ):
             break
         if time.monotonic() >= deadline:
             break
         time.sleep(0.25)
 
-    sent_by_id = {str(row["event_id"]): row for row in sent}
-    received_by_id: dict[str, list[dict]] = {}
-    for row in received:
-        received_by_id.setdefault(str(row["event_id"]), []).append(row)
+    received_counts = Counter(canonical(row) for row in received)
+    sent_ids = {str(row["event_id"]) for row in sent}
+    received_ids = {str(row["event_id"]) for row in received}
 
-    missing = sorted(set(sent_by_id) - set(received_by_id))
-    mismatched = sorted(
-        event_id
-        for event_id, expected in sent_by_id.items()
-        if event_id in received_by_id
-        and any(actual != expected for actual in received_by_id[event_id])
+    missing_event_ids = sorted(sent_ids - received_ids)
+
+    missing_messages = []
+    for payload, expected_count in sent_counts.items():
+        actual_count = received_counts[payload]
+        if actual_count < expected_count:
+            decoded = json.loads(payload)
+            missing_messages.append(
+                {
+                    "event_id": str(decoded["event_id"]),
+                    "lifecycle": str(
+                        (decoded.get("provenance") or {}).get("lifecycle") or "UNKNOWN"
+                    ),
+                    "expected_count": expected_count,
+                    "received_count": actual_count,
+                }
+            )
+
+    unexpected_messages = []
+    for payload, actual_count in received_counts.items():
+        if payload not in sent_counts:
+            decoded = json.loads(payload)
+            unexpected_messages.append(
+                {
+                    "event_id": str(decoded["event_id"]),
+                    "lifecycle": str(
+                        (decoded.get("provenance") or {}).get("lifecycle") or "UNKNOWN"
+                    ),
+                    "received_count": actual_count,
+                }
+            )
+
+    exact_qos_duplicates = []
+    for payload, expected_count in sent_counts.items():
+        actual_count = received_counts[payload]
+        if actual_count > expected_count:
+            decoded = json.loads(payload)
+            exact_qos_duplicates.append(
+                {
+                    "event_id": str(decoded["event_id"]),
+                    "lifecycle": str(
+                        (decoded.get("provenance") or {}).get("lifecycle") or "UNKNOWN"
+                    ),
+                    "extra_delivery_count": actual_count - expected_count,
+                }
+            )
+
+    sent_transition_counts = Counter(transition_key(row) for row in sent)
+    received_transition_counts = Counter(transition_key(row) for row in received)
+
+    status = (
+        "PASS"
+        if sent_counts and not missing_messages and not unexpected_messages
+        else "FAIL"
     )
-    delivery_counts = Counter(str(row["event_id"]) for row in received)
-    duplicates = {
-        event_id: count
-        for event_id, count in sorted(delivery_counts.items())
-        if event_id in sent_by_id and count > 1
-    }
-
-    status = "PASS" if sent_by_id and not missing and not mismatched else "FAIL"
     report = {
-        "schema_version": "echo.mvp-mqtt-roundtrip.v1",
+        "schema_version": "echo.mvp-mqtt-roundtrip.v2",
         "status": status,
         "sent_messages": len(sent),
-        "sent_unique_event_ids": len(sent_by_id),
+        "sent_unique_event_ids": len(sent_ids),
         "received_messages": len(received),
-        "received_unique_event_ids": len(received_by_id),
-        "missing_event_ids": missing,
-        "payload_mismatch_event_ids": mismatched,
-        "duplicate_delivery_counts": duplicates,
-        "qos_semantics": "AT_LEAST_ONCE_EVENT_ID_IS_IDEMPOTENCY_KEY",
+        "received_unique_event_ids": len(received_ids),
+        "missing_event_ids": missing_event_ids,
+        "missing_messages": missing_messages,
+        "unexpected_messages": unexpected_messages,
+        "exact_qos_duplicate_deliveries": exact_qos_duplicates,
+        "sent_transition_counts": dict(sorted(sent_transition_counts.items())),
+        "received_transition_counts": dict(sorted(received_transition_counts.items())),
+        "qos_semantics": (
+            "AT_LEAST_ONCE; event_id identifies the logical event; lifecycle "
+            "transitions sharing event_id are distinct messages"
+        ),
     }
     print(json.dumps(report, indent=2, sort_keys=True))
     return 0 if status == "PASS" else 3
