@@ -116,7 +116,7 @@ The first build requires internet access for Docker base images and Python packa
 Before starting services:
 
 ```bash
-docker compose -f compose.mvp.yaml run --rm --no-deps demo   python scripts/mvp/check_demo_runtime.py
+docker compose -f compose.mvp.yaml --profile demo run --rm --no-deps demo python scripts/mvp/check_demo_runtime.py
 ```
 
 Expected final lines:
@@ -221,7 +221,7 @@ Removing the volume can require the pinned PANNs label metadata to be materializ
 ```bash
 git pull --ff-only origin main
 docker compose -f compose.mvp.yaml build demo
-docker compose -f compose.mvp.yaml run --rm --no-deps demo   python scripts/mvp/check_demo_runtime.py
+docker compose -f compose.mvp.yaml --profile demo run --rm --no-deps demo python scripts/mvp/check_demo_runtime.py
 docker compose -f compose.mvp.yaml --profile demo up -d
 ```
 
