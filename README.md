@@ -2,7 +2,7 @@
 
 > **Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.**
 
-**Project status:** documentation-first, MK0 certified, MK1 replay build ready.  
+**Project status:** MK0 certified; three-class MK1 MVP vertical empirically running in Docker; field robustness gate open.  
 **Scope authority:** `PROJECT-CHARTER.md`  
 **Current state:** `CURRENT-STATE.md`
 
@@ -176,10 +176,16 @@ Git preserves document history; model/data/build artifacts additionally require 
 - `governance/` — decisions, risk, DoR/DoD, certificates and external gates.
 - `schemas/` — machine-readable event/source contracts.
 - `THIRD_PARTY.md` — dependency/model/dataset license governance.
+- `demo/` — frozen professor-demo surface and Docker operator runbook.
+- `demo/docker-runbook/` — clone/artifact/preflight/start/validation/troubleshooting steps for the current functional Docker demo.
 
-## 13. Current known uncertainty
+## 13. Current empirical boundary
 
-The remaining high-value unknowns are deliberately empirical or external: exact model winner, numerical thresholds, false-alarm profile, latency/capacity, field distance/SNR envelope and characteristics/access of the professor-provided camera. They are not “missing documentation”; they are controlled experiments or external gates.
+The frozen three-class MVP benchmark has run. Validation-only model selection chose `PANNS_CNN14_HEAD` as the provisional MVP winner; the Docker model/replay/Event-Engine/MQTT vertical has passed its integration smoke, and controlled-validation temporal calibration has been executed. These results do **not** establish field or production performance.
+
+The active uncertainty is now dominated by environmental robustness: ad hoc microphone/WAV testing exposed target-free false positives, including ambient audio activating `GLASS_SHATTER`/`SIREN` and voice activating `GLASS_SHATTER`. The short-clip repeated-padding defect was contained; the broader domain/confuser problem remains open under the field-audio robustness gate. See `MK1/test/FALSE-POSITIVE-ANALYSIS-2026-10-08.md` and issue #53.
+
+The professor demo is scope-frozen. Future classes such as `SCREAM`, `GUNSHOT`, `FIRE_ALARM` and `COLLISION_IMPACT` are design-only under MVP-002 and are not capabilities of the current checkpoint.
 
 ## 14. Build rule
 
