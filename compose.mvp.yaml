@@ -135,6 +135,43 @@ services:
     profiles:
       - calibration
 
+  demo:
+    <<: *echo-service
+    depends_on:
+      broker:
+        condition: service_healthy
+      consumer:
+        condition: service_started
+    command:
+      [
+        "python",
+        "demo/server.py",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8088",
+        "--fixtures",
+        "/workspace/artifacts/mvp-temporal/fixtures.json",
+        "--selection",
+        "/workspace/artifacts/mvp-benchmark/selection.json",
+        "--event-config",
+        "/workspace/artifacts/mvp-temporal/temporal-event-config.json",
+        "--panns-checkpoint",
+        "/workspace/artifacts/models/panns/Cnn14_mAP=0.431.pth",
+        "--device",
+        "cpu",
+        "--mqtt-host",
+        "broker",
+        "--mqtt-port",
+        "1883",
+        "--mqtt-topic",
+        "echo/events"
+      ]
+    ports:
+      - "127.0.0.1:8088:8088"
+    profiles:
+      - demo
+
 networks:
   echo-mvp:
     driver: bridge
