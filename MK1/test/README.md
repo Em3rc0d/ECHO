@@ -14,6 +14,10 @@ Unit/contract -> integration -> offline model benchmark -> streaming replay -> m
 
 Every test result cites build/config/data/model identity. Protocol-only documents never receive PASS on behalf of an unexecuted test.
 
+## Active robustness gate
+
+`FIELD-AUDIO-ROBUSTNESS-GATE.md` is open after ad hoc ambient/speech false positives were observed in the professor-demo path. It separates controlled-validation success from field-like environmental behavior and blocks class expansion from entering build prematurely.
+
 ## Core outputs
 
 Per-class metrics, false alarms/source-hour, misses, latency/resources, calibration, event fragmentation/duplicates, source isolation, reconnect/delivery evidence, security/privacy checks and known limitations.
