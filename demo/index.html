@@ -39,6 +39,11 @@
       border-radius:13px;padding:14px 13px;margin-bottom:7px;cursor:pointer;transition:.18s}
     .scenario:hover{background:#0d2239}.scenario.active{background:#0d2944;border-color:#236699;box-shadow:0 0 0 1px #2b97c944 inset}
     .scenario b{display:block;font-size:14px;margin-bottom:4px}.scenario span{font-size:11px;color:var(--muted)}
+    .upload-box{margin:8px 12px 14px;padding:14px;border-radius:13px;border:1px dashed #2b628a;background:#091b2d}
+    .upload-box strong{display:block;font-size:13px;margin-bottom:5px}.upload-box p{margin:0 0 10px;color:var(--muted);font-size:11px;line-height:1.45}
+    .file-label{display:flex;justify-content:center;align-items:center;padding:10px 12px;border-radius:10px;background:#0f3452;border:1px solid #28678f;color:#c9efff;font-size:12px;font-weight:700;cursor:pointer}
+    .file-label:hover{background:#124265}.file-label input{display:none}
+    .file-name{margin-top:9px;color:#8fdfff;font-size:11px;word-break:break-all}
     .content{padding:22px}
     .audio-card{padding:18px;border-radius:15px;background:#081321;border:1px solid #193754;margin-bottom:18px}
     .audio-title{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:14px}
@@ -86,8 +91,17 @@
 
   <div class="grid">
     <aside class="panel">
-      <div class="panel-head"><h2>Escenarios de demostración</h2><p>Selecciona un audio y ejecútalo con ECHO.</p></div>
+      <div class="panel-head"><h2>Escenarios de demostración</h2><p>Usa un escenario controlado o prueba tu propio audio.</p></div>
       <div id="scenarios" class="scenario-list"></div>
+      <div class="upload-box">
+        <strong>Prueba ciega</strong>
+        <p>Sube tu propio archivo WAV. ECHO no recibe ninguna etiqueta esperada.</p>
+        <label class="file-label">
+          Seleccionar .wav
+          <input id="userFile" type="file" accept=".wav,audio/wav">
+        </label>
+        <div id="fileName" class="file-name">Ningún archivo seleccionado</div>
+      </div>
     </aside>
 
     <main class="panel">
@@ -121,7 +135,7 @@
 </div>
 <script>
 const $ = id => document.getElementById(id);
-let catalog = [], selected = null;
+let catalog = [], selected = null, userObjectUrl = null;
 
 function labelName(key){
   return {GLASS_SHATTER:'Rotura de vidrio',SIREN:'Sirena',VEHICLE_HORN:'Bocina vehicular'}[key] || key;
@@ -129,6 +143,7 @@ function labelName(key){
 function resetPipeline(){['p1','p2','p3','p4'].forEach(id=>$(id).classList.remove('on'))}
 function setSelected(item){
   selected=item;
+  if(userObjectUrl){URL.revokeObjectURL(userObjectUrl);userObjectUrl=null}
   document.querySelectorAll('.scenario').forEach(x=>x.classList.toggle('active',x.dataset.id===item.scenario_id));
   $('scenarioName').textContent=item.display_name;
   $('scenarioMeta').textContent=`${item.duration_seconds.toFixed(1)} s · ${item.partition.replace('_',' ')}`;
@@ -136,7 +151,34 @@ function setSelected(item){
   $('player').src=item.audio_url;
   $('run').disabled=false;
   resetPipeline();
+  $('fileName').textContent='Ningún archivo seleccionado';
+  $('userFile').value='';
   $('result').innerHTML='<div class="empty">Audio listo. Pulsa “Analizar audio con ECHO”.</div>';
+}
+function setUserFile(file){
+  if(!file)return;
+  if(!file.name.toLowerCase().endsWith('.wav')){
+    alert('ECHO Demo acepta únicamente archivos .wav');
+    $('userFile').value='';
+    return;
+  }
+  if(file.size > 25*1024*1024){
+    alert('El archivo supera el límite de 25 MB.');
+    $('userFile').value='';
+    return;
+  }
+  document.querySelectorAll('.scenario').forEach(x=>x.classList.remove('active'));
+  if(userObjectUrl)URL.revokeObjectURL(userObjectUrl);
+  userObjectUrl=URL.createObjectURL(file);
+  selected={kind:'upload',file};
+  $('scenarioName').textContent='Audio propio · prueba ciega';
+  $('scenarioMeta').textContent=`${file.name} · ${(file.size/1024/1024).toFixed(2)} MB`;
+  $('expected').textContent='Sin referencia / sin etiqueta esperada';
+  $('player').src=userObjectUrl;
+  $('fileName').textContent=file.name;
+  $('run').disabled=false;
+  resetPipeline();
+  $('result').innerHTML='<div class="empty">WAV listo. ECHO lo analizará sin conocer qué sonido contiene.</div>';
 }
 function renderCatalog(){
   $('scenarios').innerHTML='';
@@ -153,7 +195,12 @@ function makeWave(){
   const heights=[14,24,36,22,44,30,18,40,54,28,20,46,32,56,24,42,18,34,50,22,38,28,48,20,36,26,52,31,18,44,25,38,21,49,29,17,40,24,34,19,46,27,37,22,51,30,20,43];
   $('wave').innerHTML=heights.map(h=>`<i style="height:${h}px"></i>`).join('');
 }
-function resultClass(outcome){
+function resultClass(outcome, data){
+  if(outcome==='USER_AUDIO_ANALYZED'){
+    return data.logical_event_count>0
+      ? ['ok','ECHO detectó evento(s) acústico(s)']
+      : ['warn','ECHO no confirmó ningún evento objetivo'];
+  }
   if(outcome==='EXPECTED_EVENT_DETECTED'||outcome==='NO_TARGET_EVENT_DETECTED') return ['ok','Resultado coherente con la referencia'];
   if(outcome==='EXPECTED_EVENT_NOT_DETECTED') return ['warn','Evento esperado no detectado'];
   return ['bad','Evento inesperado detectado'];
@@ -163,11 +210,27 @@ async function runDemo(){
   $('run').disabled=true; resetPipeline(); $('p1').classList.add('on');
   $('result').innerHTML='<div class="empty"><div><div class="spinner"></div>Procesando audio con el modelo real de ECHO…</div></div>';
   try{
-    const res=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario_id:selected.scenario_id})});
+    let res;
+    if(selected.kind==='upload'){
+      res=await fetch('/api/upload-run',{
+        method:'POST',
+        headers:{
+          'Content-Type':'audio/wav',
+          'X-Filename':selected.file.name
+        },
+        body:selected.file
+      });
+    }else{
+      res=await fetch('/api/run',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({scenario_id:selected.scenario_id})
+      });
+    }
     const data=await res.json();
     if(!res.ok)throw new Error(data.detail||data.error||'Error de ejecución');
     ['p2','p3','p4'].forEach(id=>$(id).classList.add('on'));
-    const [cls,title]=resultClass(data.demo_outcome);
+    const [cls,title]=resultClass(data.demo_outcome,data);
     const ranked=data.events.slice().sort((a,b)=>b.confidence_peak-a.confidence_peak);
     const best=(data.primary_expected_label
       ? ranked.find(e=>e.event_type===data.primary_expected_label)
@@ -190,6 +253,7 @@ async function runDemo(){
   }finally{$('run').disabled=false}
 }
 $('run').onclick=runDemo;
+$('userFile').addEventListener('change',e=>setUserFile(e.target.files[0]));
 makeWave();
 
 Promise.all([fetch('/api/catalog').then(r=>r.json()),fetch('/api/status').then(r=>r.json())])
