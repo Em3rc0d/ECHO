@@ -101,3 +101,31 @@ Un `.md` de ingeniería no se considera completo por tener título y preguntas. 
 ## 8. Regla de certificación
 
 Cambios materiales upstream invalidan certificados downstream. El historial no se reescribe: se crea una nueva versión, se actualiza el ledger y se recertifica el subgrafo afectado.
+
+## 9. Demo reproducible
+
+`demo/` es una superficie de presentación subordinada al contrato de ECHO; no es una arquitectura paralela.
+
+```text
+demo/
+├── index.html
+├── server.py
+├── DEMO-SCOPE-FREEZE.md
+└── docker-runbook/
+    ├── README.md
+    ├── ARTIFACTS.md
+    ├── VALIDATION.md
+    └── TROUBLESHOOTING.md
+```
+
+Semántica:
+
+- `DEMO-SCOPE-FREEZE.md` congela qué capacidades puede mostrar la demo;
+- `docker-runbook/README.md` es el entrypoint operativo para levantarla con Docker;
+- `ARTIFACTS.md` separa código versionado de checkpoints/fixtures no almacenados en Git;
+- `VALIDATION.md` define el smoke manual de la demo congelada;
+- `TROUBLESHOOTING.md` evita workarounds que rompan la regla Docker-only.
+
+El preflight ejecutable está en `scripts/mvp/check_demo_runtime.py`.
+
+La evidencia de falsos positivos y la justificación de `UNKNOWN / NO_TARGET` pertenecen a `MK1/test/FALSE-POSITIVE-ANALYSIS-2026-10-08.md`, no a una narrativa de marketing de la demo.
