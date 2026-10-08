@@ -30,9 +30,13 @@ External demo audio now follows a stricter ingestion boundary:
 3. microphone captures shorter than the configured analysis window are rejected;
 4. external-audio output is explicitly labeled experimental / not field calibrated;
 5. per-window score diagnostics are returned without retaining raw audio;
-6. MQTT reporting distinguishes zero event messages from actual event-message publication.
+6. MQTT reporting distinguishes zero event messages from actual event-message publication;
+7. `ECHO-DEMO-ABSTENTION-v1` maps external audio to `NO_TARGET` or conservative `UNKNOWN` rather than accepting uncalibrated target candidates;
+8. external target candidates are suppressed from target-event MQTT publication while remaining visible as diagnostics.
 
 Controlled validation scenarios keep their existing calibrated replay behavior so prior temporal evidence is not silently redefined.
+
+The detailed incident analysis and decision rationale are frozen in `FALSE-POSITIVE-ANALYSIS-2026-10-08.md`.
 
 ## Remaining false-positive quarry
 
