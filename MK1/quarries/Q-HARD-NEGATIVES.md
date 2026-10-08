@@ -1,6 +1,6 @@
 # Quarry — Hard Negatives
 
-**Status:** `SEED_FAMILIES_DEFINED / ITERATIVE_MINING_PENDING`
+**Status:** `FIELD_DEMO_CONFUSERS_OBSERVED / ITERATIVE_MINING_OPEN`
 
 ## Purpose
 
@@ -11,6 +11,14 @@ Reduce false alarms from non-target sounds that resemble target spectral/tempora
 Glass: metal/ceramic/dishes/keys/dropped objects/construction impacts. Siren: synth/music sweeps, security alarms, reversing beepers. Fire alarm: timers, electronic chirps, generic alarms. Horn: whistles, tonal machinery, alarms. Tire squeal: brakes, metal squeal, scraping/friction machinery.
 
 General background includes speech, music, traffic, engines, wind, rain, footsteps, doors, animals and construction.
+
+## 2026-10-08 field-demo trigger
+
+Ad hoc microphone/WAV testing reported two target-free failure modes: ambient-only audio activating GLASS_SHATTER/SIREN and voice-only audio activating GLASS_SHATTER. The raw clips are not governed or committed, so these observations identify a quarry direction but are not benchmark evidence.
+
+A separate short-clip artifact was also identified: repeated zero-padded tail windows could create pseudo-repeated temporal evidence. External demo audio now disables tail padding and requires at least one full analysis window. The long ambient false-positive problem remains open.
+
+See `MK1/test/FIELD-AUDIO-ROBUSTNESS-GATE.md` and issue #53.
 
 ## Mining loop
 
