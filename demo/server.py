@@ -58,6 +58,55 @@ class CollectingPublisher:
         self.events.append(dict(event))
 
 
+class TracingScorer:
+    """Collect per-window scores without retaining raw audio."""
+
+    def __init__(self, scorer) -> None:
+        self._scorer = scorer
+        self.sample_rate_hz = scorer.sample_rate_hz
+        self.model_version = scorer.model_version
+        self.rows: list[dict[str, float]] = []
+
+    def score(self, waveform) -> dict[str, float]:
+        scores = {
+            str(label): float(value)
+            for label, value in self._scorer.score(waveform).items()
+        }
+        self.rows.append(scores)
+        return scores
+
+
+def summarize_score_trace(
+    rows: list[dict[str, float]],
+    thresholds: dict[str, ThresholdConfig],
+) -> dict:
+    labels = {}
+    for label, cfg in thresholds.items():
+        values = [float(row.get(label, 0.0)) for row in rows]
+        longest = 0
+        current = 0
+        for value in values:
+            if value >= cfg.on_threshold:
+                current += 1
+                longest = max(longest, current)
+            else:
+                current = 0
+        labels[label] = {
+            "on_threshold": cfg.on_threshold,
+            "max_score": max(values) if values else 0.0,
+            "mean_score": (sum(values) / len(values)) if values else 0.0,
+            "windows_at_or_above_on": sum(
+                1 for value in values if value >= cfg.on_threshold
+            ),
+            "longest_consecutive_at_or_above_on": longest,
+        }
+    return {
+        "window_count": len(rows),
+        "labels": labels,
+        "raw_audio_retained": False,
+    }
+
+
 def load_thresholds(path: Path):
     payload = json.loads(path.read_text(encoding="utf-8"))
     labels = payload.get("labels") or {}
@@ -286,6 +335,17 @@ class DemoApplication:
             "microphone_capture": True,
             "max_upload_bytes": MAX_UPLOAD_BYTES,
             "max_recording_seconds": MAX_RECORDING_SECONDS,
+            "external_audio_policy": {
+                "pad_final": False,
+                "min_duration_seconds": float(
+                    self.config_payload.get("window_seconds") or 6.0
+                ),
+                "field_calibrated": False,
+                "reason": (
+                    "External demo audio disables zero-padded tail windows so a short "
+                    "clip cannot manufacture repeated temporal evidence."
+                ),
+            },
         }
 
     def catalog(self) -> list[dict]:
@@ -299,29 +359,43 @@ class DemoApplication:
             for row in self.scenarios
         ]
 
-    def _execute_audio(self, path: Path, *, source_id: str) -> dict:
+    def _execute_audio(
+        self,
+        path: Path,
+        *,
+        source_id: str,
+        external_audio: bool = False,
+    ) -> dict:
         collector = CollectingPublisher()
+        scorer = TracingScorer(self.scorer) if external_audio else self.scorer
         engine = TemporalEventEngine(
             thresholds=self.thresholds,
             threshold_version=self.threshold_version,
         )
         pipeline = EchoReplayPipeline(
-            scorer=self.scorer,
+            scorer=scorer,
             event_engine=engine,
             publishers=[collector, self.mqtt],
+        )
+        window_seconds = float(
+            self.config_payload.get("window_seconds") or 6.0
         )
         with self.lock:
             summary = pipeline.run_file(
                 path,
                 source_id=source_id,
                 site_id="ECHO-PROFESSOR-DEMO",
-                window_seconds=float(
-                    self.config_payload.get("window_seconds") or 6.0
-                ),
+                window_seconds=window_seconds,
                 hop_seconds=float(
                     self.config_payload.get("hop_seconds") or 1.0
                 ),
-                pad_final=True,
+                pad_final=not external_audio,
+            )
+        if external_audio and int(summary["window_count"]) == 0:
+            raise ValueError(
+                f"external demo audio must contain at least {window_seconds:.1f} "
+                "seconds so ECHO can analyze one complete window without "
+                "zero-padding repeated evidence"
             )
         logical_events = aggregate_events(collector.events)
         detected_labels = sorted(
@@ -337,11 +411,26 @@ class DemoApplication:
             "event_message_count": len(collector.events),
             "logical_event_count": len(logical_events),
             "mqtt": {
-                "published": True,
+                "published": bool(collector.events),
+                "message_count": len(collector.events),
                 "topic": self.args.mqtt_topic,
                 "qos": 1,
             },
             "pipeline_summary": summary,
+            "score_diagnostics": (
+                summarize_score_trace(scorer.rows, self.thresholds)
+                if external_audio
+                else None
+            ),
+            "external_audio_policy": (
+                {
+                    "pad_final": False,
+                    "min_duration_seconds": window_seconds,
+                    "field_calibrated": False,
+                }
+                if external_audio
+                else None
+            ),
         }
 
     def run(self, scenario_id: str) -> dict:
@@ -403,6 +492,7 @@ class DemoApplication:
         execution = self._execute_audio(
             path,
             source_id=f"demo:{origin}:{media_sha256[:16]}",
+            external_audio=True,
         )
         outcome = (
             "LIVE_AUDIO_ANALYZED"
@@ -411,8 +501,10 @@ class DemoApplication:
         )
         boundary = (
             "Browser microphone capture analyzed blind by the real ECHO MVP pipeline. "
-            "The recording is ephemeral and has no ground-truth label, so this is a "
-            "robustness demo output, not an accuracy or field-performance measurement."
+            "The recording is ephemeral and has no ground-truth label. Zero-padded "
+            "tail windows are disabled for this path to avoid repeated pseudo-evidence "
+            "from short clips. This remains a robustness demo output, not an accuracy "
+            "or field-performance measurement."
             if origin == "microphone_capture"
             else
             "User-supplied WAV analyzed blind by the real ECHO MVP pipeline. "
@@ -431,6 +523,8 @@ class DemoApplication:
             "logical_event_count": execution["logical_event_count"],
             "mqtt": execution["mqtt"],
             "pipeline_summary": execution["pipeline_summary"],
+            "score_diagnostics": execution["score_diagnostics"],
+            "external_audio_policy": execution["external_audio_policy"],
             "demo_outcome": outcome,
             "audio_origin": origin,
             "uploaded_media_sha256": media_sha256,
