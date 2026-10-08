@@ -1,0 +1,76 @@
+{
+  "schema_version": "echo.event-threshold-config.v1",
+  "threshold_version": "ECHO-MVP-001-TEMPORAL-CONTROLLED-v1",
+  "status": "CONTROLLED_VALIDATION_CALIBRATED_NOT_FIELD_CALIBRATED",
+  "profile_id": "ECHO-MVP-001",
+  "model_benchmark": "PANNS_CNN14_HEAD",
+  "window_seconds": 6,
+  "hop_seconds": 1,
+  "selection_partition": "temporal_tune",
+  "evaluation_partition": "temporal_holdout",
+  "test_split_used": false,
+  "labels": {
+    "GLASS_SHATTER": {
+      "on_threshold": 0.35,
+      "off_threshold": 0.15,
+      "confirm_windows": 3,
+      "release_windows": 1,
+      "cooldown_seconds": 0,
+      "holdout": {
+        "precision": 1,
+        "recall": 0.75,
+        "f1": 0.8571,
+        "missed_events": 2,
+        "predicted_events": 6,
+        "truth_events": 8,
+        "median_detection_latency_seconds": 3.037203125000005,
+        "median_closure_latency_seconds": 5.793921875000002
+      }
+    },
+    "SIREN": {
+      "on_threshold": 0.6,
+      "off_threshold": 0.4,
+      "confirm_windows": 1,
+      "release_windows": 1,
+      "cooldown_seconds": 0,
+      "holdout": {
+        "precision": 1,
+        "recall": 0.6,
+        "f1": 0.75,
+        "missed_events": 4,
+        "predicted_events": 6,
+        "truth_events": 10,
+        "median_detection_latency_seconds": 2.081374999999994,
+        "median_closure_latency_seconds": 12.565328124999994
+      }
+    },
+    "VEHICLE_HORN": {
+      "on_threshold": 0.75,
+      "off_threshold": 0.55,
+      "confirm_windows": 1,
+      "release_windows": 1,
+      "cooldown_seconds": 0,
+      "holdout": {
+        "precision": 1,
+        "recall": 0.4,
+        "f1": 0.5714,
+        "missed_events": 6,
+        "predicted_events": 4,
+        "truth_events": 10,
+        "median_detection_latency_seconds": 1.0372031249999978,
+        "median_closure_latency_seconds": 5.118578124999999
+      }
+    }
+  },
+  "macro_holdout": {
+    "f1": 0.7261904761904762,
+    "recall": 0.5833333333333334,
+    "false_alarms_per_hour": 0
+  },
+  "warnings": [],
+  "limitations": [
+    "Controlled validation calibration only; not field calibration.",
+    "VEHICLE_HORN holdout recall is 0.40 and is the primary known sensitivity limitation.",
+    "Observed 0 false alarms/hour applies only to the controlled temporal-holdout streams and must not be generalized to field operation."
+  ]
+}
