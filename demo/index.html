@@ -168,7 +168,10 @@ async function runDemo(){
     if(!res.ok)throw new Error(data.detail||data.error||'Error de ejecución');
     ['p2','p3','p4'].forEach(id=>$(id).classList.add('on'));
     const [cls,title]=resultClass(data.demo_outcome);
-    const best=data.events.slice().sort((a,b)=>b.confidence_peak-a.confidence_peak)[0];
+    const ranked=data.events.slice().sort((a,b)=>b.confidence_peak-a.confidence_peak);
+    const best=(data.primary_expected_label
+      ? ranked.find(e=>e.event_type===data.primary_expected_label)
+      : ranked[0]) || ranked[0];
     const confidence=best?Math.round(best.confidence_peak*100):null;
     const events=data.events.length?data.events.map(e=>`
       <div class="event">
