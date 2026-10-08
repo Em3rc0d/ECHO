@@ -61,7 +61,7 @@ This is intentional:
 
 For a machine receiving an already prepared ECHO demo bundle, copy the supplied `artifacts/` directory into the repository root before starting.
 
-For a public reproduction without an artifact bundle, regenerate/provision those artifacts through the governed MVP pipeline before using this runbook.
+For a public reproduction without an artifact bundle, regenerate/provision those artifacts through the governed MVP pipeline. See `FROM-SCRATCH.md`.
 
 ## 3. Clone
 
@@ -97,7 +97,7 @@ ECHO/
 
 The exact selected ECHO head filename is resolved from `selection.json`; do not rename it arbitrarily.
 
-See `ARTIFACTS.md` for details.
+See `ARTIFACTS.md` for details. If no prepared artifact set exists, follow `FROM-SCRATCH.md`.
 
 ## 5. Build the image
 
