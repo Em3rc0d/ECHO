@@ -171,6 +171,12 @@ def choose_demo_scenarios(fixtures: dict, fixtures_path: Path) -> list[dict]:
                 if label in DISPLAY
             }
         )
+        primary_expected = {
+            "glass_shatter": "GLASS_SHATTER",
+            "siren": "SIREN",
+            "vehicle_horn": "VEHICLE_HORN",
+            "negative": None,
+        }.get(key)
         selected.append(
             {
                 "scenario_id": scenario_id,
@@ -178,6 +184,7 @@ def choose_demo_scenarios(fixtures: dict, fixtures_path: Path) -> list[dict]:
                 "partition": row.get("partition"),
                 "duration_seconds": float(row.get("duration_seconds") or 0.0),
                 "expected_labels": expected,
+                "primary_expected_label": primary_expected,
                 "ground_truth_event_count": len(row.get("ground_truth") or []),
                 "wav": resolve_fixture_wav(fixtures_path, row),
             }
@@ -319,12 +326,12 @@ class DemoApplication:
             }
         )
         expected_labels = list(scenario["expected_labels"])
-        expected_set = set(expected_labels)
+        primary_expected = scenario.get("primary_expected_label")
         detected_set = set(detected_labels)
-        if expected_set:
+        if primary_expected:
             demo_outcome = (
                 "EXPECTED_EVENT_DETECTED"
-                if expected_set & detected_set
+                if primary_expected in detected_set
                 else "EXPECTED_EVENT_NOT_DETECTED"
             )
         else:
@@ -339,6 +346,7 @@ class DemoApplication:
             "partition": scenario["partition"],
             "duration_seconds": scenario["duration_seconds"],
             "expected_labels": expected_labels,
+            "primary_expected_label": primary_expected,
             "detected_labels": detected_labels,
             "events": logical_events,
             "event_message_count": len(collector.events),
