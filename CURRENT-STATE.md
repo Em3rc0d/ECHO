@@ -1,229 +1,348 @@
 # Estado actual de ECHO
 
-**Fecha de corte:** 2026-09-16  
+**Fecha de corte:** 2026-10-08  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
-**Global execution invariant:** `ECHO-FREE-TIER-001`  
-**Documentation certificate:** `CERT-DOC-015`
+**Execution invariant:** `DOCKER_ONLY_RUNTIME`  
+**Active MVP profile:** `ECHO-MVP-001`
 
 ## 1. Promise
 
 > **Sistema inteligente para la detección y clasificación de eventos acústicos en ambientes mediante inteligencia artificial.**
 
-La promesa permanece inmutable. Cámaras, RTSP/ONVIF, MQTT, dashboards, persistencia y alertas son soporte; no redefinen el core acústico.
+La promesa permanece inmutable. Cámara/NVR, RTSP/ONVIF, MQTT, UI, almacenamiento y alertas son infraestructura de soporte y no redefinen el core acústico.
 
-## 2. MK1 critical path
+## 2. Dos workstreams que no deben confundirse
 
-```text
-release-safe corpus
-→ coverage PASS / gap_codes=[]
-→ freeze #1
-→ freeze #2 clean
-→ reproducibility PASS
-→ pre-certificate readiness with exactly CORPUS_CERTIFICATE_NOT_CERTIFIED
-→ CERT-MK1-DF-CORPUS-001
-→ final readiness READY / modeling_allowed=true
-→ Benchmark A/B/C
-→ model winner
-→ Event Engine → Edge Agent → MQTT/replay → real camera
-```
+ECHO mantiene simultáneamente:
 
-## 3. Current state
+### A. Full release corpus
+
+La taxonomía mayor conserva trabajo abierto para clases como `FIRE_ALARM` y `TIRE_SQUEAL`. Sus gaps históricos de cobertura/licencia/diversidad no se consideran resueltos por el MVP reducido.
+
+### B. ECHO-MVP-001
+
+Para obtener evidencia end-to-end sin falsear el gate del corpus mayor, se congeló un MVP de tres clases:
 
 ```text
-MK0                               CERTIFIED
-MK1 spec/design/architecture      CLOSED_FOR_BUILD
-Data Foundry spec                 CERTIFIED
-SONYC materialization             CERTIFIED / scoped
-Foundry toolchain                 TOOLCHAIN-005 CERTIFIED
-Corpus certificate handoff        HANDOFF-001 CERTIFIED
-Global acoustic grouping          PASS
-Global dedup                      PASS
-Recording-family audit            PASS
-Split integrity                   PASS
-Split quarantine                  0 assets
-Coverage                          FAIL / 16 empirical gaps
-Freeze #1                         FAIL / coverage only
-Freeze #2                         FAIL / coverage only
-Reproducibility                   FAIL / freeze not eligible
-Corpus readiness                  BLOCKED_FAIL_CLOSED
-CERT-MK1-DF-CORPUS-001            OPEN
-modeling_allowed = false
-Benchmark A/B/C                   LOCKED
-MK2                               GATED_BY_MK1
+GLASS_SHATTER
+SIREN
+VEHICLE_HORN
 ```
 
-No paid fallback, label coercion, source-family inflation, split shopping or lowered quality floor is authorized.
+`FIRE_ALARM` y `TIRE_SQUEAL` no fueron relabelados como background; simplemente quedaron fuera del benchmark MVP-001.
 
-## 4. Certificate lineage
+## 3. Frozen MVP dataset identity
 
 ```text
-CERT-MK1-DF-SPEC-001              = CERTIFIED
-CERT-MK1-DF-TOOLCHAIN-001..003    = historical
-CERT-MK1-DF-TOOLCHAIN-004         = INVALIDATED
-CERT-MK1-DF-TOOLCHAIN-005         = CERTIFIED
-CERT-MK1-DF-SONYC-001             = CERTIFIED / scoped
-CERT-MK1-DF-HANDOFF-001           = CERTIFIED
-CERT-MK1-DF-CORPUS-001            = OPEN
-
-CERT-DOC-001..014                 = historical / invalidated
-CERT-DOC-015                      = CERTIFIED / current
+benchmark manifest rows       1027
+development assets upstream   1061
+SONYC required                 599
+direct non-SONYC media         428 / 428
+split quarantine               0
 ```
 
-TOOLCHAIN-005 is scoped to the proven atomic evidence/readiness-v2 implementation. HANDOFF-001 separately governs conditional certificate issuance.
+Positive counts:
 
-## 5. Canonical semantic corpus truth
+| split | GLASS_SHATTER | SIREN | VEHICLE_HORN |
+|---|---:|---:|---:|
+| train | 84 | 75 | 81 |
+| validation | 14 | 70 | 60 |
+| test | 17 | 76 | 149 |
+
+The complete 1,027-asset media cache was rehydrated before the real A/B/C benchmark.
+
+## 4. Empirical model benchmark
+
+The three declared arms were executed:
+
+| Benchmark | Test macro F1 | Precision | Recall | Macro FPR |
+|---|---:|---:|---:|---:|
+| YAMNET_EMBEDDINGS_HEAD | 0.6675689376 | 0.7250183747 | 0.6271202582 | 0.1088042898 |
+| PANNS_CNN14_HEAD | 0.7660443723 | 0.9170177762 | 0.6868597669 | 0.0147220036 |
+| COMPACT_LOGMEL_CNN | 0.6977375998 | 0.6717409690 | 0.7950370894 | 0.2655885904 |
+
+Model selection used validation evidence only. The test split did not select the winner.
+
+Current selected candidate:
 
 ```text
-assets                              1141
-canonical fingerprints              1141 / 1141
-missing fingerprints                0
-ledger blockers                     0
-recording families                  1075
-split quarantine                    0
-semantic ledger sha256              cec960c16c2dbbd4fed8f4ad4e473e76a1eb7c101be8975d055907b796d81ed1
-coverage ledger sha256              93be3dceee44df0dfc51ab38c078f1e1e6587ba91e4fbbc53c3b65065e58bfa8
-readiness semantic identity         4297dc73cae803c3b8b4e92c767844d04f598be93abe6ca560f17e7fc4a11405
+PANNS_CNN14_HEAD
+status = PROVISIONAL_MVP_WINNER
 ```
 
-`baseline_commit` and generated-summary byte hashes remain **execution provenance**. Readiness v2 binds semantic ledger content, coverage policy and closure evidence instead.
-
-## 6. Atomic corpus + certificate pipeline
-
-There is one durable writer:
+PANNs per-class clip-level test F1:
 
 ```text
-governed source evidence
-→ canonical ledger
-→ grouping
-→ dedup / family / split
-→ coverage
-→ freeze #1 / freeze #2
-→ reproducibility
-→ pre-certificate readiness
-→ conditional certificate emitter
-→ final readiness
-→ one atomic durable commit
+GLASS_SHATTER   0.9714285714
+SIREN           0.78125
+VEHICLE_HORN    0.5454545455
 ```
 
-The orchestrator rebuilds the cascade twice, byte-compares it, refuses persistence if `main` moved and never relies on repository-token push recursion.
+Known weakness: VEHICLE_HORN sensitivity remains materially weaker than the other two targets.
 
-`CERT-MK1-DF-HANDOFF-001` freezes the transition rule. A corpus certificate may be emitted only when pre-certificate readiness has exactly:
+## 5. Runtime vertical
+
+The first vertical is operational in Docker:
 
 ```text
-eligible_for_certificate_review = true
-status = BLOCKED
-modeling_allowed = false
-gap_codes = [CORPUS_CERTIFICATE_NOT_CERTIFIED]
+audio/replay
+→ FFmpeg decode
+→ selected model
+→ per-window scores
+→ Temporal Event Engine
+→ echo.event.v1
+→ MQTT QoS 1
+→ consumer
 ```
 
-If any other gap exists, issuance is a no-op. An existing stale/invalid corpus certificate is never overwritten silently.
-
-## 7. Structural closure
+Docker-only MQTT gate evidence:
 
 ```text
-candidate near-duplicate threshold            0.02
-confirmed grouping threshold                  0.002
-max decoded-sample relative delta              0.01
-screening candidates                           855
-screening candidates cross-group               849
-confirmed relations                              2
-confirmed cross-group conflicts                   0
-length-rejected candidates                     835
-exact media duplicate groups                     0
-exact canonical-PCM duplicate groups             0
-
-global-dedup-audit.json       PASS
-group/family audit            PASS
-split-integrity.json          PASS
+sent messages                  46
+received messages              46
+sent logical event_ids         23
+received logical event_ids     23
+missing_event_ids              []
+missing_messages               []
+unexpected_messages            []
+exact_qos_duplicate_deliveries []
+status                          PASS
 ```
 
-Screening evidence is never automatic acoustic identity. Review-only edges never union recording components.
+A logical event intentionally reuses its deterministic `event_id` for `CONFIRMED` and `CLOSED` lifecycle messages.
 
-## 8. Current coverage
+## 6. Controlled temporal calibration
+
+Controlled validation temporal calibration has been executed using:
 
 ```text
-BACKGROUND      428 assets / 385 groups / 4 sources                         PASS
-FIRE_ALARM       19 assets / 16 groups / 3 sources / 460.864037 s           FAIL
-GLASS_SHATTER   303 assets / 287 groups / 4 sources / 1244.131193 s         FAIL concentration
-SIREN           169 assets / 169 groups                                      PASS
-TIRE_SQUEAL      14 assets / 10 groups / 2 sources / 344.600098 s           FAIL
-VEHICLE_HORN    235 assets / 235 groups                                      PASS
+window = 6 s
+hop    = 1 s
+selection partition = temporal_tune
+evaluation partition = temporal_holdout
+test split used = false
 ```
 
-FIRE hard negatives: 202/202/4 PASS. GLASS hard negatives: 440/410/2 PASS. TIRE hard negatives: 25/12/2 PASS. Asset-quality stop lines remain zero.
-
-## 9. Remaining 16 coverage gaps
+Aggregate temporal holdout:
 
 ```text
-FIRE_ALARM_ASSETS_BELOW_MIN
-FIRE_ALARM_GROUPS_BELOW_MIN
-FIRE_ALARM_TEST_ASSETS_BELOW_MIN
-FIRE_ALARM_TEST_GROUPS_BELOW_MIN
-FIRE_ALARM_TRAIN_ASSETS_BELOW_MIN
-FIRE_ALARM_VALIDATION_ASSETS_BELOW_MIN
-FIRE_ALARM_VALIDATION_GROUPS_BELOW_MIN
-GLASS_SHATTER_SOURCE_CONCENTRATION_TOO_HIGH
-TIRE_SQUEAL_ASSETS_BELOW_MIN
-TIRE_SQUEAL_GROUPS_BELOW_MIN
-TIRE_SQUEAL_TEST_ASSETS_BELOW_MIN
-TIRE_SQUEAL_TEST_GROUPS_BELOW_MIN
-TIRE_SQUEAL_TRAIN_ASSETS_BELOW_MIN
-TIRE_SQUEAL_TRAIN_GROUPS_BELOW_MIN
-TIRE_SQUEAL_VALIDATION_ASSETS_BELOW_MIN
-TIRE_SQUEAL_VALIDATION_GROUPS_BELOW_MIN
+macro F1              0.7261904762
+macro recall          0.5833333333
+false alarms/hour     0.0
 ```
 
-Minimum empirical deficits remain FIRE +31 assets/+9 groups, TIRE +36 assets/+15 groups and GLASS +47 surviving non-Freesound positives if Freesound remains at 280.
+The zero false-alarm observation applies only to the limited controlled holdout and is **not** a field false-alarm claim.
 
-## 10. Current readiness
+Selected controlled policies:
+
+| class | on | off | confirm | release | holdout recall | holdout F1 |
+|---|---:|---:|---:|---:|---:|---:|
+| GLASS_SHATTER | 0.35 | 0.15 | 3 | 1 | 0.75 | 0.8571 |
+| SIREN | 0.60 | 0.40 | 1 | 1 | 0.60 | 0.75 |
+| VEHICLE_HORN | 0.75 | 0.55 | 1 | 1 | 0.40 | 0.5714 |
+
+Current boundary:
 
 ```text
-schema = echo.corpus-closure-readiness.v2
-readiness_id = EMP-MK1-CORPUS-READINESS-001
-status = BLOCKED
-eligible_for_certificate_review = false
-modeling_allowed = false
-CERT-MK1-DF-CORPUS-001 = OPEN
-next_authorized_stage = CORPUS_FOUNDRY_CLOSURE
+ECHO-MVP-001-TEMPORAL-CONTROLLED-v1
+CONTROLLED_VALIDATION_CALIBRATED_NOT_FIELD_CALIBRATED
 ```
 
-Current readiness gaps remain certificate + coverage + FIRE/TIRE + freeze/repro blockers. No structural dedup/group/split blocker remains.
+This configuration is suitable for controlled demo/replay work, not for production or field-performance claims.
 
-## 11. Immediate execution priority
+## 7. Professor demo
 
-Infrastructure polishing stops unless a blocker proves it necessary. Work now moves to release-safe acquisition for FIRE_ALARM, TIRE_SQUEAL and non-Freesound GLASS_SHATTER. Every new asset must survive rights, exact semantics, probe, canonical fingerprint, grouping, dedup and deterministic split assignment.
-
-When coverage reaches PASS, the already-wired handoff executes:
+A Docker-only presentation surface exists on:
 
 ```text
-coverage PASS
-→ freeze/repro PASS
-→ certificate emitter legal
-→ CERT-MK1-DF-CORPUS-001
-→ modeling_allowed=true
-→ Benchmark A/B/C
+http://localhost:8088
 ```
 
-## 12. Release law
+It uses the real selected scorer and Temporal Event Engine; detections are not hardcoded.
+
+Included:
+
+- four governed controlled-validation scenarios;
+- blind WAV upload;
+- ephemeral browser microphone capture;
+- score diagnostics for external audio;
+- `NO_TARGET` and conservative `UNKNOWN / ABSTAIN`;
+- MQTT for governed accepted events.
+
+The demo scope is frozen in:
 
 ```text
-NO CERT-MK1-DF-CORPUS-001
-=
-NO Benchmark A/B/C
-NO YAMNet/PANNs/CNN model work
-NO threshold calibration
-NO replay progression
-NO real camera progression
+demo/DEMO-SCOPE-FREEZE.md
 ```
 
-## 13. Documentation state
+Reproducible operator steps are in:
 
 ```text
-governance/DOCUMENTATION-AUDIT-2026-09-16-CORPUS-HANDOFF-015.md
-CERT-DOC-015                   = CERTIFIED / current
-Markdown corpus                = 221 files
+demo/docker-runbook/
 ```
 
-## 14. Invalidation
+## 8. False-positive evidence from external audio
 
-Material changes to promise, taxonomy, rights/mapping/fingerprint/grouping/dedup/split/coverage/freeze/reproducibility semantics, readiness identity, Toolchain-005, Handoff-001, model-entry wiring, certificate state or `ECHO-FREE-TIER-001` require dependency review and selective recertification. Execution provenance churn alone does not redefine an unchanged semantic corpus.
+Ad hoc target-free testing exposed failures outside controlled validation:
+
+### Ambient-only
+
+Approximately 51 s of ordinary ambient sound produced:
+
+```text
+GLASS_SHATTER ~55% peak
+SIREN         ~70% peak
+2 logical target events
+```
+
+This remains an unresolved environmental-domain false-positive signal.
+
+### Voice-only
+
+Approximately 4.1 s of normal voice produced:
+
+```text
+GLASS_SHATTER ~56% peak
+1 logical event
+5 analyzed windows
+```
+
+The five-window behavior exposed a real demo/replay artifact: external clips shorter than the 6 s analysis window were processed with repeated zero-padded tail windows.
+
+Containment merged:
+
+- external audio now uses `pad_final=False`;
+- at least one complete analysis window is required;
+- short microphone captures are rejected;
+- per-class score traces are exposed;
+- external candidates are subject to `ECHO-DEMO-ABSTENTION-v1`;
+- uncalibrated external target candidates are not published as accepted MQTT target events.
+
+The padding defect is contained. The broader model/domain-confuser problem remains open.
+
+Canonical analysis:
+
+```text
+MK1/test/FALSE-POSITIVE-ANALYSIS-2026-10-08.md
+```
+
+Active robustness gate:
+
+```text
+MK1/test/FIELD-AUDIO-ROBUSTNESS-GATE.md
+issue #53
+```
+
+## 9. Current decision-layer semantics for external demo audio
+
+```text
+external mic/WAV
+      ↓
+real 3-class scorer
+      ↓
+Temporal Event Engine
+      ↓
+no target candidate ──────→ NO_TARGET
+target candidate(s) ──────→ UNKNOWN / ABSTAIN
+                                  ↓
+                         no accepted target MQTT event
+```
+
+This is a conservative demo boundary, not a learned/calibrated OOD detector.
+
+A true OOD/target-rejection solution remains future MVP work.
+
+## 10. MVP-002
+
+The proposed future class expansion is:
+
+```text
+SCREAM
+GUNSHOT
+FIRE_ALARM
+COLLISION_IMPACT
+```
+
+Status:
+
+```text
+DESIGN_ONLY / BUILD_BLOCKED
+```
+
+Current three classes + those four would produce a seven-target proposal, but no new target has been added to the active checkpoint.
+
+MVP-002 remains blocked until the three-class environmental false-positive/robustness gate is understood and closed.
+
+See issue #54 and:
+
+```text
+MK1/design/ECHO-MVP-002-CLASS-EXPANSION.md
+```
+
+## 11. Current critical path
+
+```text
+three-class controlled MVP vertical       PASS
+Docker image/runtime                      PASS
+real A/B/C benchmark                      PASS
+PANNS_CNN14_HEAD provisional selection    PASS
+real-audio replay/Event Engine smoke      PASS
+MQTT QoS1 roundtrip                       PASS
+controlled temporal calibration           EXECUTED
+professor demo                            IMPLEMENTED / SCOPE FROZEN
+short external padding defect             CONTAINED
+
+environmental false-positive profile      OPEN
+hard-negative mining iteration            OPEN
+field/OOD acceptance policy               OPEN
+operating-envelope freeze                 OPEN
+real camera branch                        EXTERNAL / OPEN
+MVP-002 build                              BLOCKED
+MK2                                       GATED
+```
+
+## 12. Immediate engineering priority after the demo
+
+Do not expand presentation scope.
+
+The real MVP should now focus on:
+
+```text
+target-free environmental capture
+→ score/candidate localization
+→ confuser taxonomy
+→ hard-negative mining
+→ validation-side retraining/recalibration
+→ frozen candidate
+→ untouched environmental/field holdout
+→ false alarms per source-hour
+→ operating envelope
+```
+
+No arbitrary threshold should be tuned from one demo screenshot or one ad hoc recording.
+
+## 13. Execution law
+
+ECHO runtime/integration is Docker-only.
+
+The host is limited to:
+
+- Docker engine / Docker Desktop;
+- source repository;
+- artifact storage;
+- browser/operator tooling.
+
+Do not require host-installed Python, FFmpeg, Mosquitto, TensorFlow, PyTorch or PANNs for the MVP runtime.
+
+## 14. Evidence boundary
+
+A successful professor demo is useful engineering evidence, but it does not establish:
+
+- zero false positives;
+- field calibration;
+- production readiness;
+- camera distance/SNR envelope;
+- a learned OOD detector;
+- support for untrained classes.
+
+The correct status is a functioning three-class Docker MVP vertical with controlled-validation evidence and an open environmental robustness gate.
