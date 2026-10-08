@@ -18,6 +18,10 @@ Certified MK0 boundary, taxonomy, data policy, benchmark protocol and source/Pub
 
 `source_id` is mandatory end-to-end. Audio is normalized under a versioned contract. Multi-label scores remain separate from confirmed events. Thresholds are configuration/evidence, not embedded constants. Event delivery is independent from model internals. Raw audio retention is off by default.
 
+## Future gated expansion
+
+`ECHO-MVP-002-CLASS-EXPANSION.md` defines a design-only seven-target proposal (current three plus SCREAM, GUNSHOT, FIRE_ALARM and COLLISION_IMPACT). It is explicitly blocked from implementation until the active field-audio robustness gate closes.
+
 ## Output to architecture
 
 Architecture may choose process/task/worker topology but cannot violate these contracts without reopening design.
