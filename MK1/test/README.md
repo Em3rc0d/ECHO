@@ -18,6 +18,8 @@ Every test result cites build/config/data/model identity. Protocol-only document
 
 `FIELD-AUDIO-ROBUSTNESS-GATE.md` is open after ad hoc ambient/speech false positives were observed in the professor-demo path. It separates controlled-validation success from field-like environmental behavior and blocks class expansion from entering build prematurely.
 
+The canonical incident/analysis record is `FALSE-POSITIVE-ANALYSIS-2026-10-08.md`. It distinguishes the unresolved long ambient false positives from the confirmed short-clip zero-padding artifact, documents the containment, and records why the current demo uses conservative `UNKNOWN / NO_TARGET` abstention without claiming a learned OOD detector.
+
 ## Core outputs
 
 Per-class metrics, false alarms/source-hour, misses, latency/resources, calibration, event fragmentation/duplicates, source isolation, reconnect/delivery evidence, security/privacy checks and known limitations.
