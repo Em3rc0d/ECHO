@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """ECHO professor demo adapter.
 
-This adapter intentionally does not implement classification logic. It loads the
-selected ECHO MVP model, the current temporal Event Engine configuration and
-routes real controlled-validation WAV fixtures through EchoReplayPipeline. The
-same echo.event.v1 payloads are published over MQTT QoS 1.
+This adapter intentionally does not implement alternate classification logic.
+It loads the selected ECHO MVP model and current temporal Event Engine
+configuration and routes audio through EchoReplayPipeline. Governed controlled
+scenarios publish the same echo.event.v1 payloads over MQTT QoS 1. External
+microphone/WAV audio is diagnostic-only under ECHO-DEMO-ABSTENTION-v1:
+unvalidated target candidates can be displayed but are not published as
+accepted target events.
 
-The demo is a presentation surface, not an alternate inference path.
+The demo is a presentation/robustness surface, not an alternate inference path.
 """
 
 from __future__ import annotations
