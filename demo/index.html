@@ -66,6 +66,7 @@
     .state{font-size:23px;font-weight:800}.ok{color:var(--green)}.warn{color:var(--yellow)}.bad{color:var(--red)}
     .confidence{font-size:30px;font-weight:800;color:var(--cyan)}
     .events{display:grid;gap:9px;margin-top:14px}
+    .diagnostic{margin-top:12px;padding:11px 12px;border-radius:10px;background:#0a1a2b;border:1px solid #193957;color:#91acc5;font-size:11px;line-height:1.55}
     .event{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:#0b1d30;border-radius:10px;border:1px solid #173a59}
     .event strong{font-size:13px}.event small{display:block;color:var(--muted);margin-top:3px}
     .mqtt{display:inline-flex;align-items:center;gap:7px;margin-top:15px;color:#9aecc2;font-size:12px}
@@ -105,7 +106,7 @@
       </div>
       <div class="upload-box">
         <strong>Captura ambiental · micrófono</strong>
-        <p>Graba hasta 30 segundos. La grabación se convierte a WAV en el navegador y se analiza sin guardarla como dataset.</p>
+        <p id="recordHelp">Graba entre 6 y 30 segundos. La grabación se convierte a WAV en el navegador y se analiza sin guardarla como dataset.</p>
         <div class="record-actions"><button id="recordStart" type="button">● Grabar</button><button id="recordStop" type="button" disabled>■ Detener</button></div>
         <div id="recordStatus" class="record-status" role="status" aria-live="polite">Micrófono inactivo</div>
       </div>
@@ -142,7 +143,7 @@
 </div>
 <script>
 const $ = id => document.getElementById(id);
-let catalog = [], selected = null, userObjectUrl = null;
+let catalog = [], selected = null, userObjectUrl = null, minExternalSeconds = 6;
 
 function labelName(key){
   return {GLASS_SHATTER:'Rotura de vidrio',SIREN:'Sirena',VEHICLE_HORN:'Bocina vehicular'}[key] || key;
@@ -162,7 +163,7 @@ function setSelected(item){
   $('userFile').value='';
   $('result').innerHTML='<div class="empty">Audio listo. Pulsa “Analizar audio con ECHO”.</div>';
 }
-function setUserFile(file){
+function setUserFile(file, origin='user_upload'){
   if(!file)return;
   if(!file.name.toLowerCase().endsWith('.wav')){
     alert('ECHO Demo acepta únicamente archivos .wav');
@@ -177,8 +178,8 @@ function setUserFile(file){
   document.querySelectorAll('.scenario').forEach(x=>x.classList.remove('active'));
   if(userObjectUrl)URL.revokeObjectURL(userObjectUrl);
   userObjectUrl=URL.createObjectURL(file);
-  selected={kind:'upload',file};
-  $('scenarioName').textContent='Audio propio · prueba ciega';
+  selected={kind:'upload',file,origin};
+  $('scenarioName').textContent=origin==='microphone_capture'?'Captura ambiental · prueba ciega':'Audio propio · prueba ciega';
   $('scenarioMeta').textContent=`${file.name} · ${(file.size/1024/1024).toFixed(2)} MB`;
   $('expected').textContent='Sin referencia / sin etiqueta esperada';
   $('player').src=userObjectUrl;
@@ -203,10 +204,10 @@ function makeWave(){
   $('wave').innerHTML=heights.map(h=>`<i style="height:${h}px"></i>`).join('');
 }
 function resultClass(outcome, data){
-  if(outcome==='USER_AUDIO_ANALYZED'){
+  if(outcome==='USER_AUDIO_ANALYZED'||outcome==='LIVE_AUDIO_ANALYZED'){
     return data.logical_event_count>0
-      ? ['ok','ECHO detectó evento(s) acústico(s)']
-      : ['warn','ECHO no confirmó ningún evento objetivo'];
+      ? ['warn','Candidato(s) bajo calibración controlada']
+      : ['ok','Sin evento objetivo confirmado'];
   }
   if(outcome==='EXPECTED_EVENT_DETECTED'||outcome==='NO_TARGET_EVENT_DETECTED') return ['ok','Resultado coherente con la referencia'];
   if(outcome==='EXPECTED_EVENT_NOT_DETECTED') return ['warn','Evento esperado no detectado'];
@@ -219,7 +220,8 @@ async function runDemo(){
   try{
     let res;
     if(selected.kind==='upload'){
-      res=await fetch('/api/upload-run',{
+      const endpoint=selected.origin==='microphone_capture'?'/api/recording-run':'/api/upload-run';
+      res=await fetch(endpoint,{
         method:'POST',
         headers:{
           'Content-Type':'audio/wav',
@@ -248,13 +250,21 @@ async function runDemo(){
         <div><strong>${e.display_name}</strong><small>${e.lifecycles.join(' → ')}</small></div>
         <b>${Math.round(e.confidence_peak*100)}%</b>
       </div>`).join(''):'<div class="event"><div><strong>Sin evento objetivo confirmado</strong><small>El motor temporal no emitió eventos de las tres clases objetivo.</small></div><b>—</b></div>';
+    const diagnostic=data.score_diagnostics?Object.entries(data.score_diagnostics.labels).map(([label,row])=>
+      `${labelName(label)}: pico ${Math.round(row.max_score*100)}% · ${row.windows_at_or_above_on}/${data.score_diagnostics.window_count} ventanas ≥ umbral · racha máx. ${row.longest_consecutive_at_or_above_on}`
+    ).join('<br>'):'';
+    const externalBoundary=data.external_audio_policy?'<div class="diagnostic"><b>Audio externo experimental.</b> Sin calibración de campo. No se usan ventanas finales rellenadas con ceros; los resultados sirven para stress testing, no para afirmar precisión real.'+(diagnostic?'<br><br>'+diagnostic:'')+'</div>':'';
+    const mqttText=data.mqtt.published
+      ? `Mensajes enviados a MQTT QoS 1 · ${data.mqtt.topic}`
+      : `Sin mensajes de evento para publicar · ${data.mqtt.topic}`;
     $('result').innerHTML=`
       <div class="hero-result">
         <div><div class="state ${cls}">${title}</div><small style="color:#7894ae">${data.logical_event_count} evento(s) lógico(s) · ${data.pipeline_summary.window_count} ventanas analizadas</small></div>
-        <div class="confidence">${confidence===null?'—':confidence+'%'}</div>
+        <div><div class="confidence">${confidence===null?'—':confidence+'%'}</div><small style="color:#7894ae">score pico del modelo</small></div>
       </div>
       <div class="events">${events}</div>
-      <div class="mqtt"><span class="dot"></span>Mensajes enviados a MQTT QoS 1 · ${data.mqtt.topic}</div>`;
+      ${externalBoundary}
+      <div class="mqtt"><span class="dot"></span>${mqttText}</div>`;
   }catch(err){
     $('result').innerHTML=`<div class="empty" style="color:#ff8994">Error: ${err.message}</div>`;
   }finally{$('run').disabled=false}
@@ -283,10 +293,15 @@ function finishRecording(){
   if(!count){$('recordStatus').textContent='No se capturaron muestras';return}
   const samples=new Float32Array(count);let offset=0;
   for(const chunk of r.chunks){samples.set(chunk,offset);offset+=chunk.length}
+  const duration=count/r.sampleRate;
+  if(duration<minExternalSeconds){
+    $('recordStatus').textContent='Grabación demasiado corta ('+duration.toFixed(1)+' s). Graba al menos '+minExternalSeconds.toFixed(1)+' s para evitar evidencia temporal artificial.';
+    return;
+  }
   const blob=wavFromFloat(samples,r.sampleRate);
   const file=new File([blob],'captura-ambiental-'+new Date().toISOString().replace(/[:.]/g,'-')+'.wav',{type:'audio/wav'});
-  setUserFile(file);
-  $('recordStatus').textContent='Grabación lista ('+(count/r.sampleRate).toFixed(1)+' s). Pulsa Analizar audio con ECHO.';
+  setUserFile(file,'microphone_capture');
+  $('recordStatus').textContent='Grabación lista ('+duration.toFixed(1)+' s). Pulsa Analizar audio con ECHO.';
 }
 async function startRecording(){
   if(recording)return;
@@ -329,6 +344,8 @@ makeWave();
 Promise.all([fetch('/api/catalog').then(r=>r.json()),fetch('/api/status').then(r=>r.json())])
 .then(([c,s])=>{
   catalog=c.scenarios; renderCatalog();
+  minExternalSeconds=Number(s.external_audio_policy?.min_duration_seconds||6);
+  $('recordHelp').textContent='Graba entre '+minExternalSeconds.toFixed(0)+' y '+s.max_recording_seconds+' segundos. El audio es efímero y las ventanas finales incompletas no se usan como evidencia repetida.';
   $('footer').textContent=`${s.model_benchmark} · ${s.threshold_version} · ${s.temporal_status} · MQTT: ${s.mqtt_topic}`;
 }).catch(err=>{$('footer').textContent='No se pudo cargar el estado de ECHO: '+err.message});
 </script>
