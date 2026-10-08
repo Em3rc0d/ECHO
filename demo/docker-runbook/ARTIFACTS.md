@@ -94,7 +94,7 @@ The paths referenced by `fixtures.json` must resolve on the local installation.
 Run:
 
 ```bash
-docker compose -f compose.mvp.yaml run --rm --no-deps demo   python scripts/mvp/check_demo_runtime.py
+docker compose -f compose.mvp.yaml --profile demo run --rm --no-deps demo python scripts/mvp/check_demo_runtime.py
 ```
 
 The checker validates presence and structural expectations for this demo.
