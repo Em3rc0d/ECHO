@@ -91,3 +91,24 @@ The demo is considered scope-complete when the updated Docker image is locally v
 3. return `NO_TARGET` when no current target is confirmed;
 4. return `UNKNOWN` and suppress target MQTT publication when external target candidates exist;
 5. expose score diagnostics without retaining raw audio.
+
+
+## Operator documentation
+
+The frozen demo must be launched and checked through:
+
+```text
+demo/docker-runbook/README.md
+demo/docker-runbook/ARTIFACTS.md
+demo/docker-runbook/VALIDATION.md
+demo/docker-runbook/TROUBLESHOOTING.md
+scripts/mvp/check_demo_runtime.py
+```
+
+The canonical false-positive analysis that motivated the external-audio abstention boundary is:
+
+```text
+MK1/test/FALSE-POSITIVE-ANALYSIS-2026-10-08.md
+```
+
+These documents are part of the frozen demo contract. A workaround that requires host-installed ML/runtime services or silently bypasses `UNKNOWN / NO_TARGET` is not an equivalent demo setup.
