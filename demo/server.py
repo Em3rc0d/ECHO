@@ -12,7 +12,6 @@ The demo is a presentation surface, not an alternate inference path.
 from __future__ import annotations
 
 import argparse
-from collections import defaultdict
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import hashlib
@@ -100,10 +99,93 @@ def summarize_score_trace(
             ),
             "longest_consecutive_at_or_above_on": longest,
         }
+    ranked = sorted(
+        (
+            {
+                "event_type": label,
+                "display_name": DISPLAY.get(label, label),
+                **row,
+            }
+            for label, row in labels.items()
+        ),
+        key=lambda row: row["max_score"],
+        reverse=True,
+    )
     return {
         "window_count": len(rows),
         "labels": labels,
+        "ranked_labels": ranked,
         "raw_audio_retained": False,
+        "diagnostic_kind": "SCORE_TRACE_NOT_EMBEDDING_DISTANCE_OOD",
+    }
+
+
+def external_abstention_decision(
+    *,
+    candidate_events: list[dict],
+    candidate_labels: list[str],
+    score_diagnostics: dict | None,
+) -> dict:
+    """Conservative demo-only rejection boundary for uncalibrated external audio.
+
+    This is intentionally not presented as a learned OOD detector. Until ECHO has
+    a field-calibrated acceptance profile, external audio may expose internal target
+    candidates for diagnosis but cannot promote them to accepted target events.
+    """
+
+    if not candidate_labels:
+        return {
+            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "state": "NO_TARGET",
+            "accepted_target": None,
+            "publish_target_event": False,
+            "candidate_labels": [],
+            "candidate_event_count": 0,
+            "ood_status": "NO_TARGET_EVIDENCE",
+            "rationale": (
+                "The calibrated temporal engine did not confirm any current target "
+                "class on this external recording."
+            ),
+            "diagnostic_kind": (
+                (score_diagnostics or {}).get("diagnostic_kind")
+                or "SCORE_TRACE_NOT_EMBEDDING_DISTANCE_OOD"
+            ),
+        }
+
+    ranked = sorted(
+        candidate_events,
+        key=lambda row: float(row.get("confidence_peak") or 0.0),
+        reverse=True,
+    )
+    top = ranked[0] if ranked else None
+    return {
+        "version": "ECHO-DEMO-ABSTENTION-v1",
+        "state": "UNKNOWN",
+        "accepted_target": None,
+        "publish_target_event": False,
+        "candidate_labels": candidate_labels,
+        "candidate_event_count": len(candidate_events),
+        "top_candidate": (
+            {
+                "event_type": top.get("event_type"),
+                "display_name": top.get("display_name"),
+                "confidence_peak": float(top.get("confidence_peak") or 0.0),
+                "confidence_mean": float(top.get("confidence_mean") or 0.0),
+            }
+            if top is not None
+            else None
+        ),
+        "ood_status": "EXTERNAL_DOMAIN_UNCALIBRATED",
+        "rationale": (
+            "One or more target heads produced temporally confirmed candidates, "
+            "but external microphone/WAV audio has no field-calibrated acceptance "
+            "or learned OOD profile yet. ECHO abstains instead of emitting a target "
+            "event."
+        ),
+        "diagnostic_kind": (
+            (score_diagnostics or {}).get("diagnostic_kind")
+            or "SCORE_TRACE_NOT_EMBEDDING_DISTANCE_OOD"
+        ),
     }
 
 
@@ -337,6 +419,8 @@ class DemoApplication:
             "max_recording_seconds": MAX_RECORDING_SECONDS,
             "external_audio_policy": {
                 "pad_final": False,
+                "abstention_version": "ECHO-DEMO-ABSTENTION-v1",
+                "target_event_publication": False,
                 "min_duration_seconds": float(
                     self.config_payload.get("window_seconds") or 6.0
                 ),
@@ -372,10 +456,11 @@ class DemoApplication:
             thresholds=self.thresholds,
             threshold_version=self.threshold_version,
         )
+        publishers = [collector] if external_audio else [collector, self.mqtt]
         pipeline = EchoReplayPipeline(
             scorer=scorer,
             event_engine=engine,
-            publishers=[collector, self.mqtt],
+            publishers=publishers,
         )
         window_seconds = float(
             self.config_payload.get("window_seconds") or 6.0
@@ -411,8 +496,9 @@ class DemoApplication:
             "event_message_count": len(collector.events),
             "logical_event_count": len(logical_events),
             "mqtt": {
-                "published": bool(collector.events),
-                "message_count": len(collector.events),
+                "published": bool(collector.events) and not external_audio,
+                "message_count": 0 if external_audio else len(collector.events),
+                "suppressed_by_abstention": bool(collector.events) and external_audio,
                 "topic": self.args.mqtt_topic,
                 "qos": 1,
             },
@@ -494,22 +580,25 @@ class DemoApplication:
             source_id=f"demo:{origin}:{media_sha256[:16]}",
             external_audio=True,
         )
+        candidate_events = execution["events"]
+        candidate_labels = execution["detected_labels"]
+        decision = external_abstention_decision(
+            candidate_events=candidate_events,
+            candidate_labels=candidate_labels,
+            score_diagnostics=execution["score_diagnostics"],
+        )
         outcome = (
-            "LIVE_AUDIO_ANALYZED"
-            if origin == "microphone_capture"
-            else "USER_AUDIO_ANALYZED"
+            "EXTERNAL_AUDIO_NO_TARGET"
+            if decision["state"] == "NO_TARGET"
+            else "EXTERNAL_AUDIO_UNKNOWN"
         )
         boundary = (
-            "Browser microphone capture analyzed blind by the real ECHO MVP pipeline. "
-            "The recording is ephemeral and has no ground-truth label. Zero-padded "
-            "tail windows are disabled for this path to avoid repeated pseudo-evidence "
-            "from short clips. This remains a robustness demo output, not an accuracy "
-            "or field-performance measurement."
-            if origin == "microphone_capture"
-            else
-            "User-supplied WAV analyzed blind by the real ECHO MVP pipeline. "
-            "There is no ground-truth label for this ad hoc demo input, so the "
-            "result is a detection output, not an accuracy measurement."
+            "External demo audio is analyzed by the real ECHO MVP scorer and temporal "
+            "engine, but target publication is blocked by ECHO-DEMO-ABSTENTION-v1. "
+            "NO_TARGET means no current target was temporally confirmed. UNKNOWN means "
+            "one or more internal target candidates existed, but ECHO abstained because "
+            "external-domain acceptance/OOD behavior is not field calibrated. The score "
+            "trace is diagnostic only and is not an embedding-distance OOD detector."
         )
         return {
             "scenario_id": None,
@@ -517,14 +606,19 @@ class DemoApplication:
             "partition": None,
             "expected_labels": [],
             "primary_expected_label": None,
-            "detected_labels": execution["detected_labels"],
-            "events": execution["events"],
-            "event_message_count": execution["event_message_count"],
-            "logical_event_count": execution["logical_event_count"],
+            "detected_labels": [],
+            "candidate_labels": candidate_labels,
+            "events": [],
+            "candidate_events": candidate_events,
+            "event_message_count": 0,
+            "candidate_event_message_count": execution["event_message_count"],
+            "logical_event_count": 0,
+            "candidate_event_count": execution["logical_event_count"],
             "mqtt": execution["mqtt"],
             "pipeline_summary": execution["pipeline_summary"],
             "score_diagnostics": execution["score_diagnostics"],
             "external_audio_policy": execution["external_audio_policy"],
+            "decision_layer": decision,
             "demo_outcome": outcome,
             "audio_origin": origin,
             "uploaded_media_sha256": media_sha256,
