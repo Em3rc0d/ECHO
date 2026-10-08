@@ -148,7 +148,10 @@ let catalog = [], selected = null, userObjectUrl = null, minExternalSeconds = 6;
 function labelName(key){
   return {GLASS_SHATTER:'Rotura de vidrio',SIREN:'Sirena',VEHICLE_HORN:'Bocina vehicular'}[key] || key;
 }
-function resetPipeline(){['p1','p2','p3','p4'].forEach(id=>$(id).classList.remove('on'))}
+function resetPipeline(){
+  ['p1','p2','p3','p4'].forEach(id=>$(id).classList.remove('on'));
+  $('p4').textContent='4 · MQTT';
+}
 function setSelected(item){
   selected=item;
   if(userObjectUrl){URL.revokeObjectURL(userObjectUrl);userObjectUrl=null}
@@ -204,10 +207,11 @@ function makeWave(){
   $('wave').innerHTML=heights.map(h=>`<i style="height:${h}px"></i>`).join('');
 }
 function resultClass(outcome, data){
-  if(outcome==='USER_AUDIO_ANALYZED'||outcome==='LIVE_AUDIO_ANALYZED'){
-    return data.logical_event_count>0
-      ? ['warn','Candidato(s) bajo calibración controlada']
-      : ['ok','Sin evento objetivo confirmado'];
+  if(outcome==='EXTERNAL_AUDIO_UNKNOWN'){
+    return ['warn','UNKNOWN · ECHO se abstiene'];
+  }
+  if(outcome==='EXTERNAL_AUDIO_NO_TARGET'){
+    return ['ok','NO_TARGET · sin evento objetivo confirmado'];
   }
   if(outcome==='EXPECTED_EVENT_DETECTED'||outcome==='NO_TARGET_EVENT_DETECTED') return ['ok','Resultado coherente con la referencia'];
   if(outcome==='EXPECTED_EVENT_NOT_DETECTED') return ['warn','Evento esperado no detectado'];
@@ -238,28 +242,44 @@ async function runDemo(){
     }
     const data=await res.json();
     if(!res.ok)throw new Error(data.detail||data.error||'Error de ejecución');
-    ['p2','p3','p4'].forEach(id=>$(id).classList.add('on'));
+    ['p2','p3'].forEach(id=>$(id).classList.add('on'));
+    if(data.mqtt?.published){
+      $('p4').classList.add('on');
+    }else if(data.decision_layer){
+      $('p4').textContent='4 · MQTT · abstención';
+    }else{
+      $('p4').classList.add('on');
+    }
     const [cls,title]=resultClass(data.demo_outcome,data);
-    const ranked=data.events.slice().sort((a,b)=>b.confidence_peak-a.confidence_peak);
+    const renderedEvents=(data.candidate_events&&data.candidate_events.length)?data.candidate_events:data.events;
+    const ranked=renderedEvents.slice().sort((a,b)=>b.confidence_peak-a.confidence_peak);
     const best=(data.primary_expected_label
       ? ranked.find(e=>e.event_type===data.primary_expected_label)
       : ranked[0]) || ranked[0];
     const confidence=best?Math.round(best.confidence_peak*100):null;
-    const events=data.events.length?data.events.map(e=>`
+    const isAbstained=Boolean(data.decision_layer);
+    const events=renderedEvents.length?renderedEvents.map(e=>`
       <div class="event">
-        <div><strong>${e.display_name}</strong><small>${e.lifecycles.join(' → ')}</small></div>
+        <div><strong>${e.display_name}</strong><small>${isAbstained?'Candidato interno · NO PUBLICADO':e.lifecycles.join(' → ')}</small></div>
         <b>${Math.round(e.confidence_peak*100)}%</b>
-      </div>`).join(''):'<div class="event"><div><strong>Sin evento objetivo confirmado</strong><small>El motor temporal no emitió eventos de las tres clases objetivo.</small></div><b>—</b></div>';
+      </div>`).join(''):'<div class="event"><div><strong>Sin evento objetivo confirmado</strong><small>El motor temporal no emitió candidatos de las tres clases objetivo.</small></div><b>—</b></div>';
     const diagnostic=data.score_diagnostics?Object.entries(data.score_diagnostics.labels).map(([label,row])=>
       `${labelName(label)}: pico ${Math.round(row.max_score*100)}% · ${row.windows_at_or_above_on}/${data.score_diagnostics.window_count} ventanas ≥ umbral · racha máx. ${row.longest_consecutive_at_or_above_on}`
     ).join('<br>'):'';
-    const externalBoundary=data.external_audio_policy?'<div class="diagnostic"><b>Audio externo experimental.</b> Sin calibración de campo. No se usan ventanas finales rellenadas con ceros; los resultados sirven para stress testing, no para afirmar precisión real.'+(diagnostic?'<br><br>'+diagnostic:'')+'</div>':'';
+    const decisionText=data.decision_layer
+      ? '<br><br><b>Decisión:</b> '+data.decision_layer.state+
+        ' · '+data.decision_layer.rationale+
+        '<br><b>OOD:</b> diagnóstico por scores; todavía no existe un detector OOD aprendido/calibrado de campo.'
+      : '';
+    const externalBoundary=data.external_audio_policy?'<div class="diagnostic"><b>Audio externo experimental.</b> Sin calibración de campo. No se usan ventanas finales rellenadas con ceros; los resultados sirven para stress testing, no para afirmar precisión real.'+decisionText+(diagnostic?'<br><br>'+diagnostic:'')+'</div>':'';
     const mqttText=data.mqtt.published
       ? `Mensajes enviados a MQTT QoS 1 · ${data.mqtt.topic}`
-      : `Sin mensajes de evento para publicar · ${data.mqtt.topic}`;
+      : (data.mqtt.suppressed_by_abstention
+          ? `Abstención activa · candidato NO publicado en ${data.mqtt.topic}`
+          : `Sin mensajes de evento para publicar · ${data.mqtt.topic}`);
     $('result').innerHTML=`
       <div class="hero-result">
-        <div><div class="state ${cls}">${title}</div><small style="color:#7894ae">${data.logical_event_count} evento(s) lógico(s) · ${data.pipeline_summary.window_count} ventanas analizadas</small></div>
+        <div><div class="state ${cls}">${title}</div><small style="color:#7894ae">${data.decision_layer ? ((data.candidate_event_count||0)+' candidato(s) interno(s) · 0 eventos aceptados') : (data.logical_event_count+' evento(s) lógico(s)')} · ${data.pipeline_summary.window_count} ventanas analizadas</small></div>
         <div><div class="confidence">${confidence===null?'—':confidence+'%'}</div><small style="color:#7894ae">score pico del modelo</small></div>
       </div>
       <div class="events">${events}</div>
