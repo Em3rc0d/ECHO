@@ -114,6 +114,7 @@ demo/
 └── docker-runbook/
     ├── README.md
     ├── ARTIFACTS.md
+    ├── FROM-SCRATCH.md
     ├── VALIDATION.md
     └── TROUBLESHOOTING.md
 ```
@@ -123,6 +124,7 @@ Semántica:
 - `DEMO-SCOPE-FREEZE.md` congela qué capacidades puede mostrar la demo;
 - `docker-runbook/README.md` es el entrypoint operativo para levantarla con Docker;
 - `ARTIFACTS.md` separa código versionado de checkpoints/fixtures no almacenados en Git;
+- `FROM-SCRATCH.md` documenta la regeneración avanzada Docker-only cuando no existe bundle preparado;
 - `VALIDATION.md` define el smoke manual de la demo congelada;
 - `TROUBLESHOOTING.md` evita workarounds que rompan la regla Docker-only.
 
