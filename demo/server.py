@@ -40,6 +40,7 @@ DISPLAY = {
     "VEHICLE_HORN": "Bocina vehicular",
 }
 MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+MAX_RECORDING_SECONDS = 30
 
 SCENARIO_LABELS = {
     "glass_shatter": "Rotura de vidrio",
@@ -282,7 +283,9 @@ class DemoApplication:
             "mqtt_topic": self.args.mqtt_topic,
             "supported_events": list(DISPLAY),
             "user_wav_upload": True,
+            "microphone_capture": True,
             "max_upload_bytes": MAX_UPLOAD_BYTES,
+            "max_recording_seconds": MAX_RECORDING_SECONDS,
         }
 
     def catalog(self) -> list[dict]:
@@ -387,10 +390,34 @@ class DemoApplication:
         }
 
 
-    def run_uploaded_wav(self, path: Path, *, filename: str, media_sha256: str) -> dict:
+    def run_external_audio(
+        self,
+        path: Path,
+        *,
+        filename: str,
+        media_sha256: str,
+        origin: str,
+    ) -> dict:
+        if origin not in {"user_upload", "microphone_capture"}:
+            raise ValueError(f"unsupported demo audio origin: {origin}")
         execution = self._execute_audio(
             path,
-            source_id=f"demo:user-upload:{media_sha256[:16]}",
+            source_id=f"demo:{origin}:{media_sha256[:16]}",
+        )
+        outcome = (
+            "LIVE_AUDIO_ANALYZED"
+            if origin == "microphone_capture"
+            else "USER_AUDIO_ANALYZED"
+        )
+        boundary = (
+            "Browser microphone capture analyzed blind by the real ECHO MVP pipeline. "
+            "The recording is ephemeral and has no ground-truth label, so this is a "
+            "robustness demo output, not an accuracy or field-performance measurement."
+            if origin == "microphone_capture"
+            else
+            "User-supplied WAV analyzed blind by the real ECHO MVP pipeline. "
+            "There is no ground-truth label for this ad hoc demo input, so the "
+            "result is a detection output, not an accuracy measurement."
         )
         return {
             "scenario_id": None,
@@ -404,14 +431,19 @@ class DemoApplication:
             "logical_event_count": execution["logical_event_count"],
             "mqtt": execution["mqtt"],
             "pipeline_summary": execution["pipeline_summary"],
-            "demo_outcome": "USER_AUDIO_ANALYZED",
+            "demo_outcome": outcome,
+            "audio_origin": origin,
             "uploaded_media_sha256": media_sha256,
-            "boundary": (
-                "User-supplied WAV analyzed blind by the real ECHO MVP pipeline. "
-                "There is no ground-truth label for this ad hoc demo input, so the "
-                "result is a detection output, not an accuracy measurement."
-            ),
+            "boundary": boundary,
         }
+
+    def run_uploaded_wav(self, path: Path, *, filename: str, media_sha256: str) -> dict:
+        return self.run_external_audio(
+            path,
+            filename=filename,
+            media_sha256=media_sha256,
+            origin="user_upload",
+        )
 
 
 
@@ -480,6 +512,95 @@ class Handler(BaseHTTPRequestHandler):
                     {"error": type(exc).__name__, "detail": str(exc)},
                     HTTPStatus.INTERNAL_SERVER_ERROR,
                 )
+
+        if parsed.path == "/api/recording-run":
+            temp_path = None
+            try:
+                length = int(self.headers.get("Content-Length") or "0")
+                if length <= 0:
+                    return self.send_json(
+                        {"error": "empty recording"},
+                        HTTPStatus.BAD_REQUEST,
+                    )
+                if length > MAX_UPLOAD_BYTES:
+                    return self.send_json(
+                        {
+                            "error": "recording too large",
+                            "max_upload_bytes": MAX_UPLOAD_BYTES,
+                        },
+                        HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                    )
+
+                content_type = (
+                    self.headers.get("Content-Type") or ""
+                ).split(";", 1)[0].strip().lower()
+                format_by_type = {
+                    "audio/webm": (".webm", b"\x1aE\xdf\xa3"),
+                    "video/webm": (".webm", b"\x1aE\xdf\xa3"),
+                    "audio/ogg": (".ogg", b"OggS"),
+                    "application/ogg": (".ogg", b"OggS"),
+                    "audio/wav": (".wav", None),
+                    "audio/x-wav": (".wav", None),
+                }
+                if content_type not in format_by_type:
+                    return self.send_json(
+                        {
+                            "error": "unsupported recording format",
+                            "content_type": content_type,
+                        },
+                        HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+                    )
+
+                raw = self.rfile.read(length)
+                if len(raw) != length:
+                    return self.send_json(
+                        {"error": "incomplete recording"},
+                        HTTPStatus.BAD_REQUEST,
+                    )
+
+                suffix, magic = format_by_type[content_type]
+                if suffix == ".wav":
+                    valid = (
+                        len(raw) >= 12
+                        and raw[:4] in (b"RIFF", b"RF64")
+                        and raw[8:12] == b"WAVE"
+                    )
+                else:
+                    valid = len(raw) >= len(magic) and raw[: len(magic)] == magic
+                if not valid:
+                    return self.send_json(
+                        {"error": "recording container signature is invalid"},
+                        HTTPStatus.BAD_REQUEST,
+                    )
+
+                media_sha256 = hashlib.sha256(raw).hexdigest()
+                filename = Path(
+                    self.headers.get("X-Filename")
+                    or f"echo-ambient-recording{suffix}"
+                ).name
+                with tempfile.NamedTemporaryFile(
+                    prefix="echo-demo-recording-",
+                    suffix=suffix,
+                    delete=False,
+                ) as handle:
+                    handle.write(raw)
+                    temp_path = Path(handle.name)
+
+                result = self.app.run_external_audio(
+                    temp_path,
+                    filename=filename,
+                    media_sha256=media_sha256,
+                    origin="microphone_capture",
+                )
+                return self.send_json(result)
+            except Exception as exc:
+                return self.send_json(
+                    {"error": type(exc).__name__, "detail": str(exc)},
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
+            finally:
+                if temp_path is not None:
+                    temp_path.unlink(missing_ok=True)
 
         if parsed.path == "/api/upload-run":
             temp_path = None
