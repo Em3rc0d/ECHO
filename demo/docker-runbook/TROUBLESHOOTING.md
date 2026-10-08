@@ -7,7 +7,7 @@ Do not install Python/model libraries on the host.
 Restore the required `artifacts/` file described in `ARTIFACTS.md`, then rerun:
 
 ```bash
-docker compose -f compose.mvp.yaml run --rm --no-deps demo   python scripts/mvp/check_demo_runtime.py
+docker compose -f compose.mvp.yaml --profile demo run --rm --no-deps demo python scripts/mvp/check_demo_runtime.py
 ```
 
 ## Docker build fails while installing packages
