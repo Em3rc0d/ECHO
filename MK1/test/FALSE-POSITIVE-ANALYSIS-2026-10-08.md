@@ -313,9 +313,9 @@ MQTT target publish    suppressed
 
 This is strong evidence of a **persistent external-domain GLASS_SHATTER activation**, not a one-window spike and not the previously fixed short-clip padding artifact.
 
-However, the recording has not yet been independently ground-truthed for absence of glass-like acoustic content. Therefore this record does **not** label the observation a confirmed false positive yet.
+Manual review by the tester subsequently reported **no audible sound in the captured WAV**. On that human-audibility ground truth, there is no glass-shatter event in the interval and the activation is therefore recorded as the first confirmed RTSP/camera-like false positive for the current MVP.
 
-If manual review confirms no glass-shatter event occurred in the captured interval, this becomes the first documented RTSP/camera-like false-positive observation for the current MVP.
+One measurement remains useful: distinguish exact/near digital silence from an extremely low-level signal by reporting PCM level statistics (RMS/peak/silence duration). That measurement can refine the root-cause diagnosis but does not change the current semantic ground truth that no glass-shatter event was audible.
 
 Regardless of final semantic labeling, the score pattern is useful: all complete windows remained above the current GLASS_SHATTER entry threshold while SIREN and VEHICLE_HORN remained low. That points toward a class-specific domain/confuser problem rather than a generic all-head score inflation.
 
@@ -327,7 +327,7 @@ Do not tune thresholds from this single RTSP capture.
 
 Next evidence should include:
 
-1. manual acoustic review of the captured interval;
+1. objective PCM level measurement (RMS/peak/silence duration) to determine whether the RTSP audio track is digital/near silence;
 2. repeated RTSP captures from the same feed;
 3. score distributions over longer source-hours;
 4. localization of any real glass-like transients if present;
