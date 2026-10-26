@@ -1,0 +1,8 @@
+logLevel: info
+rtsp: true
+rtspTransports: [tcp]
+rtspAddress: :8554
+
+paths:
+  all_others:
+    source: publisher
