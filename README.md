@@ -177,7 +177,7 @@ Git preserves document history; model/data/build artifacts additionally require 
 - `schemas/` — machine-readable event/source contracts.
 - `THIRD_PARTY.md` — dependency/model/dataset license governance.
 - `demo/` — frozen professor-demo surface and Docker operator runbook.
-- `demo/docker-runbook/` — clone/artifact/preflight/start/validation/troubleshooting steps for the current functional Docker demo.
+- `demo/docker-runbook/` — clone/artifact/preflight/start/validation/troubleshooting steps for the current functional Docker demo.\n- `emulator/` — Docker-only VMT camera-edge emulator using RTSP media plus MQTT lifecycle/telemetry/control.
 
 ## 13. Current empirical boundary
 
@@ -185,7 +185,7 @@ The frozen three-class MVP benchmark has run. Validation-only model selection ch
 
 The active uncertainty is now dominated by environmental robustness: ad hoc microphone/WAV testing exposed target-free false positives, including ambient audio activating `GLASS_SHATTER`/`SIREN` and voice activating `GLASS_SHATTER`. The short-clip repeated-padding defect was contained; the broader domain/confuser problem remains open under the field-audio robustness gate. See `MK1/test/FALSE-POSITIVE-ANALYSIS-2026-10-08.md` and issue #53.
 
-The professor demo is scope-frozen. Future classes such as `SCREAM`, `GUNSHOT`, `FIRE_ALARM` and `COLLISION_IMPACT` are design-only under MVP-002 and are not capabilities of the current checkpoint.
+A new MK1 lab-only camera emulator now provides multiple local RTSP camera paths backed by governed acoustic fixtures, with MQTT camera state/control. It is a transport/integration harness, not evidence about the actual VMT camera estate. See `emulator/README.md`.\n\nThe professor demo is scope-frozen. Future classes such as `SCREAM`, `GUNSHOT`, `FIRE_ALARM` and `COLLISION_IMPACT` are design-only under MVP-002 and are not capabilities of the current checkpoint.
 
 ## 14. Build rule
 
