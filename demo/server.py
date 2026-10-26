@@ -22,6 +22,7 @@ import json
 from pathlib import Path
 import tempfile
 import threading
+import time
 from urllib.parse import urlparse
 import sys
 
@@ -695,6 +696,52 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
+        if parsed.path == "/api/live/control":
+            # Local lab-only endpoint. Restrict Origin, camera IDs, commands and scenarios.
+            origin = self.headers.get("Origin")
+            if origin not in (None, "http://127.0.0.1:8088", "http://localhost:8088"):
+                return self.send_json({"error": "origin not allowed"}, HTTPStatus.FORBIDDEN)
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if not 0 < length <= 2048:
+                    return self.send_json({"error": "invalid payload length"}, HTTPStatus.BAD_REQUEST)
+                data = json.loads(self.rfile.read(length))
+                source_id = data.get("source_id")
+                if source_id not in ("VMT-CAM-001", "VMT-CAM-002", "VMT-CAM-003", "VMT-CAM-004"):
+                    return self.send_json({"error": "invalid source_id"}, HTTPStatus.BAD_REQUEST)
+                command = data.get("command")
+                if command == "set_scenario" and data.get("scenario") in (
+                    "negative", "glass_shatter", "siren", "vehicle_horn", "silence"
+                ):
+                    payload = {"command": command, "scenario": data["scenario"]}
+                elif command == "set_online" and type(data.get("online")) is bool:
+                    payload = {"command": command, "online": data["online"]}
+                elif command == "restart":
+                    payload = {"command": command}
+                else:
+                    return self.send_json({"error": "invalid control"}, HTTPStatus.BAD_REQUEST)
+                import paho.mqtt.client as mqtt
+                client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+                client.connect(self.app.args.mqtt_host, self.app.args.mqtt_port, 30)
+                client.loop_start()
+                try:
+                    info = client.publish(
+                        f"vmt/cameras/{source_id}/control",
+                        json.dumps(payload, separators=(",", ":")), qos=1, retain=False,
+                    )
+                    info.wait_for_publish(timeout=5)
+                    if not info.is_published():
+                        raise RuntimeError("MQTT publish timeout")
+                finally:
+                    client.loop_stop()
+                    client.disconnect()
+                return self.send_json({"accepted_by_broker": True,
+                                       "camera_acknowledged": False,
+                                       "source_id": source_id, "command": command})
+            except Exception as exc:
+                return self.send_json({"error": type(exc).__name__,
+                                       "detail": str(exc)}, HTTPStatus.INTERNAL_SERVER_ERROR)
+
         if parsed.path == "/api/run":
             try:
                 length = int(self.headers.get("Content-Length") or "0")
