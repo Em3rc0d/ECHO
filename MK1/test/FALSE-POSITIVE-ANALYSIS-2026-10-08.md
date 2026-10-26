@@ -264,3 +264,72 @@ See:
 - `MK1/test/FIELD-AUDIO-ROBUSTNESS-GATE.md`
 - `MK1/quarries/Q-HARD-NEGATIVES.md`
 - issue #53
+
+
+## 11. RTSP external-domain observation — 2026-10-26
+
+A public/authorized RTSP traffic test feed was exercised from the real ECHO Docker runtime.
+
+Source characterization observed by `ffprobe`/FFmpeg:
+
+```text
+transport          RTSP over TCP
+video              H.264 High, 1280x720, 30 fps
+audio              AAC-LC
+audio sample rate  44100 Hz
+audio channels     stereo
+```
+
+A nominal 60 s capture was normalized inside the ECHO container to:
+
+```text
+PCM s16le
+32000 Hz
+mono
+```
+
+FFmpeg reported one non-monotonic DTS correction while writing the WAV. The produced file contained approximately 3.64 MiB of audio samples, corresponding to roughly 59.6 s of effective PCM despite a ~60.02 s transport timeline.
+
+The blind external-audio demo then analyzed 54 complete 6 s windows with 1 s hop and `pad_final=False`.
+
+Observed scores:
+
+```text
+GLASS_SHATTER   peak ~0.56   54/54 windows >= on-threshold   longest run 54
+SIREN           peak ~0.02    0/54 windows >= on-threshold   longest run 0
+VEHICLE_HORN    peak ~0.25    0/54 windows >= on-threshold   longest run 0
+```
+
+Decision-layer output:
+
+```text
+state                  UNKNOWN
+internal candidates    1
+accepted events        0
+MQTT target publish    suppressed
+```
+
+### Interpretation
+
+This is strong evidence of a **persistent external-domain GLASS_SHATTER activation**, not a one-window spike and not the previously fixed short-clip padding artifact.
+
+However, the recording has not yet been independently ground-truthed for absence of glass-like acoustic content. Therefore this record does **not** label the observation a confirmed false positive yet.
+
+If manual review confirms no glass-shatter event occurred in the captured interval, this becomes the first documented RTSP/camera-like false-positive observation for the current MVP.
+
+Regardless of final semantic labeling, the score pattern is useful: all complete windows remained above the current GLASS_SHATTER entry threshold while SIREN and VEHICLE_HORN remained low. That points toward a class-specific domain/confuser problem rather than a generic all-head score inflation.
+
+The demo containment behaved as designed: the current external-audio abstention layer exposed the internal candidate, returned `UNKNOWN`, accepted zero target events and suppressed MQTT target publication.
+
+### Follow-up
+
+Do not tune thresholds from this single RTSP capture.
+
+Next evidence should include:
+
+1. manual acoustic review of the captured interval;
+2. repeated RTSP captures from the same feed;
+3. score distributions over longer source-hours;
+4. localization of any real glass-like transients if present;
+5. comparison against other public/authorized RTSP feeds;
+6. eventual live-stream processing without intermediate WAV files.
