@@ -667,6 +667,20 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path in ("/", "/index.html"):
             return self.send_file(self.static_dir / "index.html", "text/html; charset=utf-8")
+        if parsed.path == "/live":
+            return self.send_file(self.static_dir / "live.html", "text/html; charset=utf-8")
+        if parsed.path == "/api/live":
+            directory = ROOT / "artifacts/live-monitor"
+            cameras = []
+            for camera_id in ("VMT-CAM-001", "VMT-CAM-002", "VMT-CAM-003", "VMT-CAM-004"):
+                path = directory / (camera_id + ".json")
+                try:
+                    cameras.append(json.loads(path.read_text(encoding="utf-8")))
+                except (FileNotFoundError, json.JSONDecodeError):
+                    cameras.append({"source_id": camera_id, "state": "NO_WORKER_DATA",
+                                    "scores": {}, "events": [], "windows": 0})
+            return self.send_json({"mode": "LAB_RTSP_DIAGNOSTIC_ONLY",
+                                   "target_event_publication": False, "cameras": cameras})
         if parsed.path == "/api/status":
             return self.send_json(self.app.status())
         if parsed.path == "/api/catalog":
