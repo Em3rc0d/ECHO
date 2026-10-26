@@ -1,6 +1,6 @@
 # Estado actual de ECHO
 
-**Fecha de corte:** 2026-10-08  
+**Fecha de corte:** 2026-10-26  
 **Status:** `ACTIVE_SOURCE_OF_TRUTH`  
 **Execution invariant:** `DOCKER_ONLY_RUNTIME`  
 **Active MVP profile:** `ECHO-MVP-001`
@@ -296,7 +296,7 @@ environmental false-positive profile      OPEN
 hard-negative mining iteration            OPEN
 field/OOD acceptance policy               OPEN
 operating-envelope freeze                 OPEN
-real camera branch                        EXTERNAL / OPEN
+VMT camera lab emulator                 SOURCE BUILT / RUNTIME PENDING\nreal camera branch                        EXTERNAL / OPEN
 MVP-002 build                              BLOCKED
 MK2                                       GATED
 ```
@@ -346,3 +346,39 @@ A successful professor demo is useful engineering evidence, but it does not esta
 - support for untrained classes.
 
 The correct status is a functioning three-class Docker MVP vertical with controlled-validation evidence and an open environmental robustness gate.
+
+
+## 15. VMT camera-edge emulator
+
+A Docker-only lab emulator has been added to exercise the camera path before authorized VMT hardware/network access is available.
+
+~~~text
+governed fixture / digital silence
+        ↓
+FFmpeg H.264 + AAC publisher
+        ↓
+MediaMTX RTSP/TCP
+        ↓
+future RTSPSourceAdapter
+        ↓
+ECHO
+
+camera state / telemetry / control
+        ↓
+MQTT
+~~~
+
+Configured lab sources:
+
+~~~text
+VMT-CAM-001  negative/background
+VMT-CAM-002  GLASS_SHATTER fixture
+VMT-CAM-003  SIREN fixture
+VMT-CAM-004  VEHICLE_HORN fixture
+~~~
+
+The operator can switch any camera to `negative`, `glass_shatter`, `siren`, `vehicle_horn` or `silence` through MQTT. Camera restart/offline/online state is also controllable and every reconnect increments `stream_generation`.
+
+This emulator does not claim the real VMT camera model, network, RTSP URI, ONVIF profile, codec, microphone behavior or MQTT conventions. Those remain external gates.
+
+Source is implemented on `main`; full Docker RTSP+MQTT runtime verification is still pending on the user host. See `emulator/README.md` and `MK1/test/VMT-CAMERA-EMULATOR.md`.
