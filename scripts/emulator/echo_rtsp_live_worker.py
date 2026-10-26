@@ -100,7 +100,11 @@ def consume_camera(row, args, scorer, scorer_lock, config, version, thresholds):
                     window_start_utc=start, window_end_utc=end, scores=scores,
                     model_version=scorer.model_version,
                 ))]
+                # Real peak envelope for the browser (64 bins over last 6s).
+                envelope = [float(np.max(np.abs(part))) for part in
+                            np.array_split(waveform, 64)]
                 state.update(state="ONLINE", at=now().isoformat(),
+                             waveform_envelope=envelope,
                              window_start_utc=start.isoformat(), window_end_utc=end.isoformat(),
                              windows=state["windows"] + 1,
                              scores=scores, rms=rms, peak=peak,
