@@ -72,9 +72,10 @@ def ffprobe_stream(url: str, ffprobe_bin: str, timeout: float) -> dict:
     deadline = time.monotonic() + timeout
     last_error = ""
     while time.monotonic() < deadline:
-        proc = subprocess.run(
-            [
-                ffprobe_bin,
+        try:
+            proc = subprocess.run(
+                [
+                    ffprobe_bin,
                 "-v",
                 "error",
                 "-rtsp_transport",
@@ -82,17 +83,19 @@ def ffprobe_stream(url: str, ffprobe_bin: str, timeout: float) -> dict:
                 "-show_streams",
                 "-of",
                 "json",
-                url,
-            ],
-            check=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            timeout=max(2.0, min(8.0, timeout)),
-        )
-        if proc.returncode == 0:
-            return json.loads(proc.stdout)
-        last_error = proc.stderr.strip()
+                    url,
+                ],
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=max(2.0, min(8.0, timeout)),
+            )
+            if proc.returncode == 0:
+                return json.loads(proc.stdout)
+            last_error = proc.stderr.strip()
+        except subprocess.TimeoutExpired:
+            last_error = "ffprobe timeout"
         time.sleep(1.0)
     raise RuntimeError(f"ffprobe failed for {url}: {last_error}")
 
