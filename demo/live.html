@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECHO · Live Camera Monitor</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,Segoe UI,system-ui,sans-serif;background:#071321;color:#edf7ff}
+body{max-width:1200px;margin:0 auto;padding:26px}a{color:#66dbff}
+h1{margin:10px 0 4px}.meta{color:#9ebbd1}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px;margin:24px 0}
+.card,.panel{background:#0d1d31;border:1px solid #245073;border-radius:14px;padding:18px}
+.card{cursor:pointer;text-align:left;color:inherit;font:inherit}.card.active{border-color:#4ceaca}
+small{color:#8baec7} .state{float:right;color:#60deaa;font-size:12px} .offline{color:#ffc180}
+.signal{height:32px;background:linear-gradient(90deg,#0e3348,#174e6e,#0e3348);border-radius:6px;margin:10px 0}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.bar{height:9px;background:#15324e;border-radius:9px;overflow:hidden;margin:7px 0 17px}
+.fill{height:100%;background:linear-gradient(90deg,#157fe3,#3feec8);width:0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+pre{background:#091523;padding:15px;overflow:auto;border-radius:8px;font-size:12px;min-height:150px;white-space:pre-wrap}
+.warn{padding:14px;background:#312a13;border:1px solid #665520;border-radius:10px;color:#ffe5a6}
+@media(max-width:720px){.cols{grid-template-columns:1fr}}
+</style></head>
+<body>
+<a href="/">← Demo controlada</a>
+<h1>ECHO / Live Camera Monitor</h1>
+<p class="meta">RTSP real del emulador → FFmpeg AAC/PCM → PANNs → Temporal Event Engine</p>
+<div class="warn"><b>LAB / DIAGNOSTIC ONLY.</b> Son puntuaciones y candidatos reales, no una validación de campo. Esta vista no publica eventos objetivo aceptados a MQTT. El video/audio RTSP se inspecciona en VLC.</div>
+<div id="cameras" class="cards" aria-label="Cámaras"></div>
+<div class="cols">
+<section class="panel"><h2 id="selected">Inferencia</h2><p id="session" class="meta">Sin datos</p>
+<div id="scores"></div><p id="quality" class="meta"></p></section>
+<section class="panel"><h2>Temporal Event Engine</h2><p class="meta">Candidatos confirmados internos; sin publicación MQTT.</p><pre id="events">Esperando ventanas completas…</pre></section>
+</div>
+<p class="meta">Actualización cada 1.5 s · ventana 6 s · hop 1 s · sin WAV intermediario · <span id="updated">Sin conexión</span></p>
+<script>
+let active="VMT-CAM-002";
+const labels=["GLASS_SHATTER","SIREN","VEHICLE_HORN"];
+function node(tag,cls,text){const el=document.createElement(tag);if(cls)el.className=cls;if(text!=null)el.textContent=text;return el}
+function render(payload){
+ const cards=document.getElementById("cameras");cards.replaceChildren();
+ for(const c of payload.cameras){
+  const btn=node("button","card"+(active===c.source_id?" active":""),null);
+  btn.onclick=()=>{active=c.source_id;render(payload)};
+  const heading=node("div","row");heading.append(node("b","",c.source_id),node("span","state"+(c.state==="ONLINE"?"":" offline"),c.state));btn.append(heading);
+  btn.append(node("div","signal"),node("small","",c.windows+" analyzed windows · "+(c.stream_generation??"—")+" worker session"));
+  cards.append(btn);
+ }
+ const cam=payload.cameras.find(x=>x.source_id===active)||payload.cameras[0];
+ document.getElementById("selected").textContent=cam.source_id+" / PANNs";
+ document.getElementById("session").textContent="Estado: "+cam.state+" · sesión: "+(cam.session||"—");
+ const scores=document.getElementById("scores");scores.replaceChildren();
+ for(const label of labels){
+  const v=Number(cam.scores?.[label]||0);
+  const heading=node("div","row");heading.append(node("b","",label),node("span","",(100*v).toFixed(1)+"%"));
+  const bar=node("div","bar");const fill=node("div","fill");fill.style.width=(100*Math.max(0,Math.min(1,v)))+"%";bar.append(fill);scores.append(heading,bar);
+ }
+ document.getElementById("quality").textContent="RMS: "+Number(cam.rms||0).toFixed(4)+" · peak: "+Number(cam.peak||0).toFixed(4)+" · fin ventana: "+(cam.window_end_utc||"—");
+ const events=(cam.events||[]).slice(-8).reverse();
+ document.getElementById("events").textContent=events.length?events.map(e=>[e.event_type,e.provenance?.lifecycle,e.confidence?.peak?.toFixed(3),e.onset_utc].join(" | ")).join("\n"):"Sin candidatos confirmados en esta sesión.";
+ document.getElementById("updated").textContent="Última consulta: "+new Date().toLocaleTimeString();
+}
+async function tick(){try{const response=await fetch("/api/live",{cache:"no-store"});if(!response.ok)throw Error(response.status);render(await response.json())}catch(e){document.getElementById("updated").textContent="Error: "+e.message}}
+tick();setInterval(tick,1500);
+</script></body></html>
