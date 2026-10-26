@@ -172,6 +172,48 @@ services:
     profiles:
       - demo
 
+
+  rtsp-server:
+    image: bluenviron/mediamtx:1.21.3
+    command: ["/mediamtx.yml"]
+    volumes:
+      - ./docker/emulator/mediamtx.yml:/mediamtx.yml:ro
+    ports:
+      - "127.0.0.1:8554:8554"
+    networks:
+      - echo-mvp
+    restart: on-failure
+    profiles:
+      - emulator
+
+  vmt-camera-emulator:
+    <<: *echo-service
+    depends_on:
+      broker:
+        condition: service_healthy
+      rtsp-server:
+        condition: service_started
+    command:
+      [
+        "python",
+        "scripts/emulator/vmt_camera_emulator.py",
+        "--config",
+        "/workspace/config/emulator/vmt-cameras.json",
+        "--fixtures",
+        "/workspace/artifacts/mvp-temporal/fixtures.json",
+        "--publish-rtsp-base",
+        "rtsp://rtsp-server:8554",
+        "--advertised-rtsp-base",
+        "rtsp://127.0.0.1:8554",
+        "--mqtt-host",
+        "broker",
+        "--mqtt-port",
+        "1883"
+      ]
+    restart: on-failure
+    profiles:
+      - emulator
+
 networks:
   echo-mvp:
     driver: bridge
