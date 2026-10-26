@@ -53,7 +53,9 @@ def wait_mqtt_statuses(
         source_id = str(payload.get("source_id") or "")
         if source_id in expected:
             found[source_id] = payload
-            if expected.issubset(found):
+            if expected.issubset(found) and all(
+                found[item].get("state") == "ONLINE" for item in expected
+            ):
                 event.set()
 
     client.on_connect = on_connect
@@ -76,13 +78,13 @@ def ffprobe_stream(url: str, ffprobe_bin: str, timeout: float) -> dict:
             proc = subprocess.run(
                 [
                     ffprobe_bin,
-                "-v",
-                "error",
-                "-rtsp_transport",
-                "tcp",
-                "-show_streams",
-                "-of",
-                "json",
+                    "-v",
+                    "error",
+                    "-rtsp_transport",
+                    "tcp",
+                    "-show_streams",
+                    "-of",
+                    "json",
                     url,
                 ],
                 check=False,
@@ -98,7 +100,6 @@ def ffprobe_stream(url: str, ffprobe_bin: str, timeout: float) -> dict:
             last_error = "ffprobe timeout"
         time.sleep(1.0)
     raise RuntimeError(f"ffprobe failed for {url}: {last_error}")
-
 
 def main() -> int:
     parser = argparse.ArgumentParser()
