@@ -335,3 +335,99 @@ Next evidence should include:
 4. localization of any real glass-like transients if present;
 5. comparison against other public/authorized RTSP feeds;
 6. eventual live-stream processing without intermediate WAV files.
+
+
+## 12. Pure digital-zero control — 2026-10-26
+
+A 60 s pure digital-silence WAV was generated independently of RTSP:
+
+```text
+generator           FFmpeg anullsrc
+sample rate         32000 Hz
+channels            mono
+encoding            PCM s16le
+duration            60.0 s
+signal              exact digital zero
+```
+
+The file was submitted through the same blind external-audio endpoint used by the demo.
+
+Observed ECHO result:
+
+```text
+complete windows                    55
+window / hop                        6 s / 1 s
+pad_final                           false
+
+GLASS_SHATTER max                   0.5620440244674683
+GLASS_SHATTER mean                  0.5620440244674683
+GLASS_SHATTER windows >= threshold  55 / 55
+GLASS_SHATTER longest run           55
+
+SIREN max/mean                      0.024781737476587296
+SIREN windows >= threshold          0 / 55
+
+VEHICLE_HORN max/mean               0.2542450726032257
+VEHICLE_HORN windows >= threshold   0 / 55
+
+internal candidate                  GLASS_SHATTER
+candidate lifecycle                 CONFIRMED -> CLOSED
+decision                            UNKNOWN / ABSTAIN
+accepted events                     0
+MQTT target publication             suppressed
+```
+
+The GLASS_SHATTER score was numerically identical for every zero-input window.
+
+### Root-cause conclusion
+
+This control eliminates the RTSP source, AAC decoder, camera ambience, environmental confusers and non-monotonic transport timestamps as necessary causes of the activation.
+
+The current selected inference stack has a **zero-input baseline activation**:
+
+```text
+digital-zero waveform
+        ↓
+PANNs Cnn14 frontend / embedding
+        ↓
+ECHO three-target head
+        ↓
+GLASS_SHATTER = 0.562044...
+```
+
+The exact internal contribution of the pretrained PANNs embedding versus the learned ECHO head cannot be assigned from this endpoint result alone. PANNs can produce a deterministic non-zero representation for zero waveform, and the downstream ECHO MLP also contains learned biases. The observed product behavior is nevertheless unambiguous: absence of acoustic signal can exceed the current GLASS_SHATTER temporal entry threshold.
+
+This is a model/input-validity defect for deployment purposes, not an RTSP false-positive phenomenon.
+
+### Architectural consequence
+
+Camera/live ingestion requires a signal-validity layer before target inference:
+
+```text
+decoded PCM
+    ↓
+Signal Quality Gate
+    ├── unusable / silent / muted / frozen → NO_SIGNAL
+    └── acoustically usable
+              ↓
+         target inference
+              ↓
+      NO_TARGET / UNKNOWN / EVENT
+```
+
+`NO_SIGNAL` must remain semantically distinct from `NO_TARGET`.
+
+An exact-zero check is deterministic and can be implemented without calibration. A non-zero silence/low-level threshold must be calibrated from representative device audio rather than invented from this one RTSP feed.
+
+### Required regression
+
+Before camera field claims, automated tests should include at least:
+
+- exact digital zero;
+- near-zero constant PCM;
+- very low-level broadband noise;
+- low-level real ambience;
+- muted/disabled microphone simulation;
+- normal target-free ambience.
+
+A valid production candidate must never promote exact digital-zero input into a target event.
