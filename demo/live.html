@@ -39,7 +39,9 @@ function render(payload){
   const btn=node("button","card"+(active===c.source_id?" active":""),null);
   btn.onclick=()=>{active=c.source_id;render(payload)};
   const heading=node("div","row");heading.append(node("b","",c.source_id),node("span","state"+(c.state==="ONLINE"?"":" offline"),c.state));btn.append(heading);
-  btn.append(node("div","signal"),node("small","",c.windows+" analyzed windows · "+(c.stream_generation??"—")+" worker session"));
+  const signal=node("div","signal");signal.style.display="flex";signal.style.alignItems="center";signal.style.justifyContent="space-around";
+  for(const v of (c.waveform_envelope||[])){const spike=node("i");spike.style.cssText="display:block;width:2px;background:#53e8cf;height:"+Math.max(2,Math.min(30,Number(v)*30))+"px";signal.append(spike)}
+  btn.append(signal,node("small","",c.windows+" analyzed windows · "+(c.stream_generation??"—")+" worker session"));
   cards.append(btn);
  }
  const cam=payload.cameras.find(x=>x.source_id===active)||payload.cameras[0];
