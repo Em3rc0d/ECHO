@@ -1,0 +1,6 @@
+:80 {
+ encode zstd gzip
+ reverse_proxy gateway:3000 {
+  flush_interval -1
+ }
+}

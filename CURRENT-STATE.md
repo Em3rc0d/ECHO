@@ -382,3 +382,8 @@ The operator can switch any camera to `negative`, `glass_shatter`, `siren`, `veh
 This emulator does not claim the real VMT camera model, network, RTSP URI, ONVIF profile, codec, microphone behavior or MQTT conventions. Those remain external gates.
 
 Source is implemented on `main`; full Docker RTSP+MQTT runtime verification is still pending on the user host. See `emulator/README.md` and `MK1/test/VMT-CAMERA-EMULATOR.md`.
+
+
+## 16. ECHO Operator experimental support increment
+
+Dedicated branch `feat/echo-operator-platform-20261026`, based on PR #56 (`1ee59f1`). Status: **IMPLEMENTED / NOT_EXECUTED / AWAITING_HUMAN_VALIDATION**. See `operator/README.md` and `MK1/test/operator/ACCEPTANCE.md`. Includes gateway, PostgreSQL/migrations, REST/SSE/site roles, PWA command center, selected HLS, emulator controls, diagnostic history and Web Push outbox. Source-level static analysis does not establish runtime or visual acceptance. Shipped upstream operational acceptance profiles are empty; field robustness #53, MK2 and the professor demo freeze remain unchanged. No deployment, test execution or certificate was performed.

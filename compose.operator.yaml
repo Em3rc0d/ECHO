@@ -1,0 +1,125 @@
+name: echo-operator
+x-logging: &logging
+  driver: json-file
+  options: {max-size: '10m', max-file: '3'}
+x-gateway: &gateway
+  image: echo-operator:local
+  build: {context: ., dockerfile: operator/docker/Dockerfile}
+  environment: &gateway-env
+    NODE_ENV: ${OPERATOR_MODE:-development}
+    PGHOST: db
+    PGUSER: echo
+    PGDATABASE: echo_operator
+    PGPASSWORD_FILE: /run/secrets/postgres_password
+    PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:8090}
+    BOOTSTRAP_USER: ${BOOTSTRAP_USER:-admin}
+    BOOTSTRAP_PASSWORD_FILE: /run/secrets/bootstrap_password
+    MQTT_URL: mqtt://broker:1883
+    LIVE_DIR: /live
+    MEDIA_ORIGIN: http://rtsp-server:8888
+    ENABLE_LAB_PUSH: ${ENABLE_LAB_PUSH:-false}
+    VAPID_SUBJECT: ${VAPID_SUBJECT:-mailto:operator@example.invalid}
+    VAPID_PUBLIC_KEY_FILE: /run/secrets/vapid_public_key
+    VAPID_PRIVATE_KEY_FILE: /run/secrets/vapid_private_key
+  secrets: [postgres_password, bootstrap_password, vapid_public_key, vapid_private_key]
+  logging: *logging
+  networks: [core, egress]
+  security_opt: [no-new-privileges:true]
+x-acoustic: &acoustic
+  image: echo-mvp:local
+  build: {context: ., dockerfile: docker/mvp/Dockerfile}
+  working_dir: /workspace
+  environment: {PYTHONUNBUFFERED: '1'}
+  volumes: ['./artifacts:/workspace/artifacts', 'panns-data:/root/panns_data']
+  networks: [core]
+  logging: *logging
+  init: true
+  restart: unless-stopped
+services:
+  db:
+    image: postgres:17-alpine
+    environment: {POSTGRES_USER: echo, POSTGRES_DB: echo_operator, POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password}
+    secrets: [postgres_password]
+    volumes: ['operator-db:/var/lib/postgresql/data']
+    networks: [core]
+    healthcheck: {test: ['CMD-SHELL', 'pg_isready -U echo -d echo_operator'], interval: 5s, timeout: 3s, retries: 15}
+    mem_limit: 512m
+    restart: unless-stopped
+    logging: *logging
+  migrate:
+    <<: *gateway
+    command: ['npm', 'run', 'migrate']
+    depends_on: {db: {condition: service_healthy}}
+    restart: 'no'
+  bootstrap:
+    <<: *gateway
+    command: ['npm', 'run', 'bootstrap']
+    depends_on: {migrate: {condition: service_completed_successfully}}
+    restart: 'no'
+  gateway:
+    <<: *gateway
+    depends_on:
+      bootstrap: {condition: service_completed_successfully}
+      broker: {condition: service_started}
+    volumes: ['./artifacts/live-monitor:/live:ro']
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 512m
+    cpus: 1.0
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+  broker:
+    image: eclipse-mosquitto:2.1.2-alpine
+    volumes: ['./operator/docker/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro', 'operator-mqtt:/mosquitto/data']
+    networks: [core]
+    mem_limit: 128m
+    restart: unless-stopped
+    logging: *logging
+  rtsp-server:
+    image: bluenviron/mediamtx:1.21.3
+    command: [/mediamtx.yml]
+    volumes: ['./operator/docker/mediamtx.yml:/mediamtx.yml:ro']
+    networks: [core]
+    mem_limit: 384m
+    restart: unless-stopped
+    logging: *logging
+  vmt-camera-emulator:
+    <<: *acoustic
+    command: ['python', 'scripts/emulator/vmt_camera_emulator.py', '--config', '/workspace/config/emulator/vmt-cameras.json', '--fixtures', '/workspace/artifacts/mvp-temporal/fixtures.json', '--publish-rtsp-base', 'rtsp://rtsp-server:8554', '--advertised-rtsp-base', 'rtsp://rtsp-server:8554', '--mqtt-host', 'broker', '--mqtt-port', '1883']
+    depends_on: [broker, rtsp-server]
+    mem_limit: 768m
+    cpus: 2.0
+  echo-rtsp-worker:
+    <<: *acoustic
+    command: ['python', 'scripts/emulator/echo_rtsp_live_worker.py']
+    depends_on: [broker, rtsp-server, vmt-camera-emulator]
+    mem_limit: ${WORKER_MEMORY_LIMIT:-6g}
+    cpus: 4.0
+  proxy:
+    image: caddy:2-alpine
+    ports: ['127.0.0.1:8090:80']
+    volumes: ['./operator/docker/Caddyfile.local:/etc/caddy/Caddyfile:ro', 'operator-caddy:/data', 'operator-caddy-config:/config']
+    depends_on: [gateway]
+    networks: [core, egress]
+    mem_limit: 128m
+    restart: unless-stopped
+    logging: *logging
+networks:
+  core: {internal: true}
+  egress: {}
+volumes:
+  operator-db:
+  operator-mqtt:
+  operator-caddy:
+  operator-caddy-config:
+  panns-data:
+secrets:
+  postgres_password: {file: '${PGPASSWORD_PATH:-./operator/secrets/postgres_password}'}
+  bootstrap_password: {file: '${BOOTSTRAP_PASSWORD_PATH:-./operator/secrets/bootstrap_password}'}
+  vapid_public_key: {file: '${VAPID_PUBLIC_KEY_PATH:-./operator/secrets/vapid_public_key}'}
+  vapid_private_key: {file: '${VAPID_PRIVATE_KEY_PATH:-./operator/secrets/vapid_private_key}'}

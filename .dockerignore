@@ -12,3 +12,8 @@ __pycache__
 artifacts
 *.tar
 *.tar.gz
+**/node_modules
+**/dist
+**/secrets
+**/.env
+**/.env.*

@@ -1,0 +1,11 @@
+# Optional override: requires Docker Compose >=2.24.4 for !override.
+# Run only after human security/runtime validation and deployment authorization.
+services:
+  gateway:
+    environment:
+      NODE_ENV: production
+      ENABLE_LAB_PUSH: 'false'
+  proxy:
+    ports: !override ['80:80', '443:443']
+    environment: {OPERATOR_DOMAIN: '${OPERATOR_DOMAIN:?Set OPERATOR_DOMAIN}'}
+    volumes: !override ['./operator/docker/Caddyfile.vps:/etc/caddy/Caddyfile:ro', 'operator-caddy:/data', 'operator-caddy-config:/config']

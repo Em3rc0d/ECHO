@@ -1,0 +1,6 @@
+{
+ "name":"echo-operator-gateway","version":"0.1.0","private":true,"type":"module",
+ "scripts":{"start":"node --import tsx src/server.ts","migrate":"node --import tsx src/migrate.ts","bootstrap":"node --import tsx src/bootstrap.ts","test":"node --import tsx --test test/*.test.ts"},
+ "dependencies":{"@fastify/cookie":"^11.0.2","@fastify/rate-limit":"^10.3.0","@fastify/static":"^10.1.5","ajv":"^8.17.1","ajv-formats":"^3.0.1","fastify":"^5.6.0","mqtt":"^5.14.1","pg":"^8.16.3","tsx":"^4.20.5","web-push":"^3.6.7","zod":"^4.1.11"},
+ "devDependencies":{"@types/node":"^24.0.0","@types/pg":"^8.15.5","@types/web-push":"^3.6.4","typescript":"^5.9.2"}
+}
