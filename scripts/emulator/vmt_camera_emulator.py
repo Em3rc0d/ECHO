@@ -115,6 +115,7 @@ class VmtCameraEmulator:
         }
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
+        self.mqtt_connected = threading.Event()
         self._mqtt = self._make_mqtt_client()
 
     def _make_mqtt_client(self):
@@ -141,6 +142,7 @@ class VmtCameraEmulator:
         if reason_code != 0:
             print(json.dumps({"kind": "mqtt_connect_failed", "reason": str(reason_code)}), flush=True)
             return
+        self.mqtt_connected.set()
         client.subscribe("vmt/cameras/+/control", qos=1)
         self._publish_json(
             "vmt/emulator/status",
@@ -173,7 +175,13 @@ class VmtCameraEmulator:
                 runtime.desired_online = True
                 runtime.next_retry_monotonic = 0.0
             elif command == "set_online":
-                online = bool(payload.get("online"))
+                online = payload.get("online")
+                if not isinstance(online, bool):
+                    self._publish_status(
+                        runtime,
+                        extra={"control_error": "online must be a JSON boolean"},
+                    )
+                    return
                 runtime.desired_online = online
                 if not online:
                     self._stop_camera(runtime, state="OFFLINE")
@@ -207,7 +215,17 @@ class VmtCameraEmulator:
             retain=retain,
         )
         if info.rc != 0:
-            raise RuntimeError(f"MQTT publish failed with rc={info.rc} topic={topic}")
+            print(
+                json.dumps(
+                    {
+                        "kind": "mqtt_publish_degraded",
+                        "topic": topic,
+                        "rc": int(info.rc),
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
 
     def _publish_inventory(self) -> None:
         rows = []
@@ -415,6 +433,18 @@ class VmtCameraEmulator:
     def run(self) -> int:
         self._mqtt.connect(self.args.mqtt_host, self.args.mqtt_port, 60)
         self._mqtt.loop_start()
+        if not self.mqtt_connected.wait(timeout=10.0):
+            print(
+                json.dumps(
+                    {
+                        "kind": "mqtt_start_degraded",
+                        "host": self.args.mqtt_host,
+                        "port": self.args.mqtt_port,
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
         last_telemetry = 0.0
         try:
             while not self.stop_event.wait(0.5):
