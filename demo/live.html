@@ -30,7 +30,8 @@ iframe{width:100%;height:340px;border:0;border-radius:12px;background:#020910}
 <section class="panel" style="margin-bottom:16px">
 <h2>Video + audio de la cámara seleccionada</h2>
 <p class="meta">MediaMTX HLS · H.264/AAC · activa el audio en el reproductor.</p>
-<iframe id="player" title="Cámara emulada en vivo" allow="autoplay; fullscreen" src="http://127.0.0.1:8888/vmt/cam-002/"></iframe>
+<iframe id="player" title="Cámara emulada en vivo" allow="autoplay; fullscreen" src="http://127.0.0.1:8888/vmt/cam-002?autoplay=false&amp;muted=false&amp;controls=true"></iframe>
+<p class="meta">Si el reproductor sigue negro, <a id="direct-hls" href="http://127.0.0.1:8888/vmt/cam-002" target="_blank" rel="noopener noreferrer">abrir flujo HLS directamente</a>. Verifica que MediaMTX responda antes de atribuirlo al modelo.</p>
 <div class="controls">
 <label for="scenario">Escenario</label>
 <select id="scenario"><option value="negative">Ambiente</option><option value="glass_shatter">Rotura de vidrio</option><option value="siren">Sirena</option><option value="vehicle_horn">Bocina</option><option value="silence">Silencio</option></select>
@@ -48,7 +49,9 @@ iframe{width:100%;height:340px;border:0;border-radius:12px;background:#020910}
 let active="VMT-CAM-002";
 function setActive(id){
  active=id;
- document.getElementById("player").src="http://127.0.0.1:8888/vmt/cam-"+id.slice(-3)+"/";
+ const path="http://127.0.0.1:8888/vmt/cam-"+id.slice(-3);
+ document.getElementById("player").src=path+"?autoplay=false&muted=false&controls=true";
+ document.getElementById("direct-hls").href=path;
  document.getElementById("control-status").textContent="Cámara seleccionada: "+id;
 }
 async function control(command,params={}){
