@@ -16,13 +16,28 @@ small{color:#8baec7} .state{float:right;color:#60deaa;font-size:12px} .offline{c
 pre{background:#091523;padding:15px;overflow:auto;border-radius:8px;font-size:12px;min-height:150px;white-space:pre-wrap}
 .warn{padding:14px;background:#312a13;border:1px solid #665520;border-radius:10px;color:#ffe5a6}
 @media(max-width:720px){.cols{grid-template-columns:1fr}}
+iframe{width:100%;height:340px;border:0;border-radius:12px;background:#020910}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.controls button,.controls select{background:#164466;color:#e5faff;border:1px solid #388ab3;border-radius:8px;padding:10px;cursor:pointer}
+#control-status{font-size:12px;color:#9bdaba}
 </style></head>
 <body>
 <a href="/">← Demo controlada</a>
 <h1>ECHO / Live Camera Monitor</h1>
 <p class="meta">RTSP real del emulador → FFmpeg AAC/PCM → PANNs → Temporal Event Engine</p>
-<div class="warn"><b>LAB / DIAGNOSTIC ONLY.</b> Son puntuaciones y candidatos reales, no una validación de campo. Esta vista no publica eventos objetivo aceptados a MQTT. El video/audio RTSP se inspecciona en VLC.</div>
+<div class="warn"><b>LAB / DIAGNOSTIC ONLY.</b> Son puntuaciones y candidatos reales, no una validación de campo. Esta vista no publica eventos objetivo aceptados a MQTT. Reproducción audiovisual por HLS de MediaMTX; puede tener retraso respecto a la inferencia.</div>
 <div id="cameras" class="cards" aria-label="Cámaras"></div>
+<section class="panel" style="margin-bottom:16px">
+<h2>Video + audio de la cámara seleccionada</h2>
+<p class="meta">MediaMTX HLS · H.264/AAC · activa el audio en el reproductor.</p>
+<iframe id="player" title="Cámara emulada en vivo" allow="autoplay; fullscreen" src="http://127.0.0.1:8888/vmt/cam-002/"></iframe>
+<div class="controls">
+<label for="scenario">Escenario</label>
+<select id="scenario"><option value="negative">Ambiente</option><option value="glass_shatter">Rotura de vidrio</option><option value="siren">Sirena</option><option value="vehicle_horn">Bocina</option><option value="silence">Silencio</option></select>
+<button id="apply">Aplicar escenario</button>
+<button id="offline">Offline</button><button id="online">Online</button><button id="restart">Reiniciar</button>
+<span id="control-status" role="status">Sin comandos pendientes</span>
+</div></section>
 <div class="cols">
 <section class="panel"><h2 id="selected">Inferencia</h2><p id="session" class="meta">Sin datos</p>
 <div id="scores"></div><p id="quality" class="meta"></p></section>
@@ -31,13 +46,35 @@ pre{background:#091523;padding:15px;overflow:auto;border-radius:8px;font-size:12
 <p class="meta">Actualización cada 1.5 s · ventana 6 s · hop 1 s · sin WAV intermediario · <span id="updated">Sin conexión</span></p>
 <script>
 let active="VMT-CAM-002";
+function setActive(id){
+ active=id;
+ document.getElementById("player").src="http://127.0.0.1:8888/vmt/cam-"+id.slice(-3)+"/";
+ document.getElementById("control-status").textContent="Cámara seleccionada: "+id;
+}
+async function control(command,params={}){
+ const status=document.getElementById("control-status");
+ status.textContent="Enviando "+command+"…";
+ try{
+ const response=await fetch("/api/live/control",{
+  method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({source_id:active,command,...params})
+ });
+ const result=await response.json();
+ if(!response.ok)throw Error(result.detail||result.error||response.status);
+ status.textContent="Comando publicado en MQTT; esperando respuesta de cámara";
+ }catch(e){status.textContent="Error: "+e.message}
+}
+document.getElementById("apply").onclick=()=>control("set_scenario",{scenario:document.getElementById("scenario").value});
+document.getElementById("offline").onclick=()=>control("set_online",{online:false});
+document.getElementById("online").onclick=()=>control("set_online",{online:true});
+document.getElementById("restart").onclick=()=>control("restart");
 const labels=["GLASS_SHATTER","SIREN","VEHICLE_HORN"];
 function node(tag,cls,text){const el=document.createElement(tag);if(cls)el.className=cls;if(text!=null)el.textContent=text;return el}
 function render(payload){
  const cards=document.getElementById("cameras");cards.replaceChildren();
  for(const c of payload.cameras){
   const btn=node("button","card"+(active===c.source_id?" active":""),null);
-  btn.onclick=()=>{active=c.source_id;render(payload)};
+  btn.onclick=()=>{setActive(c.source_id);render(payload)};
   const heading=node("div","row");heading.append(node("b","",c.source_id),node("span","state"+(c.state==="ONLINE"?"":" offline"),c.state));btn.append(heading);
   const signal=node("div","signal");signal.style.display="flex";signal.style.alignItems="center";signal.style.justifyContent="space-around";
   for(const v of (c.waveform_envelope||[])){const spike=node("i");spike.style.cssText="display:block;width:2px;background:#53e8cf;height:"+Math.max(2,Math.min(30,Number(v)*30))+"px";signal.append(spike)}
