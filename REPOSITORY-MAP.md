@@ -131,3 +131,25 @@ Semántica:
 El preflight ejecutable está en `scripts/mvp/check_demo_runtime.py`.
 
 La evidencia de falsos positivos y la justificación de `UNKNOWN / NO_TARGET` pertenecen a `MK1/test/FALSE-POSITIVE-ANALYSIS-2026-10-08.md`, no a una narrativa de marketing de la demo.
+
+
+## 10. Camera emulator
+
+`emulator/` is a lab integration surface, separate from the frozen professor demo.
+
+~~~text
+emulator/
+└── README.md
+
+config/emulator/
+└── vmt-cameras.json
+
+docker/emulator/
+└── mediamtx.yml
+
+scripts/emulator/
+├── vmt_camera_emulator.py
+└── verify_vmt_camera_emulator.py
+~~~
+
+Its semantic ownership is camera-edge emulation: RTSP media plus MQTT lifecycle/telemetry/control. The complete milestone reasoning remains mirrored through `MK1/brainstorming -> design -> arch -> plan -> build -> test`, with provenance in `MK1/mining-site` and open questions in `MK1/quarries`.
