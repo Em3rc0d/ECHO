@@ -14,15 +14,18 @@ import math
 import os
 from pathlib import Path
 import subprocess
+import sys
 import threading
 import time
 
 import numpy as np
 
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from demo.server import build_scorer, load_thresholds
 from echo.runtime.event_engine import RawInference, TemporalEventEngine
-
-ROOT = Path(__file__).resolve().parents[2]
 SCENARIOS = ("negative", "glass_shatter", "siren", "vehicle_horn", "silence")
 
 
