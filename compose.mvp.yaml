@@ -196,6 +196,7 @@ services:
       - ./docker/emulator/mediamtx.yml:/mediamtx.yml:ro
     ports:
       - "127.0.0.1:8554:8554"
+      - "127.0.0.1:8888:8888"
     networks:
       - echo-mvp
     restart: on-failure
