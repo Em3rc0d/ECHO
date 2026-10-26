@@ -496,3 +496,58 @@ VEHICLE_HORN   0.2542450726032257
 ```
 
 This vector should become a regression fixture for future model and signal-quality changes.
+
+
+## 14. Distinct RTSP endpoint reproduction (/live/objects) — 2026-10-26
+
+A different public RTSPLink endpoint, `/live/objects`, was tested to determine whether the prior near-silent behavior was specific to `/live/traffic`.
+
+Source characterization:
+
+```text
+video              H.264 High, 1280x720, 30 fps
+audio              AAC-LC
+audio sample rate  44100 Hz
+audio channels     stereo
+```
+
+A nominal 60 s capture was normalized to 32 kHz mono PCM.
+
+Signal measurement:
+
+```text
+effective duration   59.49 s
+samples              1,903,825
+mean_volume          -91.0 dBFS
+max_volume           -91.0 dBFS
+```
+
+Blind ECHO result:
+
+```text
+complete windows                    54
+GLASS_SHATTER max                   0.5620440244674683
+GLASS_SHATTER mean                  0.5620440244674683
+GLASS_SHATTER windows >= threshold  54 / 54
+GLASS_SHATTER longest run           54
+
+SIREN max/mean                      0.024781737476587296
+VEHICLE_HORN max/mean               0.2542450726032257
+
+decision                            UNKNOWN / ABSTAIN
+accepted events                     0
+MQTT target publication             suppressed
+```
+
+The class-score vector is again exactly identical to:
+- the pure digital-zero control;
+- the first `/live/traffic` capture;
+- the second `/live/traffic` capture.
+
+### Interpretation
+
+This demonstrates that the near-silent behavior is not unique to one RTSPLink endpoint or token. At least two distinct RTSPLink demo endpoints currently expose technically valid AAC tracks with effectively no usable acoustic content.
+
+These feeds remain valid for transport-layer engineering (RTSP connectivity, FFmpeg decode, reconnect, buffering, codec handling), but they should not be used as evidence of environmental acoustic robustness.
+
+Future acoustic-domain tests should use a different provider or an explicitly authorized feed whose audio contains real environmental sound.
