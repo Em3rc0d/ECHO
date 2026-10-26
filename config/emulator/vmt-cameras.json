@@ -1,0 +1,38 @@
+{
+  "version": "ECHO-VMT-CAMERA-EMULATOR-v1",
+  "site_id": "VMT-EMULATED",
+  "cameras": [
+    {
+      "source_id": "VMT-CAM-001",
+      "rtsp_path": "vmt/cam-001",
+      "scenario": "negative",
+      "width": 640,
+      "height": 360,
+      "fps": 10
+    },
+    {
+      "source_id": "VMT-CAM-002",
+      "rtsp_path": "vmt/cam-002",
+      "scenario": "glass_shatter",
+      "width": 640,
+      "height": 360,
+      "fps": 10
+    },
+    {
+      "source_id": "VMT-CAM-003",
+      "rtsp_path": "vmt/cam-003",
+      "scenario": "siren",
+      "width": 640,
+      "height": 360,
+      "fps": 10
+    },
+    {
+      "source_id": "VMT-CAM-004",
+      "rtsp_path": "vmt/cam-004",
+      "scenario": "vehicle_horn",
+      "width": 640,
+      "height": 360,
+      "fps": 10
+    }
+  ]
+}
