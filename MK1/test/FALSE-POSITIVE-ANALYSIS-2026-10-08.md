@@ -315,7 +315,9 @@ This is strong evidence of a **persistent external-domain GLASS_SHATTER activati
 
 Manual review by the tester subsequently reported **no audible sound in the captured WAV**. On that human-audibility ground truth, there is no glass-shatter event in the interval and the activation is therefore recorded as the first confirmed RTSP/camera-like false positive for the current MVP.
 
-One measurement remains useful: distinguish exact/near digital silence from an extremely low-level signal by reporting PCM level statistics (RMS/peak/silence duration). That measurement can refine the root-cause diagnosis but does not change the current semantic ground truth that no glass-shatter event was audible.
+Signal-level measurement was subsequently completed. FFmpeg `volumedetect` reported `mean_volume=-91.0 dB` and `max_volume=-91.0 dB` across 1,908,107 samples. `silencedetect` with a -50 dB threshold marked the entire 59.6283 s file as silence. The RTSP-derived WAV is therefore effectively near-digital-silence at approximately the PCM16 quantization floor, not ordinary low-level urban ambience.
+
+This strengthens the diagnosis: the current model stack can produce persistent GLASS_SHATTER activation from a near-silent input. A pure digital-zero control is required next to distinguish a non-zero one-LSB/codec residue effect from a true silence baseline bias in the PANNs + ECHO head path.
 
 Regardless of final semantic labeling, the score pattern is useful: all complete windows remained above the current GLASS_SHATTER entry threshold while SIREN and VEHICLE_HORN remained low. That points toward a class-specific domain/confuser problem rather than a generic all-head score inflation.
 
@@ -327,7 +329,7 @@ Do not tune thresholds from this single RTSP capture.
 
 Next evidence should include:
 
-1. objective PCM level measurement (RMS/peak/silence duration) to determine whether the RTSP audio track is digital/near silence;
+1. pure digital-zero control through the same ECHO path;
 2. repeated RTSP captures from the same feed;
 3. score distributions over longer source-hours;
 4. localization of any real glass-like transients if present;
