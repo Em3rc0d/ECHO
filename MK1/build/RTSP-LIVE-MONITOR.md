@@ -43,3 +43,37 @@ Acceptance before merging: run Docker smoke test, confirm four sources each
 reach ONLINE, confirm scores and waveform change with `set_scenario`, prove
 disconnection/restart resets temporal sessions, verify controlled negative
 does not create accepted events, and run CPU/latency stress tests.
+
+## Browser audiovisual + MQTT camera-control increment (2026-10-26)
+
+The live view embeds MediaMTX's HLS player at `http://127.0.0.1:8888/vmt/cam-00N/`.
+MediaMTX HLS listens on localhost only; this is a local-demo design,
+not a remotely secured deployment. Open `http://localhost:8088/live`,
+select the camera and enable playback/audio in the embedded player.
+Audio/video and inference data are separate paths and may not be frame-synchronized.
+
+The `/api/live/control` POST endpoint permits only four fixed camera IDs,
+`set_scenario` (five allowed scenarios), `set_online` (boolean),
+and `restart`, then sends MQTT QoS1. An accepted publish means broker
+delivery, **not camera acknowledgement**. The UI still shows diagnosis-only
+temporal candidates and NEVER publishes accepted `echo.event.v1`.
+
+Recreate MediaMTX (new HLS port/config), demo (new HTTP handler),
+and the worker:
+
+```bash
+git pull --ff-only origin feat/rtsp-live-monitor-mk1
+docker compose -f compose.mvp.yaml --profile emulator --profile demo --profile live \
+  up -d --build --force-recreate rtsp-server vmt-camera-emulator echo-rtsp-worker demo
+docker compose -f compose.mvp.yaml --profile emulator --profile demo --profile live \
+  ps
+```
+
+Visit `http://localhost:8088/live`. To verify MediaMTX HLS:
+`curl -I http://127.0.0.1:8888/vmt/cam-002/index.m3u8`.
+Some HLS variants/browser players use alternate playlist requests: inspect the
+MediaMTX browser page directly if required.
+
+**Still needs real Docker/browser verification:** HLS playback with audio,
+switching scenes while preserving inference, reconnect/worker generation,
+browser console / CSP checks, and security regression on command endpoints.
