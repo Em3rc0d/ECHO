@@ -2,6 +2,10 @@ logLevel: info
 rtsp: true
 rtspTransports: [tcp]
 rtspAddress: :8554
+hls: true
+hlsAddress: :8888
+hlsVariant: fmp4
+hlsAllowOrigins: ['http://127.0.0.1:8088', 'http://localhost:8088']
 
 paths:
   all_others:
