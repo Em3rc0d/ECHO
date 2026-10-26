@@ -431,3 +431,68 @@ Before camera field claims, automated tests should include at least:
 - normal target-free ambience.
 
 A valid production candidate must never promote exact digital-zero input into a target event.
+
+
+## 13. Repeated RTSP silence control — 2026-10-26
+
+A second independent token/session for the same public RTSP traffic endpoint was captured and analyzed.
+
+Source characteristics again matched:
+
+```text
+video              H.264 High, 1280x720, 30 fps
+audio              AAC-LC
+audio sample rate  44100 Hz
+audio channels     stereo
+```
+
+A second nominal 60 s capture was normalized to 32 kHz mono PCM.
+
+Signal measurement:
+
+```text
+effective duration   59.54 s
+samples              1,905,135
+mean_volume          -91.0 dBFS
+max_volume           -91.0 dBFS
+```
+
+The second file therefore reproduced the same near-digital-silence condition as the first capture.
+
+Blind ECHO result:
+
+```text
+complete windows                    54
+GLASS_SHATTER max                   0.5620440244674683
+GLASS_SHATTER mean                  0.5620440244674683
+GLASS_SHATTER windows >= threshold  54 / 54
+GLASS_SHATTER longest run           54
+
+SIREN max/mean                      0.024781737476587296
+VEHICLE_HORN max/mean               0.2542450726032257
+
+decision                            UNKNOWN / ABSTAIN
+accepted events                     0
+MQTT target publication             suppressed
+```
+
+The three class scores exactly match the pure digital-zero control and the prior near-silent RTSP capture.
+
+### Interpretation
+
+The repeat strongly supports that:
+
+1. this RTSP traffic endpoint currently exposes a technically valid AAC audio track with essentially no usable acoustic content;
+2. the ECHO selected model path maps both exact digital zero and this near-silent RTSP signal to the same deterministic target-score vector;
+3. RTSP transport itself is not the cause of the GLASS_SHATTER activation;
+4. this feed remains useful for RTSP transport/decode/reconnect engineering, but it is not suitable for environmental acoustic robustness evaluation.
+
+The current score vector for absent/near-absent signal is:
+
+```text
+GLASS_SHATTER  0.5620440244674683
+SIREN          0.024781737476587296
+VEHICLE_HORN   0.2542450726032257
+```
+
+This vector should become a regression fixture for future model and signal-quality changes.
