@@ -173,6 +173,22 @@ services:
       - demo
 
 
+  echo-rtsp-worker:
+    <<: *echo-service
+    profiles:
+      - live
+    depends_on:
+      broker:
+        condition: service_healthy
+      rtsp-server:
+        condition: service_started
+      vmt-camera-emulator:
+        condition: service_started
+    command:
+      - python
+      - scripts/emulator/echo_rtsp_live_worker.py
+    restart: on-failure
+
   rtsp-server:
     image: bluenviron/mediamtx:1.21.3
     command: ["/mediamtx.yml"]
