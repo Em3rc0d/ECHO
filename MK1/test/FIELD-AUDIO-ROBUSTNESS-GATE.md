@@ -38,6 +38,12 @@ Controlled validation scenarios keep their existing calibrated replay behavior s
 
 The detailed incident analysis and decision rationale are frozen in `FALSE-POSITIVE-ANALYSIS-2026-10-08.md`.
 
+## Zero-input regression gate
+
+A pure 60 s digital-zero control produced a constant `GLASS_SHATTER=0.562044...` score in 55/55 complete windows and a temporally confirmed internal candidate. External abstention prevented publication, but the behavior proves that the selected model path cannot treat input validity as equivalent to target classification.
+
+Before field/camera acceptance, ECHO must add and validate a pre-inference signal-quality boundary. Exact digital zero must map to `NO_SIGNAL` and must not reach target-event acceptance. Thresholds for non-zero near-silence require representative device calibration rather than an arbitrary dB constant.
+
 ## Remaining false-positive quarry
 
 The long ambient false positive remains unresolved. It must not be hidden by arbitrary score thresholds selected from one screenshot or one ad hoc clip.
@@ -83,11 +89,12 @@ untouched field holdout
 This gate can close only when:
 
 1. the short-clip padding regression is verified in Docker;
-2. target-free field/stress recordings have enough duration and diversity to characterize recurring confuser families;
-3. the current model's false-alarm profile is measured by class;
-4. any hard-negative or recalibration change is selected without test/field-holdout leakage;
-5. a frozen candidate is evaluated on untouched environmental audio;
-6. known limitations are recorded, including any class that remains too unstable for field use.
+2. exact digital-zero and invalid/muted-signal regressions are blocked from target-event acceptance by a validated signal-quality boundary;
+3. target-free field/stress recordings have enough duration and diversity to characterize recurring confuser families;
+4. the current model's false-alarm profile is measured by class;
+5. any hard-negative or recalibration change is selected without test/field-holdout leakage;
+6. a frozen candidate is evaluated on untouched environmental audio;
+7. known limitations are recorded, including any class that remains too unstable for field use.
 
 A numerical false-alarm ceiling must be frozen **before** the final holdout is inspected. This document intentionally does not invent that value from the two ad hoc observations.
 
