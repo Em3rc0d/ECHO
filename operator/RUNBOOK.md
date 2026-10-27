@@ -71,6 +71,13 @@ services restart independently. Secrets must exist before Compose can start.
 1. Sign in; inspect four camera identities and camera MQTT state separately from
    fresh inference. Do not assume a green camera means the scorer is caught up.
 2. Select a source; open its HLS player and enable audio with browser controls.
+   In browser Network, inspect master → audio/video playlists → init/segments:
+   master cookieCheck 302 is handled inside the gateway, child requests preserve
+   MediaMTX `session`, and every browser URL remains under `/api/media/<source>/`.
+   No upstream cookie/redirect should appear in the browser response. Do not
+   paste session query values into logs, issues or screenshots. Test switching
+   cameras, reopening the player, invalid/expired sessions and an unauthorized
+   site's media URL; permissions apply to every resource.
 3. Change `negative` to `siren`. The command response acknowledges the broker;
    inspect subsequent MQTT camera generation/scenario for observed execution.
 4. Wait for a complete 6s window and real scoring. Inspect envelope, scores,
@@ -101,6 +108,14 @@ Without the explicit environment variable, the DB/API integration case is
 SKIPPED. Record skips as skips, never as completed acceptance. Unit cases check
 contract rejection and routing defaults. Manual MQTT, media, push, mobile,
 accessibility, resilience and capacity cases remain in the acceptance matrix.
+
+PR #57 HLS review correction adds seven scripted transport regression test
+cases in `operator/gateway/test/hls.test.ts`: no live MediaMTX is required for
+those cases, but they must still be executed later by the validating operator.
+They cover the cookie-check/query fallback chain, audio/video playlist session
+propagation, direct responses, forbidden redirects, loops, paths/query validation
+and cancellation. The DB/API test also checks that media session parameters do
+not bypass source/site authorization or a disabled source.
 
 ## 5. Backup and restore
 

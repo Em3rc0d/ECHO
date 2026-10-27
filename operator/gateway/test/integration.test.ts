@@ -98,6 +98,11 @@ test(
         "Content-Type": "application/json",
       };
       assert.equal((await fetch(base + "/api/snapshot")).status, 401);
+      assert.equal(
+        (await fetch(`${base}/api/media/${source}/index.m3u8?cookieCheck=1`))
+          .status,
+        401,
+      );
       const snap = (await (
         await fetch(base + "/api/snapshot", { headers })
       ).json()) as any;
@@ -110,6 +115,35 @@ test(
       assert.equal(
         (await fetch(`${base}/api/media/${source}/index.m3u8`, { headers }))
           .status,
+        404,
+      );
+      for (const query of [
+        "cookieCheck=1",
+        "session=01234567-89ab-4cde-8fab-0123456789ab",
+        "_HLS_msn=1&_HLS_part=0",
+      ])
+        assert.equal(
+          (
+            await fetch(
+              `${base}/api/media/${source}/video1_stream.m3u8?${query}`,
+              { headers },
+            )
+          ).status,
+          404,
+        );
+      // Membership grants access to the site, but an explicitly disabled source
+      // still cannot start media transport, even with upstream session data.
+      await db.query("INSERT INTO user_sites VALUES($1,$2)", [user, site]);
+      await db.query(
+        "UPDATE sources SET enabled=false,media_path=$2 WHERE source_id=$1",
+        [source, "vmt/cam-002"],
+      );
+      assert.equal(
+        (
+          await fetch(`${base}/api/media/${source}/index.m3u8?cookieCheck=1`, {
+            headers,
+          })
+        ).status,
         404,
       );
       assert.equal(

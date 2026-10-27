@@ -34,10 +34,16 @@ Blank cells and skipped tests are not passes. Preserve #53 as a separate gate.
 | O26 | Tab/Shift+Tab/Enter/Escape, screen reader, reduced motion | Focus/labels/status usable; no inaccessible essential control | NOT_EXECUTED |
 | O27 | Long run, stalled RTSP, CPU saturation, queue exhaustion | Measured lag/RAM/CPU, explicit stale/overload; no inflated capacity | NOT_EXECUTED |
 | O28 | Original professor demo and schema/certificate review | Frozen baseline unchanged; no new PASS or MK2 unlock | NOT_EXECUTED |
+| O29 | MediaMTX master cookieCheck 302, audio/video child playlists, init and segments | Gateway handles only the expected internal redirect, preserves session query; actual HLS video and audible audio work through authenticated routes | NOT_EXECUTED |
+| O30 | External/cross-camera/loop/query-changing redirect; forged or expired media session; disabled or out-of-site source | Unsafe redirects blocked before follow-up; no cookies/Operator credentials upstream; no source access bypass; request logs omit session query | NOT_EXECUTED |
 
 Written automated cases: `operator/gateway/test/contracts.test.ts` and
 `integration.test.ts`. Human command is in operator/RUNBOOK.md. Integration
 requires ECHO_OPERATOR_TEST_ALLOWED=true and a disposable running stack.
+
+PR #57 review regression cases are also written in
+`operator/gateway/test/hls.test.ts` (seven scripted test cases, NOT_EXECUTED).
+These source-level fixtures do not establish actual MediaMTX/browser playback.
 
 For O17 do not edit certified acoustic behavior. Use a separately reviewed
 test-only acceptance profile/fixture in a disposable deployment; retain proof

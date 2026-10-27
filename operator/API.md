@@ -22,7 +22,7 @@ and registry within its site scope. No default unauthenticated control route.
 | POST /alerts/:alert/acknowledge | Operator/site | NEW → ACKNOWLEDGED |
 | POST /alerts/:alert/resolve | Operator/site | ACKNOWLEDGED → RESOLVED |
 | POST /sources/:source/control | Operator/site/emulated | Existing MQTT control command; broker ACK only |
-| GET /media/:source/* | Session/site/enabled | Allowlisted HLS filename proxy; no RTSP URI exposure |
+| GET /media/:source/* | Session/site/enabled | Allowlisted HLS filename proxy, confined cookie-check redirect and validated session query; no RTSP URI exposure |
 | GET /health | Session | Database, MQTT, snapshot/client counters |
 | GET /push | Session/owner | Own subscription IDs and 30 delivery results; no private keys/endpoints |
 | POST /push/subscriptions | Session/owner | Browser PushSubscription JSON; allowlisted provider host |
@@ -38,6 +38,35 @@ detail. No score is an incident probability. Offset max 100000; no full-corpus
 export is implicit. Input validation errors return 400; unauthenticated 401;
 forbidden 403; inaccessible identity 404; invalid human lifecycle transition 409;
 capacity/disabled push 503. Database/internal failures expose a generic error.
+
+## MediaMTX v1.21.3 session transport
+
+Every master playlist, child playlist, init file and fragment request requires
+the current Operator session plus source/site/enabled checks **before** transport.
+The client cannot choose an upstream host or another registered camera path.
+
+The gateway uses `redirect: manual`, permits at most one HTTP 302 only from
+`index.m3u8` back to the exact same origin and pathname, and requires its only
+query change to be `cookieCheck=1`. Missing Location, loops, other statuses,
+credentials, fragments, cross-camera paths, other hosts/ports and query changes
+are rejected. The same 20s deadline covers both requests; browser disconnect
+aborts the upstream stream. No upstream Location or Set-Cookie is forwarded.
+
+The gateway intentionally sends neither browser cookies, Operator credentials,
+nor a cookieCheck cookie upstream. This selects MediaMTX's built-in query-mode
+session fallback; MediaMTX adds `session=<UUID>` to the returned relative HLS
+URIs. The proxy preserves and validates this parameter for child playlists and
+fragments, alongside `_HLS_msn`, `_HLS_part` and `_HLS_skip`. Duplicate/invalid
+recognized parameters are rejected; unknown parameters are discarded. No global
+cookie jar, shared CDN bypass credential or additional port is introduced.
+Request logs omit query strings because upstream HLS session tokens are bearer
+secrets. These tokens do not replace Operator authentication/authorization.
+
+This behavior was checked against upstream **source**, not an executing server:
+https://github.com/bluenviron/mediamtx/blob/v1.21.3/internal/servers/hls/http_server.go
+and `session.go` / `server.go` in the same release. Runtime regression cases are
+written but NOT_EXECUTED. An expired upstream session still returns an error;
+the operator may need to reopen the player after a fatal media error.
 
 ## MQTT mapping and lifecycle
 

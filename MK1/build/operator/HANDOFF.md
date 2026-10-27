@@ -3,6 +3,11 @@
 **Status: IMPLEMENTED / NOT_EXECUTED / AWAITING_HUMAN_VALIDATION**
 **Visual status: SOURCE_IMPLEMENTED / VISUAL_QA_NOT_EXECUTED**
 
+Review follow-up: [HLS correction](HLS-REVIEW-CORRECTION.md) handles the confined
+cookieCheck redirect and preserves MediaMTX session queries. Seven additional
+HLS test cases and more DB/API media authorization checks are written but
+NOT_EXECUTED. Acceptance matrix now has 30 scenarios; runtime/media gates stay open.
+
 ## Delivered behavior
 
 Dedicated MK1 experimental support platform: PostgreSQL migration/seed, MQTT

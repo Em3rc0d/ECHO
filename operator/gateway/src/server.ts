@@ -4,6 +4,7 @@ import rateLimit from "@fastify/rate-limit";
 import staticFiles from "@fastify/static";
 import { randomBytes, randomUUID } from "node:crypto";
 import { Readable } from "node:stream";
+import { fetchHls, mediaTarget } from "./hls.js";
 import { z, ZodError } from "zod";
 import { config } from "./config.js";
 import { db, transaction, audit } from "./db.js";
@@ -27,6 +28,15 @@ import {
 
 const app = Fastify({
   logger: {
+    // HLS query-mode sessions are upstream bearer secrets. Do not log queries.
+    serializers: {
+      req: (request) => ({
+        method: request.method,
+        url: request.url?.split("?")[0],
+        id: request.id,
+        remoteAddress: request.ip,
+      }),
+    },
     redact: [
       "req.headers.cookie",
       "req.headers.authorization",
@@ -421,24 +431,24 @@ app.get("/api/media/:source/*", async (req, reply) => {
   const source = await sourceFor(req.user, id.parse(p.source));
   if (!source.enabled || !source.media_path)
     return reply.code(404).send({ error: "MEDIA_UNAVAILABLE" });
-  const segment = p["*"];
-  if (
-    !/^[A-Za-z0-9_/-]+\.(m3u8|mp4|m4s|ts)$/.test(segment) ||
-    segment.includes("..")
-  )
-    return reply.code(400).send({ error: "MEDIA_PATH_INVALID" });
-  const target = new URL(`${config.media}/${source.media_path}/${segment}`);
-  const q = new URL(req.url, config.origin).searchParams;
-  for (const key of ["_HLS_msn", "_HLS_part", "_HLS_skip"])
-    if (q.has(key)) target.searchParams.set(key, q.get(key)!.slice(0, 20));
-  const response = await fetch(target, {
-    signal: AbortSignal.timeout(20000),
-    redirect: "error",
-  });
-  if (!response.ok || !response.body)
+  const target = mediaTarget(
+    config.media,
+    source.media_path,
+    p["*"],
+    new URL(req.url, config.origin).searchParams,
+  );
+  const controller = new AbortController();
+  reply.raw.once("close", () => controller.abort());
+  const response = await fetchHls(
+    target,
+    AbortSignal.any([controller.signal, AbortSignal.timeout(20000)]),
+  );
+  if (!response.ok || !response.body) {
+    await response.body?.cancel();
     return reply
       .code(response.status >= 400 ? response.status : 502)
       .send({ error: "MEDIA_UPSTREAM_UNAVAILABLE" });
+  }
   reply.header(
     "Content-Type",
     response.headers.get("content-type") || "application/octet-stream",

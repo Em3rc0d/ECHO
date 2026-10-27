@@ -41,3 +41,9 @@ capacity is claimed. MK2 remains gated. No certificate is issued or invalidated.
 
 SSE frames are capped at 2 MiB and slow clients are disconnected; diagnostic
 transition summaries in snapshots are bounded separately from persisted receipts.
+
+PR #57 P1 review: the `redirect: error` transport and dropped `session` query
+were corrected at source level using the pinned MediaMTX query fallback and a
+single exact-resource cookie-check redirect. Scripted regression and RBAC cases
+are written, NOT_EXECUTED. G03 remains OPEN until real master/child/fragment
+playback, user-enabled audio and camera-switch recovery are demonstrated.
