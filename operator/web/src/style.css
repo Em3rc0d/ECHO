@@ -1840,3 +1840,17 @@ button {
     margin-left: auto;
   }
 }
+
+.rtsp-stderr {
+  padding: 12px;
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #080f1c;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #c3d1e4;
+  font-size: 11px;
+  line-height: 1.6;
+}

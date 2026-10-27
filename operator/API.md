@@ -70,6 +70,13 @@ the operator may need to reopen the player after a fatal media error.
 
 ## MQTT mapping and lifecycle
 
+The read-only live adapter now exposes `updated_at` (worker heartbeat) separately
+from `at` (last completed inference), plus a bounded `diagnostics` object with
+per-source process/phase/retry/queue/timing and redacted stderr. Worker attempt
+generation and emulator generation stay distinct. Reconnect state can be fresh
+while scores remain stale. This presentation extension changes no canonical
+MQTT event or operational acceptance policy. See `RTSP-VALIDATION.md`.
+
 * Input `echo/events`, QoS1; required contract validated against unchanged
   `schemas/event.schema.json` plus the existing provenance.lifecycle convention.
 * `CONFIRMED` and `CLOSED` share one event_id; both original payloads are retained.

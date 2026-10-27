@@ -68,6 +68,11 @@ services restart independently. Secrets must exist before Compose can start.
 
 ## 3. Demonstrate the real path
 
+For the multichannel RTSP stability investigation, follow
+[`RTSP-VALIDATION.md`](RTSP-VALIDATION.md). A worker heartbeat is distinct from
+recent inference; inspect per-source diagnostics before attributing a failure
+to the acoustic model.
+
 1. Sign in; inspect four camera identities and camera MQTT state separately from
    fresh inference. Do not assume a green camera means the scorer is caught up.
 2. Select a source; open its HLS player and enable audio with browser controls.

@@ -3,10 +3,18 @@ import { join } from "node:path";
 import { config } from "./config.js";
 import { db } from "./db.js";
 import { ingest, Rejected } from "./ingest.js";
+import {
+  snapshotFreshness,
+  workerDiagnostics,
+  type WorkerDiagnostics,
+} from "./worker-diagnostics.js";
 export type Live = {
   source_id: string;
   state: string;
   at?: string;
+  updated_at?: string;
+  snapshot_age_ms?: number | null;
+  diagnostics?: WorkerDiagnostics;
   session?: string;
   worker_generation?: number;
   scores: Record<string, number>;
@@ -36,10 +44,7 @@ export async function refreshLive() {
       const data = JSON.parse(await readFile(path, "utf8"));
       if (data.source_id !== id) throw new Error("Snapshot source mismatch");
       const stamp = Date.parse(data.at);
-      const age = Number.isFinite(stamp)
-        ? Math.max(0, Date.now() - stamp)
-        : null;
-      const stale = age === null || age > 15000 || stamp > Date.now() + 5000;
+      const freshness = snapshotFreshness(data);
       const scores: Record<string, number> = {};
       for (const label of ["GLASS_SHATTER", "SIREN", "VEHICLE_HORN"]) {
         const value = data.scores?.[label];
@@ -53,8 +58,10 @@ export async function refreshLive() {
       }
       const current: Live = {
         source_id: id,
-        state: stale ? "STALE" : String(data.state || "UNKNOWN"),
+        ...freshness,
         at: data.at,
+        updated_at: data.updated_at,
+        diagnostics: workerDiagnostics(data.diagnostics),
         session: data.session,
         worker_generation: data.stream_generation,
         scores,
@@ -79,8 +86,6 @@ export async function refreshLive() {
           : null,
         events: Array.isArray(data.events) ? data.events.slice(-20) : [],
         mode: "LAB_RTSP_DIAGNOSTIC_ONLY",
-        age_ms: age,
-        stale,
       };
       live.set(id, current);
       for (const event of current.events) {

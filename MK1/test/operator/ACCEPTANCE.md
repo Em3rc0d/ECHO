@@ -36,6 +36,9 @@ Blank cells and skipped tests are not passes. Preserve #53 as a separate gate.
 | O28 | Original professor demo and schema/certificate review | Frozen baseline unchanged; no new PASS or MK2 unlock | NOT_EXECUTED |
 | O29 | MediaMTX master cookieCheck 302, audio/video child playlists, init and segments | Gateway handles only the expected internal redirect, preserves session query; actual HLS video and audible audio work through authenticated routes | NOT_EXECUTED |
 | O30 | External/cross-camera/loop/query-changing redirect; forged or expired media session; disabled or out-of-site source | Unsafe redirects blocked before follow-up; no cookies/Operator credentials upstream; no source access bypass; request logs omit session query | NOT_EXECUTED |
+| O31 | Four-source run including reported CAM-003 zero-window failure | Counters actually advance on all four; capture duration, stderr/exit, phase, queue and CPU/RAM/PID evidence; no model-cause assumption | NOT_EXECUTED |
+| O32 | CAM-003 offline/online/restart while other sources process | Independent progress and sessions, bounded backoff, complete process/reader cleanup, no stale scores relabeled live | NOT_EXECUTED |
+| O33 | Local stop/stall/overload and thread/scorer failure regressions | Explicit reasons and bounded resources; no PCM stitching; heartbeat separated from inference; no accepted alerts | NOT_EXECUTED |
 
 Written automated cases: `operator/gateway/test/contracts.test.ts` and
 `integration.test.ts`. Human command is in operator/RUNBOOK.md. Integration
@@ -44,6 +47,12 @@ requires ECHO_OPERATOR_TEST_ALLOWED=true and a disposable running stack.
 PR #57 review regression cases are also written in
 `operator/gateway/test/hls.test.ts` (seven scripted test cases, NOT_EXECUTED).
 These source-level fixtures do not establish actual MediaMTX/browser playback.
+
+RTSP stability regressions: `tests/emulator/test_rtsp_supervision.py` (15 fake
+process/source definitions) and `operator/gateway/test/worker-diagnostics.test.ts`
+(3 presentation definitions), all NOT_EXECUTED. Human procedures and evidence
+requirements are in `operator/RTSP-VALIDATION.md`. There are now 33 manual rows;
+none is prefilled as successful by the implementation agent.
 
 For O17 do not edit certified acoustic behavior. Use a separately reviewed
 test-only acceptance profile/fixture in a disposable deployment; retain proof

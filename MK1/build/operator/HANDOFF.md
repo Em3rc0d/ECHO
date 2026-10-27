@@ -3,10 +3,17 @@
 **Status: IMPLEMENTED / NOT_EXECUTED / AWAITING_HUMAN_VALIDATION**
 **Visual status: SOURCE_IMPLEMENTED / VISUAL_QA_NOT_EXECUTED**
 
+RTSP follow-up: [hotfix diagnosis and changes](RTSP-STABILITY-HOTFIX.md), with
+local instructions in operator/RTSP-VALIDATION.md. The diagnostic worker is now
+modified on #57 for process/pipe supervision, backoff and observability; scientific
+contracts remain unchanged. Fifteen Python and three gateway regression cases
+are written, not executed. The human CAM-003 exit-1 report does not establish
+a root cause or successful recovery. The current human matrix has 33 scenarios.
+
 Review follow-up: [HLS correction](HLS-REVIEW-CORRECTION.md) handles the confined
 cookieCheck redirect and preserves MediaMTX session queries. Seven additional
 HLS test cases and more DB/API media authorization checks are written but
-NOT_EXECUTED. Acceptance matrix now has 30 scenarios; runtime/media gates stay open.
+NOT_EXECUTED. HLS added scenarios 29–30; runtime/media gates stay open.
 
 ## Delivered behavior
 
@@ -64,7 +71,7 @@ localhost on the phone points to the phone itself.
 
 See `operator/API.md`, `MK1/arch/operator/ADR-001-OPERATOR.md`,
 `MK1/design/operator/DESIGN.md`, `MK1/test/operator/ACCEPTANCE.md`, and
-`MK1/quarries/operator/OPEN-GATES.md` for contracts, visual rules, 28 human
+`MK1/quarries/operator/OPEN-GATES.md` for contracts, visual rules and human
 acceptance scenarios and remaining limitations. The source changes implement
 ordinary architecture choices; empirical and external gates remain OPEN.
 

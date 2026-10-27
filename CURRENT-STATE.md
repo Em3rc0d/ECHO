@@ -387,3 +387,12 @@ Source is implemented on `main`; full Docker RTSP+MQTT runtime verification is s
 ## 16. ECHO Operator experimental support increment
 
 Dedicated branch `feat/echo-operator-platform-20261026`, based on PR #56 (`1ee59f1`). Status: **IMPLEMENTED / NOT_EXECUTED / AWAITING_HUMAN_VALIDATION**. See `operator/README.md` and `MK1/test/operator/ACCEPTANCE.md`. Includes gateway, PostgreSQL/migrations, REST/SSE/site roles, PWA command center, selected HLS, emulator controls, diagnostic history and Web Push outbox. Source-level static analysis does not establish runtime or visual acceptance. Shipped upstream operational acceptance profiles are empty; field robustness #53, MK2 and the professor demo freeze remain unchanged. No deployment, test execution or certificate was performed.
+
+RTSP stability follow-up: the human team reports three sources progressing and
+CAM-003 at generation 109, zero windows, FFmpeg exit 1; a separate 12s decoder
+probe succeeded. Root cause is unconfirmed. A diagnostic-worker hotfix adds
+bounded independent PCM/stderr draining, watchdog/backoff, process cleanup,
+per-source isolation and Operator diagnostics. Implementation agent ran no
+runtime/test/build/Docker/CI. See `MK1/build/operator/RTSP-STABILITY-HOTFIX.md`
+and `operator/RTSP-VALIDATION.md`. No stability/capacity PASS, acceptance change
+or enabled operational alert follows from this code delivery.

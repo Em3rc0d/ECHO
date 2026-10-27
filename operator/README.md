@@ -28,6 +28,11 @@ See [Docker runbook](RUNBOOK.md), [API contract](API.md),
 [architecture ADR](../MK1/arch/operator/ADR-001-OPERATOR.md) and
 [design specification](../MK1/design/operator/DESIGN.md).
 
+The RTSP supervision hotfix adds independent bounded PCM/stderr draining,
+per-source watchdog/backoff, process cleanup, FIFO scorer access and monitor
+diagnostics. See [local RTSP validation](RTSP-VALIDATION.md). Runtime remains
+unverified; the reported CAM-003 exit-1 root cause is still unknown.
+
 ## Components
 
 | Component | Responsibility |

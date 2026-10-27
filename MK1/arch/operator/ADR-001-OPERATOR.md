@@ -13,7 +13,8 @@ not authorize provisioning, spending or deployment.
 
 * Fastify/TypeScript gateway, PostgreSQL 17, React/TypeScript/Vite PWA; SSE for
   bounded snapshot streaming, REST for mutations, HLS for selected video/audio.
-* Reuse PR #56's scorer and worker without modifying them. A read-only adapter
+* Reuse PR #56's scorer. The diagnostic worker receives the separately authorized
+  ADR-002 supervision hotfix on #57; scientific behavior stays frozen. A read-only adapter
   consumes atomic worker JSON, strips RTSP URIs and marks diagnostic events LAB.
   Emulator status uses its own generation, separate from worker session/generation.
 * MQTT QoS1 durable broker/session; handleMessage acknowledges only after a DB

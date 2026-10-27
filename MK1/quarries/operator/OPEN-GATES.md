@@ -30,8 +30,10 @@ device-delivery receipt. Crash recovery can resend a browser tag. Secret files
 and DB push subscription keys require host/backup access controls. Local broker
 allows anonymous traffic only on its isolated non-exposed Docker network.
 
-Inherited worker risks remain visible: RTSP reads/model lock may lag or stall;
-gateway marks stale after 15s but does not fix the scorer or certify fairness.
+Worker risks remain visible: the supervision hotfix adds independent draining,
+bounded queues/watchdog/backoff and FIFO scorer access, but real fairness,
+latency and recovery are unmeasured. Stale inference is distinct from heartbeat;
+an in-process scorer hang still requires container-level supervision.
 Worker snapshots retain at most 20 transitions per source; a gateway outage
 longer than that bounded history may lose diagnostic transitions. Accepted MQTT
 delivery has its own durable broker/session path and finite queue budget.

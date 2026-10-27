@@ -34,6 +34,36 @@ type Alert = Acoustic & { alert_id: string; state: string; severity: string };
 type Live = {
   state: string;
   at?: string;
+  updated_at?: string;
+  diagnostics?: {
+    phase?: string;
+    phase_seconds?: number;
+    worker_instance_id?: string;
+    pid?: number;
+    reconnect_reason?: string;
+    transport_stop_reason?: string;
+    current_exit_code?: number;
+    last_error_type?: string;
+    last_exit_code?: number;
+    session_duration_seconds?: number;
+    last_session_duration_seconds?: number;
+    session_windows?: number;
+    last_session_windows?: number;
+    consecutive_failures?: number;
+    backoff_seconds?: number;
+    next_retry_utc?: string;
+    pcm_queue_depth?: number;
+    pcm_queue_capacity?: number;
+    transport_bytes?: number;
+    model_wait_seconds?: number;
+    inference_seconds?: number;
+    last_pcm_age_seconds?: number;
+    process_reaped?: boolean;
+    cleanup_complete?: boolean;
+    forced_kill?: boolean;
+    stderr_tail: string[];
+    stderr_truncated?: boolean;
+  };
   session?: string;
   worker_generation?: number;
   scores: Record<string, number>;
@@ -1103,7 +1133,7 @@ function App() {
                           <dd>{source.live?.state || "Sin datos"}</dd>
                         </div>
                         <div>
-                          <dt>Edad de snapshot</dt>
+                          <dt>Edad de última inferencia</dt>
                           <dd>
                             {source.live?.at ? `${age(source.live.at)} s` : "—"}
                           </dd>
@@ -1142,6 +1172,160 @@ function App() {
                           </dd>
                         </div>
                       </dl>
+                      <details className="session-detail rtsp-diagnostics">
+                        <summary>Diagnóstico RTSP por fuente</summary>
+                        <dl className="telemetry">
+                          <div>
+                            <dt>Heartbeat</dt>
+                            <dd>
+                              {source.live?.updated_at
+                                ? `${age(source.live.updated_at)} s`
+                                : "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Fase</dt>
+                            <dd>
+                              {source.live?.diagnostics?.phase || "—"} ·{" "}
+                              {source.live?.diagnostics?.phase_seconds?.toFixed(
+                                1,
+                              ) ?? "—"}{" "}
+                              s
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>PID / ventanas de sesión</dt>
+                            <dd>
+                              {source.live?.diagnostics?.pid ?? "—"} /{" "}
+                              {source.live?.diagnostics?.session_windows ?? "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Duración de sesión</dt>
+                            <dd>
+                              {source.live?.diagnostics?.session_duration_seconds?.toFixed(
+                                1,
+                              ) ?? "—"}{" "}
+                              s
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Última salida FFmpeg</dt>
+                            <dd>
+                              {source.live?.diagnostics?.current_exit_code ??
+                                source.live?.diagnostics?.last_exit_code ??
+                                "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Última sesión: duración / ventanas</dt>
+                            <dd>
+                              {source.live?.diagnostics?.last_session_duration_seconds?.toFixed(
+                                1,
+                              ) ?? "—"}{" "}
+                              s /{" "}
+                              {source.live?.diagnostics?.last_session_windows ??
+                                "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Parada de transporte actual</dt>
+                            <dd>
+                              {source.live?.diagnostics
+                                ?.transport_stop_reason || "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Último motivo de reconexión</dt>
+                            <dd>
+                              {source.live?.diagnostics?.reconnect_reason ||
+                                "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Fallos seguidos / backoff</dt>
+                            <dd>
+                              {source.live?.diagnostics?.consecutive_failures ??
+                                0}{" "}
+                              / {source.live?.diagnostics?.backoff_seconds ?? 0}{" "}
+                              s
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Próximo intento</dt>
+                            <dd>
+                              {when(source.live?.diagnostics?.next_retry_utc)}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Cola PCM</dt>
+                            <dd>
+                              {source.live?.diagnostics?.pcm_queue_depth ?? "—"}{" "}
+                              /{" "}
+                              {source.live?.diagnostics?.pcm_queue_capacity ??
+                                "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Edad PCM / bytes recibidos</dt>
+                            <dd>
+                              {source.live?.diagnostics?.last_pcm_age_seconds?.toFixed(
+                                1,
+                              ) ?? "—"}{" "}
+                              s /{" "}
+                              {source.live?.diagnostics?.transport_bytes ?? "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Última espera / inferencia</dt>
+                            <dd>
+                              {source.live?.diagnostics?.model_wait_seconds?.toFixed(
+                                2,
+                              ) ?? "—"}{" "}
+                              /{" "}
+                              {source.live?.diagnostics?.inference_seconds?.toFixed(
+                                2,
+                              ) ?? "—"}{" "}
+                              s
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Limpieza / kill forzado</dt>
+                            <dd>
+                              {source.live?.diagnostics?.cleanup_complete ==
+                              null
+                                ? "—"
+                                : source.live.diagnostics.cleanup_complete
+                                  ? "Completa"
+                                  : "Pendiente"}{" "}
+                              /{" "}
+                              {source.live?.diagnostics?.forced_kill
+                                ? "Sí"
+                                : "No"}
+                            </dd>
+                          </div>
+                        </dl>
+                        <p>
+                          Instancia del worker:{" "}
+                          {source.live?.diagnostics?.worker_instance_id || "—"}
+                        </p>
+                        <p>
+                          stderr de FFmpeg · cola acotada y redactada
+                          {source.live?.diagnostics?.stderr_truncated
+                            ? " · truncada"
+                            : ""}
+                        </p>
+                        <pre className="rtsp-stderr">
+                          {source.live?.diagnostics?.stderr_tail.length
+                            ? source.live.diagnostics.stderr_tail.join("\n")
+                            : "Sin mensajes capturados."}
+                        </pre>
+                        <p>
+                          Un heartbeat reciente no implica inferencia reciente.
+                          La causa del fallo requiere revisar estos datos; no se
+                          atribuye automáticamente al modelo.
+                        </p>
+                      </details>
                       <details className="session-detail">
                         <summary>Procedencia y tiempos</summary>
                         <p>Sesión: {source.live?.session || "—"}</p>
