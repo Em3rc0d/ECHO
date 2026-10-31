@@ -319,7 +319,7 @@ class VmtCameraEmulator:
             "-f",
             "lavfi",
             "-i",
-            f"color=c=black:s={spec.width}x{spec.height}:r={spec.fps}",
+            f"testsrc=size={spec.width}x{spec.height}:rate={spec.fps}",
         ]
         fixture = resolve_fixture(self.args.fixtures, runtime.scenario)
         if fixture is None:
