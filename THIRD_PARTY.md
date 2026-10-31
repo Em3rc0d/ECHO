@@ -89,3 +89,7 @@ MK2 debe producir SBOM, model manifest, dataset/asset manifest, notices y hashes
 ## 8. Invalidation
 
 Actualizar el registro cuando cambie una dependencia, versión, checkpoint, dataset release, política de distribución o cuando un upstream modifique licencia/términos.
+
+## 9. Experimental Operator dependencies (not a release certification)
+
+React/ReactDOM, Vite, TypeScript, Fastify/plugins, MQTT.js, node-postgres, Ajv/formats, Zod and web-push are implementation dependencies under their upstream license notices (predominantly MIT/Apache-2.0; exact resolved metadata in Operator lockfiles). HLS.js is Apache-2.0. PostgreSQL, Caddy, Mosquitto and MediaMTX remain separately distributed container services with their upstream notices. Node base images and inherited FFmpeg/PANNs runtime require their own image/BOM review. No license, vulnerability or supply-chain certification is claimed; preserve dependency notices and produce the exact-image SBOM before release.

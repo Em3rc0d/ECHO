@@ -192,3 +192,7 @@ A new MK1 lab-only camera emulator now provides multiple local RTSP camera paths
 > **Do not implement around an unresolved architecture-changing decision.**
 
 MK1 replay build is currently authorized because those core decisions have been closed. Any new implementation must preserve the frozen contracts or explicitly reopen and recertify the affected node.
+
+## 15. Experimental ECHO Operator
+
+An isolated MK1 Operator implementation is available in [operator/README.md](operator/README.md), with its own `compose.operator.yaml`. It adds a responsive PWA, PostgreSQL, MQTT gateway, authenticated media, source control and Web Push infrastructure. Status: **IMPLEMENTED / NOT_EXECUTED / AWAITING_HUMAN_VALIDATION**. The default operational acceptance profile list is empty; lab candidates do not become operational alerts. The professor demo and MK2 gates remain unchanged.

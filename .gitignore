@@ -54,3 +54,7 @@ reports/generated/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Operator build/dependency intermediates
+node_modules/
+operator/web/dist/

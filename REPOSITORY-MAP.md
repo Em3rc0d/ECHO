@@ -153,3 +153,8 @@ scripts/emulator/
 ~~~
 
 Its semantic ownership is camera-edge emulation: RTSP media plus MQTT lifecycle/telemetry/control. The complete milestone reasoning remains mirrored through `MK1/brainstorming -> design -> arch -> plan -> build -> test`, with provenance in `MK1/mining-site` and open questions in `MK1/quarries`.
+
+
+## Experimental Operator support surface
+
+`operator/` owns the isolated gateway, presentation model, PostgreSQL migration, PWA, push and local/VPS configuration. `MK1/*/operator/` owns its design, ADR, implementation provenance, handoff and unexecuted acceptance matrix. `compose.operator.yaml` is separate from the existing demo stack. This increment does not change canonical event schemas or unlock MK2.
