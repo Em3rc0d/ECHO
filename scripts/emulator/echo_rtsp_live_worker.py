@@ -27,6 +27,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from echo.runtime.event_engine import RawInference, TemporalEventEngine
+from echo.runtime.signal_quality import inspect_pcm_window
 from scripts.emulator.rtsp_process import Backoff, InferenceCancelled, RtspSession, ScorerGate
 
 
@@ -53,6 +54,8 @@ class CameraStatus:
                        "mode": "LAB_RTSP_DIAGNOSTIC_ONLY", "published_target_events": False,
                        "state": "STARTING", "at": None, "scores": {}, "waveform_envelope": [],
                        "events": [], "windows": 0, "stream_generation": 0,
+                       "signal_quality": "NOT_OBSERVED", "signal_quality_reason": None,
+                       "signal_quality_at": None,
                        "diagnostics": {"worker_instance_id": worker_instance, "session_windows": 0,
                                        "consecutive_failures": 0, "backoff_seconds": 0}}
 
@@ -135,12 +138,16 @@ def consume_camera(row, args, scorer, gate, config, version, thresholds, stop_ev
         status.set_phase("CONNECTING")
         status.update(state="CONNECTING", session=session, stream_generation=generation,
                       at=None, scores={}, waveform_envelope=[], rms=None, peak=None,
+                      signal_quality="NOT_OBSERVED", signal_quality_reason=None,
+                      signal_quality_at=None,
                       window_start_utc=None, window_end_utc=None)
         status.diagnostics(session_windows=0, backoff_seconds=0, next_retry_utc=None,
                            decoder_threads=args.decoder_threads, last_error_type=None,
-                           model_wait_seconds=0, inference_seconds=0)
+                           model_wait_seconds=0, inference_seconds=0,
+                           signal_quality_checked_windows=0, signal_quality_rejected_windows=0)
         status.safe_publish()
         windows, last_end, reason = 0, None, None
+        checked_windows, rejected_windows = 0, 0
         try:
             transport.start()
             began = now()
@@ -152,6 +159,29 @@ def consume_camera(row, args, scorer, gate, config, version, thresholds, stop_ev
                     break
                 end = began + timedelta(seconds=(offset + len(waveform)) / scorer.sample_rate_hz)
                 start = began + timedelta(seconds=offset / scorer.sample_rate_hz)
+                checked_windows += 1
+                quality = inspect_pcm_window(waveform)
+                status.diagnostics(signal_quality_checked_windows=checked_windows)
+                if not quality.analysis_allowed:
+                    rejected_windows += 1
+                    last_end = end
+                    # Close active events AND discard pending candidates. A gap
+                    # must never be bridged by later valid windows.
+                    status.append_events([event.to_dict() for event in engine.close_session(
+                        source_id=source_id, site_id=row["site_id"], stream_session_id=session,
+                        end_utc=end, model_version=scorer.model_version,
+                    )])
+                    status.set_phase("READING")
+                    status.diagnostics(signal_quality_rejected_windows=rejected_windows,
+                                       session_windows=windows)
+                    status.update(state="ONLINE",
+                                  signal_quality=quality.state, signal_quality_reason=quality.reason,
+                                  signal_quality_at=now().isoformat(),
+                                  scores={}, waveform_envelope=[], rms=None, peak=None)
+                    # Do not refresh 'at' or window_end_utc: those mean last
+                    # INFERRED window, not last received/invalid PCM window.
+                    status.safe_publish()
+                    continue
                 status.set_phase("WAITING_FOR_MODEL")
                 with gate.slot(lambda: stop_event.is_set() or transport.done.is_set()) as waited:
                     status.diagnostics(model_wait_seconds=round(waited, 3))
@@ -174,6 +204,8 @@ def consume_camera(row, args, scorer, gate, config, version, thresholds, stop_ev
                               waveform_envelope=[float(np.max(np.abs(part))) for part in np.array_split(waveform, 64)],
                               window_start_utc=start.isoformat(), window_end_utc=end.isoformat(),
                               windows=status.values["windows"] + 1, scores=scores,
+                              signal_quality=quality.state, signal_quality_reason=quality.reason,
+                              signal_quality_at=now().isoformat(),
                               rms=math.sqrt(float(np.mean(np.square(waveform, dtype=np.float64)))),
                               peak=float(np.max(np.abs(waveform))))
                 status.safe_publish()
@@ -208,7 +240,9 @@ def consume_camera(row, args, scorer, gate, config, version, thresholds, stop_ev
                                last_session_duration_seconds=result["session_duration_seconds"],
                                last_session_windows=windows)
             status.update(last_exit_code=code, state="STOPPED" if stop_event.is_set() else "RECONNECTING",
-                          scores={}, waveform_envelope=[], rms=None, peak=None)
+                          scores={}, waveform_envelope=[], rms=None, peak=None,
+                          signal_quality="NOT_OBSERVED", signal_quality_reason=None,
+                          signal_quality_at=None)
             print(json.dumps({"kind": "rtsp_session_end", "source_id": source_id,
                               "generation": generation, "session": session, "reason": reason,
                               "exit_code": code, "session_windows": windows, **result},

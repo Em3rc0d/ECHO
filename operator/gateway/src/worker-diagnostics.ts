@@ -11,6 +11,8 @@ export type WorkerDiagnostics = {
   session_duration_seconds?: number;
   last_session_duration_seconds?: number;
   session_windows?: number;
+  signal_quality_checked_windows?: number;
+  signal_quality_rejected_windows?: number;
   last_session_windows?: number;
   consecutive_failures?: number;
   backoff_seconds?: number;
@@ -54,6 +56,8 @@ export function workerDiagnostics(raw: unknown): WorkerDiagnostics {
     "session_duration_seconds",
     "last_session_duration_seconds",
     "session_windows",
+    "signal_quality_checked_windows",
+    "signal_quality_rejected_windows",
     "last_session_windows",
     "consecutive_failures",
     "backoff_seconds",

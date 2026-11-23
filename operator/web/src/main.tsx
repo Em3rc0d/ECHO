@@ -48,6 +48,8 @@ type Live = {
     session_duration_seconds?: number;
     last_session_duration_seconds?: number;
     session_windows?: number;
+    signal_quality_checked_windows?: number;
+    signal_quality_rejected_windows?: number;
     last_session_windows?: number;
     consecutive_failures?: number;
     backoff_seconds?: number;
@@ -67,6 +69,9 @@ type Live = {
   session?: string;
   worker_generation?: number;
   scores: Record<string, number>;
+  signal_quality?: "NOT_OBSERVED" | "UNASSESSED_NONZERO" | "NO_SIGNAL" | "INVALID_SIGNAL";
+  signal_quality_reason?: string;
+  signal_quality_at?: string;
   waveform_envelope: number[];
   windows: number;
   rms: number;
@@ -1133,6 +1138,18 @@ function App() {
                           <dd>{source.live?.state || "Sin datos"}</dd>
                         </div>
                         <div>
+                          <dt>Calidad de señal</dt>
+                          <dd>
+                            {source.live?.signal_quality === "NO_SIGNAL"
+                              ? "NO_SIGNAL · silencio digital"
+                              : source.live?.signal_quality === "INVALID_SIGNAL"
+                                ? "INVALID_SIGNAL · PCM inválido"
+                                : source.live?.signal_quality === "UNASSESSED_NONZERO"
+                                  ? "PCM no nulo · sin calibración de campo"
+                                  : "Sin evaluación"}
+                          </dd>
+                        </div>
+                        <div>
                           <dt>Edad de última inferencia</dt>
                           <dd>
                             {source.live?.at ? `${age(source.live.at)} s` : "—"}
@@ -1181,6 +1198,13 @@ function App() {
                               {source.live?.updated_at
                                 ? `${age(source.live.updated_at)} s`
                                 : "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>Calidad: verificadas / rechazadas</dt>
+                            <dd>
+                              {source.live?.diagnostics?.signal_quality_checked_windows ?? "—"} /{" "}
+                              {source.live?.diagnostics?.signal_quality_rejected_windows ?? "—"}
                             </dd>
                           </div>
                           <div>

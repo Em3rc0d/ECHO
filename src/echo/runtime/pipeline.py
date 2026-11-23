@@ -11,6 +11,7 @@ from echo.modeling.audio import decode_audio_f32_mono
 
 from .event_engine import RawInference, TemporalEventEngine
 from .replay import iter_replay_windows
+from .signal_quality import inspect_pcm_window
 
 
 class WindowScorer(Protocol):
@@ -41,10 +42,13 @@ class EchoReplayPipeline:
         scorer: WindowScorer,
         event_engine: TemporalEventEngine,
         publishers: Iterable[EventPublisher],
+        signal_quality_gate_enabled: bool = False,
     ) -> None:
         self.scorer = scorer
         self.event_engine = event_engine
         self.publishers = list(publishers)
+        # Opt-in until the baseline replay and governed benchmarks are recertified.
+        self.signal_quality_gate_enabled = signal_quality_gate_enabled
         if not self.publishers:
             raise ValueError("at least one event publisher is required")
 
@@ -76,6 +80,9 @@ class EchoReplayPipeline:
 
         window_count = 0
         event_messages = 0
+        scored_window_count = 0
+        no_signal_window_count = 0
+        invalid_signal_window_count = 0
         last_window_end_utc = start_utc
         for window in iter_replay_windows(
             waveform,
@@ -85,10 +92,32 @@ class EchoReplayPipeline:
             pad_final=pad_final,
         ):
             window_count += 1
-            scores = self.scorer.score(window.waveform)
             last_window_end_utc = start_utc + timedelta(
                 seconds=window.end_sample / self.scorer.sample_rate_hz
             )
+            if self.signal_quality_gate_enabled:
+                quality = inspect_pcm_window(window.waveform)
+                if not quality.analysis_allowed:
+                    if quality.state == "NO_SIGNAL":
+                        no_signal_window_count += 1
+                    else:
+                        invalid_signal_window_count += 1
+                    # Missing/invalid acoustic evidence must not bridge temporal
+                    # candidates across a gap or preserve stale confirmed state.
+                    for event in self.event_engine.close_session(
+                        source_id=source_id,
+                        site_id=site_id,
+                        stream_session_id=stream_session_id,
+                        end_utc=last_window_end_utc,
+                        model_version=self.scorer.model_version,
+                    ):
+                        payload = event.to_dict()
+                        for publisher in self.publishers:
+                            publisher.publish(payload)
+                        event_messages += 1
+                    continue
+            scored_window_count += 1
+            scores = self.scorer.score(window.waveform)
             inference = RawInference(
                 source_id=source_id,
                 site_id=site_id,
@@ -120,7 +149,24 @@ class EchoReplayPipeline:
                     publisher.publish(payload)
                 event_messages += 1
 
+        if not self.signal_quality_gate_enabled:
+            signal_quality_state = "NOT_APPLIED"
+        elif scored_window_count and (no_signal_window_count or invalid_signal_window_count):
+            signal_quality_state = "PARTIAL_SIGNAL"
+        elif invalid_signal_window_count:
+            signal_quality_state = "INVALID_SIGNAL"
+        elif no_signal_window_count:
+            signal_quality_state = "NO_SIGNAL"
+        elif scored_window_count:
+            signal_quality_state = "UNASSESSED_NONZERO"
+        else:
+            signal_quality_state = "NO_WINDOWS"
+
         return {
+            "scored_window_count": scored_window_count,
+            "no_signal_window_count": no_signal_window_count,
+            "invalid_signal_window_count": invalid_signal_window_count,
+            "signal_quality_state": signal_quality_state,
             "source_id": source_id,
             "site_id": site_id,
             "stream_session_id": stream_session_id,

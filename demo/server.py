@@ -5,7 +5,7 @@ This adapter intentionally does not implement alternate classification logic.
 It loads the selected ECHO MVP model and current temporal Event Engine
 configuration and routes audio through EchoReplayPipeline. Governed controlled
 scenarios publish the same echo.event.v1 payloads over MQTT QoS 1. External
-microphone/WAV audio is diagnostic-only under ECHO-DEMO-ABSTENTION-v1:
+microphone/WAV audio is diagnostic-only under ECHO-DEMO-ABSTENTION-v2-candidate:
 unvalidated target candidates can be displayed but are not published as
 accepted target events.
 
@@ -83,6 +83,14 @@ def summarize_score_trace(
     rows: list[dict[str, float]],
     thresholds: dict[str, ThresholdConfig],
 ) -> dict:
+    if not rows:
+        return {
+            "window_count": 0,
+            "labels": {},
+            "ranked_labels": [],
+            "raw_audio_retained": False,
+            "diagnostic_kind": "NO_INFERENCE",
+        }
     labels = {}
     for label, cfg in thresholds.items():
         values = [float(row.get(label, 0.0)) for row in rows]
@@ -129,6 +137,7 @@ def external_abstention_decision(
     candidate_events: list[dict],
     candidate_labels: list[str],
     score_diagnostics: dict | None,
+    signal_quality_state: str = "NOT_APPLIED",
 ) -> dict:
     """Conservative demo-only rejection boundary for uncalibrated external audio.
 
@@ -137,9 +146,43 @@ def external_abstention_decision(
     candidates for diagnosis but cannot promote them to accepted target events.
     """
 
+    if signal_quality_state in {"NO_SIGNAL", "INVALID_SIGNAL"}:
+        return {
+            "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
+            "state": signal_quality_state,
+            "accepted_target": None,
+            "publish_target_event": False,
+            "candidate_labels": [],
+            "candidate_event_count": 0,
+            "ood_status": "SIGNAL_NOT_ANALYZABLE",
+            "rationale": (
+                "No acoustic inference was accepted: the decoded PCM was "
+                "exact digital zero or contained invalid samples. This is "
+                "not evidence of a target-free acoustic environment."
+            ),
+            "diagnostic_kind": "PRE_INFERENCE_SIGNAL_QUALITY",
+        }
+
+    if signal_quality_state == "PARTIAL_SIGNAL" and not candidate_labels:
+        return {
+            "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
+            "state": "INCOMPLETE_SIGNAL",
+            "accepted_target": None,
+            "publish_target_event": False,
+            "candidate_labels": [],
+            "candidate_event_count": 0,
+            "ood_status": "PARTIAL_INPUT_NOT_FULLY_ANALYZABLE",
+            "rationale": (
+                "Some PCM windows were rejected before inference. No target was "
+                "confirmed in the analyzed portion, but the full interval "
+                "cannot be represented as a verified NO_TARGET."
+            ),
+            "diagnostic_kind": "PRE_INFERENCE_SIGNAL_QUALITY",
+        }
+
     if not candidate_labels:
         return {
-            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
             "state": "NO_TARGET",
             "accepted_target": None,
             "publish_target_event": False,
@@ -163,7 +206,7 @@ def external_abstention_decision(
     )
     top = ranked[0] if ranked else None
     return {
-        "version": "ECHO-DEMO-ABSTENTION-v1",
+        "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
         "state": "UNKNOWN",
         "accepted_target": None,
         "publish_target_event": False,
@@ -423,7 +466,8 @@ class DemoApplication:
             "max_recording_seconds": MAX_RECORDING_SECONDS,
             "external_audio_policy": {
                 "pad_final": False,
-                "abstention_version": "ECHO-DEMO-ABSTENTION-v1",
+                "signal_quality_gate": "EXACT_ZERO_AND_INVALID_PCM_V1",
+                "abstention_version": "ECHO-DEMO-ABSTENTION-v2-candidate",
                 "target_event_publication": False,
                 "min_duration_seconds": float(
                     self.config_payload.get("window_seconds") or 6.0
@@ -465,6 +509,7 @@ class DemoApplication:
             scorer=scorer,
             event_engine=engine,
             publishers=publishers,
+            signal_quality_gate_enabled=external_audio,
         )
         window_seconds = float(
             self.config_payload.get("window_seconds") or 6.0
@@ -515,6 +560,7 @@ class DemoApplication:
             "external_audio_policy": (
                 {
                     "pad_final": False,
+                    "signal_quality_gate": "EXACT_ZERO_AND_INVALID_PCM_V1",
                     "min_duration_seconds": window_seconds,
                     "field_calibrated": False,
                 }
@@ -590,15 +636,19 @@ class DemoApplication:
             candidate_events=candidate_events,
             candidate_labels=candidate_labels,
             score_diagnostics=execution["score_diagnostics"],
+            signal_quality_state=execution["pipeline_summary"]["signal_quality_state"],
         )
-        outcome = (
-            "EXTERNAL_AUDIO_NO_TARGET"
-            if decision["state"] == "NO_TARGET"
-            else "EXTERNAL_AUDIO_UNKNOWN"
-        )
+        outcome = {
+            "NO_SIGNAL": "EXTERNAL_AUDIO_NO_SIGNAL",
+            "INVALID_SIGNAL": "EXTERNAL_AUDIO_INVALID_SIGNAL",
+            "NO_TARGET": "EXTERNAL_AUDIO_NO_TARGET",
+            "UNKNOWN": "EXTERNAL_AUDIO_UNKNOWN",
+            "INCOMPLETE_SIGNAL": "EXTERNAL_AUDIO_INCOMPLETE_SIGNAL",
+        }[decision["state"]]
         boundary = (
-            "External demo audio is analyzed by the real ECHO MVP scorer and temporal "
-            "engine, but target publication is blocked by ECHO-DEMO-ABSTENTION-v1. "
+            "External demo audio passes a deterministic PCM validity gate; only "
+            "analyzable windows reach the real ECHO scorer and temporal engine. "
+            "Target publication remains blocked by ECHO-DEMO-ABSTENTION-v2-candidate. "
             "NO_TARGET means no current target was temporally confirmed. UNKNOWN means "
             "one or more internal target candidates existed, but ECHO abstained because "
             "external-domain acceptance/OOD behavior is not field calibrated. The score "

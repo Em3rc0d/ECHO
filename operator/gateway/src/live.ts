@@ -18,6 +18,9 @@ export type Live = {
   session?: string;
   worker_generation?: number;
   scores: Record<string, number>;
+  signal_quality?: "NOT_OBSERVED" | "UNASSESSED_NONZERO" | "NO_SIGNAL" | "INVALID_SIGNAL";
+  signal_quality_reason?: string;
+  signal_quality_at?: string;
   waveform_envelope: number[];
   windows?: number;
   rms?: number;
@@ -65,6 +68,16 @@ export async function refreshLive() {
         session: data.session,
         worker_generation: data.stream_generation,
         scores,
+        signal_quality: [
+          "NOT_OBSERVED", "UNASSESSED_NONZERO", "NO_SIGNAL", "INVALID_SIGNAL",
+        ].includes(data.signal_quality) ? data.signal_quality : "NOT_OBSERVED",
+        signal_quality_reason: [
+          "EXACT_DIGITAL_ZERO", "NONFINITE_PCM", "NONNUMERIC_PCM",
+          "EMPTY_PCM", "NONZERO_NOT_FIELD_CALIBRATED",
+        ].includes(data.signal_quality_reason) ? data.signal_quality_reason : undefined,
+        signal_quality_at: typeof data.signal_quality_at === "string" &&
+          Number.isFinite(Date.parse(data.signal_quality_at))
+          ? new Date(data.signal_quality_at).toISOString() : undefined,
         waveform_envelope: Array.isArray(data.waveform_envelope)
           ? data.waveform_envelope
               .slice(0, 64)
