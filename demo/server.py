@@ -5,7 +5,7 @@ This adapter intentionally does not implement alternate classification logic.
 It loads the selected ECHO MVP model and current temporal Event Engine
 configuration and routes audio through EchoReplayPipeline. Governed controlled
 scenarios publish the same echo.event.v1 payloads over MQTT QoS 1. External
-microphone/WAV audio is diagnostic-only under ECHO-DEMO-ABSTENTION-v1:
+microphone/WAV audio is diagnostic-only under ECHO-DEMO-ABSTENTION-v2-candidate:
 unvalidated target candidates can be displayed but are not published as
 accepted target events.
 
@@ -140,7 +140,7 @@ def external_abstention_decision(
 
     if signal_quality_state in {"NO_SIGNAL", "INVALID_SIGNAL"}:
         return {
-            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
             "state": signal_quality_state,
             "accepted_target": None,
             "publish_target_event": False,
@@ -157,7 +157,7 @@ def external_abstention_decision(
 
     if signal_quality_state == "PARTIAL_SIGNAL" and not candidate_labels:
         return {
-            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
             "state": "INCOMPLETE_SIGNAL",
             "accepted_target": None,
             "publish_target_event": False,
@@ -174,7 +174,7 @@ def external_abstention_decision(
 
     if not candidate_labels:
         return {
-            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
             "state": "NO_TARGET",
             "accepted_target": None,
             "publish_target_event": False,
@@ -198,7 +198,7 @@ def external_abstention_decision(
     )
     top = ranked[0] if ranked else None
     return {
-        "version": "ECHO-DEMO-ABSTENTION-v1",
+        "version": "ECHO-DEMO-ABSTENTION-v2-candidate",
         "state": "UNKNOWN",
         "accepted_target": None,
         "publish_target_event": False,
@@ -459,7 +459,7 @@ class DemoApplication:
             "external_audio_policy": {
                 "pad_final": False,
                 "signal_quality_gate": "EXACT_ZERO_AND_INVALID_PCM_V1",
-                "abstention_version": "ECHO-DEMO-ABSTENTION-v1",
+                "abstention_version": "ECHO-DEMO-ABSTENTION-v2-candidate",
                 "target_event_publication": False,
                 "min_duration_seconds": float(
                     self.config_payload.get("window_seconds") or 6.0
@@ -639,7 +639,7 @@ class DemoApplication:
         }[decision["state"]]
         boundary = (
             "External demo audio is analyzed by the real ECHO MVP scorer and temporal "
-            "engine, but target publication is blocked by ECHO-DEMO-ABSTENTION-v1. "
+            "engine, but target publication is blocked by ECHO-DEMO-ABSTENTION-v2-candidate. "
             "NO_TARGET means no current target was temporally confirmed. UNKNOWN means "
             "one or more internal target candidates existed, but ECHO abstained because "
             "external-domain acceptance/OOD behavior is not field calibrated. The score "
