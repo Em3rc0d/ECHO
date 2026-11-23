@@ -155,6 +155,23 @@ def external_abstention_decision(
             "diagnostic_kind": "PRE_INFERENCE_SIGNAL_QUALITY",
         }
 
+    if signal_quality_state == "PARTIAL_SIGNAL" and not candidate_labels:
+        return {
+            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "state": "INCOMPLETE_SIGNAL",
+            "accepted_target": None,
+            "publish_target_event": False,
+            "candidate_labels": [],
+            "candidate_event_count": 0,
+            "ood_status": "PARTIAL_INPUT_NOT_FULLY_ANALYZABLE",
+            "rationale": (
+                "Some PCM windows were rejected before inference. No target was "
+                "confirmed in the analyzed portion, but the full interval "
+                "cannot be represented as a verified NO_TARGET."
+            ),
+            "diagnostic_kind": "PRE_INFERENCE_SIGNAL_QUALITY",
+        }
+
     if not candidate_labels:
         return {
             "version": "ECHO-DEMO-ABSTENTION-v1",
@@ -618,6 +635,7 @@ class DemoApplication:
             "INVALID_SIGNAL": "EXTERNAL_AUDIO_INVALID_SIGNAL",
             "NO_TARGET": "EXTERNAL_AUDIO_NO_TARGET",
             "UNKNOWN": "EXTERNAL_AUDIO_UNKNOWN",
+            "INCOMPLETE_SIGNAL": "EXTERNAL_AUDIO_INCOMPLETE_SIGNAL",
         }[decision["state"]]
         boundary = (
             "External demo audio is analyzed by the real ECHO MVP scorer and temporal "
