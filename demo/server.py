@@ -129,6 +129,7 @@ def external_abstention_decision(
     candidate_events: list[dict],
     candidate_labels: list[str],
     score_diagnostics: dict | None,
+    signal_quality_state: str = "NOT_APPLIED",
 ) -> dict:
     """Conservative demo-only rejection boundary for uncalibrated external audio.
 
@@ -136,6 +137,23 @@ def external_abstention_decision(
     a field-calibrated acceptance profile, external audio may expose internal target
     candidates for diagnosis but cannot promote them to accepted target events.
     """
+
+    if signal_quality_state in {"NO_SIGNAL", "INVALID_SIGNAL"}:
+        return {
+            "version": "ECHO-DEMO-ABSTENTION-v1",
+            "state": signal_quality_state,
+            "accepted_target": None,
+            "publish_target_event": False,
+            "candidate_labels": [],
+            "candidate_event_count": 0,
+            "ood_status": "SIGNAL_NOT_ANALYZABLE",
+            "rationale": (
+                "No acoustic inference was accepted: the decoded PCM was "
+                "exact digital zero or contained invalid samples. This is "
+                "not evidence of a target-free acoustic environment."
+            ),
+            "diagnostic_kind": "PRE_INFERENCE_SIGNAL_QUALITY",
+        }
 
     if not candidate_labels:
         return {
@@ -423,6 +441,7 @@ class DemoApplication:
             "max_recording_seconds": MAX_RECORDING_SECONDS,
             "external_audio_policy": {
                 "pad_final": False,
+                "signal_quality_gate": "EXACT_ZERO_AND_INVALID_PCM_V1",
                 "abstention_version": "ECHO-DEMO-ABSTENTION-v1",
                 "target_event_publication": False,
                 "min_duration_seconds": float(
@@ -465,6 +484,7 @@ class DemoApplication:
             scorer=scorer,
             event_engine=engine,
             publishers=publishers,
+            signal_quality_gate_enabled=external_audio,
         )
         window_seconds = float(
             self.config_payload.get("window_seconds") or 6.0
@@ -515,6 +535,7 @@ class DemoApplication:
             "external_audio_policy": (
                 {
                     "pad_final": False,
+                    "signal_quality_gate": "EXACT_ZERO_AND_INVALID_PCM_V1",
                     "min_duration_seconds": window_seconds,
                     "field_calibrated": False,
                 }
@@ -590,12 +611,14 @@ class DemoApplication:
             candidate_events=candidate_events,
             candidate_labels=candidate_labels,
             score_diagnostics=execution["score_diagnostics"],
+            signal_quality_state=execution["pipeline_summary"]["signal_quality_state"],
         )
-        outcome = (
-            "EXTERNAL_AUDIO_NO_TARGET"
-            if decision["state"] == "NO_TARGET"
-            else "EXTERNAL_AUDIO_UNKNOWN"
-        )
+        outcome = {
+            "NO_SIGNAL": "EXTERNAL_AUDIO_NO_SIGNAL",
+            "INVALID_SIGNAL": "EXTERNAL_AUDIO_INVALID_SIGNAL",
+            "NO_TARGET": "EXTERNAL_AUDIO_NO_TARGET",
+            "UNKNOWN": "EXTERNAL_AUDIO_UNKNOWN",
+        }[decision["state"]]
         boundary = (
             "External demo audio is analyzed by the real ECHO MVP scorer and temporal "
             "engine, but target publication is blocked by ECHO-DEMO-ABSTENTION-v1. "
