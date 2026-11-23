@@ -1,6 +1,6 @@
 # MK1 — Exact-zero and invalid-PCM pre-inference boundary
 
-**Status:** `IMPLEMENTED / TEST DEFINITIONS WRITTEN / RUNTIME NOT EXECUTED`  
+**Status:** `IMPLEMENTED / LOCAL SOURCE-MATCHED QA 18/18 PASS / DOCKER-MODEL-RTSP NOT CERTIFIED`  
 **Date:** 2026-11-22  
 **Scope:** `ECHO-MVP-001` — three classes; issue #53  
 **Authoritative gate:** `MK1/test/FIELD-AUDIO-ROBUSTNESS-GATE.md`
@@ -42,7 +42,9 @@ Near-silence, one-LSB codec residue, frozen nonzero streams, clipping, device
 gain faults, speech/traffic/music confusers and OOD detection remain unresolved.
 
 `NO_SIGNAL` is distinct from `NO_TARGET`: no usable signal cannot
-certify that there was no target acoustic event.
+certify that there was no target acoustic event. If a recording mixes
+scored and rejected windows without confirmed targets, the external demo
+returns `INCOMPLETE_SIGNAL`, not the misleading all-interval `NO_TARGET`.
 
 ## Runtime implementation
 
@@ -52,8 +54,9 @@ certify that there was no target acoustic event.
   `signal_quality_state` in summary; on rejected windows, call
   `TemporalEventEngine.close_session` to discard candidates and close active
   diagnostic events; do not bridge gaps.
-- `demo/server.py`: opt-in only for external audio. Returns `NO_SIGNAL` or
-  `INVALID_SIGNAL` instead of misrepresenting these as `NO_TARGET`.
+- `demo/server.py`: opt-in only for external audio. Returns `NO_SIGNAL`,
+  `INVALID_SIGNAL`, or `INCOMPLETE_SIGNAL` instead of misrepresenting an
+  unanalysable interval as a fully supported `NO_TARGET`.
 - `demo/index.html`: displays signal state, number of inferred/rejected
   windows and keeps target event publication suppressed.
 - `scripts/emulator/echo_rtsp_live_worker.py`: checks PCM **before**
@@ -63,7 +66,16 @@ certify that there was no target acoustic event.
 - Operator gateway/web: validates and shows quality status and rejected-window
   counters independently from inference freshness.
 
-## Verification plan (not yet completed)
+## Verification plan (partially executed)
+
+Local source-matched unit/FFmpeg regression results: **18/18 PASS, 0 skipped**.
+The nine Python source/test files run locally have exact Git blob hashes
+matching the corresponding files in the PR; however this was a reconstructed
+subset, **not a full PR checkout or Docker run**. Reproducibility record:
+`MK1/test/SIGNAL-QUALITY-LOCAL-QA-2026-11-22.md`.
+
+The new optional FFmpeg tests are in
+`tests/runtime/test_signal_quality_ffmpeg.py` and generate their own WAVs.
 
 1. Pure unit regression, no model, no audio assets:
    `PYTHONPATH=src python -m unittest tests.runtime.test_signal_quality -v`
@@ -86,8 +98,10 @@ certify that there was no target acoustic event.
 
 ## Quality acceptance checklist
 
-- [ ] Python unit tests PASS **against exact PR SHA**
-- [ ] Existing runtime tests PASS
+- [x] 8/8 new Python signal-quality unit regressions PASS on source-matched subset
+- [x] 8/8 existing Event Engine + replay regressions PASS on source-matched subset
+- [x] 2/2 FFmpeg-generated WAV decoding/regression tests PASS locally
+- [ ] Full exact-PR-checkout tests in Docker PASS
 - [ ] Operator/gateway compilation and tests PASS
 - [ ] Docker exact-zero PANNs regression PASS
 - [ ] Controlled professor demo unchanged PASS
