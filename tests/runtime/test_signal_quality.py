@@ -97,6 +97,21 @@ class PipelineBoundaryTests(unittest.TestCase):
         self.assertFalse(publisher.messages)
         self.assertEqual(summary["signal_quality_state"], "PARTIAL_SIGNAL")
 
+    def test_signal_loss_closes_previous_event_without_new_confirmation(self):
+        scorer, publisher, summary = self.run_pcm(
+            [0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 0.5, 0.5],
+            enabled=True,
+        )
+        self.assertEqual(scorer.calls, 3)
+        self.assertEqual(
+            [event["provenance"]["lifecycle"] for event in publisher.messages],
+            ["CONFIRMED", "CLOSED"],
+        )
+        self.assertEqual(
+            publisher.messages[0]["event_id"], publisher.messages[1]["event_id"]
+        )
+        self.assertEqual(summary["no_signal_window_count"], 1)
+
     def test_invalid_pcm_is_rejected_without_inference(self):
         scorer, publisher, summary = self.run_pcm([0.3, 0.3, math.nan, 0.0], enabled=True)
         self.assertEqual(scorer.calls, 1)
