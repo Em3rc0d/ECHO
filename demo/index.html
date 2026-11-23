@@ -208,6 +208,9 @@ function makeWave(){
   $('wave').innerHTML=heights.map(h=>`<i style="height:${h}px"></i>`).join('');
 }
 function resultClass(outcome, data){
+  if(outcome==='EXTERNAL_AUDIO_INCOMPLETE_SIGNAL'){
+    return ['warn','INCOMPLETE_SIGNAL · evaluación parcial'];
+  }
   if(outcome==='EXTERNAL_AUDIO_NO_SIGNAL'){
     return ['warn','NO_SIGNAL · silencio digital'];
   }
@@ -266,13 +269,16 @@ async function runDemo(){
     const confidence=best?Math.round(best.confidence_peak*100):null;
     const isAbstained=Boolean(data.decision_layer);
     const noSignal=['NO_SIGNAL','INVALID_SIGNAL'].includes(data.decision_layer?.state);
+    const incompleteSignal=data.decision_layer?.state==='INCOMPLETE_SIGNAL';
     const events=renderedEvents.length?renderedEvents.map(e=>`
       <div class="event">
         <div><strong>${e.display_name}</strong><small>${isAbstained?'Candidato interno · NO PUBLICADO':e.lifecycles.join(' → ')}</small></div>
         <b>${Math.round(e.confidence_peak*100)}%</b>
       </div>`).join(''):(noSignal
       ? '<div class="event"><div><strong>Sin señal analizable</strong><small>La calidad de entrada impidió ejecutar inferencia acústica.</small></div><b>—</b></div>'
-      : '<div class="event"><div><strong>Sin evento objetivo confirmado</strong><small>El motor temporal no emitió candidatos de las tres clases objetivo.</small></div><b>—</b></div>');
+      : incompleteSignal
+        ? '<div class="event"><div><strong>Audio parcialmente analizable</strong><small>La pérdida de señal impide descartar eventos en todo el intervalo.</small></div><b>—</b></div>'
+        : '<div class="event"><div><strong>Sin evento objetivo confirmado</strong><small>El motor temporal no emitió candidatos de las tres clases objetivo.</small></div><b>—</b></div>');
     const diagnostic=data.score_diagnostics?Object.entries(data.score_diagnostics.labels).map(([label,row])=>
       `${labelName(label)}: pico ${Math.round(row.max_score*100)}% · ${row.windows_at_or_above_on}/${data.score_diagnostics.window_count} ventanas ≥ umbral · racha máx. ${row.longest_consecutive_at_or_above_on}`
     ).join('<br>'):'';
