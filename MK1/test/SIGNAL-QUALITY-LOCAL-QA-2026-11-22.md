@@ -85,5 +85,20 @@ field false positives are resolved.
 - No controlled benchmark, threshold, model, MQTT acceptance or field
   certification is changed or authorized by these lab results.
 
+### Follow-up integrity checks in the same session
+
+- The same 18-test source-matched subset was rerun **twice** with identical PASS
+  outcomes, no errors or skips.
+- Pure synthetic 192,000-sample PCM quality inspection (32 kHz, 6 seconds)
+  measured median ~12 ms per call for exact-zero, one-LSB, single-nonzero
+  and nonfinite controls. These local timing samples are **not** hardware
+  certification or throughput SLO evidence.
+- Two additional fake-RTSP worker tests were committed in
+  `tests/emulator/test_signal_quality_rtsp.py`; **NOT EXECUTED** here.
+- Seven additional demo-v2 decision tests were committed in
+  `tests/runtime/test_demo_signal_policy.py`; **NOT EXECUTED** here.
+- No real PANNs checkpoint, Docker camera worker, Operator browser test or
+  external field benchmark was available. The gate remains open.
+
 **Decision: HOLD / DRAFT / NO MERGE.** Run the full checkout, Docker, PANNs
 and RTSP acceptance before deciding whether this PR is eligible to merge.
