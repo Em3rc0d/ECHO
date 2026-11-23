@@ -83,16 +83,22 @@ The new optional FFmpeg tests are in
    `PYTHONPATH=src python -m unittest tests.runtime.test_event_engine tests.runtime.test_replay -v`
 3. RTSP supervision regression with local test deps:
    `PYTHONPATH=src python -m unittest tests.emulator.test_rtsp_supervision -v`
-4. Operator compile/build and gateway automated suite under a disposable
+   and newly defined synthetic signal-path test:
+   `PYTHONPATH=src python -m unittest tests.emulator.test_signal_quality_rtsp -v`
+   (2 new cases, **NOT EXECUTED** locally).
+4. Demo v2 decision regression, no model weights:
+   `PYTHONPATH=src python -m unittest tests.runtime.test_demo_signal_policy -v`
+   (7 new cases, **NOT EXECUTED** locally).
+5. Operator compile/build and gateway automated suite under a disposable
    correctly provisioned local stack, then human acceptance cases O01–O33.
-5. **Docker with real checkpoint:** a 60 s exact-zero external WAV must yield
+6. **Docker with real checkpoint:** a 60 s exact-zero external WAV must yield
    `NO_SIGNAL`, zero scored windows, zero internal candidates and zero
    accepted or published target events. Confirm governed controlled scenarios
    remain byte-for-byte contract compatible.
-6. **Emulated RTSP:** exact-zero/silence → quality rejected; transition
+7. **Emulated RTSP:** exact-zero/silence → quality rejected; transition
    valid → zero → valid must not reuse temporal candidates; silence must not
    refresh the last-inference timestamp; all other camera workers progress.
-7. **Holdout/field gate remains OPEN:** measure signal validity and false
+8. **Holdout/field gate remains OPEN:** measure signal validity and false
    alarms per source-hour on diverse independently held-out audio. A near-zero
    level threshold must be calibrated on development evidence only.
 
@@ -101,6 +107,8 @@ The new optional FFmpeg tests are in
 - [x] 8/8 new Python signal-quality unit regressions PASS on source-matched subset
 - [x] 8/8 existing Event Engine + replay regressions PASS on source-matched subset
 - [x] 2/2 FFmpeg-generated WAV decoding/regression tests PASS locally
+- [ ] 7 demo-v2 unit tests PASS (defined, not executed)
+- [ ] 2 new fake-RTSP signal-integrity tests PASS (defined, not executed)
 - [ ] Full exact-PR-checkout tests in Docker PASS
 - [ ] Operator/gateway compilation and tests PASS
 - [ ] Docker exact-zero PANNs regression PASS
@@ -109,6 +117,12 @@ The new optional FFmpeg tests are in
 - [ ] No fabricated `NO_TARGET` or target MQTT/alert PASS
 - [ ] Quality metrics/provenance recorded with SHA, config, source and time
 - [ ] Independent environmental holdout evaluated to predeclared criteria
+
+The 32 kHz, 6 s-window synthetic microbenchmark showed ~12 ms median
+per quality scan over 192,000 samples on the local runner; this is not a
+multi-source load/SLO measurement. A 1-LSB nonzero signal is correctly
+left `UNASSESSED_NONZERO`, illustrating why field-level low-signal
+thresholds must be calibrated rather than guessed.
 
 **Current decision: HOLD / NOT CERTIFIED.** Do not merge or treat issue #53
 as closed on the strength of source code or isolated unit tests.
