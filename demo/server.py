@@ -83,6 +83,14 @@ def summarize_score_trace(
     rows: list[dict[str, float]],
     thresholds: dict[str, ThresholdConfig],
 ) -> dict:
+    if not rows:
+        return {
+            "window_count": 0,
+            "labels": {},
+            "ranked_labels": [],
+            "raw_audio_retained": False,
+            "diagnostic_kind": "NO_INFERENCE",
+        }
     labels = {}
     for label, cfg in thresholds.items():
         values = [float(row.get(label, 0.0)) for row in rows]
@@ -638,8 +646,9 @@ class DemoApplication:
             "INCOMPLETE_SIGNAL": "EXTERNAL_AUDIO_INCOMPLETE_SIGNAL",
         }[decision["state"]]
         boundary = (
-            "External demo audio is analyzed by the real ECHO MVP scorer and temporal "
-            "engine, but target publication is blocked by ECHO-DEMO-ABSTENTION-v2-candidate. "
+            "External demo audio passes a deterministic PCM validity gate; only "
+            "analyzable windows reach the real ECHO scorer and temporal engine. "
+            "Target publication remains blocked by ECHO-DEMO-ABSTENTION-v2-candidate. "
             "NO_TARGET means no current target was temporally confirmed. UNKNOWN means "
             "one or more internal target candidates existed, but ECHO abstained because "
             "external-domain acceptance/OOD behavior is not field calibrated. The score "
